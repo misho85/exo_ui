@@ -1,0 +1,112 @@
+defmodule ExoUI.Layouts do
+  @moduledoc """
+  Layout components for ExoUI.
+
+  Provides the app shell with collapsible sidebar navigation.
+  """
+
+  use Phoenix.Component
+
+  # --- sidebar_layout/1 ---
+
+  attr :id, :string, default: "sidebar-layout"
+  attr :class, :string, default: nil
+  attr :content_class, :string, default: nil
+
+  slot :brand, doc: "branding area at top of sidebar (logo, tenant name)"
+  slot :nav, required: true, doc: "navigation menu items"
+  slot :topbar_start, doc: "left side of topbar (breadcrumbs, search)"
+  slot :topbar_end, doc: "right side of topbar (theme toggle, notifications, user menu)"
+  slot :footer, doc: "user info at bottom of sidebar"
+  slot :inner_block, required: true, doc: "page content"
+
+  def sidebar_layout(assigns) do
+    ~H"""
+    <div
+      data-exo="sidebar"
+      id={@id}
+      phx-hook="ExoSidebar"
+      class={@class}
+    >
+      <input
+        id={"#{@id}-toggle"}
+        type="checkbox"
+        data-exo="sidebar-toggle"
+        checked
+        phx-update="ignore"
+      />
+
+      <%!-- Main content area --%>
+      <div data-exo="sidebar-content">
+        <%!-- Top bar --%>
+        <header data-exo="sidebar-topbar">
+          <label for={"#{@id}-toggle"} data-exo="sidebar-hamburger" aria-label="Toggle sidebar">
+            ☰
+          </label>
+
+          <div :if={@topbar_start != []} data-exo="topbar-start">
+            {render_slot(@topbar_start)}
+          </div>
+          <div :if={@topbar_start == []} data-exo="topbar-start" />
+
+          <div :if={@topbar_end != []} data-exo="topbar-end">
+            {render_slot(@topbar_end)}
+          </div>
+        </header>
+
+        <%!-- Page content --%>
+        <main data-exo="sidebar-main">
+          <div class={@content_class}>
+            {render_slot(@inner_block)}
+          </div>
+        </main>
+      </div>
+
+      <%!-- Sidebar panel --%>
+      <div data-exo="sidebar-panel">
+        <label for={"#{@id}-toggle"} data-exo="sidebar-overlay" aria-label="Close sidebar" />
+        <aside data-exo="sidebar-aside">
+          <div :if={@brand != []} data-exo="sidebar-brand">
+            {render_slot(@brand)}
+          </div>
+
+          <nav data-exo="sidebar-nav">
+            {render_slot(@nav)}
+          </nav>
+
+          <div :if={@footer != []} data-exo="sidebar-footer">
+            {render_slot(@footer)}
+          </div>
+        </aside>
+      </div>
+    </div>
+    """
+  end
+
+  # --- sidebar_item/1 ---
+
+  attr :href, :string, required: true
+  attr :icon, :string, default: nil
+  attr :label, :string, required: true
+  attr :active, :boolean, default: false
+  attr :badge, :integer, default: nil
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def sidebar_item(assigns) do
+    ~H"""
+    <li data-exo="sidebar-item" data-active={@active && ""} class={@class} {@rest}>
+      <.link navigate={@href}>
+        <span :if={@icon} data-exo="sidebar-icon">{@icon}</span>
+        <span data-exo="sidebar-label">{@label}</span>
+        <span
+          :if={@badge && @badge > 0}
+          data-exo="sidebar-badge"
+        >
+          {@badge}
+        </span>
+      </.link>
+    </li>
+    """
+  end
+end
