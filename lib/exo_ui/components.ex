@@ -596,6 +596,94 @@ defmodule ExoUI.Components do
     """
   end
 
+  attr :name, :string, required: true
+  attr :src, :string, default: nil
+  attr :size, :string, values: ~w(xs sm md lg xl), default: "md"
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def avatar(assigns) do
+    initials =
+      assigns.name
+      |> String.split(~r/\s+/)
+      |> Enum.take(2)
+      |> Enum.map(&String.first/1)
+      |> Enum.join()
+      |> String.upcase()
+
+    assigns = assign(assigns, :initials, initials)
+
+    ~H"""
+    <span data-exo="avatar" data-size={@size} class={@class} {@rest}>
+      <img :if={@src} src={@src} alt={@name} data-exo="avatar-img" />
+      <span :if={!@src} data-exo="avatar-initials">{@initials}</span>
+    </span>
+    """
+  end
+
+  attr :type, :string, values: ~w(text card avatar table), default: "text"
+  attr :rows, :integer, default: 3
+  attr :label, :string, default: "Loading..."
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def skeleton(assigns) do
+    ~H"""
+    <div data-exo="skeleton" data-type={@type} role="status" aria-label={@label} class={@class} {@rest}>
+      <%= case @type do %>
+        <% "text" -> %>
+          <div data-exo="skeleton-line" :for={_ <- 1..@rows} />
+        <% "card" -> %>
+          <div data-exo="skeleton-block" style="height: 8rem;" />
+          <div data-exo="skeleton-line" />
+          <div data-exo="skeleton-line" style="width: 60%;" />
+        <% "avatar" -> %>
+          <div data-exo="skeleton-circle" />
+        <% "table" -> %>
+          <div data-exo="skeleton-line" style="height: 2rem;" />
+          <div data-exo="skeleton-line" :for={_ <- 1..@rows} style="height: 3rem;" />
+      <% end %>
+    </div>
+    """
+  end
+
+  attr :icon, :string, default: nil
+  attr :title, :string, required: true
+  attr :subtitle, :string, default: nil
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :action
+
+  def empty_state(assigns) do
+    ~H"""
+    <div data-exo="empty-state" class={@class} {@rest}>
+      <div :if={@icon} data-exo="empty-state-icon">{@icon}</div>
+      <h3 data-exo="empty-state-title">{@title}</h3>
+      <p :if={@subtitle} data-exo="empty-state-subtitle">{@subtitle}</p>
+      <div :if={@action != []} data-exo="empty-state-action">{render_slot(@action)}</div>
+    </div>
+    """
+  end
+
+  attr :kind, :atom, required: true, values: [:info, :success, :warning, :error]
+  attr :title, :string, default: nil
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :inner_block, required: true
+  slot :action
+
+  def alert(assigns) do
+    ~H"""
+    <div data-exo="alert" data-kind={@kind} role="alert" class={@class} {@rest}>
+      <div data-exo="alert-content">
+        <p :if={@title} data-exo="alert-title">{@title}</p>
+        <div data-exo="alert-message">{render_slot(@inner_block)}</div>
+      </div>
+      <div :if={@action != []} data-exo="alert-action">{render_slot(@action)}</div>
+    </div>
+    """
+  end
+
   @doc """
   Translates an error message using gettext.
   """

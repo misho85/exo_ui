@@ -1,0 +1,35 @@
+:where([data-exo="skeleton"]) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--exo-space-2);
+}
+
+@keyframes exo-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+:where([data-exo="skeleton-line"]) {
+  height: 1rem;
+  background: var(--exo-muted);
+  border-radius: var(--exo-radius);
+  animation: exo-pulse 2s ease-in-out infinite;
+}
+
+:where([data-exo="skeleton-line"]:last-child) {
+  width: 80%;
+}
+
+:where([data-exo="skeleton-block"]) {
+  background: var(--exo-muted);
+  border-radius: var(--exo-radius);
+  animation: exo-pulse 2s ease-in-out infinite;
+}
+
+:where([data-exo="skeleton-circle"]) {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  background: var(--exo-muted);
+  animation: exo-pulse 2s ease-in-out infinite;
+}

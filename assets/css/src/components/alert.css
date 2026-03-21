@@ -1,0 +1,44 @@
+:where([data-exo="alert"]) {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--exo-space-3);
+  padding: var(--exo-space-3) var(--exo-space-4);
+  border-radius: var(--exo-radius);
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  border: 1px solid transparent;
+}
+
+:where([data-exo="alert"][data-kind="info"]) {
+  background: color-mix(in oklch, var(--exo-info) 10%, transparent);
+  color: var(--exo-info);
+  border-color: color-mix(in oklch, var(--exo-info) 30%, transparent);
+}
+
+:where([data-exo="alert"][data-kind="success"]) {
+  background: color-mix(in oklch, var(--exo-success) 10%, transparent);
+  color: var(--exo-success);
+  border-color: color-mix(in oklch, var(--exo-success) 30%, transparent);
+}
+
+:where([data-exo="alert"][data-kind="warning"]) {
+  background: color-mix(in oklch, var(--exo-warning) 10%, transparent);
+  color: var(--exo-warning);
+  border-color: color-mix(in oklch, var(--exo-warning) 30%, transparent);
+}
+
+:where([data-exo="alert"][data-kind="error"]) {
+  background: color-mix(in oklch, var(--exo-danger) 10%, transparent);
+  color: var(--exo-danger);
+  border-color: color-mix(in oklch, var(--exo-danger) 30%, transparent);
+}
+
+:where([data-exo="alert-title"]) {
+  font-weight: 600;
+  margin: 0 0 var(--exo-space-1) 0;
+}
+
+:where([data-exo="alert-message"]) {
+  opacity: 0.9;
+}

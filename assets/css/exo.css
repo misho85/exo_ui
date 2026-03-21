@@ -16,3 +16,7 @@
 @import "./src/components/header.css";
 @import "./src/components/list.css";
 @import "./src/components/card.css";
+@import "./src/components/avatar.css";
+@import "./src/components/skeleton.css";
+@import "./src/components/empty-state.css";
+@import "./src/components/alert.css";
