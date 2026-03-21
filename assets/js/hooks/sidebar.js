@@ -17,11 +17,18 @@ const ExoSidebar = {
     })
 
     // Persist on toggle
-    this.toggle.addEventListener('change', () => {
+    this._onChange = () => {
       if (window.matchMedia('(min-width: 768px)').matches) {
         localStorage.setItem('exo-sidebar-collapsed', this.toggle.checked ? 'false' : 'true')
       }
-    })
+    }
+    this.toggle.addEventListener('change', this._onChange)
+  },
+
+  destroyed() {
+    if (this.toggle && this._onChange) {
+      this.toggle.removeEventListener('change', this._onChange)
+    }
   },
 
   updated() {

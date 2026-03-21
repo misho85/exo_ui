@@ -85,6 +85,7 @@ defmodule ExoUI.Components do
   end
 
   attr :field, Phoenix.HTML.FormField, doc: "a form field struct"
+  attr :id, :any, default: nil
   attr :type, :string, default: "text"
   attr :name, :any
   attr :value, :any
@@ -303,29 +304,28 @@ defmodule ExoUI.Components do
     ~H"""
     <div data-exo="tabs" role="tablist" class={@class}>
       <%= for tab <- @tab do %>
-        <%= if tab[:click] do %>
-          <button
-            data-exo="tab"
-            data-active={tab.id == @active && ""}
-            phx-click={tab[:click]}
-            phx-value-tab={tab[:click_value] || tab.id}
-            role="tab"
-            aria-selected={to_string(tab.id == @active)}
-          >
-            {tab.label}
-          </button>
-        <% else %>
-          <.link
-            data-exo="tab"
-            data-active={tab.id == @active && ""}
-            patch={tab[:patch]}
-            navigate={tab[:navigate]}
-            role="tab"
-            aria-selected={to_string(tab.id == @active)}
-          >
-            {tab.label}
-          </.link>
-        <% end %>
+        <button
+          :if={tab[:click]}
+          data-exo="tab"
+          data-active={tab.id == @active && ""}
+          phx-click={tab[:click]}
+          phx-value-tab={tab[:click_value] || tab.id}
+          role="tab"
+          aria-selected={to_string(tab.id == @active)}
+        >
+          {tab.label}
+        </button>
+        <.link
+          :if={!tab[:click]}
+          data-exo="tab"
+          data-active={tab.id == @active && ""}
+          patch={tab[:patch]}
+          navigate={tab[:navigate]}
+          role="tab"
+          aria-selected={to_string(tab.id == @active)}
+        >
+          {tab.label}
+        </.link>
       <% end %>
     </div>
     """
