@@ -452,6 +452,48 @@ defmodule ExoUI.Components do
     """
   end
 
+  attr :steps, :list, required: true, doc: "list of %{id: string, label: string, status: atom}"
+  attr :on_click, :string, default: "goto-step", doc: "phx-click event name"
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def wizard_sidebar(assigns) do
+    ~H"""
+    <nav data-exo="wizard" class={@class} {@rest}>
+      <ol>
+        <li
+          :for={{step, idx} <- Enum.with_index(@steps)}
+          data-exo="wizard-step"
+          data-status={step.status}
+        >
+          <button
+            :if={step.status in [:completed, :current]}
+            data-exo="wizard-btn"
+            data-status={step.status}
+            phx-click={@on_click}
+            phx-value-step={step.id}
+          >
+            <span data-exo="wizard-indicator">
+              <span :if={step.status == :completed}>✓</span>
+              <span :if={step.status != :completed}>{idx + 1}</span>
+            </span>
+            <span data-exo="wizard-label">{step.label}</span>
+          </button>
+          <div
+            :if={step.status not in [:completed, :current]}
+            data-exo="wizard-btn"
+            data-status={step.status}
+          >
+            <span data-exo="wizard-indicator">{idx + 1}</span>
+            <span data-exo="wizard-label">{step.label}</span>
+          </div>
+          <div :if={idx < length(@steps) - 1} data-exo="wizard-connector" data-status={step.status} />
+        </li>
+      </ol>
+    </nav>
+    """
+  end
+
   @doc """
   Translates an error message using gettext.
   """
