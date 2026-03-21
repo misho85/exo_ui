@@ -40,6 +40,33 @@ defmodule ExoUI.Components do
     """
   end
 
+  attr :variant, :string, default: "primary"
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def badge(assigns) do
+    ~H"""
+    <span data-exo="badge" data-variant={@variant} class={@class} {@rest}>
+      {render_slot(@inner_block)}
+    </span>
+    """
+  end
+
+  attr :for, :any, required: true
+  attr :as, :any, default: nil
+  attr :class, :string, default: nil
+  attr :rest, :global, include: ~w(autocomplete name rel action enctype method novalidate target multipart)
+  slot :inner_block, required: true
+
+  def form(assigns) do
+    ~H"""
+    <Phoenix.Component.form for={@for} as={@as} data-exo="form" class={@class} {@rest}>
+      {render_slot(@inner_block)}
+    </Phoenix.Component.form>
+    """
+  end
+
   attr :orientation, :string, values: ~w(horizontal vertical), default: "horizontal"
   attr :class, :string, default: nil
   attr :rest, :global

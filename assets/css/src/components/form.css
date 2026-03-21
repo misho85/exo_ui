@@ -1,0 +1,5 @@
+:where([data-exo="form"]) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--exo-space-4);
+}
