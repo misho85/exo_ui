@@ -232,8 +232,8 @@ defmodule ExoUI.Components do
         aria-labelledby={@title != [] && "#{@id}-title"}
         tabindex="-1"
       >
-        <div :if={@title != []} data-exo="modal-header">
-          <h2 id={"#{@id}-title"} data-exo="modal-title">
+        <div data-exo="modal-header">
+          <h2 :if={@title != []} id={"#{@id}-title"} data-exo="modal-title">
             {render_slot(@title)}
           </h2>
           <button data-exo="modal-close" phx-click={@on_cancel |> hide_modal(@id)} aria-label="close">
