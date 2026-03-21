@@ -1,0 +1,76 @@
+:where([data-exo="modal"]) {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: none;
+}
+
+:where([data-exo="modal"][data-state="open"]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:where([data-exo="modal-backdrop"]) {
+  position: fixed;
+  inset: 0;
+  background: oklch(0% 0 0 / 0.4);
+}
+
+:where([data-exo="modal-content"]) {
+  position: relative;
+  background: var(--exo-card);
+  color: var(--exo-card-foreground);
+  border-radius: var(--exo-radius);
+  box-shadow: var(--exo-shadow-lg);
+  padding: var(--exo-space-6);
+  max-width: 32rem;
+  width: calc(100% - var(--exo-space-8));
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+:where([data-exo="modal-header"]) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--exo-space-4);
+}
+
+:where([data-exo="modal-title"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-lg);
+  font-weight: 600;
+  margin: 0;
+}
+
+:where([data-exo="modal-close"]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  background: transparent;
+  color: var(--exo-muted-foreground);
+  border-radius: var(--exo-radius);
+  cursor: pointer;
+  font-size: var(--exo-text-base);
+}
+:where([data-exo="modal-close"]):hover {
+  background: var(--exo-muted);
+  color: var(--exo-foreground);
+}
+
+:where([data-exo="modal-body"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  color: var(--exo-muted-foreground);
+}
+
+:where([data-exo="modal-actions"]) {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--exo-space-2);
+  margin-top: var(--exo-space-6);
+}

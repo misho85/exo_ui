@@ -204,6 +204,90 @@ defmodule ExoUI.Components do
     """
   end
 
+  attr :id, :string, required: true
+  attr :show, :boolean, default: false
+  attr :on_cancel, Phoenix.LiveView.JS, default: %Phoenix.LiveView.JS{}
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :title
+  slot :inner_block, required: true
+  slot :actions
+
+  def modal(assigns) do
+    ~H"""
+    <div
+      id={@id}
+      data-exo="modal"
+      data-state={if @show, do: "open", else: "closed"}
+      phx-mounted={@show && show_modal(@id)}
+      phx-remove={hide_modal(@id)}
+      class={@class}
+      {@rest}
+    >
+      <div data-exo="modal-backdrop" phx-click={@on_cancel |> hide_modal(@id)} />
+      <div
+        data-exo="modal-content"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={"#{@id}-title"}
+        tabindex="-1"
+      >
+        <div :if={@title != []} data-exo="modal-header">
+          <h2 id={"#{@id}-title"} data-exo="modal-title">
+            {render_slot(@title)}
+          </h2>
+          <button data-exo="modal-close" phx-click={@on_cancel |> hide_modal(@id)} aria-label="close">
+            ✕
+          </button>
+        </div>
+        <div data-exo="modal-body">
+          {render_slot(@inner_block)}
+        </div>
+        <div :if={@actions != []} data-exo="modal-actions">
+          {render_slot(@actions)}
+        </div>
+      </div>
+    </div>
+    """
+  end
+
+  attr :id, :string, default: "confirm-modal"
+  attr :show, :boolean, default: false
+  attr :title, :string, default: "Confirm"
+  attr :message, :string, required: true
+  attr :confirm_text, :string, default: "Confirm"
+  attr :cancel_text, :string, default: "Cancel"
+  attr :variant, :string, default: "danger"
+  attr :on_confirm, Phoenix.LiveView.JS, default: %Phoenix.LiveView.JS{}
+  attr :on_cancel, Phoenix.LiveView.JS, default: %Phoenix.LiveView.JS{}
+
+  def confirm_modal(assigns) do
+    ~H"""
+    <.modal id={@id} show={@show} on_cancel={@on_cancel}>
+      <:title>{@title}</:title>
+      <p>{@message}</p>
+      <:actions>
+        <.button variant="ghost" phx-click={@on_cancel |> hide_modal(@id)}>{@cancel_text}</.button>
+        <.button variant={@variant} phx-click={@on_confirm}>{@confirm_text}</.button>
+      </:actions>
+    </.modal>
+    """
+  end
+
+  defp show_modal(id) do
+    %Phoenix.LiveView.JS{}
+    |> Phoenix.LiveView.JS.show(to: "##{id}")
+    |> Phoenix.LiveView.JS.add_class("overflow-hidden", to: "body")
+    |> Phoenix.LiveView.JS.focus_first(to: "##{id} [data-exo=\"modal-content\"]")
+  end
+
+  defp hide_modal(js \\ %Phoenix.LiveView.JS{}, id) do
+    js
+    |> Phoenix.LiveView.JS.hide(to: "##{id}")
+    |> Phoenix.LiveView.JS.remove_class("overflow-hidden", to: "body")
+    |> Phoenix.LiveView.JS.pop_focus()
+  end
+
   @doc """
   Translates an error message using gettext.
   """
