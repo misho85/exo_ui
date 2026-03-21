@@ -1,0 +1,40 @@
+:where([data-exo="toggle"]) {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+:where([data-exo="toggle"] input) {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+:where([data-exo="toggle-track"]) {
+  position: relative;
+  width: 2.5rem;
+  height: 1.5rem;
+  background: var(--exo-muted);
+  border-radius: 9999px;
+  transition: background var(--exo-duration) var(--exo-easing);
+}
+
+:where([data-exo="toggle"][data-checked] [data-exo="toggle-track"]) {
+  background: var(--exo-primary);
+}
+
+:where([data-exo="toggle-thumb"]) {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: calc(1.5rem - 4px);
+  height: calc(1.5rem - 4px);
+  background: white;
+  border-radius: 9999px;
+  transition: transform var(--exo-duration) var(--exo-easing);
+}
+
+:where([data-exo="toggle"][data-checked] [data-exo="toggle-thumb"]) {
+  transform: translateX(1rem);
+}

@@ -1,0 +1,49 @@
+:where([data-exo="field"]) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--exo-space-1);
+}
+
+:where([data-exo="label"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  font-weight: 500;
+  color: var(--exo-foreground);
+}
+
+:where([data-exo="input"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  padding: var(--exo-space-2) var(--exo-space-3);
+  border: 1px solid var(--exo-input);
+  border-radius: var(--exo-radius);
+  background: var(--exo-background);
+  color: var(--exo-foreground);
+  outline: none;
+  transition: border-color var(--exo-duration) var(--exo-easing),
+              box-shadow var(--exo-duration) var(--exo-easing);
+}
+
+:where([data-exo="input"]):focus {
+  border-color: var(--exo-ring);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--exo-ring) 25%, transparent);
+}
+
+:where([data-exo="input"][data-invalid]) {
+  border-color: var(--exo-danger);
+}
+
+:where([data-exo="input"][data-invalid]):focus {
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--exo-danger) 25%, transparent);
+}
+
+:where(textarea[data-exo="input"]) {
+  min-height: 5rem;
+  resize: vertical;
+}
+
+:where([data-exo="field-error"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-xs);
+  color: var(--exo-danger);
+}
