@@ -404,6 +404,54 @@ defmodule ExoUI.Components do
     """
   end
 
+  attr :id, :string, default: nil
+  attr :position, :string, values: ~w(bottom-start bottom-end), default: "bottom-end"
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :trigger, required: true
+  slot :item, required: true
+
+  def dropdown(assigns) do
+    assigns = assign_new(assigns, :id, fn -> "dropdown-#{System.unique_integer([:positive])}" end)
+
+    ~H"""
+    <div data-exo="dropdown" id={@id} class={@class} {@rest}>
+      <div
+        data-exo="dropdown-trigger"
+        phx-click={Phoenix.LiveView.JS.toggle(to: "##{@id}-menu")}
+      >
+        {render_slot(@trigger)}
+      </div>
+      <div
+        id={"#{@id}-menu"}
+        data-exo="dropdown-menu"
+        data-position={@position}
+        style="display: none;"
+        phx-click-away={Phoenix.LiveView.JS.hide(to: "##{@id}-menu")}
+      >
+        <div :for={item <- @item} data-exo="dropdown-item">
+          {render_slot(item)}
+        </div>
+      </div>
+    </div>
+    """
+  end
+
+  attr :text, :string, required: true
+  attr :position, :string, values: ~w(top bottom left right), default: "top"
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def tooltip(assigns) do
+    ~H"""
+    <span data-exo="tooltip" data-position={@position} class={@class} {@rest}>
+      {render_slot(@inner_block)}
+      <span data-exo="tooltip-text">{@text}</span>
+    </span>
+    """
+  end
+
   @doc """
   Translates an error message using gettext.
   """

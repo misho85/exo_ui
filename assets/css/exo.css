@@ -9,3 +9,5 @@
 @import "./src/components/modal.css";
 @import "./src/components/tabs.css";
 @import "./src/components/pagination.css";
+@import "./src/components/dropdown.css";
+@import "./src/components/tooltip.css";
