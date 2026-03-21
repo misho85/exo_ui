@@ -1,0 +1,126 @@
+:where([data-exo="date-picker"]) {
+  user-select: none;
+}
+
+:where([data-exo="date-picker-label"]) {
+  display: block;
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  font-weight: 500;
+  color: var(--exo-foreground);
+  margin-bottom: var(--exo-space-1);
+}
+
+:where([data-exo="date-picker-container"]) {
+  background: var(--exo-card);
+  border: 1px solid var(--exo-border);
+  border-radius: var(--exo-radius);
+  box-shadow: var(--exo-shadow-sm);
+  overflow: hidden;
+}
+
+:where([data-exo="date-picker-header"]) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--exo-space-3) var(--exo-space-4);
+  border-bottom: 1px solid var(--exo-border);
+}
+
+:where([data-exo="date-picker-nav"]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  background: transparent;
+  border-radius: 9999px;
+  cursor: pointer;
+  font-size: var(--exo-text-lg);
+  color: var(--exo-foreground);
+  transition: background var(--exo-duration) var(--exo-easing);
+}
+
+:where([data-exo="date-picker-nav"]):hover {
+  background: var(--exo-muted);
+}
+
+:where([data-exo="date-picker-nav"][data-disabled]) {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+:where([data-exo="date-picker-month"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  font-weight: 600;
+  color: var(--exo-foreground);
+}
+
+:where([data-exo="date-picker-weekdays"]) {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: var(--exo-space-2) var(--exo-space-3) var(--exo-space-1);
+}
+
+:where([data-exo="date-picker-weekday"]) {
+  text-align: center;
+  font-family: var(--exo-font);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--exo-muted-foreground);
+}
+
+:where([data-exo="date-picker-grid"]) {
+  padding: 0 var(--exo-space-3) var(--exo-space-3);
+}
+
+:where([data-exo="date-picker-week"]) {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+:where([data-exo="date-picker-day"]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.25rem;
+  width: 100%;
+  border: none;
+  background: transparent;
+  border-radius: var(--exo-radius);
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  color: var(--exo-foreground);
+  cursor: pointer;
+  transition: background var(--exo-duration) var(--exo-easing);
+}
+
+:where([data-exo="date-picker-day"]):hover:not([data-disabled]) {
+  background: var(--exo-muted);
+}
+
+:where([data-exo="date-picker-day"][data-selected]) {
+  background: var(--exo-primary);
+  color: var(--exo-primary-foreground);
+  font-weight: 600;
+}
+
+:where([data-exo="date-picker-day"][data-today]:not([data-selected])) {
+  background: color-mix(in oklch, var(--exo-primary) 10%, transparent);
+  color: var(--exo-primary);
+  font-weight: 600;
+}
+
+:where([data-exo="date-picker-day"][data-outside]) {
+  color: var(--exo-muted-foreground);
+  opacity: 0.3;
+}
+
+:where([data-exo="date-picker-day"][data-disabled]) {
+  cursor: default;
+  opacity: 0.2;
+}

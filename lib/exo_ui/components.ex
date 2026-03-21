@@ -850,6 +850,125 @@ defmodule ExoUI.Components do
     """
   end
 
+  attr :id, :string, required: true
+  attr :selected, :any, default: nil
+  attr :current_month, :any, default: nil
+  attr :min, :any, default: nil
+  attr :max, :any, default: nil
+  attr :available_dates, :list, default: []
+  attr :on_select, :string, default: "select-date"
+  attr :on_prev_month, :string, default: "prev-month"
+  attr :on_next_month, :string, default: "next-month"
+  attr :label, :string, default: nil
+  attr :class, :any, default: nil
+  attr :disabled, :boolean, default: false
+
+  def date_picker(assigns) do
+    today = Date.utc_today()
+    current = assigns[:current_month] || today
+    first_of_month = Date.beginning_of_month(current)
+    last_of_month = Date.end_of_month(current)
+
+    start_dow = Date.day_of_week(first_of_month)
+    pad_before = start_dow - 1
+    grid_start = Date.add(first_of_month, -pad_before)
+
+    days = Enum.map(0..41, fn i -> Date.add(grid_start, i) end)
+    weeks = Enum.chunk_every(days, 7)
+    available_set = MapSet.new(assigns[:available_dates] || [])
+
+    can_prev =
+      case assigns[:min] do
+        nil -> true
+        min_date -> Date.compare(first_of_month, Date.beginning_of_month(min_date)) == :gt
+      end
+
+    can_next =
+      case assigns[:max] do
+        nil -> true
+        max_date -> Date.compare(last_of_month, max_date) == :lt
+      end
+
+    assigns =
+      assign(assigns,
+        today: today,
+        current: current,
+        weeks: weeks,
+        available_set: available_set,
+        can_prev: can_prev,
+        can_next: can_next
+      )
+
+    ~H"""
+    <div id={@id} data-exo="date-picker" class={@class}>
+      <span :if={@label} data-exo="date-picker-label">{@label}</span>
+      <div data-exo="date-picker-container">
+        <%!-- Header: Month navigation --%>
+        <div data-exo="date-picker-header">
+          <button
+            type="button"
+            data-exo="date-picker-nav"
+            phx-click={@on_prev_month}
+            disabled={!@can_prev || @disabled}
+            data-disabled={(!@can_prev || @disabled) && ""}
+          >
+            ‹
+          </button>
+          <span data-exo="date-picker-month">
+            {Calendar.strftime(@current, "%B %Y")}
+          </span>
+          <button
+            type="button"
+            data-exo="date-picker-nav"
+            phx-click={@on_next_month}
+            disabled={!@can_next || @disabled}
+            data-disabled={(!@can_next || @disabled) && ""}
+          >
+            ›
+          </button>
+        </div>
+
+        <%!-- Weekday headers --%>
+        <div data-exo="date-picker-weekdays">
+          <div :for={day_name <- ~w(Mon Tue Wed Thu Fri Sat Sun)} data-exo="date-picker-weekday">
+            {day_name}
+          </div>
+        </div>
+
+        <%!-- Calendar grid --%>
+        <div data-exo="date-picker-grid">
+          <div :for={week <- @weeks} data-exo="date-picker-week">
+            <%= for day <- week do %>
+              <% in_month = day.month == @current.month and day.year == @current.year
+              is_today = day == @today
+              is_selected = @selected != nil and day == @selected
+              has_availability = MapSet.member?(@available_set, day)
+              is_disabled =
+                @disabled or not in_month or
+                  (not is_nil(@min) and Date.compare(day, @min) == :lt) or
+                  (not is_nil(@max) and Date.compare(day, @max) == :gt) %>
+              <button
+                type="button"
+                data-exo="date-picker-day"
+                data-selected={is_selected && ""}
+                data-today={is_today && in_month && ""}
+                data-outside={!in_month && ""}
+                data-disabled={is_disabled && ""}
+                data-available={has_availability && in_month && ""}
+                phx-click={unless(is_disabled, do: @on_select)}
+                phx-value-date={Date.to_iso8601(day)}
+                disabled={is_disabled}
+              >
+                {day.day}
+              </button>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+    """
+  end
+
   @doc """
   Translates an error message using gettext.
   """
