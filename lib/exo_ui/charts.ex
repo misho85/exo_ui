@@ -225,7 +225,7 @@ defmodule ExoUI.Charts do
           <rect x={bar.x} y={bar.y} width={bar.width} height={max(bar.height, 0)} fill={@color} fill-opacity="0.75" rx="3">
             <title>{bar.label}: {format_tooltip(bar.value)}</title>
           </rect>
-          <text :if={bar.value > 0 and @bar_count <= 15} x={bar.x + bar.width / 2} y={bar.y - 4} text-anchor="middle" fill="currentColor" fill-opacity="0.5" font-size="9">{format_axis(bar.value)}</text>
+          <text :if={to_number(bar.value) > 0 and @bar_count <= 15} x={bar.x + bar.width / 2} y={bar.y - 4} text-anchor="middle" fill="currentColor" fill-opacity="0.5" font-size="9">{format_axis(bar.value)}</text>
           <text :if={rem(idx, @label_step) == 0 or idx == @bar_count - 1} x={bar.x + @bw / 2} y={@pt + @chart_height + 16} text-anchor="middle" fill="currentColor" fill-opacity="0.45" font-size="10">{bar.label}</text>
         <% end %>
       </svg>
@@ -294,6 +294,8 @@ defmodule ExoUI.Charts do
   attr :empty_text, :string, default: "No data"
 
   def area_chart(assigns) do
+    assigns = assign_new(assigns, :id, fn -> "area-chart-#{System.unique_integer([:positive])}" end)
+
     if Enum.empty?(assigns.data) do
       ~H|<div data-exo="chart-empty">{@empty_text}</div>|
     else
