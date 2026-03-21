@@ -1,0 +1,31 @@
+:where([data-exo="theme-toggle"]) {
+  display: inline-flex;
+  border: 1px solid var(--exo-border);
+  border-radius: var(--exo-radius);
+  overflow: hidden;
+}
+
+:where([data-exo="theme-btn"]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--exo-muted-foreground);
+  font-size: var(--exo-text-sm);
+  transition: background var(--exo-duration) var(--exo-easing),
+              color var(--exo-duration) var(--exo-easing);
+}
+
+:where([data-exo="theme-btn"]):hover {
+  background: var(--exo-muted);
+  color: var(--exo-foreground);
+}
+
+:where([data-exo="theme-btn"][data-active]) {
+  background: var(--exo-primary);
+  color: var(--exo-primary-foreground);
+}

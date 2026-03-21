@@ -771,6 +771,24 @@ defmodule ExoUI.Components do
     """
   end
 
+  attr :name, :string, required: true
+  attr :class, :any, default: "size-4"
+
+  def icon(assigns) do
+    icon_fn = assigns.name |> String.replace("-", "_") |> String.to_atom()
+    apply(ExoUI.Lucide, icon_fn, [Map.delete(assigns, :name)])
+  end
+
+  def theme_toggle(assigns) do
+    ~H"""
+    <div data-exo="theme-toggle" phx-hook="ExoThemeToggle" id="theme-toggle">
+      <button data-exo="theme-btn" data-theme-value="light" aria-label="Light theme">☀</button>
+      <button data-exo="theme-btn" data-theme-value="dark" aria-label="Dark theme">☾</button>
+      <button data-exo="theme-btn" data-theme-value="system" aria-label="System theme">⚙</button>
+    </div>
+    """
+  end
+
   @doc """
   Translates an error message using gettext.
   """
