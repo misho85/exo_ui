@@ -1,2 +1,4 @@
 @import "./src/tokens.css";
 @import "./src/themes/dark.css";
+@import "./src/components/button.css";
+@import "./src/components/separator.css";

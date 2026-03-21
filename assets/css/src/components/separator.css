@@ -1,0 +1,14 @@
+:where([data-exo="separator"]) {
+  background: var(--exo-border);
+  flex-shrink: 0;
+}
+
+:where([data-exo="separator"][data-orientation="horizontal"]) {
+  height: 1px;
+  width: 100%;
+}
+
+:where([data-exo="separator"][data-orientation="vertical"]) {
+  width: 1px;
+  height: 100%;
+}
