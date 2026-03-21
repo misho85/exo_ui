@@ -789,6 +789,67 @@ defmodule ExoUI.Components do
     """
   end
 
+  attr :id, :string, required: true
+  attr :rows, :list, required: true
+  attr :row_id, :any, default: nil
+  attr :row_click, :any, default: nil
+  attr :row_item, :any, default: &Function.identity/1
+  attr :actions_label, :string, default: "Actions"
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  slot :col, required: true do
+    attr :label, :string
+  end
+
+  slot :action
+
+  def table(assigns) do
+    assigns =
+      with %{rows: %Phoenix.LiveView.LiveStream{}} <- assigns do
+        assign(assigns, row_id: assigns.row_id || fn {id, _item} -> id end)
+      end
+
+    ~H"""
+    <div data-exo="table-wrapper" class={@class} {@rest}>
+      <table data-exo="table">
+        <thead>
+          <tr data-exo="table-head-row">
+            <th :for={col <- @col} data-exo="table-head-cell">{col[:label]}</th>
+            <th :if={@action != []} data-exo="table-head-cell">
+              <span class="sr-only">{@actions_label}</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody
+          id={@id}
+          phx-update={is_struct(@rows, Phoenix.LiveView.LiveStream) && "stream"}
+        >
+          <tr
+            :for={row <- @rows}
+            id={@row_id && @row_id.(row)}
+            data-exo="table-row"
+            data-clickable={@row_click && ""}
+          >
+            <td
+              :for={col <- @col}
+              data-exo="table-cell"
+              phx-click={@row_click && @row_click.(row)}
+            >
+              {render_slot(col, @row_item.(row))}
+            </td>
+            <td :if={@action != []} data-exo="table-action-cell">
+              <div data-exo="table-actions">
+                {render_slot(@action, @row_item.(row))}
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    """
+  end
+
   @doc """
   Translates an error message using gettext.
   """
