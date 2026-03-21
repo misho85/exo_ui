@@ -1,0 +1,123 @@
+/* Flash */
+:where([data-exo="flash-group"]) {
+  position: fixed;
+  top: var(--exo-space-4);
+  right: var(--exo-space-4);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: var(--exo-space-2);
+  max-width: 24rem;
+  width: 100%;
+}
+
+:where([data-exo="flash"]) {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--exo-space-3);
+  padding: var(--exo-space-3) var(--exo-space-4);
+  border-radius: var(--exo-radius);
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  box-shadow: var(--exo-shadow-lg);
+  cursor: pointer;
+}
+
+:where([data-exo="flash"][data-kind="info"]) {
+  background: var(--exo-card);
+  color: var(--exo-card-foreground);
+  border: 1px solid var(--exo-border);
+}
+
+:where([data-exo="flash"][data-kind="error"]) {
+  background: var(--exo-danger);
+  color: var(--exo-danger-foreground);
+}
+
+:where([data-exo="flash-title"]) {
+  font-weight: 600;
+  margin: 0;
+}
+
+:where([data-exo="flash-message"]) {
+  margin: 0;
+  opacity: 0.9;
+}
+
+:where([data-exo="flash-close"]) {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.6;
+  font-size: var(--exo-text-base);
+  padding: 0;
+  flex-shrink: 0;
+}
+:where([data-exo="flash-close"]):hover {
+  opacity: 1;
+}
+
+/* Toast container */
+:where([data-exo="toast-container"]) {
+  position: fixed;
+  bottom: var(--exo-space-4);
+  right: var(--exo-space-4);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: var(--exo-space-2);
+  max-width: 24rem;
+  width: 100%;
+}
+
+:where([data-exo="toast"]) {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--exo-space-3);
+  padding: var(--exo-space-3) var(--exo-space-4);
+  border-radius: var(--exo-radius);
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  box-shadow: var(--exo-shadow-lg);
+  background: var(--exo-card);
+  color: var(--exo-card-foreground);
+  border: 1px solid var(--exo-border);
+}
+
+:where([data-exo="toast"][data-kind="success"]) {
+  border-left: 3px solid var(--exo-success);
+}
+
+:where([data-exo="toast"][data-kind="error"]) {
+  border-left: 3px solid var(--exo-danger);
+}
+
+:where([data-exo="toast"][data-kind="info"]) {
+  border-left: 3px solid var(--exo-info);
+}
+
+:where([data-exo="toast-title"]) {
+  font-weight: 600;
+  margin: 0;
+}
+
+:where([data-exo="toast-message"]) {
+  margin: 0;
+  opacity: 0.9;
+}
+
+:where([data-exo="toast-close"]) {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--exo-muted-foreground);
+  font-size: var(--exo-text-base);
+  padding: 0;
+  flex-shrink: 0;
+}
+:where([data-exo="toast-close"]):hover {
+  color: var(--exo-foreground);
+}
