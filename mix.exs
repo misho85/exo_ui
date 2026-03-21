@@ -2,7 +2,7 @@ defmodule ExoUI.MixProject do
   use Mix.Project
 
   @version "0.1.0"
-  @source_url "https://github.com/USERNAME/exo_ui"
+  @source_url "https://github.com/misho85/exo_ui"
 
   def project do
     [

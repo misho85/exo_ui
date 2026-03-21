@@ -7,7 +7,7 @@ Headless Phoenix LiveView component library with a default CSS theme.
 Add to your `mix.exs`:
 
 ```elixir
-{:exo_ui, git: "git@github.com:USERNAME/exo_ui.git", tag: "v0.1.0"}
+{:exo_ui, git: "git@github.com:misho85/exo_ui.git", tag: "v0.1.0"}
 ```
 
 Import CSS in your `assets/css/app.css`:
