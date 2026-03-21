@@ -229,7 +229,7 @@ defmodule ExoUI.Components do
         data-exo="modal-content"
         role="dialog"
         aria-modal="true"
-        aria-labelledby={"#{@id}-title"}
+        aria-labelledby={@title != [] && "#{@id}-title"}
         tabindex="-1"
       >
         <div :if={@title != []} data-exo="modal-header">
@@ -268,7 +268,7 @@ defmodule ExoUI.Components do
       <p>{@message}</p>
       <:actions>
         <.button variant="ghost" phx-click={@on_cancel |> hide_modal(@id)}>{@cancel_text}</.button>
-        <.button variant={@variant} phx-click={@on_confirm}>{@confirm_text}</.button>
+        <.button variant={@variant} phx-click={@on_confirm |> hide_modal(@id)}>{@confirm_text}</.button>
       </:actions>
     </.modal>
     """
@@ -277,15 +277,131 @@ defmodule ExoUI.Components do
   defp show_modal(id) do
     %Phoenix.LiveView.JS{}
     |> Phoenix.LiveView.JS.show(to: "##{id}")
-    |> Phoenix.LiveView.JS.add_class("overflow-hidden", to: "body")
     |> Phoenix.LiveView.JS.focus_first(to: "##{id} [data-exo=\"modal-content\"]")
   end
 
   defp hide_modal(js \\ %Phoenix.LiveView.JS{}, id) do
     js
     |> Phoenix.LiveView.JS.hide(to: "##{id}")
-    |> Phoenix.LiveView.JS.remove_class("overflow-hidden", to: "body")
     |> Phoenix.LiveView.JS.pop_focus()
+  end
+
+  attr :active, :string, required: true, doc: "the id of the currently active tab"
+  attr :class, :string, default: nil
+
+  slot :tab, required: true do
+    attr :id, :string, required: true
+    attr :label, :string, required: true
+    attr :patch, :string
+    attr :navigate, :string
+    attr :click, :string
+    attr :click_value, :string
+    attr :icon, :string
+  end
+
+  def tabs(assigns) do
+    ~H"""
+    <div data-exo="tabs" role="tablist" class={@class}>
+      <%= for tab <- @tab do %>
+        <%= if tab[:click] do %>
+          <button
+            data-exo="tab"
+            data-active={tab.id == @active && ""}
+            phx-click={tab[:click]}
+            phx-value-tab={tab[:click_value] || tab.id}
+            role="tab"
+            aria-selected={to_string(tab.id == @active)}
+          >
+            {tab.label}
+          </button>
+        <% else %>
+          <.link
+            data-exo="tab"
+            data-active={tab.id == @active && ""}
+            patch={tab[:patch]}
+            navigate={tab[:navigate]}
+            role="tab"
+            aria-selected={to_string(tab.id == @active)}
+          >
+            {tab.label}
+          </.link>
+        <% end %>
+      <% end %>
+    </div>
+    """
+  end
+
+  attr :page, :integer, required: true
+  attr :total_pages, :integer, required: true
+  attr :patch_fn, :any, required: true, doc: "function taking page number, returns path"
+  attr :prev_label, :string, default: "Previous page"
+  attr :next_label, :string, default: "Next page"
+  attr :aria_label, :string, default: "Pagination"
+  attr :class, :string, default: nil
+
+  def pagination(assigns) do
+    range =
+      cond do
+        assigns.total_pages <= 7 ->
+          Enum.to_list(1..assigns.total_pages)
+
+        assigns.page <= 3 ->
+          Enum.to_list(1..5) ++ [:ellipsis, assigns.total_pages]
+
+        assigns.page >= assigns.total_pages - 2 ->
+          [1, :ellipsis | Enum.to_list((assigns.total_pages - 4)..assigns.total_pages)]
+
+        true ->
+          [1, :ellipsis] ++
+            Enum.to_list((assigns.page - 1)..(assigns.page + 1)) ++
+            [:ellipsis, assigns.total_pages]
+      end
+
+    assigns = assign(assigns, :range, range)
+
+    ~H"""
+    <nav :if={@total_pages > 1} data-exo="pagination" aria-label={@aria_label} class={@class}>
+      <.link
+        :if={@page > 1}
+        data-exo="pagination-btn"
+        patch={@patch_fn.(@page - 1)}
+        aria-label={@prev_label}
+      >
+        ‹
+      </.link>
+      <span :if={@page <= 1} data-exo="pagination-btn" data-disabled aria-disabled="true">
+        ‹
+      </span>
+
+      <%= for item <- @range do %>
+        <%= case item do %>
+          <% :ellipsis -> %>
+            <span data-exo="pagination-ellipsis">…</span>
+          <% num -> %>
+            <.link
+              data-exo="pagination-btn"
+              data-active={num == @page && ""}
+              patch={@patch_fn.(num)}
+              aria-current={num == @page && "page"}
+            >
+              {num}
+            </.link>
+        <% end %>
+      <% end %>
+
+      <.link
+        :if={@page < @total_pages}
+        data-exo="pagination-btn"
+        patch={@patch_fn.(@page + 1)}
+        aria-label={@next_label}
+      >
+        ›
+      </.link>
+      <span :if={@page >= @total_pages} data-exo="pagination-btn" data-disabled aria-disabled="true">
+        ›
+      </span>
+    </nav>
+    """
   end
 
   @doc """
