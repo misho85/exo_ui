@@ -1,0 +1,140 @@
+:where([data-exo="card"]) {
+  background: var(--exo-card);
+  color: var(--exo-card-foreground);
+  border: 1px solid var(--exo-border);
+  border-radius: var(--exo-radius);
+  box-shadow: var(--exo-shadow-sm);
+}
+
+:where([data-exo="card-header"]) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--exo-space-4) var(--exo-space-6);
+  border-bottom: 1px solid var(--exo-border);
+}
+
+:where([data-exo="card-title"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-base);
+  font-weight: 600;
+  margin: 0;
+}
+
+:where([data-exo="card-body"]) {
+  padding: var(--exo-space-6);
+}
+
+/* Stat card */
+:where([data-exo="stat-card"]) {
+  background: var(--exo-card);
+  color: var(--exo-card-foreground);
+  border: 1px solid var(--exo-border);
+  border-radius: var(--exo-radius);
+  box-shadow: var(--exo-shadow-sm);
+  padding: var(--exo-space-4);
+}
+
+:where([data-exo="stat-card-top"]) {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+:where([data-exo="stat-card-info"]) {
+  display: flex;
+  flex-direction: column;
+}
+
+:where([data-exo="stat-card-label"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--exo-muted-foreground);
+}
+
+:where([data-exo="stat-card-value"]) {
+  font-family: var(--exo-font);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: var(--exo-space-1);
+}
+
+:where([data-exo="stat-card-icon"]) {
+  padding: var(--exo-space-2);
+  border-radius: var(--exo-radius);
+  background: color-mix(in oklch, var(--exo-primary) 10%, transparent);
+  color: var(--exo-primary);
+}
+
+:where([data-exo="stat-card-bottom"]) {
+  display: flex;
+  align-items: center;
+  gap: var(--exo-space-2);
+  margin-top: var(--exo-space-3);
+  padding-top: var(--exo-space-3);
+  border-top: 1px solid var(--exo-border);
+}
+
+:where([data-exo="stat-card-trend"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-xs);
+  font-weight: 500;
+}
+
+:where([data-exo="stat-card-trend"][data-direction="up"]) {
+  color: var(--exo-success);
+}
+
+:where([data-exo="stat-card-trend"][data-direction="down"]) {
+  color: var(--exo-danger);
+}
+
+:where([data-exo="stat-card-subtitle"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-xs);
+  color: var(--exo-muted-foreground);
+}
+
+/* Metric card */
+:where([data-exo="metric-card"]) {
+  background: var(--exo-card);
+  color: var(--exo-card-foreground);
+  border: 1px solid var(--exo-border);
+  border-radius: var(--exo-radius);
+  box-shadow: var(--exo-shadow-sm);
+  padding: var(--exo-space-4);
+}
+
+:where([data-exo="metric-card-top"]) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+:where([data-exo="metric-card-label"]) {
+  display: block;
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--exo-muted-foreground);
+}
+
+:where([data-exo="metric-card-value"]) {
+  display: block;
+  font-family: var(--exo-font);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: var(--exo-space-1);
+}
+
+:where([data-exo="metric-card-subtitle"]) {
+  display: block;
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-xs);
+  color: var(--exo-muted-foreground);
+  margin-top: var(--exo-space-1);
+}

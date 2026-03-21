@@ -1,0 +1,27 @@
+:where([data-exo="list"]) {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+:where([data-exo="list-item"]) {
+  padding: var(--exo-space-3) var(--exo-space-4);
+  border-bottom: 1px solid var(--exo-border);
+}
+
+:where([data-exo="list-item"]:last-child) {
+  border-bottom: none;
+}
+
+:where([data-exo="list-title"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  font-weight: 600;
+  color: var(--exo-foreground);
+}
+
+:where([data-exo="list-content"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  color: var(--exo-muted-foreground);
+}

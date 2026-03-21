@@ -1,0 +1,29 @@
+:where([data-exo="header"]) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--exo-space-6);
+  padding-bottom: var(--exo-space-6);
+}
+
+:where([data-exo="header-title"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-xl);
+  font-weight: 700;
+  color: var(--exo-foreground);
+  margin: 0;
+}
+
+:where([data-exo="header-subtitle"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  color: var(--exo-muted-foreground);
+  margin-top: var(--exo-space-1);
+}
+
+:where([data-exo="header-actions"]) {
+  display: flex;
+  align-items: center;
+  gap: var(--exo-space-2);
+  flex-shrink: 0;
+}

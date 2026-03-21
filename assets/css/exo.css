@@ -13,3 +13,6 @@
 @import "./src/components/tooltip.css";
 @import "./src/components/wizard.css";
 @import "./src/layouts/sidebar.css";
+@import "./src/components/header.css";
+@import "./src/components/list.css";
+@import "./src/components/card.css";

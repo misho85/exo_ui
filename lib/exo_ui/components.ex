@@ -494,6 +494,108 @@ defmodule ExoUI.Components do
     """
   end
 
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :inner_block, required: true
+  slot :subtitle
+  slot :actions
+
+  def header(assigns) do
+    ~H"""
+    <header data-exo="header" class={@class} {@rest}>
+      <div data-exo="header-text">
+        <h1 data-exo="header-title">{render_slot(@inner_block)}</h1>
+        <p :if={@subtitle != []} data-exo="header-subtitle">{render_slot(@subtitle)}</p>
+      </div>
+      <div :if={@actions != []} data-exo="header-actions">{render_slot(@actions)}</div>
+    </header>
+    """
+  end
+
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :item, required: true do
+    attr :title, :string, required: true
+  end
+
+  def list(assigns) do
+    ~H"""
+    <ul data-exo="list" class={@class} {@rest}>
+      <li :for={item <- @item} data-exo="list-item">
+        <div data-exo="list-title">{item.title}</div>
+        <div data-exo="list-content">{render_slot(item)}</div>
+      </li>
+    </ul>
+    """
+  end
+
+  attr :title, :string, default: nil
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :action
+  slot :inner_block, required: true
+
+  def content_card(assigns) do
+    ~H"""
+    <div data-exo="card" class={@class} {@rest}>
+      <div :if={@title || @action != []} data-exo="card-header">
+        <h3 :if={@title} data-exo="card-title">{@title}</h3>
+        <div :if={@action != []} data-exo="card-action">{render_slot(@action)}</div>
+      </div>
+      <div data-exo="card-body">{render_slot(@inner_block)}</div>
+    </div>
+    """
+  end
+
+  attr :title, :string, required: true
+  attr :value, :any, required: true
+  attr :icon, :string, default: nil
+  attr :subtitle, :string, default: nil
+  attr :trend, :string, default: nil
+  attr :trend_direction, :string, default: nil
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def stat_card(assigns) do
+    ~H"""
+    <div data-exo="stat-card" class={@class} {@rest}>
+      <div data-exo="stat-card-top">
+        <div data-exo="stat-card-info">
+          <span data-exo="stat-card-label">{@title}</span>
+          <span data-exo="stat-card-value">{@value}</span>
+        </div>
+        <div :if={@icon} data-exo="stat-card-icon">{@icon}</div>
+      </div>
+      <div :if={@subtitle || @trend} data-exo="stat-card-bottom">
+        <span :if={@trend} data-exo="stat-card-trend" data-direction={@trend_direction}>{@trend}</span>
+        <span :if={@subtitle} data-exo="stat-card-subtitle">{@subtitle}</span>
+      </div>
+    </div>
+    """
+  end
+
+  attr :title, :string, required: true
+  attr :value, :any, required: true
+  attr :subtitle, :string, default: nil
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :trailing
+
+  def metric_card(assigns) do
+    ~H"""
+    <div data-exo="metric-card" class={@class} {@rest}>
+      <div data-exo="metric-card-top">
+        <div>
+          <span data-exo="metric-card-label">{@title}</span>
+          <span data-exo="metric-card-value">{@value}</span>
+        </div>
+        <div :if={@trailing != []}>{render_slot(@trailing)}</div>
+      </div>
+      <span :if={@subtitle} data-exo="metric-card-subtitle">{@subtitle}</span>
+    </div>
+    """
+  end
+
   @doc """
   Translates an error message using gettext.
   """
