@@ -748,15 +748,15 @@ defmodule ExoUI.Components do
     """
   end
 
-  attr :toasts, :list, default: []
+  attr :toasts, :any, default: []
   attr :close_label, :string, default: "close"
 
   def toast_container(assigns) do
     ~H"""
     <div data-exo="toast-container" id="toast-container" phx-update="stream">
       <div
-        :for={toast <- @toasts}
-        id={toast.id}
+        :for={{dom_id, toast} <- @toasts}
+        id={dom_id}
         data-exo="toast"
         data-kind={toast.kind}
         role="alert"
@@ -765,7 +765,7 @@ defmodule ExoUI.Components do
           <p :if={toast[:title]} data-exo="toast-title">{toast.title}</p>
           <p data-exo="toast-message">{toast.message}</p>
         </div>
-        <button data-exo="toast-close" phx-click={Phoenix.LiveView.JS.hide(to: "##{toast.id}")} aria-label={@close_label}>✕</button>
+        <button data-exo="toast-close" phx-click={Phoenix.LiveView.JS.hide(to: "##{dom_id}")} aria-label={@close_label}>✕</button>
       </div>
     </div>
     """
@@ -775,13 +775,16 @@ defmodule ExoUI.Components do
   attr :class, :any, default: "size-4"
 
   def icon(assigns) do
-    icon_fn = assigns.name |> String.replace("-", "_") |> String.to_atom()
+    Code.ensure_loaded!(ExoUI.Lucide)
+    icon_fn = assigns.name |> String.replace("-", "_") |> String.to_existing_atom()
     apply(ExoUI.Lucide, icon_fn, [Map.delete(assigns, :name)])
   end
 
+  attr :id, :string, default: "theme-toggle"
+
   def theme_toggle(assigns) do
     ~H"""
-    <div data-exo="theme-toggle" phx-hook="ExoThemeToggle" id="theme-toggle">
+    <div data-exo="theme-toggle" phx-hook="ExoThemeToggle" id={@id}>
       <button data-exo="theme-btn" data-theme-value="light" aria-label="Light theme">☀</button>
       <button data-exo="theme-btn" data-theme-value="dark" aria-label="Dark theme">☾</button>
       <button data-exo="theme-btn" data-theme-value="system" aria-label="System theme">⚙</button>
@@ -817,7 +820,7 @@ defmodule ExoUI.Components do
           <tr data-exo="table-head-row">
             <th :for={col <- @col} data-exo="table-head-cell">{col[:label]}</th>
             <th :if={@action != []} data-exo="table-head-cell">
-              <span class="sr-only">{@actions_label}</span>
+              <span data-exo="sr-only">{@actions_label}</span>
             </th>
           </tr>
         </thead>

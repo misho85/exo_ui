@@ -56,7 +56,7 @@
   gap: var(--exo-space-2);
 }
 
-.sr-only {
+:where([data-exo="sr-only"]) {
   position: absolute;
   width: 1px;
   height: 1px;

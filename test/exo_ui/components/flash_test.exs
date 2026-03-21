@@ -21,7 +21,7 @@ defmodule ExoUI.Components.FlashTest do
   end
 
   test "renders toast_container" do
-    assigns = %{toasts: [%{id: "t1", kind: :success, title: "Done", message: "Saved"}]}
+    assigns = %{toasts: [{"t1", %{kind: :success, title: "Done", message: "Saved"}}]}
     html = rendered_to_string(~H|<.toast_container toasts={@toasts} />|)
     assert html =~ ~s(data-exo="toast-container")
     assert html =~ ~s(data-exo="toast")
