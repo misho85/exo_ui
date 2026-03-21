@@ -1,0 +1,12 @@
+/_build/
+/deps/
+*.beam
+*.ez
+erl_crash.dump
+/node_modules/
+npm-debug.log
+/storybook/_build/
+/storybook/deps/
+.elixir_ls/
+.vscode/
+.idea/
