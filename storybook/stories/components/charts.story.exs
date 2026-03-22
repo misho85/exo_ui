@@ -34,53 +34,63 @@ defmodule Storybook.Components.Charts do
       |> assign(:colors, colors)
 
     ~H"""
-    <div style="padding: 1rem; display: flex; flex-direction: column; gap: 2rem; max-width: 800px;">
+    <div style="padding: 1rem; display: flex; flex-direction: column; gap: 1.5rem; max-width: 800px;">
 
-      <section>
-        <h3 style="font-size: 0.875rem; font-weight: 600; color: var(--exo-muted-foreground); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">trend_badge</h3>
-        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
-          <ExoUI.Charts.trend_badge current={89} previous={72} />
-          <ExoUI.Charts.trend_badge current={45} previous={60} />
-          <ExoUI.Charts.trend_badge current={100} previous={100} />
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+        <ExoUI.Components.content_card title="Revenue">
+          <div style="display: flex; align-items: baseline; gap: 0.5rem;">
+            <span style="font-size: 1.5rem; font-weight: 700; color: var(--exo-foreground);">$89K</span>
+            <ExoUI.Charts.trend_badge current={89} previous={72} />
+          </div>
+          <div style="margin-top: 0.75rem;">
+            <ExoUI.Charts.sparkline data={@spark} width={200} height={40} />
+          </div>
+        </ExoUI.Components.content_card>
+
+        <ExoUI.Components.content_card title="Users">
+          <div style="display: flex; align-items: baseline; gap: 0.5rem;">
+            <span style="font-size: 1.5rem; font-weight: 700; color: var(--exo-foreground);">2,451</span>
+            <ExoUI.Charts.trend_badge current={45} previous={60} />
+          </div>
+          <div style="margin-top: 0.75rem;">
+            <ExoUI.Charts.sparkline data={[60, 55, 48, 52, 45, 42, 38, 45, 40, 45]} width={200} height={40} color="var(--exo-danger)" />
+          </div>
+        </ExoUI.Components.content_card>
+
+        <ExoUI.Components.content_card title="Orders">
+          <div style="display: flex; align-items: baseline; gap: 0.5rem;">
+            <span style="font-size: 1.5rem; font-weight: 700; color: var(--exo-foreground);">342</span>
+            <ExoUI.Charts.trend_badge current={100} previous={100} />
+          </div>
+          <div style="margin-top: 0.75rem;">
+            <ExoUI.Charts.sparkline data={[30, 32, 31, 33, 34, 32, 33, 34, 33, 34]} width={200} height={40} color="var(--exo-muted-foreground)" />
+          </div>
+        </ExoUI.Components.content_card>
+      </div>
+
+      <ExoUI.Components.content_card title="Storage usage">
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <ExoUI.Charts.progress_bar count={75} max={100} label="Disk" />
+          <ExoUI.Charts.progress_bar count={42} max={100} label="Memory" color="var(--exo-warning)" />
+          <ExoUI.Charts.progress_bar count={12} max={100} label="CPU" color="var(--exo-success)" />
         </div>
-      </section>
+      </ExoUI.Components.content_card>
 
-      <section>
-        <h3 style="font-size: 0.875rem; font-weight: 600; color: var(--exo-muted-foreground); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">sparkline</h3>
-        <div style="display: flex; gap: 2rem; flex-wrap: wrap; align-items: center;">
-          <ExoUI.Charts.sparkline data={@spark} width={120} height={40} />
-          <ExoUI.Charts.sparkline data={@spark} width={200} height={60} />
-        </div>
-      </section>
+      <ExoUI.Components.content_card title="Monthly revenue">
+        <ExoUI.Charts.bar_chart data={@monthly} height={220} />
+      </ExoUI.Components.content_card>
 
-      <section>
-        <h3 style="font-size: 0.875rem; font-weight: 600; color: var(--exo-muted-foreground); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">progress_bar</h3>
-        <div style="display: flex; flex-direction: column; gap: 0.75rem; max-width: 400px;">
-          <ExoUI.Charts.progress_bar count={75} max={100} label="Storage" />
-          <ExoUI.Charts.progress_bar count={42} max={100} label="Memory" />
-          <ExoUI.Charts.progress_bar count={12} max={100} label="CPU" />
-        </div>
-      </section>
+      <ExoUI.Components.content_card title="Revenue trend">
+        <ExoUI.Charts.area_chart data={@monthly} height={220} />
+      </ExoUI.Components.content_card>
 
-      <section>
-        <h3 style="font-size: 0.875rem; font-weight: 600; color: var(--exo-muted-foreground); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">bar_chart</h3>
-        <ExoUI.Charts.bar_chart data={@monthly} width={500} height={200} />
-      </section>
+      <ExoUI.Components.content_card title="Browser market share">
+        <ExoUI.Charts.horizontal_bar_chart data={@horizontal} height={200} />
+      </ExoUI.Components.content_card>
 
-      <section>
-        <h3 style="font-size: 0.875rem; font-weight: 600; color: var(--exo-muted-foreground); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">horizontal_bar_chart</h3>
-        <ExoUI.Charts.horizontal_bar_chart data={@horizontal} width={400} height={200} />
-      </section>
-
-      <section>
-        <h3 style="font-size: 0.875rem; font-weight: 600; color: var(--exo-muted-foreground); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">area_chart</h3>
-        <ExoUI.Charts.area_chart data={@monthly} width={500} height={200} />
-      </section>
-
-      <section>
-        <h3 style="font-size: 0.875rem; font-weight: 600; color: var(--exo-muted-foreground); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">stacked_bar_chart</h3>
-        <ExoUI.Charts.stacked_bar_chart data={@stacked} colors={@colors} legend_keys={["Revenue", "Cost"]} width={500} height={220} />
-      </section>
+      <ExoUI.Components.content_card title="Quarterly breakdown">
+        <ExoUI.Charts.stacked_bar_chart data={@stacked} colors={@colors} legend_keys={["Revenue", "Cost"]} height={240} />
+      </ExoUI.Components.content_card>
 
     </div>
     """

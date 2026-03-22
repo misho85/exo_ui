@@ -1,22 +1,27 @@
 :where([data-exo="trend-badge"]) {
   display: inline-flex;
   align-items: center;
-  gap: 2px;
+  gap: 3px;
   font-family: var(--exo-font);
-  font-size: var(--exo-text-xs);
-  font-weight: 500;
+  font-size: var(--exo-text-sm);
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
 }
 
 :where([data-exo="trend-badge"][data-direction="up"]) {
   color: var(--exo-success);
+  background: color-mix(in oklch, var(--exo-success) 12%, transparent);
 }
 
 :where([data-exo="trend-badge"][data-direction="down"]) {
   color: var(--exo-danger);
+  background: color-mix(in oklch, var(--exo-danger) 12%, transparent);
 }
 
 :where([data-exo="trend-badge"][data-direction="flat"]) {
   color: var(--exo-muted-foreground);
+  background: var(--exo-muted);
 }
 
 :where([data-exo="progress-bar"]) {
@@ -27,11 +32,13 @@
   display: flex;
   justify-content: space-between;
   font-size: var(--exo-text-sm);
-  margin-bottom: var(--exo-space-1);
+  color: var(--exo-foreground);
+  margin-bottom: var(--exo-space-2);
 }
 
 :where([data-exo="progress-bar-count"]) {
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 
 :where([data-exo="progress-bar-track"]) {
@@ -45,7 +52,7 @@
 :where([data-exo="progress-bar-fill"]) {
   height: 100%;
   border-radius: 9999px;
-  transition: width var(--exo-duration) var(--exo-easing);
+  transition: width 300ms var(--exo-easing);
 }
 
 :where([data-exo="chart-empty"]) {
@@ -54,4 +61,18 @@
   padding: var(--exo-space-8) 0;
   font-family: var(--exo-font);
   font-size: var(--exo-text-sm);
+}
+
+/* SVG chart shared styles */
+:where([data-exo="bar-chart"]),
+:where([data-exo="area-chart"]),
+:where([data-exo="horizontal-bar-chart"]),
+:where([data-exo="stacked-bar-chart"]) {
+  font-family: var(--exo-font);
+  color: var(--exo-foreground);
+}
+
+:where([data-exo="sparkline"]) {
+  display: inline-block;
+  vertical-align: middle;
 }

@@ -217,16 +217,16 @@ defmodule ExoUI.Charts do
       ~H"""
       <svg data-exo="bar-chart" viewBox={"0 0 #{@svg_width} #{@height}"} preserveAspectRatio="xMidYMid meet" style="width:100%;">
         <%= for gl <- @grid_lines do %>
-          <line x1={@pl} y1={gl.y} x2={@svg_width - 20} y2={gl.y} stroke="currentColor" stroke-opacity="0.08" stroke-dasharray="4 3" />
-          <text x={@pl - 8} y={gl.y + 4} text-anchor="end" fill="currentColor" fill-opacity="0.4" font-size="10">{gl.label}</text>
+          <line x1={@pl} y1={gl.y} x2={@svg_width - 20} y2={gl.y} stroke="currentColor" stroke-opacity="0.12" stroke-dasharray="4 3" />
+          <text x={@pl - 8} y={gl.y + 4} text-anchor="end" fill="currentColor" fill-opacity="0.55" font-size="11">{gl.label}</text>
         <% end %>
         <line x1={@pl} y1={@pt + @chart_height} x2={@svg_width - 20} y2={@pt + @chart_height} stroke="currentColor" stroke-opacity="0.12" />
         <%= for {bar, idx} <- Enum.with_index(@bars) do %>
-          <rect x={bar.x} y={bar.y} width={bar.width} height={max(bar.height, 0)} fill={@color} fill-opacity="0.75" rx="3">
+          <rect x={bar.x} y={bar.y} width={bar.width} height={max(bar.height, 0)} fill={@color} fill-opacity="0.85" rx="4">
             <title>{bar.label}: {format_tooltip(bar.value)}</title>
           </rect>
-          <text :if={to_number(bar.value) > 0 and @bar_count <= 15} x={bar.x + bar.width / 2} y={bar.y - 4} text-anchor="middle" fill="currentColor" fill-opacity="0.5" font-size="9">{format_axis(bar.value)}</text>
-          <text :if={rem(idx, @label_step) == 0 or idx == @bar_count - 1} x={bar.x + @bw / 2} y={@pt + @chart_height + 16} text-anchor="middle" fill="currentColor" fill-opacity="0.45" font-size="10">{bar.label}</text>
+          <text :if={to_number(bar.value) > 0 and @bar_count <= 15} x={bar.x + bar.width / 2} y={bar.y - 4} text-anchor="middle" fill="currentColor" fill-opacity="0.65" font-size="10">{format_axis(bar.value)}</text>
+          <text :if={rem(idx, @label_step) == 0 or idx == @bar_count - 1} x={bar.x + @bw / 2} y={@pt + @chart_height + 16} text-anchor="middle" fill="currentColor" fill-opacity="0.6" font-size="11">{bar.label}</text>
         <% end %>
       </svg>
       """
@@ -275,10 +275,10 @@ defmodule ExoUI.Charts do
       <svg data-exo="h-bar-chart" viewBox={"0 0 #{@svg_width} #{@total_height}"} preserveAspectRatio="xMidYMid meet" style="width:100%;">
         <%= for row <- @rows do %>
           <text x={@label_width - 8} y={row.y + 20} text-anchor="end" fill="currentColor" font-size="12">{truncate_label(row.label, 20)}</text>
-          <rect x={@label_width} y={row.y + 6} width={max(row.bar_width, 0)} height="18" fill={@color} fill-opacity="0.75" rx="3">
+          <rect x={@label_width} y={row.y + 6} width={max(row.bar_width, 0)} height="18" fill={@color} fill-opacity="0.85" rx="4">
             <title>{row.label}: {format_tooltip(row.value)}</title>
           </rect>
-          <text x={@label_width + row.bar_width + 6} y={row.y + 20} fill="currentColor" fill-opacity="0.7" font-size="11">{format_tooltip(row.value)}</text>
+          <text x={@label_width + row.bar_width + 6} y={row.y + 20} fill="currentColor" fill-opacity="0.8" font-size="11">{format_tooltip(row.value)}</text>
         <% end %>
       </svg>
       """
@@ -361,14 +361,14 @@ defmodule ExoUI.Charts do
           </linearGradient>
         </defs>
         <%= for gl <- @grid_lines do %>
-          <line x1={@pl} y1={gl.y} x2={@svg_width - 20} y2={gl.y} stroke="currentColor" stroke-opacity="0.08" stroke-dasharray="4 3" />
-          <text x={@pl - 8} y={gl.y + 4} text-anchor="end" fill="currentColor" fill-opacity="0.4" font-size="10">{gl.label}</text>
+          <line x1={@pl} y1={gl.y} x2={@svg_width - 20} y2={gl.y} stroke="currentColor" stroke-opacity="0.12" stroke-dasharray="4 3" />
+          <text x={@pl - 8} y={gl.y + 4} text-anchor="end" fill="currentColor" fill-opacity="0.55" font-size="11">{gl.label}</text>
         <% end %>
         <line x1={@pl} y1={@pt + @chart_height} x2={@svg_width - 20} y2={@pt + @chart_height} stroke="currentColor" stroke-opacity="0.12" />
         <polygon points={@area_points} fill={"url(##{@id}-grad)"} />
         <polyline points={@line_points} fill="none" stroke={@color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
         <%= for lbl <- @labels do %>
-          <text :if={lbl.show} x={lbl.x} y={@pt + @chart_height + 16} text-anchor="middle" fill="currentColor" fill-opacity="0.45" font-size="10">{lbl.label}</text>
+          <text :if={lbl.show} x={lbl.x} y={@pt + @chart_height + 16} text-anchor="middle" fill="currentColor" fill-opacity="0.6" font-size="11">{lbl.label}</text>
         <% end %>
       </svg>
       """
@@ -458,15 +458,15 @@ defmodule ExoUI.Charts do
       ~H"""
       <svg data-exo="stacked-bar-chart" viewBox={"0 0 #{@svg_width} #{@height}"} preserveAspectRatio="xMidYMid meet" style="width:100%;">
         <%= for gl <- @grid_lines do %>
-          <line x1={@pl} y1={gl.y} x2={@svg_width - 20} y2={gl.y} stroke="currentColor" stroke-opacity="0.08" stroke-dasharray="4 3" />
-          <text x={@pl - 8} y={gl.y + 4} text-anchor="end" fill="currentColor" fill-opacity="0.4" font-size="10">{gl.label}</text>
+          <line x1={@pl} y1={gl.y} x2={@svg_width - 20} y2={gl.y} stroke="currentColor" stroke-opacity="0.12" stroke-dasharray="4 3" />
+          <text x={@pl - 8} y={gl.y + 4} text-anchor="end" fill="currentColor" fill-opacity="0.55" font-size="11">{gl.label}</text>
         <% end %>
         <line x1={@pl} y1={@pt + @chart_height} x2={@svg_width - 20} y2={@pt + @chart_height} stroke="currentColor" stroke-opacity="0.12" />
         <%= for {bar, idx} <- Enum.with_index(@bars) do %>
           <%= for seg <- bar.segments do %>
-            <rect x={bar.x} y={seg.y} width={@bw} height={max(seg.height, 0)} fill={seg.color} fill-opacity="0.75" rx="3" />
+            <rect x={bar.x} y={seg.y} width={@bw} height={max(seg.height, 0)} fill={seg.color} fill-opacity="0.85" rx="4" />
           <% end %>
-          <text :if={rem(idx, @label_step) == 0 or idx == @bar_count - 1} x={bar.x + @bw / 2} y={@pt + @chart_height + 16} text-anchor="middle" fill="currentColor" fill-opacity="0.45" font-size="10">{bar.label}</text>
+          <text :if={rem(idx, @label_step) == 0 or idx == @bar_count - 1} x={bar.x + @bw / 2} y={@pt + @chart_height + 16} text-anchor="middle" fill="currentColor" fill-opacity="0.6" font-size="11">{bar.label}</text>
         <% end %>
         <%!-- Legend --%>
         <%= for {item, i} <- Enum.with_index(@legend) do %>
