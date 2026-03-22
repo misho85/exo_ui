@@ -124,9 +124,20 @@ defmodule ExoUI.Charts do
 
       assigns = assign(assigns, :points, points)
 
+      id = "spark-#{System.unique_integer([:positive])}"
+      area_points = assigns.points <> " #{pad + w},#{pad + h} #{pad * 1.0},#{pad + h}"
+      assigns = assign(assigns, id: id, area_points: area_points)
+
       ~H"""
       <svg data-exo="sparkline" viewBox={"0 0 #{@width} #{@height}"} width={@width} height={@height} style="display:inline-block;">
-        <polyline points={@points} fill="none" stroke={@color} stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        <defs>
+          <linearGradient id={"#{@id}-g"} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color={@color} stop-opacity="0.25" />
+            <stop offset="100%" stop-color={@color} stop-opacity="0.02" />
+          </linearGradient>
+        </defs>
+        <polygon points={@area_points} fill={"url(##{@id}-g)"} />
+        <polyline points={@points} fill="none" stroke={@color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
       """
     end
@@ -143,11 +154,14 @@ defmodule ExoUI.Charts do
     pct = if assigns.max > 0, do: assigns.count / assigns.max * 100, else: 0
     assigns = assign(assigns, :pct, pct)
 
+    pct_label = if pct == trunc(pct), do: "#{trunc(pct)}%", else: "#{Float.round(pct, 1)}%"
+    assigns = assign(assigns, :pct_label, pct_label)
+
     ~H"""
     <div data-exo="progress-bar">
       <div data-exo="progress-bar-header">
         <span>{@label}</span>
-        <span data-exo="progress-bar-count">{@count}</span>
+        <span data-exo="progress-bar-count">{@pct_label}</span>
       </div>
       <div data-exo="progress-bar-track">
         <div data-exo="progress-bar-fill" style={"width: #{@pct}%; background: #{@color};"} />

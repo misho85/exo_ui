@@ -43,7 +43,7 @@
 
 :where([data-exo="progress-bar-track"]) {
   width: 100%;
-  height: 0.5rem;
+  height: 0.75rem;
   background: var(--exo-muted);
   border-radius: 9999px;
   overflow: hidden;
