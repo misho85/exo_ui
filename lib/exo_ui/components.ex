@@ -1147,7 +1147,7 @@ defmodule ExoUI.Components do
   defp hide_drawer(js \\ %Phoenix.LiveView.JS{}, id) do
     js
     |> Phoenix.LiveView.JS.hide(to: "##{id}")
-    |> Phoenix.LiveView.JS.remove_class("overflow-hidden", from: "body")
+    |> Phoenix.LiveView.JS.remove_class("overflow-hidden", to: "body")
   end
 
   # --- slider ---

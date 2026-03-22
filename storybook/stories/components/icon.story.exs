@@ -5,15 +5,15 @@ defmodule Storybook.Components.Icon do
 
   def render(assigns) do
     icons = ~w(
-      home search settings user users bell mail calendar
+      house search settings user users bell mail calendar
       check x plus minus arrow-left arrow-right chevron-down
-      edit trash-2 copy download upload eye eye-off
-      star heart bookmark flag tag filter sort-asc
-      bar-chart-2 pie-chart trending-up trending-down
-      alert-circle alert-triangle info check-circle
-      lock unlock key shield
+      pencil trash-2 copy download upload eye eye-off
+      star heart bookmark flag tag funnel arrow-up-narrow-wide
+      chart-bar chart-pie trending-up trending-down
+      circle-alert triangle-alert info circle-check
+      lock lock-open key shield
       loader refresh-cw clock
-      grid list layout-dashboard
+      grid-2x2 list layout-dashboard
     )
 
     assigns = assign(assigns, :icons, icons)

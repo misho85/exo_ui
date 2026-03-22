@@ -40,3 +40,9 @@
   --exo-duration: 150ms;
   --exo-easing: cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+.exo-sandbox {
+  background-color: var(--exo-background);
+  color: var(--exo-foreground);
+  font-family: var(--exo-font);
+}
