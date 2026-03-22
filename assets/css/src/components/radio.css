@@ -1,0 +1,57 @@
+:where([data-exo="radio-group"]) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--exo-space-2);
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+:where([data-exo="radio-group"] > legend) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  font-weight: 500;
+  color: var(--exo-foreground);
+  margin-bottom: var(--exo-space-1);
+}
+
+:where([data-exo="radio-item"]) {
+  display: flex;
+  align-items: center;
+  gap: var(--exo-space-2);
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  color: var(--exo-foreground);
+  cursor: pointer;
+}
+
+:where([data-exo="radio"]) {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+:where([data-exo="radio-indicator"]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  border: 2px solid var(--exo-input);
+  background: var(--exo-background);
+  flex-shrink: 0;
+  transition: border-color var(--exo-duration) var(--exo-easing),
+              background var(--exo-duration) var(--exo-easing);
+}
+
+:where([data-exo="radio"]:checked + [data-exo="radio-indicator"]) {
+  border-color: var(--exo-primary);
+  background: var(--exo-primary);
+  box-shadow: inset 0 0 0 3px var(--exo-background);
+}
+
+:where([data-exo="radio"]:focus-visible + [data-exo="radio-indicator"]) {
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--exo-ring) 25%, transparent);
+}

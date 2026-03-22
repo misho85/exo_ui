@@ -1,0 +1,33 @@
+:where([data-exo="progress-field"]) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--exo-space-1);
+}
+
+:where([data-exo="progress-header"]) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+:where([data-exo="progress-value"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-xs);
+  font-weight: 500;
+  color: var(--exo-muted-foreground);
+}
+
+:where([data-exo="progress"]) {
+  width: 100%;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: var(--exo-muted);
+  overflow: hidden;
+}
+
+:where([data-exo="progress-bar"]) {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--exo-primary);
+  transition: width 300ms var(--exo-easing);
+}

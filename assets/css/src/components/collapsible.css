@@ -1,0 +1,13 @@
+:where([data-exo="collapsible"]) {
+  display: flex;
+  flex-direction: column;
+}
+
+:where([data-exo="collapsible-trigger"]) {
+  cursor: pointer;
+  user-select: none;
+}
+
+:where([data-exo="collapsible-content"]) {
+  overflow: hidden;
+}

@@ -155,6 +155,26 @@ defmodule ExoUI.Components do
     """
   end
 
+  def input(%{type: "select"} = assigns) do
+    ~H"""
+    <div data-exo="field">
+      <label :if={@label} data-exo="label">{@label}</label>
+      <select
+        data-exo="select"
+        data-invalid={@errors != [] && ""}
+        name={@name}
+        multiple={@multiple}
+        class={@class}
+        {@rest}
+      >
+        <option :if={@prompt} value="">{@prompt}</option>
+        {Phoenix.HTML.Form.options_for_select(@options, @value)}
+      </select>
+      <.field_errors errors={@errors} />
+    </div>
+    """
+  end
+
   def input(assigns) do
     ~H"""
     <div data-exo="field">
@@ -967,6 +987,218 @@ defmodule ExoUI.Components do
             <% end %>
           </div>
         </div>
+      </div>
+    </div>
+    """
+  end
+
+  # --- radio_group ---
+
+  attr :name, :string, required: true
+  attr :value, :any, default: nil
+  attr :options, :list, required: true, doc: "list of {label, value} tuples"
+  attr :label, :string, default: nil
+  attr :errors, :list, default: []
+  attr :class, :string, default: nil
+  attr :rest, :global, include: ~w(disabled)
+
+  def radio_group(assigns) do
+    ~H"""
+    <fieldset data-exo="radio-group" class={@class} {@rest}>
+      <legend :if={@label} data-exo="label">{@label}</legend>
+      <label :for={{opt_label, opt_value} <- @options} data-exo="radio-item">
+        <input
+          type="radio"
+          data-exo="radio"
+          name={@name}
+          value={opt_value}
+          checked={to_string(@value) == to_string(opt_value)}
+        />
+        <span data-exo="radio-indicator" />
+        <span>{opt_label}</span>
+      </label>
+      <.field_errors errors={@errors} />
+    </fieldset>
+    """
+  end
+
+  # --- accordion ---
+
+  attr :id, :string, required: true
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  slot :item, required: true do
+    attr :title, :string, required: true
+    attr :open, :boolean
+  end
+
+  def accordion(assigns) do
+    ~H"""
+    <div data-exo="accordion" id={@id} class={@class} {@rest}>
+      <details :for={item <- @item} data-exo="accordion-item" open={item[:open]}>
+        <summary data-exo="accordion-trigger">{item.title}</summary>
+        <div data-exo="accordion-content">
+          {render_slot(item)}
+        </div>
+      </details>
+    </div>
+    """
+  end
+
+  # --- breadcrumb ---
+
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  slot :item, required: true do
+    attr :href, :string
+    attr :navigate, :string
+    attr :patch, :string
+  end
+
+  def breadcrumb(assigns) do
+    ~H"""
+    <nav data-exo="breadcrumb" aria-label="Breadcrumb" class={@class} {@rest}>
+      <ol>
+        <li :for={{item, idx} <- Enum.with_index(@item)} data-exo="breadcrumb-item">
+          <span :if={idx > 0} data-exo="breadcrumb-separator">/</span>
+          <.link :if={item[:navigate]} navigate={item.navigate}>{render_slot(item)}</.link>
+          <.link :if={item[:patch]} patch={item.patch}>{render_slot(item)}</.link>
+          <.link :if={item[:href] && !item[:navigate] && !item[:patch]} href={item.href}>{render_slot(item)}</.link>
+          <span :if={!item[:href] && !item[:navigate] && !item[:patch]} aria-current="page">{render_slot(item)}</span>
+        </li>
+      </ol>
+    </nav>
+    """
+  end
+
+  # --- collapsible ---
+
+  attr :id, :string, required: true
+  attr :open, :boolean, default: false
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :trigger, required: true
+  slot :inner_block, required: true
+
+  def collapsible(assigns) do
+    ~H"""
+    <div data-exo="collapsible" id={@id} class={@class} {@rest}>
+      <div data-exo="collapsible-trigger" phx-click={Phoenix.LiveView.JS.toggle(to: "##{@id}-content")}>
+        {render_slot(@trigger)}
+      </div>
+      <div
+        id={"#{@id}-content"}
+        data-exo="collapsible-content"
+        style={unless @open, do: "display: none;"}
+      >
+        {render_slot(@inner_block)}
+      </div>
+    </div>
+    """
+  end
+
+  # --- drawer ---
+
+  attr :id, :string, required: true
+  attr :show, :boolean, default: false
+  attr :side, :string, values: ~w(left right), default: "right"
+  attr :on_cancel, Phoenix.LiveView.JS, default: %Phoenix.LiveView.JS{}
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :title
+  slot :inner_block, required: true
+
+  def drawer(assigns) do
+    ~H"""
+    <div
+      id={@id}
+      data-exo="drawer"
+      data-side={@side}
+      data-state={if @show, do: "open", else: "closed"}
+      phx-mounted={@show && show_drawer(@id)}
+      phx-remove={hide_drawer(@id)}
+      class={@class}
+      {@rest}
+    >
+      <div data-exo="drawer-backdrop" phx-click={@on_cancel |> hide_drawer(@id)} />
+      <div data-exo="drawer-content">
+        <div data-exo="drawer-header">
+          <h2 :if={@title != []} data-exo="drawer-title">{render_slot(@title)}</h2>
+          <button data-exo="drawer-close" phx-click={@on_cancel |> hide_drawer(@id)} aria-label="close">
+            ✕
+          </button>
+        </div>
+        <div data-exo="drawer-body">
+          {render_slot(@inner_block)}
+        </div>
+      </div>
+    </div>
+    """
+  end
+
+  defp show_drawer(id) do
+    %Phoenix.LiveView.JS{}
+    |> Phoenix.LiveView.JS.show(to: "##{id}")
+    |> Phoenix.LiveView.JS.add_class("overflow-hidden", to: "body")
+  end
+
+  defp hide_drawer(js \\ %Phoenix.LiveView.JS{}, id) do
+    js
+    |> Phoenix.LiveView.JS.hide(to: "##{id}")
+    |> Phoenix.LiveView.JS.remove_class("overflow-hidden", from: "body")
+  end
+
+  # --- slider ---
+
+  attr :name, :string, required: true
+  attr :value, :any, default: 50
+  attr :min, :integer, default: 0
+  attr :max, :integer, default: 100
+  attr :step, :integer, default: 1
+  attr :label, :string, default: nil
+  attr :class, :string, default: nil
+  attr :rest, :global, include: ~w(disabled)
+
+  def slider(assigns) do
+    ~H"""
+    <div data-exo="slider-field" class={@class}>
+      <label :if={@label} data-exo="label">{@label}</label>
+      <input
+        type="range"
+        data-exo="slider"
+        name={@name}
+        value={@value}
+        min={@min}
+        max={@max}
+        step={@step}
+        {@rest}
+      />
+    </div>
+    """
+  end
+
+  # --- progress ---
+
+  attr :value, :integer, required: true
+  attr :max, :integer, default: 100
+  attr :label, :string, default: nil
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def progress(assigns) do
+    pct = min(100, round(assigns.value / assigns.max * 100))
+    assigns = assign(assigns, :pct, pct)
+
+    ~H"""
+    <div data-exo="progress-field" class={@class} {@rest}>
+      <div :if={@label} data-exo="progress-header">
+        <span data-exo="label">{@label}</span>
+        <span data-exo="progress-value">{@pct}%</span>
+      </div>
+      <div data-exo="progress" role="progressbar" aria-valuenow={@value} aria-valuemin="0" aria-valuemax={@max}>
+        <div data-exo="progress-bar" style={"width: #{@pct}%"} />
       </div>
     </div>
     """

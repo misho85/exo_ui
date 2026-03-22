@@ -1,0 +1,37 @@
+:where([data-exo="select"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  padding: var(--exo-space-2) var(--exo-space-3);
+  padding-right: var(--exo-space-8);
+  border: 1px solid var(--exo-input);
+  border-radius: var(--exo-radius);
+  background: var(--exo-background);
+  color: var(--exo-foreground);
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  cursor: pointer;
+  transition: border-color var(--exo-duration) var(--exo-easing),
+              box-shadow var(--exo-duration) var(--exo-easing);
+}
+
+:where([data-exo="select"]):focus {
+  border-color: var(--exo-ring);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--exo-ring) 25%, transparent);
+}
+
+:where([data-exo="select"][data-invalid]) {
+  border-color: var(--exo-danger);
+}
+
+:where([data-exo="select"][data-invalid]):focus {
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--exo-danger) 25%, transparent);
+}
+
+:where([data-exo="select"][multiple]) {
+  padding-right: var(--exo-space-3);
+  background-image: none;
+  min-height: 5rem;
+}

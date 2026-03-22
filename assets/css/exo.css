@@ -25,3 +25,11 @@
 @import "./src/components/table.css";
 @import "./src/components/date-picker.css";
 @import "./src/components/charts.css";
+@import "./src/components/select.css";
+@import "./src/components/radio.css";
+@import "./src/components/accordion.css";
+@import "./src/components/breadcrumb.css";
+@import "./src/components/collapsible.css";
+@import "./src/components/drawer.css";
+@import "./src/components/slider.css";
+@import "./src/components/progress.css";

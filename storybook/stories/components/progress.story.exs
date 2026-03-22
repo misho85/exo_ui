@@ -1,0 +1,34 @@
+defmodule Storybook.Components.Progress do
+  use PhoenixStorybook.Story, :component
+
+  def function, do: &ExoUI.Components.progress/1
+
+  def template do
+    """
+    <div style="max-width: 400px; padding: 1rem;" psb-code-hidden>
+      <.psb-variation/>
+    </div>
+    """
+  end
+
+  def variations do
+    [
+      %Variation{
+        id: :default,
+        attributes: %{value: 65, label: "Storage used"}
+      },
+      %Variation{
+        id: :low,
+        attributes: %{value: 12, label: "CPU usage"}
+      },
+      %Variation{
+        id: :full,
+        attributes: %{value: 100, label: "Upload complete"}
+      },
+      %Variation{
+        id: :no_label,
+        attributes: %{value: 42}
+      }
+    ]
+  end
+end

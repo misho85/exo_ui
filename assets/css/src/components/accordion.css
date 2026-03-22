@@ -1,0 +1,46 @@
+:where([data-exo="accordion"]) {
+  display: flex;
+  flex-direction: column;
+}
+
+:where([data-exo="accordion-item"]) {
+  border-bottom: 1px solid var(--exo-border);
+}
+
+:where([data-exo="accordion-trigger"]) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--exo-space-4) 0;
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  font-weight: 500;
+  color: var(--exo-foreground);
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+:where([data-exo="accordion-trigger"])::after {
+  content: "▸";
+  font-size: 0.75rem;
+  transition: transform var(--exo-duration) var(--exo-easing);
+  color: var(--exo-muted-foreground);
+}
+
+:where([data-exo="accordion-item"][open] > [data-exo="accordion-trigger"])::after {
+  transform: rotate(90deg);
+}
+
+:where([data-exo="accordion-trigger"])::-webkit-details-marker {
+  display: none;
+}
+
+:where([data-exo="accordion-content"]) {
+  padding-bottom: var(--exo-space-4);
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  color: var(--exo-muted-foreground);
+  line-height: 1.6;
+}
