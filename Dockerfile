@@ -36,7 +36,7 @@ RUN mix deps.compile
 # Install esbuild and build JS assets
 RUN mix esbuild.install --if-missing
 COPY storybook/assets ./assets
-COPY storybook/priv ./priv
+RUN mkdir -p priv/static/assets
 RUN mix esbuild storybook
 
 # Copy source and compile
