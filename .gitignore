@@ -10,3 +10,4 @@ npm-debug.log
 .elixir_ls/
 .vscode/
 .idea/
+.playwright-mcp/
