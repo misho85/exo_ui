@@ -17,7 +17,7 @@ defmodule Storybook.Components.Collapsible do
 
       <ExoUI.Components.collapsible id="col-2">
         <:trigger>
-          <ExoUI.Components.button variant="ghost" size="sm">Show advanced options</ExoUI.Components.button>
+          <ExoUI.Components.button variant="outline" size="sm">Show advanced options</ExoUI.Components.button>
         </:trigger>
         <div style="padding: 0.75rem 0; font-size: 0.875rem; color: var(--exo-muted-foreground);">
           These are hidden by default. Click the button above to reveal.
