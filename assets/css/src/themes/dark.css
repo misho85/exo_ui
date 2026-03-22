@@ -1,4 +1,5 @@
-[data-theme="dark"] {
+[data-theme="dark"],
+.exo-dark {
   --exo-background: oklch(15% 0 0);
   --exo-foreground: oklch(90% 0 0);
   --exo-muted: oklch(20% 0 0);

@@ -32,6 +32,14 @@ defmodule Storybook.Components.Input do
       %Variation{
         id: :with_error,
         attributes: %{type: "text", name: "email", value: "bad", label: "Email", errors: ["is invalid"]}
+      },
+      %Variation{
+        id: :checkbox,
+        attributes: %{type: "checkbox", name: "agree", label: "I agree to the terms", value: "false"}
+      },
+      %Variation{
+        id: :checkbox_checked,
+        attributes: %{type: "checkbox", name: "agree", label: "Already checked", value: "true"}
       }
     ]
   end
