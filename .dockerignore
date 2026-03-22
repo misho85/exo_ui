@@ -1,0 +1,9 @@
+_build/
+deps/
+node_modules/
+storybook/_build/
+storybook/deps/
+.git/
+.elixir_ls/
+.vscode/
+.idea/
