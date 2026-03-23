@@ -4,11 +4,21 @@
   cursor: pointer;
 }
 
-/* --- Content: reset popover defaults --- */
-
-:where([data-exo="popover-content"]) {
+/*
+ * UA stylesheet override — must NOT use :where() here.
+ * The browser's [popover] rule has specificity (0,1,0) and sets
+ * inset: 0; margin: auto; which centers the popover.
+ * We need at least (0,1,0) to override those defaults.
+ */
+[data-exo="popover-content"] {
   margin: 0;
   inset: auto;
+  position-try-fallbacks: flip-block;
+}
+
+/* --- Themeable styles (zero specificity for overridability) --- */
+
+:where([data-exo="popover-content"]) {
   border: 1px solid var(--exo-border);
   border-radius: var(--exo-radius);
   background: var(--exo-card);
@@ -17,19 +27,18 @@
   padding: var(--exo-space-2);
   font-family: var(--exo-font);
   font-size: var(--exo-text-sm);
-  position-try-fallbacks: flip-block;
 }
 
-/* --- Position-area mapping --- */
+/* --- Position-area mapping (needs real specificity to work in top layer) --- */
 
-:where([data-exo="popover-content"][data-side="bottom"][data-align="start"]) { position-area: block-end span-inline-end; }
-:where([data-exo="popover-content"][data-side="bottom"][data-align="center"]) { position-area: block-end; }
-:where([data-exo="popover-content"][data-side="bottom"][data-align="end"]) { position-area: block-end span-inline-start; }
-:where([data-exo="popover-content"][data-side="top"][data-align="start"]) { position-area: block-start span-inline-end; }
-:where([data-exo="popover-content"][data-side="top"][data-align="center"]) { position-area: block-start; }
-:where([data-exo="popover-content"][data-side="top"][data-align="end"]) { position-area: block-start span-inline-start; }
-:where([data-exo="popover-content"][data-side="left"]) { position-area: inline-start; }
-:where([data-exo="popover-content"][data-side="right"]) { position-area: inline-end; }
+[data-exo="popover-content"][data-side="bottom"][data-align="start"] { position-area: block-end span-inline-end; }
+[data-exo="popover-content"][data-side="bottom"][data-align="center"] { position-area: block-end; }
+[data-exo="popover-content"][data-side="bottom"][data-align="end"] { position-area: block-end span-inline-start; }
+[data-exo="popover-content"][data-side="top"][data-align="start"] { position-area: block-start span-inline-end; }
+[data-exo="popover-content"][data-side="top"][data-align="center"] { position-area: block-start; }
+[data-exo="popover-content"][data-side="top"][data-align="end"] { position-area: block-start span-inline-start; }
+[data-exo="popover-content"][data-side="left"] { position-area: inline-start; }
+[data-exo="popover-content"][data-side="right"] { position-area: inline-end; }
 
 /* --- Animations --- */
 
@@ -63,20 +72,20 @@
 /* --- Fallback: no anchor positioning --- */
 
 @supports not (position-area: top) {
-  :where([data-exo="popover"]) {
+  [data-exo="popover"] {
     position: relative;
   }
-  :where([data-exo="popover-content"]) {
+  [data-exo="popover-content"] {
     position: absolute;
     left: 0;
     top: 100%;
     margin-top: var(--exo-space-1);
   }
-  :where([data-exo="popover-content"][data-align="end"]) {
+  [data-exo="popover-content"][data-align="end"] {
     left: auto;
     right: 0;
   }
-  :where([data-exo="popover-content"][data-side="top"]) {
+  [data-exo="popover-content"][data-side="top"] {
     top: auto;
     bottom: 100%;
     margin-top: 0;

@@ -7,12 +7,20 @@
   display: inline-flex;
 }
 
-:where([data-exo="tooltip-content"]) {
+/* Positioning properties need real specificity */
+[data-exo="tooltip-content"] {
   position: fixed;
   position-try-fallbacks: flip-block;
   margin: 0;
   inset: auto;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0;
+  transition: opacity var(--exo-duration) var(--exo-easing);
+}
 
+/* Themeable styles (zero specificity) */
+:where([data-exo="tooltip-content"]) {
   padding: var(--exo-space-1) var(--exo-space-2);
   font-family: var(--exo-font);
   font-size: var(--exo-text-xs);
@@ -21,11 +29,6 @@
   color: var(--exo-tooltip-fg);
   background: var(--exo-tooltip-bg);
   border-radius: calc(var(--exo-radius) - 2px);
-  pointer-events: none;
-  z-index: 50;
-
-  opacity: 0;
-  transition: opacity var(--exo-duration) var(--exo-easing);
 }
 
 :where([data-exo="tooltip"]):has(:hover, :focus-visible) > :where([data-exo="tooltip-content"]) {
@@ -37,12 +40,12 @@
   opacity: 0 !important;
 }
 
-/* --- Position-area per side --- */
+/* --- Position-area per side (needs real specificity) --- */
 
-:where([data-exo="tooltip-content"][data-side="top"]) { position-area: block-start; }
-:where([data-exo="tooltip-content"][data-side="bottom"]) { position-area: block-end; }
-:where([data-exo="tooltip-content"][data-side="left"]) { position-area: inline-start; }
-:where([data-exo="tooltip-content"][data-side="right"]) { position-area: inline-end; }
+[data-exo="tooltip-content"][data-side="top"] { position-area: block-start; }
+[data-exo="tooltip-content"][data-side="bottom"] { position-area: block-end; }
+[data-exo="tooltip-content"][data-side="left"] { position-area: inline-start; }
+[data-exo="tooltip-content"][data-side="right"] { position-area: inline-end; }
 
 /* --- Arrow --- */
 
@@ -83,28 +86,28 @@
 /* --- Fallback without anchor positioning --- */
 
 @supports not (position-area: top) {
-  :where([data-exo="tooltip-content"]) {
+  [data-exo="tooltip-content"] {
     position: absolute;
   }
-  :where([data-exo="tooltip-content"][data-side="top"]) {
+  [data-exo="tooltip-content"][data-side="top"] {
     bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
     margin-bottom: var(--exo-space-1);
   }
-  :where([data-exo="tooltip-content"][data-side="bottom"]) {
+  [data-exo="tooltip-content"][data-side="bottom"] {
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
     margin-top: var(--exo-space-1);
   }
-  :where([data-exo="tooltip-content"][data-side="left"]) {
+  [data-exo="tooltip-content"][data-side="left"] {
     right: 100%;
     top: 50%;
     transform: translateY(-50%);
     margin-right: var(--exo-space-1);
   }
-  :where([data-exo="tooltip-content"][data-side="right"]) {
+  [data-exo="tooltip-content"][data-side="right"] {
     left: 100%;
     top: 50%;
     transform: translateY(-50%);

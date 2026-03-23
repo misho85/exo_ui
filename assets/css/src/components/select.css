@@ -46,12 +46,15 @@
 
 /* --- Menu --- */
 
+[data-exo="select-menu"] {
+  min-width: anchor-size(width);
+}
+
 :where([data-exo="select-menu"]) {
   display: flex;
   flex-direction: column;
   max-height: 15rem;
   overflow-y: auto;
-  min-width: anchor-size(width);
 }
 
 /* --- Options --- */
