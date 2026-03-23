@@ -424,6 +424,48 @@ defmodule ExoUI.Components do
     """
   end
 
+  # --- popover ---
+
+  attr :id, :string, required: true
+  attr :side, :string, values: ~w(top bottom left right), default: "bottom"
+  attr :align, :string, values: ~w(start center end), default: "center"
+  attr :mode, :string, values: ~w(auto manual), default: "auto"
+  attr :haspopup, :string, default: "true"
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  slot :trigger
+  slot :inner_block, required: true
+
+  def popover(assigns) do
+    ~H"""
+    <div data-exo="popover">
+      <button
+        :if={@trigger != []}
+        type="button"
+        popovertarget={@id}
+        data-exo="popover-trigger"
+        aria-haspopup={@haspopup}
+        style={"anchor-name: --popover-#{@id}"}
+      >
+        {render_slot(@trigger)}
+      </button>
+      <div
+        id={@id}
+        popover={@mode}
+        data-exo="popover-content"
+        data-side={@side}
+        data-align={@align}
+        class={@class}
+        style={"position-anchor: --popover-#{@id}"}
+        {@rest}
+      >
+        {render_slot(@inner_block)}
+      </div>
+    </div>
+    """
+  end
+
   attr :id, :string, default: nil
   attr :position, :string, values: ~w(bottom-start bottom-end), default: "bottom-end"
   attr :class, :string, default: nil
