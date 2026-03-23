@@ -1,8 +1,14 @@
 defmodule ExoUI.Charts do
   @moduledoc """
   SVG chart components styled after shadcn/ui conventions.
-  Minimal chrome: no axis lines, no grid, no y-axis labels.
-  Only data bars/lines and x-axis labels.
+
+  Follows the exact shadcn/ui Recharts patterns:
+  - CartesianGrid vertical={false} — subtle horizontal grid lines only
+  - No y-axis labels anywhere
+  - No axis lines
+  - X-axis labels abbreviated to 3 characters
+  - Grid lines at ~10% opacity
+  - Smooth catmull-rom curves for area charts
   """
 
   use Phoenix.Component
@@ -28,12 +34,148 @@ defmodule ExoUI.Charts do
   defp format_pct(pct) when pct == trunc(pct), do: "#{trunc(pct)}"
   defp format_pct(pct), do: :erlang.float_to_binary(pct, decimals: 1)
 
-  defp truncate_label(label, max_len) do
-    label = to_string(label)
-    if String.length(label) > max_len, do: String.slice(label, 0, max_len - 1) <> "…", else: label
+  defp r(v), do: Float.round(v * 1.0, 1)
+
+  # --- Catmull-Rom to Cubic Bezier conversion ---
+  # Recharts "natural" interpolation uses catmull-rom splines (alpha=0, uniform).
+  # This converts a list of {x, y} points into an SVG path string using
+  # cubic bezier curves (C commands) that produce smooth organic curves.
+
+  defp catmull_rom_to_bezier_path(points) when length(points) < 2, do: ""
+
+  defp catmull_rom_to_bezier_path([{x, y}]) do
+    "M#{r(x)},#{r(y)}"
   end
 
-  defp r(v), do: Float.round(v * 1.0, 1)
+  defp catmull_rom_to_bezier_path(points) do
+    # Catmull-Rom with tension 0 (uniform), matching Recharts "natural"
+    # For n points, we generate n-1 cubic bezier segments.
+    # Each segment needs 4 control points from the catmull-rom sequence.
+    # We pad the start and end by duplicating first/last points.
+    n = length(points)
+    pts = List.to_tuple(points)
+
+    {x0, y0} = elem(pts, 0)
+    start = "M#{r(x0)},#{r(y0)}"
+
+    segments =
+      Enum.map(0..(n - 2), fn i ->
+        # p0, p1, p2, p3 are the four catmull-rom control points
+        # p1..p2 is the segment we're drawing
+        p0 = elem(pts, max(i - 1, 0))
+        p1 = elem(pts, i)
+        p2 = elem(pts, min(i + 1, n - 1))
+        p3 = elem(pts, min(i + 2, n - 1))
+
+        catmull_rom_segment_to_bezier(p0, p1, p2, p3)
+      end)
+
+    start <> Enum.join(segments)
+  end
+
+  defp catmull_rom_segment_to_bezier({x0, y0}, {x1, y1}, {x2, y2}, {x3, y3}) do
+    # Convert catmull-rom segment (p1 to p2) to cubic bezier control points.
+    # Using the standard conversion with alpha = 1/6 of the tangent:
+    #   tangent at p1 = (p2 - p0) / 2
+    #   tangent at p2 = (p3 - p1) / 2
+    #   cp1 = p1 + tangent_at_p1 / 3
+    #   cp2 = p2 - tangent_at_p2 / 3
+
+    # Tangent at p1
+    t1x = (x2 - x0) / 2.0
+    t1y = (y2 - y0) / 2.0
+
+    # Tangent at p2
+    t2x = (x3 - x1) / 2.0
+    t2y = (y3 - y1) / 2.0
+
+    # Bezier control points
+    cp1x = x1 + t1x / 3.0
+    cp1y = y1 + t1y / 3.0
+
+    cp2x = x2 - t2x / 3.0
+    cp2y = y2 - t2y / 3.0
+
+    "C#{r(cp1x)},#{r(cp1y)} #{r(cp2x)},#{r(cp2y)} #{r(x2)},#{r(y2)}"
+  end
+
+  # Build the closed area path for the fill beneath the curve
+  defp catmull_rom_area_path(points, baseline_y, left_x, right_x) do
+    curve = catmull_rom_to_bezier_path(points)
+    # Close the area: line down to baseline at last point, line across to first x, close
+    "#{curve}L#{r(right_x)},#{r(baseline_y)}L#{r(left_x)},#{r(baseline_y)}Z"
+  end
+
+  # --- Rounded rect path helpers for stacked bars ---
+  # SVG <rect> rx/ry applies to ALL corners. For stacked bars, shadcn rounds only
+  # specific corners. We generate a <path> instead.
+
+  # Rounded bottom corners only: radius on bottom-left and bottom-right
+  defp rounded_bottom_rect_path(x, y, w, h, radius) do
+    r = min(radius, min(w / 2, h / 2))
+
+    if r <= 0 do
+      "M#{r(x)},#{r(y)}h#{r(w)}v#{r(h)}h#{r(-w)}Z"
+    else
+      # Start at top-left, go right (sharp top corners), round bottom corners
+      "M#{r(x)},#{r(y)}" <>
+        "h#{r(w)}" <>
+        "v#{r(h - r)}" <>
+        "a#{r(r)},#{r(r)} 0 0 1 #{r(-r)},#{r(r)}" <>
+        "h#{r(-(w - 2 * r))}" <>
+        "a#{r(r)},#{r(r)} 0 0 1 #{r(-r)},#{r(-r)}" <>
+        "Z"
+    end
+  end
+
+  # Rounded top corners only: radius on top-left and top-right
+  defp rounded_top_rect_path(x, y, w, h, radius) do
+    r = min(radius, min(w / 2, h / 2))
+
+    if r <= 0 do
+      "M#{r(x)},#{r(y)}h#{r(w)}v#{r(h)}h#{r(-w)}Z"
+    else
+      # Start at bottom-left, go up, round top corners, down right side
+      "M#{r(x)},#{r(y + h)}" <>
+        "v#{r(-(h - r))}" <>
+        "a#{r(r)},#{r(r)} 0 0 1 #{r(r)},#{r(-r)}" <>
+        "h#{r(w - 2 * r)}" <>
+        "a#{r(r)},#{r(r)} 0 0 1 #{r(r)},#{r(r)}" <>
+        "v#{r(h - r)}" <>
+        "Z"
+    end
+  end
+
+  # Fully rounded rect (all 4 corners)
+  defp fully_rounded_rect_path(x, y, w, h, radius) do
+    r = min(radius, min(w / 2, h / 2))
+
+    if r <= 0 do
+      "M#{r(x)},#{r(y)}h#{r(w)}v#{r(h)}h#{r(-w)}Z"
+    else
+      "M#{r(x + r)},#{r(y)}" <>
+        "h#{r(w - 2 * r)}" <>
+        "a#{r(r)},#{r(r)} 0 0 1 #{r(r)},#{r(r)}" <>
+        "v#{r(h - 2 * r)}" <>
+        "a#{r(r)},#{r(r)} 0 0 1 #{r(-r)},#{r(r)}" <>
+        "h#{r(-(w - 2 * r))}" <>
+        "a#{r(r)},#{r(r)} 0 0 1 #{r(-r)},#{r(-r)}" <>
+        "v#{r(-(h - 2 * r))}" <>
+        "a#{r(r)},#{r(r)} 0 0 1 #{r(r)},#{r(-r)}" <>
+        "Z"
+    end
+  end
+
+  # --- Horizontal grid lines helper (CartesianGrid vertical={false}) ---
+  defp horizontal_grid_lines(pt, ch, pl, svg_width, pr, count \\ 4) do
+    Enum.map(1..count, fn i ->
+      frac = i / count
+      r(pt + ch * (1 - frac))
+    end)
+    |> Enum.map(fn gy ->
+      {gy, pl, svg_width - pr}
+    end)
+  end
 
   # --- trend_badge ---
 
@@ -150,7 +292,10 @@ defmodule ExoUI.Charts do
   end
 
   # --- bar_chart ---
-  # shadcn: no grid, no y-axis, no axis lines, only rounded bars + x labels
+  # shadcn: CartesianGrid vertical={false}, no y-axis, no axis lines,
+  # XAxis tickLine={false} tickMargin={10} axisLine={false}
+  # tickFormatter={(value) => value.slice(0, 3)}
+  # Bar radius={8} — fully rounded bars
 
   attr :data, :list, required: true
   attr :height, :integer, default: 200
@@ -176,6 +321,9 @@ defmodule ExoUI.Charts do
       bw = max(cw / bar_count * 0.65, 4)
       gap = cw / bar_count
 
+      # Horizontal grid lines (CartesianGrid vertical={false})
+      grid = horizontal_grid_lines(pt, ch, pl, width, pr)
+
       bars =
         data
         |> Enum.with_index()
@@ -184,7 +332,9 @@ defmodule ExoUI.Charts do
           bar_h = if max_val > 0, do: v / max_val * ch, else: 0
           x = pl + i * gap + (gap - bw) / 2
           y = pt + ch - bar_h
-          %{label: label, value: value, x: x, y: y, height: bar_h, width: bw}
+          # 3-char abbreviated label (shadcn tickFormatter: value.slice(0, 3))
+          short_label = label |> to_string() |> String.slice(0, 3)
+          %{label: label, short_label: short_label, value: value, x: x, y: y, height: bar_h, width: bw}
         end)
 
       label_step = max(div(bar_count, 12), 1)
@@ -194,7 +344,10 @@ defmodule ExoUI.Charts do
           bars: bars,
           svg_width: width,
           chart_height: ch,
+          pl: pl,
+          pr: pr,
           pt: pt,
+          grid: grid,
           label_step: label_step,
           bar_count: bar_count,
           bw: bw
@@ -202,11 +355,17 @@ defmodule ExoUI.Charts do
 
       ~H"""
       <svg data-exo="bar-chart" viewBox={"0 0 #{@svg_width} #{@height}"} preserveAspectRatio="xMidYMid meet" style="width:100%;">
+        <%!-- Horizontal grid only (CartesianGrid vertical={false}) --%>
+        <%= for {gy, x1, x2} <- @grid do %>
+          <line x1={x1} y1={gy} x2={x2} y2={gy} stroke="currentColor" stroke-opacity="0.1" />
+        <% end %>
+        <%!-- Bars with radius={8} --%>
         <%= for {bar, idx} <- Enum.with_index(@bars) do %>
           <rect x={bar.x} y={bar.y} width={bar.width} height={max(bar.height, 0)} fill={@color} rx="8" ry="8">
             <title>{bar.label}: {format_tooltip(bar.value)}</title>
           </rect>
-          <text :if={rem(idx, @label_step) == 0 or idx == @bar_count - 1} x={bar.x + @bw / 2} y={@pt + @chart_height + 18} text-anchor="middle" fill="currentColor" fill-opacity="0.45" font-size="12">{bar.label}</text>
+          <%!-- tickLine={false} axisLine={false} tickMargin={10} tickFormatter=slice(0,3) --%>
+          <text :if={rem(idx, @label_step) == 0 or idx == @bar_count - 1} x={bar.x + @bw / 2} y={@pt + @chart_height + 18} text-anchor="middle" fill="currentColor" fill-opacity="0.45" font-size="12">{bar.short_label}</text>
         <% end %>
       </svg>
       """
@@ -214,7 +373,11 @@ defmodule ExoUI.Charts do
   end
 
   # --- horizontal_bar_chart ---
-  # shadcn: category label on left, rounded bar, no axis
+  # shadcn: NO CartesianGrid at all
+  # X-axis hidden entirely
+  # Y-axis shows 3-char abbreviated labels
+  # Bar radius={5}
+  # layout="vertical" orientation
 
   attr :data, :list, required: true
   attr :height, :integer, default: 200
@@ -239,7 +402,9 @@ defmodule ExoUI.Charts do
         |> Enum.map(fn {{label, value}, i} ->
           v = to_number(value)
           bw = if max_val > 0, do: v / max_val * chart_width, else: 0
-          %{label: label, value: value, y: i * row_height, bar_width: bw}
+          # 3-char abbreviated label
+          short_label = label |> to_string() |> String.slice(0, 3)
+          %{label: label, short_label: short_label, value: value, y: i * row_height, bar_width: bw}
         end)
 
       total_height = length(data) * row_height
@@ -252,11 +417,14 @@ defmodule ExoUI.Charts do
           label_width: label_width
         )
 
+      # NO grid lines at all (shadcn horizontal bar has no CartesianGrid)
       ~H"""
       <svg data-exo="h-bar-chart" viewBox={"0 0 #{@svg_width} #{@total_height}"} preserveAspectRatio="xMidYMid meet" style="width:100%;">
         <%= for row <- @rows do %>
-          <text x={@label_width - 12} y={row.y + 23} text-anchor="end" fill="currentColor" fill-opacity="0.45" font-size="12">{truncate_label(row.label, 12)}</text>
-          <rect x={@label_width} y={row.y + 8} width={max(row.bar_width, 0)} height="20" fill={@color} rx="6" ry="6">
+          <%!-- 3-char abbreviated category labels on left (Y-axis) --%>
+          <text x={@label_width - 12} y={row.y + 23} text-anchor="end" fill="currentColor" fill-opacity="0.45" font-size="12">{row.short_label}</text>
+          <%!-- Bar radius={5} --%>
+          <rect x={@label_width} y={row.y + 8} width={max(row.bar_width, 0)} height="20" fill={@color} rx="5" ry="5">
             <title>{row.label}: {format_tooltip(row.value)}</title>
           </rect>
         <% end %>
@@ -266,7 +434,10 @@ defmodule ExoUI.Charts do
   end
 
   # --- area_chart ---
-  # shadcn: no grid, no y-axis, gradient fill, smooth line, only x labels
+  # shadcn: CartesianGrid vertical={false}
+  # Area type="natural" — smooth catmull-rom spline curves (NOT straight lines)
+  # fillOpacity={0.4} with gradient from stopOpacity={0.8} at top to stopOpacity={0.1} at bottom
+  # XAxis same as bar chart (3 chars, no tick/axis lines)
 
   attr :data, :list, required: true
   attr :height, :integer, default: 200
@@ -295,6 +466,9 @@ defmodule ExoUI.Charts do
       cw = width - pl - pr
       ch = height - pt - pb
 
+      # Horizontal grid lines (CartesianGrid vertical={false})
+      grid = horizontal_grid_lines(pt, ch, pl, width, pr)
+
       points =
         data
         |> Enum.with_index()
@@ -304,8 +478,14 @@ defmodule ExoUI.Charts do
           {r(x), r(y)}
         end)
 
-      line_points = Enum.map_join(points, " ", fn {x, y} -> "#{x},#{y}" end)
-      area_points = line_points <> " #{r(pl + cw)},#{r(pt + ch)} #{r(pl * 1.0)},#{r(pt + ch)}"
+      # Generate smooth catmull-rom bezier path (type="natural")
+      curve_path = catmull_rom_to_bezier_path(points)
+      # Generate area fill path (closed shape under the curve)
+      {last_x, _} = List.last(points)
+      {first_x, _} = List.first(points)
+      baseline_y = r(pt + ch)
+      area_path = catmull_rom_area_path(points, baseline_y, first_x, last_x)
+
       label_step = max(div(count, 12), 1)
 
       labels =
@@ -313,7 +493,9 @@ defmodule ExoUI.Charts do
         |> Enum.with_index()
         |> Enum.map(fn {{label, _}, i} ->
           x = pl + i / max(count - 1, 1) * cw
-          %{label: label, x: r(x), show: rem(i, label_step) == 0 or i == count - 1}
+          # 3-char abbreviated label
+          short_label = label |> to_string() |> String.slice(0, 3)
+          %{label: short_label, x: r(x), show: rem(i, label_step) == 0 or i == count - 1}
         end)
 
       assigns =
@@ -321,21 +503,30 @@ defmodule ExoUI.Charts do
           svg_width: width,
           chart_height: ch,
           pt: pt,
-          line_points: line_points,
-          area_points: area_points,
+          grid: grid,
+          curve_path: curve_path,
+          area_path: area_path,
           labels: labels
         )
 
       ~H"""
       <svg data-exo="area-chart" viewBox={"0 0 #{@svg_width} #{@height}"} preserveAspectRatio="xMidYMid meet" style="width:100%;">
         <defs>
+          <%!-- Gradient: stopOpacity={0.8} at top to stopOpacity={0.1} at bottom --%>
           <linearGradient id={"#{@id}-grad"} x1="0" y1="0" x2="0" y2="1">
             <stop offset="5%" stop-color={@color} stop-opacity="0.8" />
-            <stop offset="95%" stop-color={@color} stop-opacity="0.05" />
+            <stop offset="95%" stop-color={@color} stop-opacity="0.1" />
           </linearGradient>
         </defs>
-        <polygon points={@area_points} fill={"url(##{@id}-grad)"} fill-opacity="0.4" />
-        <polyline points={@line_points} fill="none" stroke={@color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        <%!-- Horizontal grid only (CartesianGrid vertical={false}) --%>
+        <%= for {gy, x1, x2} <- @grid do %>
+          <line x1={x1} y1={gy} x2={x2} y2={gy} stroke="currentColor" stroke-opacity="0.1" />
+        <% end %>
+        <%!-- Area fill: fillOpacity={0.4} with gradient --%>
+        <path d={@area_path} fill={"url(##{@id}-grad)"} fill-opacity="0.4" />
+        <%!-- Smooth curve line (catmull-rom / type="natural") --%>
+        <path d={@curve_path} fill="none" stroke={@color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        <%!-- X-axis labels: 3-char, no tick lines, no axis line --%>
         <%= for lbl <- @labels do %>
           <text :if={lbl.show} x={lbl.x} y={@pt + @chart_height + 18} text-anchor="middle" fill="currentColor" fill-opacity="0.45" font-size="12">{lbl.label}</text>
         <% end %>
@@ -345,7 +536,10 @@ defmodule ExoUI.Charts do
   end
 
   # --- stacked_bar_chart ---
-  # shadcn: no grid, no y-axis, rounded bars, legend below
+  # shadcn: CartesianGrid vertical={false}
+  # Bottom bar: radius={[0, 0, 4, 4]} — rounded bottom corners only
+  # Top bar: radius={[4, 4, 0, 0]} — rounded top corners only
+  # No y-axis, 3-char x-axis labels, legend below
 
   attr :data, :list, required: true
   attr :height, :integer, default: 200
@@ -380,12 +574,18 @@ defmodule ExoUI.Charts do
       bw = max(cw / count * 0.65, 4)
       gap = cw / count
 
+      # Horizontal grid lines (CartesianGrid vertical={false})
+      grid = horizontal_grid_lines(pt, ch, pl, width, pr)
+
+      key_count = length(keys)
+
       bars =
         data
         |> Enum.with_index()
         |> Enum.map(fn {{label, vals}, i} ->
           x = pl + i * gap + (gap - bw) / 2
-          key_count = length(keys)
+          # 3-char abbreviated label
+          short_label = label |> to_string() |> String.slice(0, 3)
 
           segments =
             keys
@@ -393,18 +593,36 @@ defmodule ExoUI.Charts do
             |> Enum.reduce({[], pt + ch}, fn {k, ki}, {segs, y_cursor} ->
               v = to_number(Map.get(vals, k, 0))
               seg_h = if max_val > 0, do: v / max_val * ch, else: 0
-              # Bottom bar: rounded bottom, top bar: rounded top
-              rx = cond do
-                key_count == 1 -> 8
-                ki == key_count - 1 -> 8
-                ki == 0 -> 8
-                true -> 4
-              end
-              seg = %{key: k, y: y_cursor - seg_h, height: seg_h, color: Map.get(colors, k, "#999"), rx: rx}
+
+              # Determine rounding based on position in stack:
+              # keys are ordered bottom-to-top in the stack
+              # ki == 0 is the bottom segment, ki == key_count - 1 is the top
+              rounding =
+                cond do
+                  # Single key: fully rounded
+                  key_count == 1 -> :all
+                  # Bottom segment: round bottom corners only [0,0,4,4]
+                  ki == 0 -> :bottom
+                  # Top segment: round top corners only [4,4,0,0]
+                  ki == key_count - 1 -> :top
+                  # Middle segments: no rounding
+                  true -> :none
+                end
+
+              seg = %{
+                key: k,
+                x: x,
+                y: y_cursor - seg_h,
+                width: bw,
+                height: seg_h,
+                color: Map.get(colors, k, "#999"),
+                rounding: rounding
+              }
+
               {[seg | segs], y_cursor - seg_h}
             end)
 
-          %{label: label, x: x, segments: Enum.reverse(elem(segments, 0))}
+          %{label: label, short_label: short_label, x: x, segments: Enum.reverse(elem(segments, 0))}
         end)
 
       label_step = max(div(count, 12), 1)
@@ -425,6 +643,7 @@ defmodule ExoUI.Charts do
           chart_height: ch,
           pt: pt,
           bw: bw,
+          grid: grid,
           label_step: label_step,
           bar_count: count,
           legend: legend,
@@ -433,12 +652,38 @@ defmodule ExoUI.Charts do
 
       ~H"""
       <svg data-exo="stacked-bar-chart" viewBox={"0 0 #{@svg_width} #{@height}"} preserveAspectRatio="xMidYMid meet" style="width:100%;">
+        <%!-- Horizontal grid only (CartesianGrid vertical={false}) --%>
+        <%= for {gy, x1, x2} <- @grid do %>
+          <line x1={x1} y1={gy} x2={x2} y2={gy} stroke="currentColor" stroke-opacity="0.1" />
+        <% end %>
+        <%!-- Stacked bars with per-segment corner rounding --%>
         <%= for {bar, idx} <- Enum.with_index(@bars) do %>
           <%= for seg <- bar.segments do %>
-            <rect x={bar.x} y={seg.y} width={@bw} height={max(seg.height, 0)} fill={seg.color} rx={seg.rx} ry={seg.rx} />
+            <%= if seg.height > 0 do %>
+              <%= case seg.rounding do %>
+                <% :all -> %>
+                  <path d={fully_rounded_rect_path(seg.x, seg.y, seg.width, seg.height, 4)} fill={seg.color}>
+                    <title>{seg.key}: {format_tooltip(seg.height)}</title>
+                  </path>
+                <% :bottom -> %>
+                  <path d={rounded_bottom_rect_path(seg.x, seg.y, seg.width, seg.height, 4)} fill={seg.color}>
+                    <title>{seg.key}: {format_tooltip(seg.height)}</title>
+                  </path>
+                <% :top -> %>
+                  <path d={rounded_top_rect_path(seg.x, seg.y, seg.width, seg.height, 4)} fill={seg.color}>
+                    <title>{seg.key}: {format_tooltip(seg.height)}</title>
+                  </path>
+                <% :none -> %>
+                  <rect x={seg.x} y={seg.y} width={seg.width} height={seg.height} fill={seg.color}>
+                    <title>{seg.key}: {format_tooltip(seg.height)}</title>
+                  </rect>
+              <% end %>
+            <% end %>
           <% end %>
-          <text :if={rem(idx, @label_step) == 0 or idx == @bar_count - 1} x={bar.x + @bw / 2} y={@pt + @chart_height + 18} text-anchor="middle" fill="currentColor" fill-opacity="0.45" font-size="12">{bar.label}</text>
+          <%!-- 3-char abbreviated x-axis labels --%>
+          <text :if={rem(idx, @label_step) == 0 or idx == @bar_count - 1} x={bar.x + @bw / 2} y={@pt + @chart_height + 18} text-anchor="middle" fill="currentColor" fill-opacity="0.45" font-size="12">{bar.short_label}</text>
         <% end %>
+        <%!-- Legend --%>
         <%= for {item, i} <- Enum.with_index(@legend) do %>
           <rect x={@legend_start + i * 100} y={@pt + @chart_height + 32} width="10" height="10" rx="2" fill={item.color} />
           <text x={@legend_start + i * 100 + 16} y={@pt + @chart_height + 41} fill="currentColor" fill-opacity="0.5" font-size="12">{item.label}</text>
