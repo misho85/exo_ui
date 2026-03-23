@@ -692,4 +692,858 @@ defmodule ExoUI.Charts do
       """
     end
   end
+
+  # --- bar_chart_multiple ---
+  # Two bars side by side per group, radius=4, horizontal grid, 3-char x labels
+
+  attr :data, :list, required: true
+  attr :height, :integer, default: 200
+  attr :color1, :string, default: "var(--exo-primary)"
+  attr :color2, :string, default: "color-mix(in oklch, var(--exo-primary) 50%, transparent)"
+
+  def bar_chart_multiple(assigns) do
+    data = assigns.data
+    height = assigns.height
+    values = Enum.flat_map(data, fn {_l, v1, v2} -> [to_number(v1), to_number(v2)] end)
+    max_val = Enum.max(values, fn -> 1 end)
+    max_val = if max_val == 0, do: 1, else: max_val
+    count = length(data)
+    width = 600
+    pl = 12
+    pr = 12
+    pb = 28
+    pt = 8
+    cw = width - pl - pr
+    ch = height - pb - pt
+    gap = cw / count
+    bw = max(gap * 0.3, 4)
+
+    grid = horizontal_grid_lines(pt, ch, pl, width, pr)
+
+    bars =
+      data
+      |> Enum.with_index()
+      |> Enum.map(fn {{label, v1, v2}, i} ->
+        nv1 = to_number(v1)
+        nv2 = to_number(v2)
+        h1 = nv1 / max_val * ch
+        h2 = nv2 / max_val * ch
+        center = pl + i * gap + gap / 2
+        x1 = center - bw - 1
+        x2 = center + 1
+        short_label = label |> to_string() |> String.slice(0, 3)
+
+        %{
+          label: label,
+          short_label: short_label,
+          v1: v1,
+          v2: v2,
+          x1: x1,
+          x2: x2,
+          y1: pt + ch - h1,
+          y2: pt + ch - h2,
+          h1: h1,
+          h2: h2,
+          center: center
+        }
+      end)
+
+    label_step = max(div(count, 12), 1)
+
+    assigns =
+      assign(assigns,
+        bars: bars,
+        svg_width: width,
+        chart_height: ch,
+        pt: pt,
+        bw: bw,
+        grid: grid,
+        label_step: label_step,
+        bar_count: count
+      )
+
+    ~H"""
+    <svg data-exo="bar-chart-multiple" viewBox={"0 0 #{@svg_width} #{@height}"} preserveAspectRatio="xMidYMid meet" style="width:100%;">
+      <%= for {gy, x1, x2} <- @grid do %>
+        <line x1={x1} y1={gy} x2={x2} y2={gy} stroke="currentColor" stroke-opacity="0.1" />
+      <% end %>
+      <%= for {bar, idx} <- Enum.with_index(@bars) do %>
+        <rect x={bar.x1} y={bar.y1} width={@bw} height={max(bar.h1, 0)} fill={@color1} rx="4" ry="4">
+          <title>{bar.label}: {format_tooltip(bar.v1)}</title>
+        </rect>
+        <rect x={bar.x2} y={bar.y2} width={@bw} height={max(bar.h2, 0)} fill={@color2} rx="4" ry="4">
+          <title>{bar.label}: {format_tooltip(bar.v2)}</title>
+        </rect>
+        <text :if={rem(idx, @label_step) == 0 or idx == @bar_count - 1} x={bar.center} y={@pt + @chart_height + 18} text-anchor="middle" fill="currentColor" fill-opacity="0.45" font-size="12">{bar.short_label}</text>
+      <% end %>
+    </svg>
+    """
+  end
+
+  # --- bar_chart_label ---
+  # Same as bar_chart but with value labels ABOVE each bar (LabelList position="top" offset=12)
+
+  attr :data, :list, required: true
+  attr :height, :integer, default: 200
+  attr :color, :string, default: "var(--exo-primary)"
+
+  def bar_chart_label(assigns) do
+    data = assigns.data
+    height = assigns.height
+    max_val = data |> Enum.map(&elem(&1, 1)) |> Enum.map(&to_number/1) |> Enum.max(fn -> 1 end)
+    max_val = if max_val == 0, do: 1, else: max_val
+    count = length(data)
+    width = 600
+    pl = 12
+    pr = 12
+    pb = 28
+    pt = 24
+    cw = width - pl - pr
+    ch = height - pb - pt
+    bw = max(cw / count * 0.65, 4)
+    gap = cw / count
+
+    grid = horizontal_grid_lines(pt, ch, pl, width, pr)
+
+    bars =
+      data
+      |> Enum.with_index()
+      |> Enum.map(fn {{label, value}, i} ->
+        v = to_number(value)
+        bar_h = if max_val > 0, do: v / max_val * ch, else: 0
+        x = pl + i * gap + (gap - bw) / 2
+        y = pt + ch - bar_h
+        short_label = label |> to_string() |> String.slice(0, 3)
+        %{label: label, short_label: short_label, value: value, x: x, y: y, height: bar_h, width: bw}
+      end)
+
+    label_step = max(div(count, 12), 1)
+
+    assigns =
+      assign(assigns,
+        bars: bars,
+        svg_width: width,
+        chart_height: ch,
+        pl: pl,
+        pt: pt,
+        grid: grid,
+        label_step: label_step,
+        bar_count: count,
+        bw: bw
+      )
+
+    ~H"""
+    <svg data-exo="bar-chart-label" viewBox={"0 0 #{@svg_width} #{@height}"} preserveAspectRatio="xMidYMid meet" style="width:100%;">
+      <%= for {gy, x1, x2} <- @grid do %>
+        <line x1={x1} y1={gy} x2={x2} y2={gy} stroke="currentColor" stroke-opacity="0.1" />
+      <% end %>
+      <%= for {bar, idx} <- Enum.with_index(@bars) do %>
+        <rect x={bar.x} y={bar.y} width={bar.width} height={max(bar.height, 0)} fill={@color} rx="8" ry="8">
+          <title>{bar.label}: {format_tooltip(bar.value)}</title>
+        </rect>
+        <%!-- Value label above bar (LabelList position="top" offset=12) --%>
+        <text x={bar.x + @bw / 2} y={bar.y - 6} text-anchor="middle" fill="currentColor" fill-opacity="0.7" font-size="11">{format_tooltip(bar.value)}</text>
+        <text :if={rem(idx, @label_step) == 0 or idx == @bar_count - 1} x={bar.x + @bw / 2} y={@pt + @chart_height + 18} text-anchor="middle" fill="currentColor" fill-opacity="0.45" font-size="12">{bar.short_label}</text>
+      <% end %>
+    </svg>
+    """
+  end
+
+  # --- bar_chart_negative ---
+  # Bars go up AND down from a zero baseline, month name labels above each bar
+
+  attr :data, :list, required: true
+  attr :height, :integer, default: 200
+  attr :color_positive, :string, default: "var(--exo-primary)"
+  attr :color_negative, :string, default: "var(--exo-destructive, #ef4444)"
+
+  def bar_chart_negative(assigns) do
+    data = assigns.data
+    height = assigns.height
+    values = Enum.map(data, fn {_l, v} -> to_number(v) end)
+    max_abs = values |> Enum.map(&abs/1) |> Enum.max(fn -> 1 end)
+    max_abs = if max_abs == 0, do: 1, else: max_abs
+    count = length(data)
+    width = 600
+    pl = 12
+    pr = 12
+    pb = 8
+    pt = 24
+    cw = width - pl - pr
+    ch = height - pb - pt
+    half_ch = ch / 2
+    zero_y = pt + half_ch
+    bw = max(cw / count * 0.65, 4)
+    gap = cw / count
+
+    grid = horizontal_grid_lines(pt, ch, pl, width, pr)
+
+    bars =
+      data
+      |> Enum.with_index()
+      |> Enum.map(fn {{label, value}, i} ->
+        v = to_number(value)
+        bar_h = abs(v) / max_abs * half_ch
+        x = pl + i * gap + (gap - bw) / 2
+        short_label = label |> to_string() |> String.slice(0, 3)
+
+        {y, color} =
+          if v >= 0 do
+            {zero_y - bar_h, assigns.color_positive}
+          else
+            {zero_y, assigns.color_negative}
+          end
+
+        %{label: label, short_label: short_label, value: value, x: x, y: y, height: bar_h, width: bw, color: color}
+      end)
+
+    assigns =
+      assign(assigns,
+        bars: bars,
+        svg_width: width,
+        chart_height: ch,
+        pt: pt,
+        pl: pl,
+        pr: pr,
+        zero_y: zero_y,
+        grid: grid,
+        bw: bw
+      )
+
+    ~H"""
+    <svg data-exo="bar-chart-negative" viewBox={"0 0 #{@svg_width} #{@height}"} preserveAspectRatio="xMidYMid meet" style="width:100%;">
+      <%= for {gy, x1, x2} <- @grid do %>
+        <line x1={x1} y1={gy} x2={x2} y2={gy} stroke="currentColor" stroke-opacity="0.1" />
+      <% end %>
+      <%!-- Zero baseline --%>
+      <line x1={@pl} y1={@zero_y} x2={@svg_width - @pr} y2={@zero_y} stroke="currentColor" stroke-opacity="0.2" />
+      <%= for bar <- @bars do %>
+        <rect x={bar.x} y={bar.y} width={bar.width} height={max(bar.height, 0)} fill={bar.color} rx="4" ry="4">
+          <title>{bar.label}: {format_tooltip(bar.value)}</title>
+        </rect>
+        <%!-- Month label above bar --%>
+        <text x={bar.x + @bw / 2} y={@pt - 6} text-anchor="middle" fill="currentColor" fill-opacity="0.45" font-size="12">{bar.short_label}</text>
+      <% end %>
+    </svg>
+    """
+  end
+
+  # --- line_chart ---
+  # Smooth catmull-rom curve, no dots, strokeWidth=2, horizontal grid, 3-char labels
+
+  attr :data, :list, required: true
+  attr :height, :integer, default: 200
+  attr :color, :string, default: "var(--exo-primary)"
+
+  def line_chart(assigns) do
+    data = assigns.data
+    height = assigns.height
+    values = Enum.map(data, fn {_l, v} -> to_number(v) end)
+    max_val = Enum.max(values, fn -> 1 end)
+    max_val = if max_val == 0, do: 1, else: max_val
+    count = length(values)
+    width = 600
+    pl = 12
+    pr = 12
+    pt = 8
+    pb = 28
+    cw = width - pl - pr
+    ch = height - pt - pb
+
+    grid = horizontal_grid_lines(pt, ch, pl, width, pr)
+
+    points =
+      data
+      |> Enum.with_index()
+      |> Enum.map(fn {{_label, value}, i} ->
+        x = pl + i / max(count - 1, 1) * cw
+        y = pt + ch - to_number(value) / max_val * ch
+        {r(x), r(y)}
+      end)
+
+    curve_path = catmull_rom_to_bezier_path(points)
+
+    label_step = max(div(count, 12), 1)
+
+    labels =
+      data
+      |> Enum.with_index()
+      |> Enum.map(fn {{label, _}, i} ->
+        x = pl + i / max(count - 1, 1) * cw
+        short_label = label |> to_string() |> String.slice(0, 3)
+        %{label: short_label, x: r(x), show: rem(i, label_step) == 0 or i == count - 1}
+      end)
+
+    assigns =
+      assign(assigns,
+        svg_width: width,
+        chart_height: ch,
+        pt: pt,
+        grid: grid,
+        curve_path: curve_path,
+        labels: labels
+      )
+
+    ~H"""
+    <svg data-exo="line-chart" viewBox={"0 0 #{@svg_width} #{@height}"} preserveAspectRatio="xMidYMid meet" style="width:100%;">
+      <%= for {gy, x1, x2} <- @grid do %>
+        <line x1={x1} y1={gy} x2={x2} y2={gy} stroke="currentColor" stroke-opacity="0.1" />
+      <% end %>
+      <path d={@curve_path} fill="none" stroke={@color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      <%= for lbl <- @labels do %>
+        <text :if={lbl.show} x={lbl.x} y={@pt + @chart_height + 18} text-anchor="middle" fill="currentColor" fill-opacity="0.45" font-size="12">{lbl.label}</text>
+      <% end %>
+    </svg>
+    """
+  end
+
+  # --- line_chart_multiple ---
+  # Two smooth lines
+
+  attr :data, :list, required: true
+  attr :height, :integer, default: 200
+  attr :color1, :string, default: "var(--exo-primary)"
+  attr :color2, :string, default: "color-mix(in oklch, var(--exo-primary) 50%, transparent)"
+
+  def line_chart_multiple(assigns) do
+    data = assigns.data
+    height = assigns.height
+    values = Enum.flat_map(data, fn {_l, v1, v2} -> [to_number(v1), to_number(v2)] end)
+    max_val = Enum.max(values, fn -> 1 end)
+    max_val = if max_val == 0, do: 1, else: max_val
+    count = length(data)
+    width = 600
+    pl = 12
+    pr = 12
+    pt = 8
+    pb = 28
+    cw = width - pl - pr
+    ch = height - pt - pb
+
+    grid = horizontal_grid_lines(pt, ch, pl, width, pr)
+
+    points1 =
+      data
+      |> Enum.with_index()
+      |> Enum.map(fn {{_label, v1, _v2}, i} ->
+        x = pl + i / max(count - 1, 1) * cw
+        y = pt + ch - to_number(v1) / max_val * ch
+        {r(x), r(y)}
+      end)
+
+    points2 =
+      data
+      |> Enum.with_index()
+      |> Enum.map(fn {{_label, _v1, v2}, i} ->
+        x = pl + i / max(count - 1, 1) * cw
+        y = pt + ch - to_number(v2) / max_val * ch
+        {r(x), r(y)}
+      end)
+
+    curve1 = catmull_rom_to_bezier_path(points1)
+    curve2 = catmull_rom_to_bezier_path(points2)
+
+    label_step = max(div(count, 12), 1)
+
+    labels =
+      data
+      |> Enum.with_index()
+      |> Enum.map(fn {{label, _, _}, i} ->
+        x = pl + i / max(count - 1, 1) * cw
+        short_label = label |> to_string() |> String.slice(0, 3)
+        %{label: short_label, x: r(x), show: rem(i, label_step) == 0 or i == count - 1}
+      end)
+
+    assigns =
+      assign(assigns,
+        svg_width: width,
+        chart_height: ch,
+        pt: pt,
+        grid: grid,
+        curve1: curve1,
+        curve2: curve2,
+        labels: labels
+      )
+
+    ~H"""
+    <svg data-exo="line-chart-multiple" viewBox={"0 0 #{@svg_width} #{@height}"} preserveAspectRatio="xMidYMid meet" style="width:100%;">
+      <%= for {gy, x1, x2} <- @grid do %>
+        <line x1={x1} y1={gy} x2={x2} y2={gy} stroke="currentColor" stroke-opacity="0.1" />
+      <% end %>
+      <path d={@curve1} fill="none" stroke={@color1} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      <path d={@curve2} fill="none" stroke={@color2} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      <%= for lbl <- @labels do %>
+        <text :if={lbl.show} x={lbl.x} y={@pt + @chart_height + 18} text-anchor="middle" fill="currentColor" fill-opacity="0.45" font-size="12">{lbl.label}</text>
+      <% end %>
+    </svg>
+    """
+  end
+
+  # --- pie_chart ---
+  # SVG pie chart using arc paths
+
+  attr :data, :list, required: true
+  attr :size, :integer, default: 250
+
+  def pie_chart(assigns) do
+    data = assigns.data
+    size = assigns.size
+    total = Enum.reduce(data, 0, fn {_l, v, _c}, acc -> acc + to_number(v) end)
+    total = if total == 0, do: 1, else: total
+    cx = size / 2
+    cy = size / 2
+    radius = size / 2 - 4
+
+    slices = build_pie_slices(data, total, cx, cy, radius, radius)
+
+    assigns = assign(assigns, slices: slices)
+
+    ~H"""
+    <svg data-exo="pie-chart" viewBox={"0 0 #{@size} #{@size}"} width={@size} height={@size} style="display:block; margin:auto;">
+      <%= for slice <- @slices do %>
+        <path d={slice.path} fill={slice.color}>
+          <title>{slice.label}: {format_tooltip(slice.value)}</title>
+        </path>
+      <% end %>
+    </svg>
+    """
+  end
+
+  # --- donut_chart ---
+  # Donut with hole in center
+
+  attr :data, :list, required: true
+  attr :size, :integer, default: 250
+  attr :inner_radius, :integer, default: 60
+
+  def donut_chart(assigns) do
+    data = assigns.data
+    size = assigns.size
+    total = Enum.reduce(data, 0, fn {_l, v, _c}, acc -> acc + to_number(v) end)
+    total = if total == 0, do: 1, else: total
+    cx = size / 2
+    cy = size / 2
+    outer_r = size / 2 - 4
+    inner_r = assigns.inner_radius * 1.0
+
+    slices = build_donut_slices(data, total, cx, cy, outer_r, inner_r)
+
+    assigns = assign(assigns, slices: slices)
+
+    ~H"""
+    <svg data-exo="donut-chart" viewBox={"0 0 #{@size} #{@size}"} width={@size} height={@size} style="display:block; margin:auto;">
+      <%= for slice <- @slices do %>
+        <path d={slice.path} fill={slice.color}>
+          <title>{slice.label}: {format_tooltip(slice.value)}</title>
+        </path>
+      <% end %>
+    </svg>
+    """
+  end
+
+  # --- donut_chart_text ---
+  # Donut with centered text (big number + small label)
+
+  attr :data, :list, required: true
+  attr :size, :integer, default: 250
+  attr :inner_radius, :integer, default: 60
+  attr :center_value, :string, default: ""
+  attr :center_label, :string, default: ""
+
+  def donut_chart_text(assigns) do
+    data = assigns.data
+    size = assigns.size
+    total = Enum.reduce(data, 0, fn {_l, v, _c}, acc -> acc + to_number(v) end)
+    total = if total == 0, do: 1, else: total
+    cx = size / 2
+    cy = size / 2
+    outer_r = size / 2 - 4
+    inner_r = assigns.inner_radius * 1.0
+
+    slices = build_donut_slices(data, total, cx, cy, outer_r, inner_r)
+
+    assigns = assign(assigns, slices: slices, cx: cx, cy: cy)
+
+    ~H"""
+    <svg data-exo="donut-chart-text" viewBox={"0 0 #{@size} #{@size}"} width={@size} height={@size} style="display:block; margin:auto;">
+      <%= for slice <- @slices do %>
+        <path d={slice.path} fill={slice.color}>
+          <title>{slice.label}: {format_tooltip(slice.value)}</title>
+        </path>
+      <% end %>
+      <%!-- Center text --%>
+      <text x={@cx} y={@cy - 6} text-anchor="middle" fill="currentColor" font-size="24" font-weight="700">{@center_value}</text>
+      <text x={@cx} y={@cy + 14} text-anchor="middle" fill="currentColor" fill-opacity="0.45" font-size="12">{@center_label}</text>
+    </svg>
+    """
+  end
+
+  # --- radar_chart ---
+  # Radar/spider chart with polar grid
+
+  attr :data, :list, required: true
+  attr :size, :integer, default: 250
+  attr :color, :string, default: "var(--exo-primary)"
+
+  def radar_chart(assigns) do
+    data = assigns.data
+    size = assigns.size
+    cx = size / 2
+    cy = size / 2
+    max_radius = size / 2 - 28
+    count = length(data)
+    max_val = data |> Enum.map(fn {_l, v} -> to_number(v) end) |> Enum.max(fn -> 1 end)
+    max_val = if max_val == 0, do: 1, else: max_val
+
+    # Concentric grid polygons at 20%, 40%, 60%, 80%, 100%
+    grid_levels = [0.2, 0.4, 0.6, 0.8, 1.0]
+
+    grid_polygons =
+      Enum.map(grid_levels, fn level ->
+        polygon_points(count, cx, cy, max_radius * level)
+      end)
+
+    # Axis lines from center to each vertex
+    axes =
+      Enum.map(0..(count - 1), fn i ->
+        angle = -:math.pi() / 2 + 2 * :math.pi() * i / count
+        ex = cx + max_radius * :math.cos(angle)
+        ey = cy + max_radius * :math.sin(angle)
+        {r(ex), r(ey)}
+      end)
+
+    # Data polygon
+    data_points =
+      data
+      |> Enum.with_index()
+      |> Enum.map(fn {{_label, value}, i} ->
+        v = to_number(value)
+        frac = v / max_val
+        angle = -:math.pi() / 2 + 2 * :math.pi() * i / count
+        x = cx + max_radius * frac * :math.cos(angle)
+        y = cy + max_radius * frac * :math.sin(angle)
+        {r(x), r(y)}
+      end)
+
+    data_polygon = Enum.map_join(data_points, " ", fn {x, y} -> "#{x},#{y}" end)
+
+    # Labels positioned outside the outermost polygon
+    labels =
+      data
+      |> Enum.with_index()
+      |> Enum.map(fn {{label, _v}, i} ->
+        angle = -:math.pi() / 2 + 2 * :math.pi() * i / count
+        lx = cx + (max_radius + 16) * :math.cos(angle)
+        ly = cy + (max_radius + 16) * :math.sin(angle)
+        short_label = label |> to_string() |> String.slice(0, 3)
+        %{label: short_label, x: r(lx), y: r(ly)}
+      end)
+
+    assigns =
+      assign(assigns,
+        cx: cx,
+        cy: cy,
+        grid_polygons: grid_polygons,
+        axes: axes,
+        data_polygon: data_polygon,
+        labels: labels
+      )
+
+    ~H"""
+    <svg data-exo="radar-chart" viewBox={"0 0 #{@size} #{@size}"} width={@size} height={@size} style="display:block; margin:auto;">
+      <%!-- Grid polygons --%>
+      <%= for poly <- @grid_polygons do %>
+        <polygon points={poly} fill="none" stroke="currentColor" stroke-opacity="0.1" />
+      <% end %>
+      <%!-- Axis lines --%>
+      <%= for {ex, ey} <- @axes do %>
+        <line x1={@cx} y1={@cy} x2={ex} y2={ey} stroke="currentColor" stroke-opacity="0.1" />
+      <% end %>
+      <%!-- Data area --%>
+      <polygon points={@data_polygon} fill={@color} fill-opacity="0.6" stroke={@color} stroke-width="2" />
+      <%!-- Labels --%>
+      <%= for lbl <- @labels do %>
+        <text x={lbl.x} y={lbl.y} text-anchor="middle" dominant-baseline="central" fill="currentColor" fill-opacity="0.45" font-size="12">{lbl.label}</text>
+      <% end %>
+    </svg>
+    """
+  end
+
+  # --- radial_chart ---
+  # Concentric arc bars, each proportional to value
+
+  attr :data, :list, required: true
+  attr :size, :integer, default: 250
+  attr :inner_radius, :integer, default: 40
+  attr :outer_radius, :integer, default: 110
+
+  def radial_chart(assigns) do
+    data = assigns.data
+    size = assigns.size
+    cx = size / 2
+    cy = size / 2
+    count = length(data)
+    max_val = data |> Enum.map(fn {_l, v, _c} -> to_number(v) end) |> Enum.max(fn -> 1 end)
+    max_val = if max_val == 0, do: 1, else: max_val
+    inner_r = assigns.inner_radius * 1.0
+    outer_r = assigns.outer_radius * 1.0
+    band = if count > 0, do: (outer_r - inner_r) / count, else: 0
+    bar_width = band * 0.7
+    start_angle = -:math.pi() / 2
+
+    arcs =
+      data
+      |> Enum.with_index()
+      |> Enum.map(fn {{label, value, color}, i} ->
+        v = to_number(value)
+        frac = v / max_val
+        r_center = inner_r + band * i + band / 2
+        r_inner = r_center - bar_width / 2
+        r_outer = r_center + bar_width / 2
+        sweep = frac * 2 * :math.pi() * 0.85
+        end_angle = start_angle + sweep
+        bg_sweep = 2 * :math.pi() * 0.85
+        bg_end = start_angle + bg_sweep
+
+        bg_path = arc_path(cx, cy, r_inner, r_outer, start_angle, bg_end)
+        fg_path = arc_path(cx, cy, r_inner, r_outer, start_angle, end_angle)
+
+        %{label: label, value: value, color: color, bg_path: bg_path, fg_path: fg_path}
+      end)
+
+    assigns = assign(assigns, arcs: arcs)
+
+    ~H"""
+    <svg data-exo="radial-chart" viewBox={"0 0 #{@size} #{@size}"} width={@size} height={@size} style="display:block; margin:auto;">
+      <%= for arc <- @arcs do %>
+        <%!-- Background track --%>
+        <path d={arc.bg_path} fill="currentColor" fill-opacity="0.08" />
+        <%!-- Foreground bar --%>
+        <path d={arc.fg_path} fill={arc.color}>
+          <title>{arc.label}: {format_tooltip(arc.value)}</title>
+        </path>
+      <% end %>
+    </svg>
+    """
+  end
+
+  # --- area_chart_stacked ---
+  # Two stacked areas using catmull-rom curves
+
+  attr :data, :list, required: true
+  attr :height, :integer, default: 200
+  attr :color1, :string, default: "var(--exo-primary)"
+  attr :color2, :string, default: "color-mix(in oklch, var(--exo-primary) 50%, transparent)"
+  attr :id, :string, default: nil
+
+  def area_chart_stacked(assigns) do
+    id = assigns[:id] || "area-stacked-#{System.unique_integer([:positive])}"
+    assigns = assign(assigns, :id, id)
+
+    data = assigns.data
+    height = assigns.height
+    # Stacked: total = v1 + v2 at each point
+    stacked_vals = Enum.map(data, fn {_l, v1, v2} -> to_number(v1) + to_number(v2) end)
+    max_val = Enum.max(stacked_vals, fn -> 1 end)
+    max_val = if max_val == 0, do: 1, else: max_val
+    count = length(data)
+    width = 600
+    pl = 12
+    pr = 12
+    pt = 8
+    pb = 28
+    cw = width - pl - pr
+    ch = height - pt - pb
+    baseline_y = r(pt + ch)
+
+    grid = horizontal_grid_lines(pt, ch, pl, width, pr)
+
+    # Bottom area: value1 (from baseline up to v1)
+    points1 =
+      data
+      |> Enum.with_index()
+      |> Enum.map(fn {{_label, v1, _v2}, i} ->
+        x = pl + i / max(count - 1, 1) * cw
+        y = pt + ch - to_number(v1) / max_val * ch
+        {r(x), r(y)}
+      end)
+
+    # Top area: stacked (from v1 up to v1+v2)
+    points2 =
+      data
+      |> Enum.with_index()
+      |> Enum.map(fn {{_label, v1, v2}, i} ->
+        x = pl + i / max(count - 1, 1) * cw
+        y = pt + ch - (to_number(v1) + to_number(v2)) / max_val * ch
+        {r(x), r(y)}
+      end)
+
+    {first_x, _} = List.first(points1)
+    {last_x, _} = List.last(points1)
+
+    # Area 1: bottom layer (v1 from baseline)
+    area1_path = catmull_rom_area_path(points1, baseline_y, first_x, last_x)
+    curve1_path = catmull_rom_to_bezier_path(points1)
+
+    # Area 2: top layer (v1+v2 from baseline)
+    area2_path = catmull_rom_area_path(points2, baseline_y, first_x, last_x)
+    curve2_path = catmull_rom_to_bezier_path(points2)
+
+    label_step = max(div(count, 12), 1)
+
+    labels =
+      data
+      |> Enum.with_index()
+      |> Enum.map(fn {{label, _, _}, i} ->
+        x = pl + i / max(count - 1, 1) * cw
+        short_label = label |> to_string() |> String.slice(0, 3)
+        %{label: short_label, x: r(x), show: rem(i, label_step) == 0 or i == count - 1}
+      end)
+
+    assigns =
+      assign(assigns,
+        svg_width: width,
+        chart_height: ch,
+        pt: pt,
+        grid: grid,
+        area1_path: area1_path,
+        curve1_path: curve1_path,
+        area2_path: area2_path,
+        curve2_path: curve2_path,
+        labels: labels
+      )
+
+    ~H"""
+    <svg data-exo="area-chart-stacked" viewBox={"0 0 #{@svg_width} #{@height}"} preserveAspectRatio="xMidYMid meet" style="width:100%;">
+      <defs>
+        <linearGradient id={"#{@id}-grad1"} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="5%" stop-color={@color1} stop-opacity="0.8" />
+          <stop offset="95%" stop-color={@color1} stop-opacity="0.1" />
+        </linearGradient>
+        <linearGradient id={"#{@id}-grad2"} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="5%" stop-color={@color2} stop-opacity="0.8" />
+          <stop offset="95%" stop-color={@color2} stop-opacity="0.1" />
+        </linearGradient>
+      </defs>
+      <%= for {gy, x1, x2} <- @grid do %>
+        <line x1={x1} y1={gy} x2={x2} y2={gy} stroke="currentColor" stroke-opacity="0.1" />
+      <% end %>
+      <%!-- Top stacked area rendered first (behind) --%>
+      <path d={@area2_path} fill={"url(##{@id}-grad2)"} fill-opacity="0.4" />
+      <path d={@curve2_path} fill="none" stroke={@color2} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      <%!-- Bottom area rendered on top --%>
+      <path d={@area1_path} fill={"url(##{@id}-grad1)"} fill-opacity="0.4" />
+      <path d={@curve1_path} fill="none" stroke={@color1} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      <%= for lbl <- @labels do %>
+        <text :if={lbl.show} x={lbl.x} y={@pt + @chart_height + 18} text-anchor="middle" fill="currentColor" fill-opacity="0.45" font-size="12">{lbl.label}</text>
+      <% end %>
+    </svg>
+    """
+  end
+
+  # --- Private helpers for pie/donut/radar/radial ---
+
+  defp build_pie_slices(data, total, cx, cy, outer_r, _inner_r) do
+    {slices, _} =
+      Enum.reduce(data, {[], -:math.pi() / 2}, fn {label, value, color}, {acc, start_angle} ->
+        v = to_number(value)
+        sweep = v / total * 2 * :math.pi()
+        end_angle = start_angle + sweep
+
+        path =
+          if sweep >= 2 * :math.pi() - 0.001 do
+            # Full circle
+            "M#{r(cx)},#{r(cy - outer_r)}" <>
+              "A#{r(outer_r)},#{r(outer_r)} 0 1 1 #{r(cx - 0.001)},#{r(cy - outer_r)}" <>
+              "Z"
+          else
+            x1 = cx + outer_r * :math.cos(start_angle)
+            y1 = cy + outer_r * :math.sin(start_angle)
+            x2 = cx + outer_r * :math.cos(end_angle)
+            y2 = cy + outer_r * :math.sin(end_angle)
+            large_arc = if sweep > :math.pi(), do: 1, else: 0
+
+            "M#{r(cx)},#{r(cy)}" <>
+              "L#{r(x1)},#{r(y1)}" <>
+              "A#{r(outer_r)},#{r(outer_r)} 0 #{large_arc} 1 #{r(x2)},#{r(y2)}" <>
+              "Z"
+          end
+
+        slice = %{label: label, value: value, color: color, path: path}
+        {acc ++ [slice], end_angle}
+      end)
+
+    slices
+  end
+
+  defp build_donut_slices(data, total, cx, cy, outer_r, inner_r) do
+    {slices, _} =
+      Enum.reduce(data, {[], -:math.pi() / 2}, fn {label, value, color}, {acc, start_angle} ->
+        v = to_number(value)
+        sweep = v / total * 2 * :math.pi()
+        end_angle = start_angle + sweep
+
+        path =
+          if sweep >= 2 * :math.pi() - 0.001 do
+            # Full donut ring
+            "M#{r(cx)},#{r(cy - outer_r)}" <>
+              "A#{r(outer_r)},#{r(outer_r)} 0 1 1 #{r(cx - 0.001)},#{r(cy - outer_r)}" <>
+              "M#{r(cx)},#{r(cy - inner_r)}" <>
+              "A#{r(inner_r)},#{r(inner_r)} 0 1 0 #{r(cx - 0.001)},#{r(cy - inner_r)}" <>
+              "Z"
+          else
+            ox1 = cx + outer_r * :math.cos(start_angle)
+            oy1 = cy + outer_r * :math.sin(start_angle)
+            ox2 = cx + outer_r * :math.cos(end_angle)
+            oy2 = cy + outer_r * :math.sin(end_angle)
+            ix1 = cx + inner_r * :math.cos(start_angle)
+            iy1 = cy + inner_r * :math.sin(start_angle)
+            ix2 = cx + inner_r * :math.cos(end_angle)
+            iy2 = cy + inner_r * :math.sin(end_angle)
+            large_arc = if sweep > :math.pi(), do: 1, else: 0
+
+            "M#{r(ox1)},#{r(oy1)}" <>
+              "A#{r(outer_r)},#{r(outer_r)} 0 #{large_arc} 1 #{r(ox2)},#{r(oy2)}" <>
+              "L#{r(ix2)},#{r(iy2)}" <>
+              "A#{r(inner_r)},#{r(inner_r)} 0 #{large_arc} 0 #{r(ix1)},#{r(iy1)}" <>
+              "Z"
+          end
+
+        slice = %{label: label, value: value, color: color, path: path}
+        {acc ++ [slice], end_angle}
+      end)
+
+    slices
+  end
+
+  defp polygon_points(n, cx, cy, radius) do
+    Enum.map(0..(n - 1), fn i ->
+      angle = -:math.pi() / 2 + 2 * :math.pi() * i / n
+      x = cx + radius * :math.cos(angle)
+      y = cy + radius * :math.sin(angle)
+      "#{r(x)},#{r(y)}"
+    end)
+    |> Enum.join(" ")
+  end
+
+  defp arc_path(cx, cy, r_inner, r_outer, start_angle, end_angle) do
+    # Outer arc start/end
+    ox1 = cx + r_outer * :math.cos(start_angle)
+    oy1 = cy + r_outer * :math.sin(start_angle)
+    ox2 = cx + r_outer * :math.cos(end_angle)
+    oy2 = cy + r_outer * :math.sin(end_angle)
+    # Inner arc start/end
+    ix1 = cx + r_inner * :math.cos(start_angle)
+    iy1 = cy + r_inner * :math.sin(start_angle)
+    ix2 = cx + r_inner * :math.cos(end_angle)
+    iy2 = cy + r_inner * :math.sin(end_angle)
+    sweep = end_angle - start_angle
+    large_arc = if sweep > :math.pi(), do: 1, else: 0
+
+    "M#{r(ox1)},#{r(oy1)}" <>
+      "A#{r(r_outer)},#{r(r_outer)} 0 #{large_arc} 1 #{r(ox2)},#{r(oy2)}" <>
+      "L#{r(ix2)},#{r(iy2)}" <>
+      "A#{r(r_inner)},#{r(r_inner)} 0 #{large_arc} 0 #{r(ix1)},#{r(iy1)}" <>
+      "Z"
+  end
 end
