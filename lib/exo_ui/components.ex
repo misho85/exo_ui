@@ -155,6 +155,7 @@ defmodule ExoUI.Components do
     """
   end
 
+  # Deprecated: use select/1 instead
   def input(%{type: "select"} = assigns) do
     ~H"""
     <div data-exo="field">
@@ -881,6 +882,7 @@ defmodule ExoUI.Components do
   slot :trigger, required: true
   slot :item, required: true
 
+  # @deprecated "Use dropdown_menu/1 instead"
   def dropdown(assigns) do
     assigns = assign_new(assigns, :id, fn -> "dropdown-#{System.unique_integer([:positive])}" end)
 
