@@ -31,6 +31,7 @@
 :where([data-exo="progress-bar-header"]) {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: var(--exo-text-sm);
   color: var(--exo-foreground);
   margin-bottom: var(--exo-space-2);
@@ -39,20 +40,35 @@
 :where([data-exo="progress-bar-count"]) {
   font-weight: 600;
   font-variant-numeric: tabular-nums;
+  font-size: var(--exo-text-sm);
+  color: var(--exo-muted-foreground);
 }
 
 :where([data-exo="progress-bar-track"]) {
+  position: relative;
   width: 100%;
-  height: 0.75rem;
+  height: 1.5rem;
   background: var(--exo-muted);
-  border-radius: 9999px;
+  border-radius: var(--exo-radius);
   overflow: hidden;
 }
 
 :where([data-exo="progress-bar-fill"]) {
   height: 100%;
-  border-radius: 9999px;
+  border-radius: var(--exo-radius);
   transition: width 300ms var(--exo-easing);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 0.5rem;
+}
+
+:where([data-exo="progress-bar-fill-label"]) {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: white;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
 }
 
 :where([data-exo="chart-empty"]) {
