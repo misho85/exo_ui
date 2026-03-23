@@ -181,9 +181,7 @@ defmodule ExoUI.Charts do
         <span data-exo="progress-bar-count">{@pct_label}</span>
       </div>
       <div data-exo="progress-bar-track">
-        <div data-exo="progress-bar-fill" style={"width: max(#{@pct}%, 2rem); background: #{@color};"}>
-          <span :if={@pct >= 10} data-exo="progress-bar-fill-label">{@pct_label}</span>
-        </div>
+        <div data-exo="progress-bar-fill" style={"width: #{@pct}%; background: #{@color};"} />
       </div>
     </div>
     """
