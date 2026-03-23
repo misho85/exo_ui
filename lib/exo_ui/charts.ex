@@ -1,41 +1,16 @@
 defmodule ExoUI.Charts do
   @moduledoc """
-  SVG chart components for ExoUI.
-  Styled after shadcn/ui chart conventions: rounded bars, minimal axes,
-  muted chrome, vivid data colors, gradient fills.
+  SVG chart components styled after shadcn/ui conventions.
+  Minimal chrome: no axis lines, no grid, no y-axis labels.
+  Only data bars/lines and x-axis labels.
   """
 
   use Phoenix.Component
 
-  # --- Private helpers ---
-
   defp to_number(n) when is_float(n), do: n
   defp to_number(n) when is_integer(n), do: n * 1.0
-
-  defp to_number(%{__struct__: Decimal} = d) do
-    apply(Decimal, :to_float, [d])
-  end
-
+  defp to_number(%{__struct__: Decimal} = d), do: apply(Decimal, :to_float, [d])
   defp to_number(_), do: 0.0
-
-  defp format_axis(value) when is_float(value) do
-    cond do
-      value >= 1_000_000 -> "#{:erlang.float_to_binary(value / 1_000_000, decimals: 1)}M"
-      value >= 1_000 -> "#{:erlang.float_to_binary(value / 1_000, decimals: 1)}K"
-      value >= 10 -> :erlang.float_to_binary(value, decimals: 0)
-      true -> :erlang.float_to_binary(value, decimals: 1)
-    end
-  end
-
-  defp format_axis(value) when is_integer(value) do
-    cond do
-      value >= 1_000_000 -> "#{div(value, 1_000_000)}M"
-      value >= 1_000 -> "#{:erlang.float_to_binary(value / 1_000, decimals: 1)}K"
-      true -> to_string(value)
-    end
-  end
-
-  defp format_axis(value), do: to_string(value)
 
   defp format_tooltip(value) when is_float(value),
     do: :erlang.float_to_binary(value, decimals: 2)
@@ -55,13 +30,9 @@ defmodule ExoUI.Charts do
 
   defp truncate_label(label, max_len) do
     label = to_string(label)
-
-    if String.length(label) > max_len,
-      do: String.slice(label, 0, max_len - 1) <> "…",
-      else: label
+    if String.length(label) > max_len, do: String.slice(label, 0, max_len - 1) <> "…", else: label
   end
 
-  # Attempt smooth (catmull-rom → SVG cubic bezier) curve through points
   defp r(v), do: Float.round(v * 1.0, 1)
 
   # --- trend_badge ---
@@ -79,14 +50,11 @@ defmodule ExoUI.Charts do
         previous == 0 -> {0.0, :flat}
         true ->
           change = (current - previous) / previous * 100
-
-          dir =
-            cond do
-              change > 0 -> :up
-              change < 0 -> :down
-              true -> :flat
-            end
-
+          dir = cond do
+            change > 0 -> :up
+            change < 0 -> :down
+            true -> :flat
+          end
           {abs(Float.round(change, 1)), dir}
       end
 
@@ -131,21 +99,15 @@ defmodule ExoUI.Charts do
         |> Enum.map(fn {v, i} ->
           x = pad + i / max(count - 1, 1) * w
           y = pad + h - (v - min_val) / range * h
-          {Float.round(x * 1.0, 1), Float.round(y * 1.0, 1)}
+          {r(x), r(y)}
         end)
 
       line_points = Enum.map_join(points, " ", fn {x, y} -> "#{x},#{y}" end)
-      {fx, _fy} = List.first(points)
+      {fx, _} = List.first(points)
       area_points = line_points <> " #{r(pad + w)},#{r(pad + h)} #{r(fx)},#{r(pad + h)}"
-
       id = "spark-#{System.unique_integer([:positive])}"
 
-      assigns =
-        assign(assigns,
-          id: id,
-          line_points: line_points,
-          area_points: area_points
-        )
+      assigns = assign(assigns, id: id, line_points: line_points, area_points: area_points)
 
       ~H"""
       <svg data-exo="sparkline" viewBox={"0 0 #{@width} #{@height}"} width={@width} height={@height} style="display:inline-block;">
@@ -188,8 +150,7 @@ defmodule ExoUI.Charts do
   end
 
   # --- bar_chart ---
-  # shadcn style: rounded bars (rx=8), no axis lines, no tick marks,
-  # only subtle horizontal grid, muted labels
+  # shadcn: no grid, no y-axis, no axis lines, only rounded bars + x labels
 
   attr :data, :list, required: true
   attr :height, :integer, default: 200
@@ -206,20 +167,14 @@ defmodule ExoUI.Charts do
       max_val = if max_val == 0, do: 1, else: max_val
       bar_count = length(data)
       width = 600
-      pl = 44
-      pr = 16
-      pb = 32
-      pt = 20
+      pl = 12
+      pr = 12
+      pb = 28
+      pt = 8
       cw = width - pl - pr
       ch = height - pb - pt
-      bw = max(cw / bar_count * 0.6, 4)
+      bw = max(cw / bar_count * 0.65, 4)
       gap = cw / bar_count
-
-      grid_lines =
-        Enum.map(0..4, fn i ->
-          frac = i / 4
-          %{y: pt + ch * (1 - frac), label: format_axis(max_val * frac)}
-        end)
 
       bars =
         data
@@ -239,9 +194,7 @@ defmodule ExoUI.Charts do
           bars: bars,
           svg_width: width,
           chart_height: ch,
-          pl: pl,
           pt: pt,
-          grid_lines: grid_lines,
           label_step: label_step,
           bar_count: bar_count,
           bw: bw
@@ -249,18 +202,11 @@ defmodule ExoUI.Charts do
 
       ~H"""
       <svg data-exo="bar-chart" viewBox={"0 0 #{@svg_width} #{@height}"} preserveAspectRatio="xMidYMid meet" style="width:100%;">
-        <%!-- Horizontal grid lines only (no vertical, no axis line) --%>
-        <%= for gl <- @grid_lines do %>
-          <line x1={@pl} y1={gl.y} x2={@svg_width - @pl + 28} y2={gl.y} stroke="currentColor" stroke-opacity="0.08" />
-          <text x={@pl - 8} y={gl.y + 4} text-anchor="end" fill="currentColor" fill-opacity="0.5" font-size="12">{gl.label}</text>
-        <% end %>
-        <%!-- Bars with full rounding --%>
         <%= for {bar, idx} <- Enum.with_index(@bars) do %>
           <rect x={bar.x} y={bar.y} width={bar.width} height={max(bar.height, 0)} fill={@color} rx="8" ry="8">
             <title>{bar.label}: {format_tooltip(bar.value)}</title>
           </rect>
-          <%!-- Bottom labels --%>
-          <text :if={rem(idx, @label_step) == 0 or idx == @bar_count - 1} x={bar.x + @bw / 2} y={@pt + @chart_height + 18} text-anchor="middle" fill="currentColor" fill-opacity="0.5" font-size="12">{bar.label}</text>
+          <text :if={rem(idx, @label_step) == 0 or idx == @bar_count - 1} x={bar.x + @bw / 2} y={@pt + @chart_height + 18} text-anchor="middle" fill="currentColor" fill-opacity="0.45" font-size="12">{bar.label}</text>
         <% end %>
       </svg>
       """
@@ -268,6 +214,7 @@ defmodule ExoUI.Charts do
   end
 
   # --- horizontal_bar_chart ---
+  # shadcn: category label on left, rounded bar, no axis
 
   attr :data, :list, required: true
   attr :height, :integer, default: 200
@@ -283,9 +230,8 @@ defmodule ExoUI.Charts do
       max_val = if max_val == 0, do: 1, else: max_val
       row_height = 36
       label_width = 80
-      value_width = 50
       width = 600
-      chart_width = width - label_width - value_width
+      chart_width = width - label_width - 12
 
       rows =
         data
@@ -309,11 +255,10 @@ defmodule ExoUI.Charts do
       ~H"""
       <svg data-exo="h-bar-chart" viewBox={"0 0 #{@svg_width} #{@total_height}"} preserveAspectRatio="xMidYMid meet" style="width:100%;">
         <%= for row <- @rows do %>
-          <text x={@label_width - 12} y={row.y + 23} text-anchor="end" fill="currentColor" fill-opacity="0.6" font-size="12">{truncate_label(row.label, 12)}</text>
+          <text x={@label_width - 12} y={row.y + 23} text-anchor="end" fill="currentColor" fill-opacity="0.45" font-size="12">{truncate_label(row.label, 12)}</text>
           <rect x={@label_width} y={row.y + 8} width={max(row.bar_width, 0)} height="20" fill={@color} rx="6" ry="6">
             <title>{row.label}: {format_tooltip(row.value)}</title>
           </rect>
-          <text x={@label_width + row.bar_width + 8} y={row.y + 23} fill="currentColor" fill-opacity="0.7" font-size="12" font-weight="500">{format_tooltip(row.value)}</text>
         <% end %>
       </svg>
       """
@@ -321,8 +266,7 @@ defmodule ExoUI.Charts do
   end
 
   # --- area_chart ---
-  # shadcn style: smooth natural curves, gradient fill 0.8→0.1,
-  # no axis lines, horizontal grid only
+  # shadcn: no grid, no y-axis, gradient fill, smooth line, only x labels
 
   attr :data, :list, required: true
   attr :height, :integer, default: 200
@@ -344,18 +288,12 @@ defmodule ExoUI.Charts do
       max_val = if max_val == 0, do: 1, else: max_val
       count = length(values)
       width = 600
-      pl = 44
-      pr = 16
-      pt = 10
-      pb = 32
+      pl = 12
+      pr = 12
+      pt = 8
+      pb = 28
       cw = width - pl - pr
       ch = height - pt - pb
-
-      grid_lines =
-        Enum.map(0..4, fn i ->
-          frac = i / 4
-          %{y: pt + ch * (1 - frac), label: format_axis(max_val * frac)}
-        end)
 
       points =
         data
@@ -363,7 +301,7 @@ defmodule ExoUI.Charts do
         |> Enum.map(fn {{_label, value}, i} ->
           x = pl + i / max(count - 1, 1) * cw
           y = pt + ch - to_number(value) / max_val * ch
-          {Float.round(x * 1.0, 1), Float.round(y * 1.0, 1)}
+          {r(x), r(y)}
         end)
 
       line_points = Enum.map_join(points, " ", fn {x, y} -> "#{x},#{y}" end)
@@ -375,16 +313,14 @@ defmodule ExoUI.Charts do
         |> Enum.with_index()
         |> Enum.map(fn {{label, _}, i} ->
           x = pl + i / max(count - 1, 1) * cw
-          %{label: label, x: Float.round(x * 1.0, 1), show: rem(i, label_step) == 0 or i == count - 1}
+          %{label: label, x: r(x), show: rem(i, label_step) == 0 or i == count - 1}
         end)
 
       assigns =
         assign(assigns,
           svg_width: width,
           chart_height: ch,
-          pl: pl,
           pt: pt,
-          grid_lines: grid_lines,
           line_points: line_points,
           area_points: area_points,
           labels: labels
@@ -398,18 +334,10 @@ defmodule ExoUI.Charts do
             <stop offset="95%" stop-color={@color} stop-opacity="0.05" />
           </linearGradient>
         </defs>
-        <%!-- Horizontal grid lines only --%>
-        <%= for gl <- @grid_lines do %>
-          <line x1={@pl} y1={gl.y} x2={@svg_width - 16} y2={gl.y} stroke="currentColor" stroke-opacity="0.08" />
-          <text x={@pl - 8} y={gl.y + 4} text-anchor="end" fill="currentColor" fill-opacity="0.5" font-size="12">{gl.label}</text>
-        <% end %>
-        <%!-- Gradient fill --%>
         <polygon points={@area_points} fill={"url(##{@id}-grad)"} fill-opacity="0.4" />
-        <%!-- Line --%>
         <polyline points={@line_points} fill="none" stroke={@color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-        <%!-- Bottom labels --%>
         <%= for lbl <- @labels do %>
-          <text :if={lbl.show} x={lbl.x} y={@pt + @chart_height + 18} text-anchor="middle" fill="currentColor" fill-opacity="0.5" font-size="12">{lbl.label}</text>
+          <text :if={lbl.show} x={lbl.x} y={@pt + @chart_height + 18} text-anchor="middle" fill="currentColor" fill-opacity="0.45" font-size="12">{lbl.label}</text>
         <% end %>
       </svg>
       """
@@ -417,6 +345,7 @@ defmodule ExoUI.Charts do
   end
 
   # --- stacked_bar_chart ---
+  # shadcn: no grid, no y-axis, rounded bars, legend below
 
   attr :data, :list, required: true
   attr :height, :integer, default: 200
@@ -442,20 +371,14 @@ defmodule ExoUI.Charts do
       max_val = if max_val == 0, do: 1, else: max_val
       count = length(data)
       width = 600
-      pl = 44
-      pr = 16
-      pb = 56
-      pt = 20
+      pl = 12
+      pr = 12
+      pb = 52
+      pt = 8
       cw = width - pl - pr
       ch = height - pb - pt
-      bw = max(cw / count * 0.6, 4)
+      bw = max(cw / count * 0.65, 4)
       gap = cw / count
-
-      grid_lines =
-        Enum.map(0..4, fn i ->
-          frac = i / 4
-          %{y: pt + ch * (1 - frac), label: format_axis(max_val * frac)}
-        end)
 
       bars =
         data
@@ -470,15 +393,14 @@ defmodule ExoUI.Charts do
             |> Enum.reduce({[], pt + ch}, fn {k, ki}, {segs, y_cursor} ->
               v = to_number(Map.get(vals, k, 0))
               seg_h = if max_val > 0, do: v / max_val * ch, else: 0
-              # Bottom segment gets bottom rounding, top gets top rounding
-              {ry_top, ry_bottom} =
-                cond do
-                  key_count == 1 -> {8, 8}
-                  ki == key_count - 1 -> {8, 0}
-                  ki == 0 -> {0, 8}
-                  true -> {0, 0}
-                end
-              seg = %{key: k, y: y_cursor - seg_h, height: seg_h, color: Map.get(colors, k, "#999"), ry_top: ry_top, ry_bottom: ry_bottom}
+              # Bottom bar: rounded bottom, top bar: rounded top
+              rx = cond do
+                key_count == 1 -> 8
+                ki == key_count - 1 -> 8
+                ki == 0 -> 8
+                true -> 4
+              end
+              seg = %{key: k, y: y_cursor - seg_h, height: seg_h, color: Map.get(colors, k, "#999"), rx: rx}
               {[seg | segs], y_cursor - seg_h}
             end)
 
@@ -492,38 +414,34 @@ defmodule ExoUI.Charts do
           %{key: k, color: Map.get(colors, k, "#999"), label: to_string(k)}
         end)
 
+      # Center legend
+      legend_total_width = length(legend) * 100
+      legend_start = (width - legend_total_width) / 2
+
       assigns =
         assign(assigns,
           bars: bars,
           svg_width: width,
           chart_height: ch,
-          pl: pl,
           pt: pt,
           bw: bw,
-          grid_lines: grid_lines,
           label_step: label_step,
           bar_count: count,
-          legend: legend
+          legend: legend,
+          legend_start: legend_start
         )
 
       ~H"""
       <svg data-exo="stacked-bar-chart" viewBox={"0 0 #{@svg_width} #{@height}"} preserveAspectRatio="xMidYMid meet" style="width:100%;">
-        <%!-- Horizontal grid lines --%>
-        <%= for gl <- @grid_lines do %>
-          <line x1={@pl} y1={gl.y} x2={@svg_width - 16} y2={gl.y} stroke="currentColor" stroke-opacity="0.08" />
-          <text x={@pl - 8} y={gl.y + 4} text-anchor="end" fill="currentColor" fill-opacity="0.5" font-size="12">{gl.label}</text>
-        <% end %>
-        <%!-- Stacked bars --%>
         <%= for {bar, idx} <- Enum.with_index(@bars) do %>
           <%= for seg <- bar.segments do %>
-            <rect x={bar.x} y={seg.y} width={@bw} height={max(seg.height, 0)} fill={seg.color} rx="4" ry="4" />
+            <rect x={bar.x} y={seg.y} width={@bw} height={max(seg.height, 0)} fill={seg.color} rx={seg.rx} ry={seg.rx} />
           <% end %>
-          <text :if={rem(idx, @label_step) == 0 or idx == @bar_count - 1} x={bar.x + @bw / 2} y={@pt + @chart_height + 18} text-anchor="middle" fill="currentColor" fill-opacity="0.5" font-size="12">{bar.label}</text>
+          <text :if={rem(idx, @label_step) == 0 or idx == @bar_count - 1} x={bar.x + @bw / 2} y={@pt + @chart_height + 18} text-anchor="middle" fill="currentColor" fill-opacity="0.45" font-size="12">{bar.label}</text>
         <% end %>
-        <%!-- Legend --%>
         <%= for {item, i} <- Enum.with_index(@legend) do %>
-          <rect x={@pl + i * 110} y={@pt + @chart_height + 34} width="10" height="10" rx="2" fill={item.color} />
-          <text x={@pl + i * 110 + 16} y={@pt + @chart_height + 43} fill="currentColor" fill-opacity="0.6" font-size="12">{item.label}</text>
+          <rect x={@legend_start + i * 100} y={@pt + @chart_height + 32} width="10" height="10" rx="2" fill={item.color} />
+          <text x={@legend_start + i * 100 + 16} y={@pt + @chart_height + 41} fill="currentColor" fill-opacity="0.5" font-size="12">{item.label}</text>
         <% end %>
       </svg>
       """
