@@ -670,6 +670,210 @@ defmodule ExoUI.Components do
     """
   end
 
+  # --- combobox ---
+
+  attr :id, :string, required: true
+  attr :name, :any
+  attr :value, :any, default: nil
+  attr :field, Phoenix.HTML.FormField, default: nil
+  attr :label, :string, default: nil
+  attr :prompt, :string, default: nil
+  attr :trigger, :string, values: ~w(button input), default: "button"
+  attr :filter, :string, values: ~w(client server), default: "server"
+  attr :on_filter, :string, default: "combobox-filter"
+  attr :debounce, :integer, default: 300
+  attr :multiple, :boolean, default: false
+  attr :creatable, :boolean, default: false
+  attr :on_create, :string, default: "combobox-create"
+  attr :clearable, :boolean, default: true
+  attr :loading, :boolean, default: false
+  attr :errors, :list, default: []
+  attr :disabled, :boolean, default: false
+  attr :side, :string, values: ~w(top bottom left right), default: "bottom"
+  attr :align, :string, values: ~w(start center end), default: "start"
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  slot :option do
+    attr :value, :any, required: true
+    attr :icon, :string
+    attr :disabled, :boolean
+    attr :group, :string
+  end
+
+  slot :empty
+
+  def combobox(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
+    errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
+
+    assigns
+    |> assign(field: nil, id: assigns[:id] || field.id)
+    |> assign(:errors, Enum.map(errors, &translate_error(&1)))
+    |> assign_new(:name, fn -> if assigns.multiple, do: field.name <> "[]", else: field.name end)
+    |> assign_new(:value, fn -> field.value end)
+    |> combobox()
+  end
+
+  def combobox(%{trigger: "input"} = assigns) do
+    assigns = assign(assigns, label_id: if(assigns[:label], do: "#{assigns.id}-label"))
+
+    ~H"""
+    <div data-exo="field">
+      <label :if={@label} data-exo="label" id={@label_id}>{@label}</label>
+      <div
+        data-exo="popover"
+        phx-hook="ExoCombobox"
+        id={"#{@id}-combobox"}
+        data-filter={@filter}
+        data-on-filter={@on_filter}
+        data-debounce={to_string(@debounce)}
+        data-trigger="input"
+      >
+        <input
+          type="text"
+          data-exo="popover-trigger"
+          data-exo-combobox="input-trigger"
+          role="combobox"
+          placeholder={@prompt}
+          autocomplete="off"
+          aria-haspopup="listbox"
+          aria-controls={"#{@id}-listbox"}
+          style={"anchor-name: --combobox-#{@id}"}
+          disabled={@disabled}
+        />
+        <div
+          id={@id}
+          popover="manual"
+          data-exo="popover-content"
+          data-side={@side}
+          data-align={@align}
+          style={"position-anchor: --combobox-#{@id}"}
+        >
+          <div id={"#{@id}-listbox"} data-exo="combobox-list" role="listbox" aria-labelledby={@label_id}>
+            <div
+              :for={opt <- @option}
+              data-exo="combobox-option"
+              role="option"
+              data-value={opt[:value]}
+              data-selected={to_string(opt[:value]) == to_string(@value) && ""}
+              data-disabled={opt[:disabled] && ""}
+              aria-selected={to_string(to_string(opt[:value]) == to_string(@value))}
+              tabindex="-1"
+            >
+              <span :if={opt[:icon]} data-exo="combobox-option-icon"><.icon name={opt.icon} class="size-4" /></span>
+              <span :if={to_string(opt[:value]) == to_string(@value)} data-exo="combobox-check"><.icon name="check" class="size-4" /></span>
+              {render_slot(opt)}
+            </div>
+          </div>
+          <div :for={empty <- @empty} data-exo="combobox-empty">{render_slot(empty)}</div>
+          <div data-exo="combobox-loading" style={if !@loading, do: "display:none"}>
+            <span data-exo="combobox-spinner">Loading...</span>
+          </div>
+        </div>
+      </div>
+      <input type="hidden" name={@name} value={@value || ""} />
+      <.field_errors errors={@errors} />
+    </div>
+    """
+  end
+
+  def combobox(assigns) do
+    selected_opt =
+      Enum.find(assigns.option, fn opt ->
+        to_string(opt[:value]) == to_string(assigns[:value])
+      end)
+
+    label_id = if assigns[:label], do: "#{assigns.id}-label"
+
+    assigns =
+      assign(assigns,
+        selected_opt: selected_opt,
+        label_id: label_id
+      )
+
+    ~H"""
+    <div data-exo="field">
+      <label :if={@label} data-exo="label" id={@label_id}>{@label}</label>
+      <div
+        data-exo="popover"
+        phx-hook="ExoCombobox"
+        id={"#{@id}-combobox"}
+        data-filter={@filter}
+        data-on-filter={@on_filter}
+        data-debounce={to_string(@debounce)}
+        data-trigger="button"
+      >
+        <button
+          type="button"
+          popovertarget={@id}
+          data-exo="popover-trigger"
+          data-exo-combobox="trigger"
+          data-invalid={@errors != [] && ""}
+          aria-haspopup="listbox"
+          aria-labelledby={@label_id}
+          style={"anchor-name: --combobox-#{@id}"}
+          disabled={@disabled}
+        >
+          <span data-exo="combobox-value">
+            {if @selected_opt, do: render_slot(@selected_opt), else: @prompt}
+          </span>
+          <button
+            :if={@clearable && @value}
+            type="button"
+            data-exo="combobox-clear"
+            aria-label="Clear"
+          >
+            &#x2715;
+          </button>
+          <svg data-exo="combobox-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5-5 5 5"/><path d="m7 9 5 5 5-5"/></svg>
+        </button>
+        <div
+          id={@id}
+          popover="auto"
+          data-exo="popover-content"
+          data-side={@side}
+          data-align={@align}
+          style={"position-anchor: --combobox-#{@id}"}
+        >
+          <input
+            type="text"
+            data-exo="combobox-search"
+            role="combobox"
+            placeholder={@prompt}
+            aria-controls={"#{@id}-listbox"}
+            autocomplete="off"
+          />
+          <div id={"#{@id}-listbox"} data-exo="combobox-list" role="listbox" aria-labelledby={@label_id}>
+            <div
+              :for={opt <- @option}
+              data-exo="combobox-option"
+              role="option"
+              data-value={opt[:value]}
+              data-selected={to_string(opt[:value]) == to_string(@value) && ""}
+              data-disabled={opt[:disabled] && ""}
+              aria-selected={to_string(to_string(opt[:value]) == to_string(@value))}
+              tabindex="-1"
+            >
+              <span :if={opt[:icon]} data-exo="combobox-option-icon"><.icon name={opt.icon} class="size-4" /></span>
+              <span :if={to_string(opt[:value]) == to_string(@value)} data-exo="combobox-check"><.icon name="check" class="size-4" /></span>
+              {render_slot(opt)}
+            </div>
+          </div>
+          <div :for={empty <- @empty} data-exo="combobox-empty">{render_slot(empty)}</div>
+          <div data-exo="combobox-loading" style={if !@loading, do: "display:none"}>
+            <span data-exo="combobox-spinner">Loading...</span>
+          </div>
+          <div :if={@creatable} data-exo="combobox-create" hidden phx-click={@on_create}>
+            Create "<span data-exo="combobox-create-query"></span>"
+          </div>
+        </div>
+      </div>
+      <input type="hidden" name={@name} value={@value || ""} />
+      <.field_errors errors={@errors} />
+    </div>
+    """
+  end
+
   attr :id, :string, default: nil
   attr :position, :string, values: ~w(bottom-start bottom-end), default: "bottom-end"
   attr :class, :string, default: nil

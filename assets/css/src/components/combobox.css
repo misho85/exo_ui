@@ -1,0 +1,182 @@
+/* Use select trigger styles as base - combobox trigger looks the same */
+:where([data-exo-combobox="trigger"]) {
+  display: flex;
+  align-items: center;
+  gap: var(--exo-space-2);
+  width: 100%;
+  padding: var(--exo-space-2) var(--exo-space-3);
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  color: var(--exo-foreground);
+  background: var(--exo-background);
+  border: 1px solid var(--exo-input);
+  border-radius: var(--exo-radius);
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--exo-duration) var(--exo-easing),
+              box-shadow var(--exo-duration) var(--exo-easing);
+}
+
+:where([data-exo-combobox="trigger"]):focus {
+  border-color: var(--exo-ring);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--exo-ring) 25%, transparent);
+}
+
+:where([data-exo-combobox="input-trigger"]) {
+  width: 100%;
+  padding: var(--exo-space-2) var(--exo-space-3);
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  color: var(--exo-foreground);
+  background: var(--exo-background);
+  border: 1px solid var(--exo-input);
+  border-radius: var(--exo-radius);
+  outline: none;
+  transition: border-color var(--exo-duration) var(--exo-easing),
+              box-shadow var(--exo-duration) var(--exo-easing);
+}
+
+:where([data-exo-combobox="input-trigger"]):focus {
+  border-color: var(--exo-ring);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--exo-ring) 25%, transparent);
+}
+
+:where([data-exo="combobox-value"]) {
+  flex: 1;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:where([data-exo="combobox-icon"]) {
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+
+:where([data-exo="combobox-search"]) {
+  width: 100%;
+  padding: var(--exo-space-2) var(--exo-space-3);
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  border: none;
+  border-bottom: 1px solid var(--exo-border);
+  outline: none;
+  background: transparent;
+  color: var(--exo-foreground);
+}
+
+:where([data-exo="combobox-list"]) {
+  display: flex;
+  flex-direction: column;
+  max-height: 15rem;
+  overflow-y: auto;
+  padding: var(--exo-space-1);
+}
+
+:where([data-exo="combobox-option"]) {
+  display: flex;
+  align-items: center;
+  gap: var(--exo-space-2);
+  padding: var(--exo-space-2) var(--exo-space-3);
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  color: var(--exo-foreground);
+  cursor: pointer;
+  border-radius: calc(var(--exo-radius) - 2px);
+  transition: background var(--exo-duration) var(--exo-easing);
+}
+
+:where([data-exo="combobox-option"]):hover {
+  background: var(--exo-muted);
+}
+
+:where([data-exo="combobox-option"][data-selected]) {
+  font-weight: 500;
+}
+
+:where([data-exo="combobox-option"][data-disabled]) {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+:where([data-exo="combobox-clear"]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--exo-muted-foreground);
+  padding: 0;
+  font-size: var(--exo-text-xs);
+}
+
+:where([data-exo="combobox-clear"]):hover {
+  color: var(--exo-foreground);
+}
+
+:where([data-exo="combobox-empty"]) {
+  padding: var(--exo-space-4) var(--exo-space-3);
+  text-align: center;
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  color: var(--exo-muted-foreground);
+}
+
+:where([data-exo="combobox-loading"]) {
+  padding: var(--exo-space-4) var(--exo-space-3);
+  text-align: center;
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  color: var(--exo-muted-foreground);
+}
+
+:where([data-exo="combobox-create"]) {
+  padding: var(--exo-space-2) var(--exo-space-3);
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  color: var(--exo-muted-foreground);
+  cursor: pointer;
+  border-radius: calc(var(--exo-radius) - 2px);
+  transition: background var(--exo-duration) var(--exo-easing);
+}
+
+:where([data-exo="combobox-create"]):hover {
+  background: var(--exo-muted);
+}
+
+/* --- Tags for multiple mode --- */
+
+:where([data-exo="combobox-tags"]) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--exo-space-1);
+  flex: 1;
+}
+
+:where([data-exo="combobox-tag"]) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--exo-space-1);
+  padding: 0 var(--exo-space-2);
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-xs);
+  background: var(--exo-muted);
+  border-radius: calc(var(--exo-radius) - 2px);
+  line-height: 1.5rem;
+}
+
+:where([data-exo="combobox-tag-remove"]) {
+  display: flex;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  color: var(--exo-muted-foreground);
+  font-size: var(--exo-text-xs);
+}
+
+:where([data-exo="combobox-tag-remove"]):hover {
+  color: var(--exo-foreground);
+}

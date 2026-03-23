@@ -3,6 +3,7 @@ import { ExoThemeToggle } from './hooks/theme_toggle.js'
 import { ExoPopover } from './hooks/popover.js'
 import { ExoDropdownMenu } from './hooks/dropdown_menu.js'
 import { ExoSelect } from './hooks/select.js'
+import { ExoCombobox } from './hooks/combobox.js'
 import { ExoTooltip } from './hooks/tooltip.js'
 
 const hooks = {
@@ -11,6 +12,7 @@ const hooks = {
   ExoPopover,
   ExoDropdownMenu,
   ExoSelect,
+  ExoCombobox,
   ExoTooltip
 }
 

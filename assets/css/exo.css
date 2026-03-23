@@ -27,6 +27,7 @@
 @import "./src/components/date-picker.css";
 @import "./src/components/charts.css";
 @import "./src/components/select.css";
+@import "./src/components/combobox.css";
 @import "./src/components/radio.css";
 @import "./src/components/accordion.css";
 @import "./src/components/breadcrumb.css";
