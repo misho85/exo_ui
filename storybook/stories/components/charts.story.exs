@@ -9,12 +9,6 @@ defmodule Storybook.Components.Charts do
       {"April", 7300}, {"May", 6700}, {"June", 8900}
     ]
 
-    monthly_multi = [
-      {"January", 4200, 2400}, {"February", 5800, 3100},
-      {"March", 5100, 2800}, {"April", 7300, 4200},
-      {"May", 6700, 3800}, {"June", 8900, 5100}
-    ]
-
     horizontal = [
       {"Chrome", 275}, {"Safari", 200}, {"Firefox", 187},
       {"Edge", 173}, {"Other", 90}
@@ -117,23 +111,6 @@ defmodule Storybook.Components.Charts do
         <div style="padding: 0 var(--exo-space-6) var(--exo-space-6); display: flex; flex-direction: column; gap: 0.25rem;">
           <p style="font-size: 0.875rem; font-weight: 500; color: var(--exo-foreground); display: flex; align-items: center; gap: 0.25rem;">Trending up by 14.3% this month <span style="color: var(--exo-success);">↗</span></p>
           <p style="font-size: 0.875rem; color: var(--exo-muted-foreground);">Last 12 months</p>
-        </div>
-      </div>
-
-      <%!-- Progress bars --%>
-      <div data-exo="card" style="display: flex; flex-direction: column;">
-        <div data-exo="card-header" style="padding-bottom: 0;">
-          <h3 data-exo="card-title">Progress</h3>
-          <p style="font-size: 0.875rem; color: var(--exo-muted-foreground);">System resource usage</p>
-        </div>
-        <div data-exo="card-body" style="flex: 1; display: flex; flex-direction: column; gap: 1rem;">
-          <ExoUI.Charts.progress_bar count={75} max={100} label="Disk" />
-          <ExoUI.Charts.progress_bar count={42} max={100} label="Memory" color="var(--exo-warning)" />
-          <ExoUI.Charts.progress_bar count={12} max={100} label="CPU" color="var(--exo-success)" />
-        </div>
-        <div style="padding: 0 var(--exo-space-6) var(--exo-space-6); display: flex; flex-direction: column; gap: 0.25rem;">
-          <p style="font-size: 0.875rem; font-weight: 500; color: var(--exo-foreground);">All systems operational</p>
-          <p style="font-size: 0.875rem; color: var(--exo-muted-foreground);">Last updated 2 minutes ago</p>
         </div>
       </div>
 
