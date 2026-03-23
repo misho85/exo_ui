@@ -1,0 +1,85 @@
+/* --- Trigger --- */
+
+:where([data-exo="popover-trigger"]) {
+  cursor: pointer;
+}
+
+/* --- Content: reset popover defaults --- */
+
+:where([data-exo="popover-content"]) {
+  margin: 0;
+  inset: auto;
+  border: 1px solid var(--exo-border);
+  border-radius: var(--exo-radius);
+  background: var(--exo-card);
+  color: var(--exo-card-foreground);
+  box-shadow: var(--exo-shadow-md);
+  padding: var(--exo-space-2);
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  position-try-fallbacks: flip-block;
+}
+
+/* --- Position-area mapping --- */
+
+:where([data-exo="popover-content"][data-side="bottom"][data-align="start"]) { position-area: block-end span-inline-end; }
+:where([data-exo="popover-content"][data-side="bottom"][data-align="center"]) { position-area: block-end; }
+:where([data-exo="popover-content"][data-side="bottom"][data-align="end"]) { position-area: block-end span-inline-start; }
+:where([data-exo="popover-content"][data-side="top"][data-align="start"]) { position-area: block-start span-inline-end; }
+:where([data-exo="popover-content"][data-side="top"][data-align="center"]) { position-area: block-start; }
+:where([data-exo="popover-content"][data-side="top"][data-align="end"]) { position-area: block-start span-inline-start; }
+:where([data-exo="popover-content"][data-side="left"]) { position-area: inline-start; }
+:where([data-exo="popover-content"][data-side="right"]) { position-area: inline-end; }
+
+/* --- Animations --- */
+
+:where([data-exo="popover-content"]):popover-open {
+  opacity: 1;
+  transform: scale(1);
+}
+
+:where([data-exo="popover-content"]) {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity var(--exo-duration) var(--exo-easing),
+              transform var(--exo-duration) var(--exo-easing),
+              overlay var(--exo-duration) allow-discrete,
+              display var(--exo-duration) allow-discrete;
+}
+
+@starting-style {
+  :where([data-exo="popover-content"]):popover-open {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+/* --- Trigger active state --- */
+
+:where([data-exo="popover"]):has(:popover-open) :where([data-exo="popover-trigger"]) {
+  /* consumers override */
+}
+
+/* --- Fallback: no anchor positioning --- */
+
+@supports not (position-area: top) {
+  :where([data-exo="popover"]) {
+    position: relative;
+  }
+  :where([data-exo="popover-content"]) {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    margin-top: var(--exo-space-1);
+  }
+  :where([data-exo="popover-content"][data-align="end"]) {
+    left: auto;
+    right: 0;
+  }
+  :where([data-exo="popover-content"][data-side="top"]) {
+    top: auto;
+    bottom: 100%;
+    margin-top: 0;
+    margin-bottom: var(--exo-space-1);
+  }
+}
