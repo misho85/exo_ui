@@ -39,12 +39,12 @@ const ExoCombobox = {
     // Input trigger: open/close via JS
     if (isInputTrigger && this._search) {
       this._onFocus = () => {
-        try { this._popover.showPopover() } catch(e) {}
+        try { this._popover.showPopover() } catch(_err) {}
       }
       this._onBlur = () => {
         setTimeout(() => {
           if (!this._popover.contains(document.activeElement) && document.activeElement !== this._search) {
-            try { this._popover.hidePopover() } catch(e) {}
+            try { this._popover.hidePopover() } catch(_err) {}
           }
         }, 200)
       }
@@ -97,7 +97,7 @@ const ExoCombobox = {
             if (idx >= 0) { this._selectOption(opts[idx]); e.preventDefault() }
             return
           case 'Escape':
-            try { this._popover.hidePopover() } catch(e) {}
+            try { this._popover.hidePopover() } catch(_err) {}
             return
           default: return
         }
@@ -135,7 +135,7 @@ const ExoCombobox = {
     if (valSpan) valSpan.textContent = opt.textContent.trim()
     // Close (unless multiple)
     if (!this.el.dataset.multiple) {
-      try { this._popover.hidePopover() } catch(e) {}
+      try { this._popover.hidePopover() } catch(_err) {}
     }
   },
   _unbind() {

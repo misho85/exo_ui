@@ -105,9 +105,6 @@ const ExoSelect = {
     // Close popover
     this._popover.hidePopover()
     this._trigger.focus()
-
-    // Push event to LiveView
-    this.pushEvent('exo:select', { id: this.el.id, value: value })
   },
 
   _typeAhead(char, options) {

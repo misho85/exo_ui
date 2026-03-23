@@ -494,12 +494,12 @@ defmodule ExoUI.Components do
     <.popover id={@id} side={@side} align={@align} haspopup="menu" class={@class} {@rest}>
       <:trigger :if={@trigger != []}>{render_slot(@trigger)}</:trigger>
       <div data-exo="dropdown-menu" role="menu" aria-label={@id}>
-        <%= for entry <- @entry do %>
+        <%= for {entry, idx} <- Enum.with_index(@entry) do %>
           <%= cond do %>
             <% entry[:type] == "separator" -> %>
               <div data-exo="dropdown-separator" role="separator" />
             <% entry[:type] == "label" -> %>
-              <span data-exo="dropdown-label" id={"#{@id}-label-#{System.unique_integer([:positive])}"} role="none">{render_slot(entry)}</span>
+              <span data-exo="dropdown-label" id={"#{@id}-label-#{idx}"} role="none">{render_slot(entry)}</span>
             <% entry[:type] == "sub_trigger" -> %>
               <button type="button" data-exo="dropdown-item" role="menuitem" popovertarget={entry.target} disabled={entry[:disabled]}>
                 <span :if={entry[:icon]} data-exo="dropdown-item-icon"><.icon name={entry.icon} class="size-4" /></span>
@@ -804,20 +804,23 @@ defmodule ExoUI.Components do
         data-debounce={to_string(@debounce)}
         data-trigger="button"
       >
-        <button
-          type="button"
-          popovertarget={@id}
-          data-exo="popover-trigger"
-          data-exo-combobox="trigger"
-          data-invalid={@errors != [] && ""}
-          aria-haspopup="listbox"
-          aria-labelledby={@label_id}
-          style={"anchor-name: --combobox-#{@id}"}
-          disabled={@disabled}
-        >
-          <span data-exo="combobox-value">
-            {if @selected_opt, do: render_slot(@selected_opt), else: @prompt}
-          </span>
+        <div data-exo="combobox-trigger-group">
+          <button
+            type="button"
+            popovertarget={@id}
+            data-exo="popover-trigger"
+            data-exo-combobox="trigger"
+            data-invalid={@errors != [] && ""}
+            aria-haspopup="listbox"
+            aria-labelledby={@label_id}
+            style={"anchor-name: --combobox-#{@id}"}
+            disabled={@disabled}
+          >
+            <span data-exo="combobox-value">
+              {if @selected_opt, do: render_slot(@selected_opt), else: @prompt}
+            </span>
+            <svg data-exo="combobox-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5-5 5 5"/><path d="m7 9 5 5 5-5"/></svg>
+          </button>
           <button
             :if={@clearable && @value}
             type="button"
@@ -826,8 +829,7 @@ defmodule ExoUI.Components do
           >
             &#x2715;
           </button>
-          <svg data-exo="combobox-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5-5 5 5"/><path d="m7 9 5 5 5-5"/></svg>
-        </button>
+        </div>
         <div
           id={@id}
           popover="auto"

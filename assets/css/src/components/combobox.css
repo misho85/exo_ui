@@ -1,4 +1,9 @@
-/* Use select trigger styles as base - combobox trigger looks the same */
+:where([data-exo="combobox-trigger-group"]) {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
 :where([data-exo-combobox="trigger"]) {
   display: flex;
   align-items: center;
