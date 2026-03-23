@@ -155,4 +155,113 @@ defmodule ExoUI.Components.ComboboxTest do
     """)
     assert html =~ ~s(data-debounce="500")
   end
+
+  test "renders label" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.combobox id="c14" name="x" label="Country">
+      <:option value="a">A</:option>
+    </.combobox>
+    """)
+    assert html =~ ~s(data-exo="label")
+    assert html =~ "Country"
+  end
+
+  test "renders errors" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.combobox id="c15" name="x" errors={["required"]}>
+      <:option value="a">A</:option>
+    </.combobox>
+    """)
+    assert html =~ ~s(data-invalid)
+    assert html =~ ~s(data-exo="field-error")
+    assert html =~ "required"
+  end
+
+  test "renders disabled trigger" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.combobox id="c16" name="x" disabled>
+      <:option value="a">A</:option>
+    </.combobox>
+    """)
+    assert html =~ ~s(disabled)
+  end
+
+  test "button trigger shows selected value in trigger" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.combobox id="c17" name="x" value="b">
+      <:option value="a">Alpha</:option>
+      <:option value="b">Beta</:option>
+    </.combobox>
+    """)
+    [trigger_part | _] = String.split(html, ~s(popover="auto"))
+    assert trigger_part =~ "Beta"
+  end
+
+  test "button trigger shows prompt when no value" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.combobox id="c18" name="x" prompt="Pick one">
+      <:option value="a">A</:option>
+    </.combobox>
+    """)
+    [trigger_part | _] = String.split(html, ~s(popover="auto"))
+    assert trigger_part =~ "Pick one"
+  end
+
+  test "input trigger has placeholder from prompt" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.combobox id="c19" name="x" trigger="input" prompt="Type here...">
+      <:option value="a">A</:option>
+    </.combobox>
+    """)
+    assert html =~ ~s(placeholder="Type here...")
+  end
+
+  test "input trigger has no popovertarget attribute" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.combobox id="c20" name="x" trigger="input">
+      <:option value="a">A</:option>
+    </.combobox>
+    """)
+    refute html =~ ~s(popovertarget)
+  end
+
+  test "defaults to bottom/start and server filter" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.combobox id="c22" name="x">
+      <:option value="a">A</:option>
+    </.combobox>
+    """)
+    assert html =~ ~s(data-side="bottom")
+    assert html =~ ~s(data-align="start")
+    assert html =~ ~s(data-filter="server")
+  end
+
+  test "clearable not shown when no value" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.combobox id="c23" name="x" clearable>
+      <:option value="a">A</:option>
+    </.combobox>
+    """)
+    refute html =~ ~s(data-exo="combobox-clear")
+  end
+
+  test "hidden input has empty value when no value set" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.combobox id="c24" name="q">
+      <:option value="a">A</:option>
+    </.combobox>
+    """)
+    assert html =~ ~s(name="q")
+    assert html =~ ~s(value="")
+  end
 end

@@ -167,4 +167,81 @@ defmodule ExoUI.Components.SelectTest do
     """)
     assert html =~ ~s(data-selected)
   end
+
+  test "shows selected option text in trigger" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.select id="s15" name="x" value="b">
+      <:option value="a">Alpha</:option>
+      <:option value="b">Beta</:option>
+    </.select>
+    """)
+    [trigger_part | _] = String.split(html, ~s(popover="auto"))
+    assert trigger_part =~ "Beta"
+  end
+
+  test "shows prompt when value matches no option" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.select id="s16" name="x" value="nonexistent" prompt="Select...">
+      <:option value="a">A</:option>
+    </.select>
+    """)
+    [trigger_part | _] = String.split(html, ~s(popover="auto"))
+    assert trigger_part =~ "Select..."
+  end
+
+  test "renders disabled trigger" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.select id="s17" name="x" disabled>
+      <:option value="a">A</:option>
+    </.select>
+    """)
+    assert html =~ ~s(disabled)
+  end
+
+  test "defaults to bottom/start alignment" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.select id="s18" name="x">
+      <:option value="a">A</:option>
+    </.select>
+    """)
+    assert html =~ ~s(data-side="bottom")
+    assert html =~ ~s(data-align="start")
+  end
+
+  test "ungrouped options have no group wrapper" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.select id="s19" name="x">
+      <:option value="a">A</:option>
+      <:option value="b">B</:option>
+    </.select>
+    """)
+    refute html =~ ~s(role="group")
+  end
+
+  test "hidden input has empty value when no value set" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.select id="s20" name="status">
+      <:option value="a">A</:option>
+    </.select>
+    """)
+    assert html =~ ~s(name="status")
+    assert html =~ ~s(value="")
+  end
+
+  test "renders with custom side and align" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.select id="s21" name="x" side="top" align="end">
+      <:option value="a">A</:option>
+    </.select>
+    """)
+    assert html =~ ~s(data-side="top")
+    assert html =~ ~s(data-align="end")
+  end
 end

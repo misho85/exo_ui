@@ -133,4 +133,80 @@ defmodule ExoUI.Components.DropdownMenuTest do
     """)
     assert html =~ ~s(aria-haspopup="menu")
   end
+
+  test "renders disabled item" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.dropdown_menu id="dd10">
+      <:trigger>Menu</:trigger>
+      <:entry disabled>Cannot click</:entry>
+    </.dropdown_menu>
+    """)
+    assert html =~ ~s(disabled)
+  end
+
+  test "renders item with href as link" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.dropdown_menu id="dd11">
+      <:trigger>Menu</:trigger>
+      <:entry href="https://example.com">External</:entry>
+    </.dropdown_menu>
+    """)
+    assert html =~ ~s(href="https://example.com")
+  end
+
+  test "renders item with patch as link" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.dropdown_menu id="dd12">
+      <:trigger>Menu</:trigger>
+      <:entry patch="/edit">Edit</:entry>
+    </.dropdown_menu>
+    """)
+    assert html =~ ~s(href="/edit")
+    assert html =~ ~s(data-phx-link="patch")
+  end
+
+  test "plain item without click still closes popover" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.dropdown_menu id="dd13">
+      <:trigger>Menu</:trigger>
+      <:entry>Just text</:entry>
+    </.dropdown_menu>
+    """)
+    assert html =~ ~s(popovertarget="dd13")
+    assert html =~ ~s(popovertargetaction="hide")
+    refute html =~ ~s(phx-click)
+  end
+
+  test "preserves entry order" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.dropdown_menu id="dd14">
+      <:trigger>Menu</:trigger>
+      <:entry>First</:entry>
+      <:entry type="separator" />
+      <:entry>Second</:entry>
+    </.dropdown_menu>
+    """)
+    first_pos = :binary.match(html, "First") |> elem(0)
+    sep_pos = :binary.match(html, "dropdown-separator") |> elem(0)
+    second_pos = :binary.match(html, "Second") |> elem(0)
+    assert first_pos < sep_pos
+    assert sep_pos < second_pos
+  end
+
+  test "defaults to bottom/end alignment" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.dropdown_menu id="dd15">
+      <:trigger>Menu</:trigger>
+      <:entry>Edit</:entry>
+    </.dropdown_menu>
+    """)
+    assert html =~ ~s(data-side="bottom")
+    assert html =~ ~s(data-align="end")
+  end
 end

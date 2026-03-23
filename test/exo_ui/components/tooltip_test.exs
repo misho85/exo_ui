@@ -77,4 +77,68 @@ defmodule ExoUI.Components.TooltipTest do
     """)
     assert html =~ ~s(phx-hook="ExoTooltip")
   end
+
+  test "defaults to top side" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.tooltip id="t9" text="tip">X</.tooltip>
+    """)
+    assert html =~ ~s(data-side="top")
+  end
+
+  test "renders align attribute" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.tooltip id="t10" text="tip" align="start">X</.tooltip>
+    """)
+    assert html =~ ~s(data-align="start")
+  end
+
+  test "content slot takes priority over text attr" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.tooltip id="t11" text="ignored">
+      <:content>Rich content</:content>
+      X
+    </.tooltip>
+    """)
+    assert html =~ "Rich content"
+    refute html =~ "ignored"
+  end
+
+  test "two tooltips have different anchor names" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.tooltip id="ta" text="A">X</.tooltip>
+    <.tooltip id="tb" text="B">Y</.tooltip>
+    """)
+    assert html =~ ~s(anchor-name: --tooltip-ta)
+    assert html =~ ~s(anchor-name: --tooltip-tb)
+    assert html =~ ~s(position-anchor: --tooltip-ta)
+    assert html =~ ~s(position-anchor: --tooltip-tb)
+  end
+
+  test "renders tabindex on anchor for keyboard focus" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.tooltip id="t12" text="tip">X</.tooltip>
+    """)
+    assert html =~ ~s(tabindex="0")
+  end
+
+  test "default delay is 500ms" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.tooltip id="t13" text="tip">X</.tooltip>
+    """)
+    assert html =~ ~s(--exo-tooltip-delay: 500ms)
+  end
+
+  test "forwards rest attrs" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.tooltip id="t14" text="tip" data-testid="tt">X</.tooltip>
+    """)
+    assert html =~ ~s(data-testid="tt")
+  end
 end

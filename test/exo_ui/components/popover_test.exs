@@ -101,4 +101,45 @@ defmodule ExoUI.Components.PopoverTest do
     """)
     assert html =~ ~s(class="custom")
   end
+
+  test "defaults to bottom/center" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.popover id="def">
+      <:trigger>Open</:trigger>
+      Content
+    </.popover>
+    """)
+    assert html =~ ~s(data-side="bottom")
+    assert html =~ ~s(data-align="center")
+  end
+
+  test "two popovers have different anchor names" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.popover id="one">
+      <:trigger>One</:trigger>
+      First
+    </.popover>
+    <.popover id="two">
+      <:trigger>Two</:trigger>
+      Second
+    </.popover>
+    """)
+    assert html =~ ~s(anchor-name: --popover-one)
+    assert html =~ ~s(anchor-name: --popover-two)
+    assert html =~ ~s(position-anchor: --popover-one)
+    assert html =~ ~s(position-anchor: --popover-two)
+  end
+
+  test "forwards rest attrs to content div" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.popover id="rest" data-testid="my-pop">
+      <:trigger>Open</:trigger>
+      Content
+    </.popover>
+    """)
+    assert html =~ ~s(data-testid="my-pop")
+  end
 end
