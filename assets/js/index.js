@@ -1,11 +1,13 @@
 import { ExoSidebar } from './hooks/sidebar.js'
 import { ExoThemeToggle } from './hooks/theme_toggle.js'
 import { ExoPopover } from './hooks/popover.js'
+import { ExoDropdownMenu } from './hooks/dropdown_menu.js'
 
 const hooks = {
   ExoSidebar,
   ExoThemeToggle,
-  ExoPopover
+  ExoPopover,
+  ExoDropdownMenu
 }
 
 export { hooks }

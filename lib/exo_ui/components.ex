@@ -466,6 +466,80 @@ defmodule ExoUI.Components do
     """
   end
 
+  # --- dropdown_menu ---
+
+  attr :id, :string, required: true
+  attr :side, :string, values: ~w(top bottom left right), default: "bottom"
+  attr :align, :string, values: ~w(start center end), default: "end"
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  slot :trigger
+  slot :entry do
+    attr :type, :string
+    attr :click, :string
+    attr :href, :string
+    attr :navigate, :string
+    attr :patch, :string
+    attr :icon, :string
+    attr :shortcut, :string
+    attr :variant, :string
+    attr :disabled, :boolean
+    attr :target, :string
+  end
+
+  def dropdown_menu(assigns) do
+    ~H"""
+    <.popover id={@id} side={@side} align={@align} haspopup="menu" class={@class} {@rest}>
+      <:trigger :if={@trigger != []}>{render_slot(@trigger)}</:trigger>
+      <div data-exo="dropdown-menu" role="menu">
+        <%= for entry <- @entry do %>
+          <%= cond do %>
+            <% entry[:type] == "separator" -> %>
+              <div data-exo="dropdown-separator" role="separator" />
+            <% entry[:type] == "label" -> %>
+              <span data-exo="dropdown-label">{render_slot(entry)}</span>
+            <% entry[:type] == "sub_trigger" -> %>
+              <button type="button" data-exo="dropdown-item" role="menuitem" popovertarget={entry.target}>
+                <span :if={entry[:icon]} data-exo="dropdown-item-icon"><.icon name={entry.icon} class="size-4" /></span>
+                <span data-exo="dropdown-item-label">{render_slot(entry)}</span>
+                <svg data-exo="dropdown-item-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+              </button>
+            <% entry[:navigate] || entry[:patch] || entry[:href] -> %>
+              <.link
+                data-exo="dropdown-item"
+                data-variant={entry[:variant]}
+                role="menuitem"
+                navigate={entry[:navigate]}
+                patch={entry[:patch]}
+                href={entry[:href]}
+              >
+                <span :if={entry[:icon]} data-exo="dropdown-item-icon"><.icon name={entry.icon} class="size-4" /></span>
+                <span data-exo="dropdown-item-label">{render_slot(entry)}</span>
+                <kbd :if={entry[:shortcut]} data-exo="dropdown-item-shortcut">{entry.shortcut}</kbd>
+              </.link>
+            <% true -> %>
+              <button
+                type="button"
+                data-exo="dropdown-item"
+                data-variant={entry[:variant]}
+                role="menuitem"
+                popovertarget={@id}
+                popovertargetaction="hide"
+                phx-click={entry[:click]}
+                disabled={entry[:disabled]}
+              >
+                <span :if={entry[:icon]} data-exo="dropdown-item-icon"><.icon name={entry.icon} class="size-4" /></span>
+                <span data-exo="dropdown-item-label">{render_slot(entry)}</span>
+                <kbd :if={entry[:shortcut]} data-exo="dropdown-item-shortcut">{entry.shortcut}</kbd>
+              </button>
+          <% end %>
+        <% end %>
+      </div>
+    </.popover>
+    """
+  end
+
   attr :id, :string, default: nil
   attr :position, :string, values: ~w(bottom-start bottom-end), default: "bottom-end"
   attr :class, :string, default: nil

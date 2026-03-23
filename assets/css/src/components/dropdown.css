@@ -1,35 +1,15 @@
-:where([data-exo="dropdown"]) {
-  position: relative;
-  display: inline-block;
-}
-
-:where([data-exo="dropdown-trigger"]) {
-  cursor: pointer;
-}
-
 :where([data-exo="dropdown-menu"]) {
-  position: absolute;
-  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: var(--exo-space-1);
   min-width: 10rem;
   padding: var(--exo-space-1);
-  background: var(--exo-card);
-  color: var(--exo-card-foreground);
-  border: 1px solid var(--exo-border);
-  border-radius: var(--exo-radius);
-  box-shadow: var(--exo-shadow-md);
-  margin-top: var(--exo-space-1);
-}
-
-:where([data-exo="dropdown-menu"][data-position="bottom-end"]) {
-  right: 0;
-}
-
-:where([data-exo="dropdown-menu"][data-position="bottom-start"]) {
-  left: 0;
 }
 
 :where([data-exo="dropdown-item"]) {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: var(--exo-space-2);
   padding: var(--exo-space-2) var(--exo-space-3);
   font-family: var(--exo-font);
   font-size: var(--exo-text-sm);
@@ -37,9 +17,61 @@
   border-radius: calc(var(--exo-radius) - 2px);
   cursor: pointer;
   text-decoration: none;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
   transition: background var(--exo-duration) var(--exo-easing);
 }
 
 :where([data-exo="dropdown-item"]):hover {
   background: var(--exo-muted);
+}
+
+:where([data-exo="dropdown-item"][data-variant="danger"]) {
+  color: var(--exo-danger);
+}
+
+:where([data-exo="dropdown-item"][data-variant="danger"]):hover {
+  background: color-mix(in oklch, var(--exo-danger) 10%, transparent);
+}
+
+:where([data-exo="dropdown-item"][disabled]) {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+:where([data-exo="dropdown-item-icon"]) {
+  display: flex;
+  flex-shrink: 0;
+}
+
+:where([data-exo="dropdown-item-label"]) {
+  flex: 1;
+}
+
+:where([data-exo="dropdown-item-shortcut"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-xs);
+  color: var(--exo-muted-foreground);
+  margin-left: auto;
+}
+
+:where([data-exo="dropdown-separator"]) {
+  height: 1px;
+  background: var(--exo-border);
+  margin: var(--exo-space-1) 0;
+}
+
+:where([data-exo="dropdown-label"]) {
+  padding: var(--exo-space-1) var(--exo-space-3);
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-xs);
+  font-weight: 600;
+  color: var(--exo-muted-foreground);
+}
+
+:where([data-exo="dropdown-item-chevron"]) {
+  margin-left: auto;
+  opacity: 0.5;
 }
