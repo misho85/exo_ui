@@ -540,6 +540,136 @@ defmodule ExoUI.Components do
     """
   end
 
+  # --- select ---
+
+  attr :id, :string, required: true
+  attr :name, :any
+  attr :value, :any, default: nil
+  attr :field, Phoenix.HTML.FormField, default: nil
+  attr :label, :string, default: nil
+  attr :prompt, :string, default: nil
+  attr :multiple, :boolean, default: false
+  attr :errors, :list, default: []
+  attr :disabled, :boolean, default: false
+  attr :side, :string, values: ~w(top bottom left right), default: "bottom"
+  attr :align, :string, values: ~w(start center end), default: "start"
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  slot :option do
+    attr :value, :any, required: true
+    attr :icon, :string
+    attr :disabled, :boolean
+    attr :group, :string
+  end
+
+  def select(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
+    errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
+
+    assigns
+    |> assign(field: nil, id: assigns[:id] || field.id)
+    |> assign(:errors, Enum.map(errors, &translate_error(&1)))
+    |> assign_new(:name, fn -> if assigns.multiple, do: field.name <> "[]", else: field.name end)
+    |> assign_new(:value, fn -> field.value end)
+    |> select()
+  end
+
+  def select(assigns) do
+    selected_opt =
+      Enum.find(assigns.option, fn opt ->
+        to_string(opt[:value]) == to_string(assigns[:value])
+      end)
+
+    grouped =
+      assigns.option
+      |> Enum.chunk_by(& &1[:group])
+      |> Enum.map(fn chunk ->
+        {List.first(chunk)[:group], chunk}
+      end)
+
+    label_id = if assigns[:label], do: "#{assigns.id}-label"
+
+    assigns =
+      assign(assigns,
+        selected_opt: selected_opt,
+        grouped: grouped,
+        label_id: label_id
+      )
+
+    ~H"""
+    <div data-exo="field">
+      <label :if={@label} data-exo="label" id={@label_id}>{@label}</label>
+      <div data-exo="popover" phx-hook="ExoSelect" id={"#{@id}-select"}>
+        <button
+          type="button"
+          popovertarget={@id}
+          data-exo="popover-trigger"
+          data-exo-select="trigger"
+          data-invalid={@errors != [] && ""}
+          aria-haspopup="listbox"
+          aria-labelledby={@label_id}
+          style={"anchor-name: --select-#{@id}"}
+          disabled={@disabled}
+        >
+          <span data-exo="select-value">
+            {if @selected_opt, do: render_slot(@selected_opt), else: @prompt}
+          </span>
+          <svg data-exo="select-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div
+          id={@id}
+          popover="auto"
+          data-exo="popover-content"
+          data-side={@side}
+          data-align={@align}
+          style={"position-anchor: --select-#{@id}"}
+        >
+          <div data-exo="select-menu" role="listbox" aria-labelledby={@label_id}>
+            <%= for {group_name, opts} <- @grouped do %>
+              <%= if group_name do %>
+                <div data-exo="select-group" role="group" aria-label={group_name}>
+                  <span data-exo="select-group-label">{group_name}</span>
+                  <div
+                    :for={opt <- opts}
+                    data-exo="select-option"
+                    role="option"
+                    data-value={opt[:value]}
+                    data-selected={to_string(opt[:value]) == to_string(@value) && ""}
+                    data-disabled={opt[:disabled] && ""}
+                    aria-selected={to_string(to_string(opt[:value]) == to_string(@value))}
+                    tabindex="-1"
+                  >
+                    <span :if={opt[:icon]} data-exo="select-option-icon"><.icon name={opt.icon} class="size-4" /></span>
+                    <span :if={to_string(opt[:value]) == to_string(@value)} data-exo="select-check"><.icon name="check" class="size-4" /></span>
+                    {render_slot(opt)}
+                  </div>
+                </div>
+              <% else %>
+                <div
+                  :for={opt <- opts}
+                  data-exo="select-option"
+                  role="option"
+                  data-value={opt[:value]}
+                  data-selected={to_string(opt[:value]) == to_string(@value) && ""}
+                  data-disabled={opt[:disabled] && ""}
+                  aria-selected={to_string(to_string(opt[:value]) == to_string(@value))}
+                  tabindex="-1"
+                >
+                  <span :if={opt[:icon]} data-exo="select-option-icon"><.icon name={opt.icon} class="size-4" /></span>
+                  <span :if={to_string(opt[:value]) == to_string(@value)} data-exo="select-check"><.icon name="check" class="size-4" /></span>
+                  {render_slot(opt)}
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <input type="hidden" name={@name} value={@value || ""} />
+      <.field_errors errors={@errors} />
+    </div>
+    """
+  end
+
   attr :id, :string, default: nil
   attr :position, :string, values: ~w(bottom-start bottom-end), default: "bottom-end"
   attr :class, :string, default: nil
