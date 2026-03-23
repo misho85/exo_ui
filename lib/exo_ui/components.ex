@@ -493,15 +493,15 @@ defmodule ExoUI.Components do
     ~H"""
     <.popover id={@id} side={@side} align={@align} haspopup="menu" class={@class} {@rest}>
       <:trigger :if={@trigger != []}>{render_slot(@trigger)}</:trigger>
-      <div data-exo="dropdown-menu" role="menu">
+      <div data-exo="dropdown-menu" role="menu" aria-label={@id}>
         <%= for entry <- @entry do %>
           <%= cond do %>
             <% entry[:type] == "separator" -> %>
               <div data-exo="dropdown-separator" role="separator" />
             <% entry[:type] == "label" -> %>
-              <span data-exo="dropdown-label">{render_slot(entry)}</span>
+              <span data-exo="dropdown-label" id={"#{@id}-label-#{System.unique_integer([:positive])}"} role="none">{render_slot(entry)}</span>
             <% entry[:type] == "sub_trigger" -> %>
-              <button type="button" data-exo="dropdown-item" role="menuitem" popovertarget={entry.target}>
+              <button type="button" data-exo="dropdown-item" role="menuitem" popovertarget={entry.target} disabled={entry[:disabled]}>
                 <span :if={entry[:icon]} data-exo="dropdown-item-icon"><.icon name={entry.icon} class="size-4" /></span>
                 <span data-exo="dropdown-item-label">{render_slot(entry)}</span>
                 <svg data-exo="dropdown-item-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg>

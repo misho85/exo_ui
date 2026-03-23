@@ -16,6 +16,7 @@ defmodule ExoUI.Components.DropdownMenuTest do
     assert html =~ ~s(data-exo="popover")
     assert html =~ ~s(popovertarget="dd")
     assert html =~ ~s(role="menu")
+    assert html =~ ~s(aria-label="dd")
     assert html =~ ~s(role="menuitem")
     assert html =~ ~s(popover="auto")
     assert html =~ "Menu"
