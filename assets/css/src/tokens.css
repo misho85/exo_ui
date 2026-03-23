@@ -20,6 +20,8 @@
   --exo-success-foreground: oklch(100% 0 0);
   --exo-info: oklch(60% 0.18 250);
   --exo-info-foreground: oklch(100% 0 0);
+  --exo-tooltip-bg: var(--exo-foreground);
+  --exo-tooltip-fg: var(--exo-background);
   --exo-radius: 0.5rem;
   --exo-space-1: 0.25rem;
   --exo-space-2: 0.5rem;

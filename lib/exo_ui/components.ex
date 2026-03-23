@@ -703,17 +703,44 @@ defmodule ExoUI.Components do
     """
   end
 
-  attr :text, :string, required: true
-  attr :position, :string, values: ~w(top bottom left right), default: "top"
+  # --- tooltip ---
+
+  attr :id, :string, required: true
+  attr :text, :string, default: nil
+  attr :side, :string, values: ~w(top bottom left right), default: "top"
+  attr :align, :string, values: ~w(start center end), default: "center"
+  attr :delay, :integer, default: 500
+  attr :arrow, :boolean, default: true
   attr :class, :string, default: nil
   attr :rest, :global
+
   slot :inner_block, required: true
+  slot :content
 
   def tooltip(assigns) do
     ~H"""
-    <span data-exo="tooltip" data-position={@position} class={@class} {@rest}>
-      {render_slot(@inner_block)}
-      <span data-exo="tooltip-text">{@text}</span>
+    <span data-exo="tooltip" phx-hook="ExoTooltip" id={@id}>
+      <span
+        data-exo="tooltip-anchor"
+        tabindex="0"
+        aria-describedby={"#{@id}-content"}
+        style={"anchor-name: --tooltip-#{@id}"}
+      >
+        {render_slot(@inner_block)}
+      </span>
+      <span
+        id={"#{@id}-content"}
+        data-exo="tooltip-content"
+        data-side={@side}
+        data-align={@align}
+        data-arrow={@arrow && ""}
+        role="tooltip"
+        class={@class}
+        style={"position-anchor: --tooltip-#{@id}; --exo-tooltip-delay: #{@delay}ms"}
+        {@rest}
+      >
+        {if @content != [], do: render_slot(@content), else: @text}
+      </span>
     </span>
     """
   end
