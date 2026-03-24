@@ -24,7 +24,6 @@
   background: var(--exo-card);
   color: var(--exo-card-foreground);
   box-shadow: var(--exo-shadow-md);
-  padding: var(--exo-space-2);
   font-family: var(--exo-font);
   font-size: var(--exo-text-sm);
 }

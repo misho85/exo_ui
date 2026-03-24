@@ -440,7 +440,7 @@ defmodule ExoUI.Components do
 
   def popover(assigns) do
     ~H"""
-    <div data-exo="popover">
+    <div data-exo="popover" id={"#{@id}-popover"} phx-hook="ExoPopover">
       <button
         :if={@trigger != []}
         type="button"
@@ -491,9 +491,9 @@ defmodule ExoUI.Components do
 
   def dropdown_menu(assigns) do
     ~H"""
-    <.popover id={@id} side={@side} align={@align} haspopup="menu" class={@class} {@rest}>
+    <.popover id={@id} side={@side} align={@align} haspopup="menu">
       <:trigger :if={@trigger != []}>{render_slot(@trigger)}</:trigger>
-      <div data-exo="dropdown-menu" role="menu" aria-label={@id}>
+      <div data-exo="dropdown-menu" role="menu" aria-label={@id} id={"#{@id}-menu"} phx-hook="ExoDropdownMenu" class={@class} {@rest}>
         <%= for {entry, idx} <- Enum.with_index(@entry) do %>
           <%= cond do %>
             <% entry[:type] == "separator" -> %>

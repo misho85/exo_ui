@@ -10,7 +10,7 @@ defmodule Storybook.Components.Popover do
         <h3>Default (bottom center)</h3>
         <ExoUI.Components.popover id="pop-default">
           <:trigger>Open popover</:trigger>
-          <p>Popover content. Click outside to dismiss.</p>
+          <p style="padding: 0.5rem 0.75rem;">Popover content. Click outside to dismiss.</p>
         </ExoUI.Components.popover>
       </div>
 
@@ -18,7 +18,7 @@ defmodule Storybook.Components.Popover do
         <h3>Top</h3>
         <ExoUI.Components.popover id="pop-top" side="top">
           <:trigger>Open top</:trigger>
-          <p>This appears above the trigger.</p>
+          <p style="padding: 0.5rem 0.75rem;">This appears above the trigger.</p>
         </ExoUI.Components.popover>
       </div>
 
@@ -26,7 +26,7 @@ defmodule Storybook.Components.Popover do
         <h3>Right</h3>
         <ExoUI.Components.popover id="pop-right" side="right">
           <:trigger>Open right</:trigger>
-          <p>This appears to the right.</p>
+          <p style="padding: 0.5rem 0.75rem;">This appears to the right.</p>
         </ExoUI.Components.popover>
       </div>
 
@@ -34,7 +34,7 @@ defmodule Storybook.Components.Popover do
         <h3>With close button</h3>
         <ExoUI.Components.popover id="pop-close">
           <:trigger>Open</:trigger>
-          <p>Click the button below to close.</p>
+          <p style="padding: 0.5rem 0.75rem;">Click the button below to close.</p>
           <button type="button" popovertarget="pop-close" popovertargetaction="hide" style="margin-top: 0.5rem;">
             Close
           </button>
