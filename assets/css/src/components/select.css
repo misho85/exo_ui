@@ -44,11 +44,13 @@
   opacity: 0.5;
 }
 
-/* --- Menu --- */
+/* --- Popover content width matching for select --- */
 
-[data-exo="select-menu"] {
+[data-exo="popover-content"]:has([data-exo="select-menu"]) {
   min-width: anchor-size(width);
 }
+
+/* --- Menu --- */
 
 :where([data-exo="select-menu"]) {
   display: flex;
@@ -73,8 +75,10 @@
   transition: background var(--exo-duration) var(--exo-easing);
 }
 
-:where([data-exo="select-option"]):hover {
+:where([data-exo="select-option"]):hover,
+:where([data-exo="select-option"]):focus {
   background: var(--exo-muted);
+  outline: none;
 }
 
 :where([data-exo="select-option"][data-selected]) {
@@ -95,6 +99,11 @@
   display: flex;
   flex-shrink: 0;
   color: var(--exo-primary);
+  visibility: hidden;
+}
+
+:where([data-exo="select-option"][data-selected]) :where([data-exo="select-check"]) {
+  visibility: visible;
 }
 
 /* --- Groups --- */

@@ -71,6 +71,11 @@
   color: var(--exo-foreground);
 }
 
+/* Popover content width matching for combobox */
+[data-exo="popover-content"]:has([data-exo="combobox-list"]) {
+  min-width: anchor-size(width);
+}
+
 :where([data-exo="combobox-list"]) {
   display: flex;
   flex-direction: column;
@@ -92,8 +97,14 @@
   transition: background var(--exo-duration) var(--exo-easing);
 }
 
-:where([data-exo="combobox-option"]):hover {
+:where([data-exo="combobox-option"]):hover,
+:where([data-exo="combobox-option"]):focus {
   background: var(--exo-muted);
+  outline: none;
+}
+
+[data-exo="combobox-option"][hidden] {
+  display: none;
 }
 
 :where([data-exo="combobox-option"][data-selected]) {
@@ -103,6 +114,17 @@
 :where([data-exo="combobox-option"][data-disabled]) {
   opacity: 0.5;
   pointer-events: none;
+}
+
+:where([data-exo="combobox-check"]) {
+  display: flex;
+  flex-shrink: 0;
+  color: var(--exo-primary);
+  visibility: hidden;
+}
+
+:where([data-exo="combobox-option"][data-selected]) :where([data-exo="combobox-check"]) {
+  visibility: visible;
 }
 
 :where([data-exo="combobox-clear"]) {

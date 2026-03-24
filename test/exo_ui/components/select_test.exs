@@ -157,7 +157,7 @@ defmodule ExoUI.Components.SelectTest do
     # The trigger should show "Beta" since value="b"
   end
 
-  test "renders checkmark on selected option" do
+  test "renders checkmark on ALL options (CSS controls visibility)" do
     assigns = %{}
     html = rendered_to_string(~H"""
     <.select id="s14" name="x" value="a">
@@ -166,6 +166,10 @@ defmodule ExoUI.Components.SelectTest do
     </.select>
     """)
     assert html =~ ~s(data-selected)
+    # Checkmark span exists on every option, not just selected
+    check_count = html |> String.split(~s(data-exo="select-check")) |> length()
+    # 2 options + 1 for the part before first match = 3
+    assert check_count == 3
   end
 
   test "shows selected option text in trigger" do

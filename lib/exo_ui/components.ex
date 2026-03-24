@@ -646,7 +646,7 @@ defmodule ExoUI.Components do
                     tabindex="-1"
                   >
                     <span :if={opt[:icon]} data-exo="select-option-icon"><.icon name={opt.icon} class="size-4" /></span>
-                    <span :if={to_string(opt[:value]) == to_string(@value)} data-exo="select-check"><.icon name="check" class="size-4" /></span>
+                    <span data-exo="select-check"><.icon name="check" class="size-4" /></span>
                     {render_slot(opt)}
                   </div>
                 </div>
@@ -662,7 +662,7 @@ defmodule ExoUI.Components do
                   tabindex="-1"
                 >
                   <span :if={opt[:icon]} data-exo="select-option-icon"><.icon name={opt.icon} class="size-4" /></span>
-                  <span :if={to_string(opt[:value]) == to_string(@value)} data-exo="select-check"><.icon name="check" class="size-4" /></span>
+                  <span data-exo="select-check"><.icon name="check" class="size-4" /></span>
                   {render_slot(opt)}
                 </div>
               <% end %>
@@ -734,6 +734,7 @@ defmodule ExoUI.Components do
         data-on-filter={@on_filter}
         data-debounce={to_string(@debounce)}
         data-trigger="input"
+        data-multiple={@multiple && ""}
       >
         <input
           type="text"
@@ -767,7 +768,7 @@ defmodule ExoUI.Components do
               tabindex="-1"
             >
               <span :if={opt[:icon]} data-exo="combobox-option-icon"><.icon name={opt.icon} class="size-4" /></span>
-              <span :if={to_string(opt[:value]) == to_string(@value)} data-exo="combobox-check"><.icon name="check" class="size-4" /></span>
+              <span data-exo="combobox-check"><.icon name="check" class="size-4" /></span>
               {render_slot(opt)}
             </div>
           </div>
@@ -808,6 +809,7 @@ defmodule ExoUI.Components do
         data-on-filter={@on_filter}
         data-debounce={to_string(@debounce)}
         data-trigger="button"
+        data-multiple={@multiple && ""}
       >
         <div data-exo="combobox-trigger-group">
           <button
@@ -863,7 +865,7 @@ defmodule ExoUI.Components do
               tabindex="-1"
             >
               <span :if={opt[:icon]} data-exo="combobox-option-icon"><.icon name={opt.icon} class="size-4" /></span>
-              <span :if={to_string(opt[:value]) == to_string(@value)} data-exo="combobox-check"><.icon name="check" class="size-4" /></span>
+              <span data-exo="combobox-check"><.icon name="check" class="size-4" /></span>
               {render_slot(opt)}
             </div>
           </div>

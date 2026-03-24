@@ -21,7 +21,31 @@ const ExoCombobox = {
     this._empty = this.el.querySelector('[data-exo="combobox-empty"]')
     this._create = this.el.querySelector('[data-exo="combobox-create"]')
 
+    this._clear = this.el.querySelector('[data-exo="combobox-clear"]')
+
     if (!this._popover) return
+
+    // Clear button
+    if (this._clear) {
+      this._onClear = (e) => {
+        e.stopPropagation()
+        if (this._hidden) {
+          this._hidden.value = ''
+          this._hidden.dispatchEvent(new Event('input', { bubbles: true }))
+        }
+        // Reset trigger display
+        const valSpan = this.el.querySelector('[data-exo="combobox-value"]')
+        if (valSpan) valSpan.textContent = this._search?.placeholder || ''
+        // Clear visual selection
+        if (this._listbox) {
+          this._listbox.querySelectorAll('[data-exo="combobox-option"]').forEach(o => {
+            o.setAttribute('aria-selected', 'false')
+            delete o.dataset.selected
+          })
+        }
+      }
+      this._clear.addEventListener('click', this._onClear)
+    }
 
     // Toggle event for aria-expanded
     this._onToggle = () => {
@@ -149,9 +173,11 @@ const ExoCombobox = {
       if (this._onFocus) this._search.removeEventListener('focus', this._onFocus)
       if (this._onBlur) this._search.removeEventListener('blur', this._onBlur)
     }
+    if (this._clear && this._onClear) this._clear.removeEventListener('click', this._onClear)
     this._popover = null
     this._listbox = null
     this._search = null
+    this._clear = null
   }
 }
 

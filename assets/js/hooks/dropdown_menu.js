@@ -4,7 +4,7 @@ const ExoDropdownMenu = {
   destroyed() { this._unbind() },
   _bind() {
     this._unbind()
-    this._menu = this.el.querySelector('[role="menu"]')
+    this._menu = this.el.matches('[role="menu"]') ? this.el : this.el.querySelector('[role="menu"]')
     if (!this._menu) return
     this._onKeydown = (e) => {
       const items = [...this._menu.querySelectorAll('[role="menuitem"]:not([disabled])')]

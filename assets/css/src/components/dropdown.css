@@ -24,15 +24,18 @@
   transition: background var(--exo-duration) var(--exo-easing);
 }
 
-:where([data-exo="dropdown-item"]):hover {
+:where([data-exo="dropdown-item"]):hover,
+:where([data-exo="dropdown-item"]):focus {
   background: var(--exo-muted);
+  outline: none;
 }
 
 :where([data-exo="dropdown-item"][data-variant="danger"]) {
   color: var(--exo-danger);
 }
 
-:where([data-exo="dropdown-item"][data-variant="danger"]):hover {
+:where([data-exo="dropdown-item"][data-variant="danger"]):hover,
+:where([data-exo="dropdown-item"][data-variant="danger"]):focus {
   background: color-mix(in oklch, var(--exo-danger) 10%, transparent);
 }
 

@@ -86,12 +86,39 @@ defmodule ExoUI.Components.TooltipTest do
     assert html =~ ~s(data-side="top")
   end
 
+  test "defaults to center align" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.tooltip id="t10a" text="tip">X</.tooltip>
+    """)
+    assert html =~ ~s(data-align="center")
+  end
+
   test "renders align attribute" do
     assigns = %{}
     html = rendered_to_string(~H"""
     <.tooltip id="t10" text="tip" align="start">X</.tooltip>
     """)
     assert html =~ ~s(data-align="start")
+  end
+
+  test "renders all side values" do
+    for side <- ~w(top bottom left right) do
+      assigns = %{side: side}
+      html = rendered_to_string(~H"""
+      <.tooltip id={"t-side-#{@side}"} text="tip" side={@side}>X</.tooltip>
+      """)
+      assert html =~ ~s(data-side="#{side}")
+    end
+  end
+
+  test "renders side and align together" do
+    assigns = %{}
+    html = rendered_to_string(~H"""
+    <.tooltip id="t-combo" text="tip" side="bottom" align="end">X</.tooltip>
+    """)
+    assert html =~ ~s(data-side="bottom")
+    assert html =~ ~s(data-align="end")
   end
 
   test "content slot takes priority over text attr" do

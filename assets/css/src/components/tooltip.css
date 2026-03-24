@@ -40,12 +40,18 @@
   opacity: 0 !important;
 }
 
-/* --- Position-area per side (needs real specificity) --- */
+/* --- Position-area per side + align (needs real specificity) --- */
 
-[data-exo="tooltip-content"][data-side="top"] { position-area: block-start; }
-[data-exo="tooltip-content"][data-side="bottom"] { position-area: block-end; }
-[data-exo="tooltip-content"][data-side="left"] { position-area: inline-start; }
-[data-exo="tooltip-content"][data-side="right"] { position-area: inline-end; }
+[data-exo="tooltip-content"][data-side="top"][data-align="start"]  { position-area: block-start span-inline-end;   margin-bottom: var(--exo-space-1); }
+[data-exo="tooltip-content"][data-side="top"][data-align="center"] { position-area: block-start;                   margin-bottom: var(--exo-space-1); }
+[data-exo="tooltip-content"][data-side="top"][data-align="end"]    { position-area: block-start span-inline-start; margin-bottom: var(--exo-space-1); }
+
+[data-exo="tooltip-content"][data-side="bottom"][data-align="start"]  { position-area: block-end span-inline-end;   margin-top: var(--exo-space-1); }
+[data-exo="tooltip-content"][data-side="bottom"][data-align="center"] { position-area: block-end;                   margin-top: var(--exo-space-1); }
+[data-exo="tooltip-content"][data-side="bottom"][data-align="end"]    { position-area: block-end span-inline-start; margin-top: var(--exo-space-1); }
+
+[data-exo="tooltip-content"][data-side="left"]  { position-area: inline-start; margin-right: var(--exo-space-1); }
+[data-exo="tooltip-content"][data-side="right"] { position-area: inline-end;   margin-left: var(--exo-space-1);  }
 
 /* --- Arrow --- */
 
@@ -89,24 +95,50 @@
   [data-exo="tooltip-content"] {
     position: absolute;
   }
+
+  /* Top */
   [data-exo="tooltip-content"][data-side="top"] {
     bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
     margin-bottom: var(--exo-space-1);
   }
+  [data-exo="tooltip-content"][data-side="top"][data-align="start"] {
+    left: 0;
+    transform: none;
+  }
+  [data-exo="tooltip-content"][data-side="top"][data-align="end"] {
+    left: auto;
+    right: 0;
+    transform: none;
+  }
+
+  /* Bottom */
   [data-exo="tooltip-content"][data-side="bottom"] {
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
     margin-top: var(--exo-space-1);
   }
+  [data-exo="tooltip-content"][data-side="bottom"][data-align="start"] {
+    left: 0;
+    transform: none;
+  }
+  [data-exo="tooltip-content"][data-side="bottom"][data-align="end"] {
+    left: auto;
+    right: 0;
+    transform: none;
+  }
+
+  /* Left */
   [data-exo="tooltip-content"][data-side="left"] {
     right: 100%;
     top: 50%;
     transform: translateY(-50%);
     margin-right: var(--exo-space-1);
   }
+
+  /* Right */
   [data-exo="tooltip-content"][data-side="right"] {
     left: 100%;
     top: 50%;

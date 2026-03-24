@@ -57,6 +57,20 @@ defmodule Storybook.Components.Tooltip do
           <ExoUI.Components.button>Fast delay</ExoUI.Components.button>
         </ExoUI.Components.tooltip>
       </div>
+
+      <div>
+        <h3>Align start</h3>
+        <ExoUI.Components.tooltip id="tip-align-start" text="Aligned to start" side="bottom" align="start">
+          <ExoUI.Components.button>Align start</ExoUI.Components.button>
+        </ExoUI.Components.tooltip>
+      </div>
+
+      <div>
+        <h3>Align end</h3>
+        <ExoUI.Components.tooltip id="tip-align-end" text="Aligned to end" side="bottom" align="end">
+          <ExoUI.Components.button>Align end</ExoUI.Components.button>
+        </ExoUI.Components.tooltip>
+      </div>
     </div>
     """
   end
