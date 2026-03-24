@@ -41,22 +41,11 @@ const ExoTooltip = {
         if (content.matches(':popover-open')) {
           content.hidePopover()
           lastHideTime = Date.now()
-          // Defer side/position reset until exit animation completes
-          // so the tooltip doesn't jump during fade-out
-          let done = false
-          const onDone = () => {
-            if (done) return
-            done = true
-            content.removeEventListener('transitionend', onDone)
-            content.dataset.side = this._declaredSide
-            if (!hasAnchorPos) {
-              content.style.top = ''
-              content.style.left = ''
-            }
+          content.dataset.side = this._declaredSide
+          if (!hasAnchorPos) {
+            content.style.top = ''
+            content.style.left = ''
           }
-          content.addEventListener('transitionend', onDone, { once: true })
-          // Fallback in case transitionend doesn't fire (e.g. instant hide)
-          setTimeout(onDone, 200)
         }
       } catch (_) {}
     }

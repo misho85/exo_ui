@@ -7,13 +7,20 @@
 /*
  * UA stylesheet override — must NOT use :where() here.
  * The browser's [popover] rule has specificity (0,1,0) and sets
- * inset: 0; margin: auto; which centers the popover.
+ * inset: 0; margin: auto; display: none which centers/hides the popover.
  * We need at least (0,1,0) to override those defaults.
+ * The transition MUST also live here so overlay/display actually animate
+ * instead of snapping (zero-specificity :where() loses to the UA rule).
  */
 [data-exo="popover-content"] {
   margin: 0;
   inset: auto;
   position-try-fallbacks: flip-block;
+  opacity: 0;
+  transition: opacity var(--exo-duration) var(--exo-easing),
+              transform var(--exo-duration) var(--exo-easing),
+              overlay var(--exo-duration) var(--exo-easing) allow-discrete,
+              display var(--exo-duration) var(--exo-easing) allow-discrete;
 }
 
 /* --- Themeable styles (zero specificity for overridability) --- */
@@ -52,20 +59,13 @@
 
 /* --- Animations --- */
 
-:where([data-exo="popover-content"]) {
-  opacity: 0;
-  transition: opacity var(--exo-duration) var(--exo-easing),
-              transform var(--exo-duration) var(--exo-easing),
-              overlay var(--exo-duration) allow-discrete,
-              display var(--exo-duration) allow-discrete;
-}
-
-:where([data-exo="popover-content"]):popover-open {
+[data-exo="popover-content"]:popover-open {
   opacity: 1;
+  transform: scale(1);
 }
 
 @starting-style {
-  :where([data-exo="popover-content"]):popover-open {
+  [data-exo="popover-content"]:popover-open {
     opacity: 0;
     transform: scale(0.96);
   }
