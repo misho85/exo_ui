@@ -35,7 +35,7 @@ defmodule Storybook.Components.Dropdown do
         <h3>With link items</h3>
         <ExoUI.Components.dropdown_menu id="dd-links">
           <:trigger><ExoUI.Components.button variant="ghost">Navigate</ExoUI.Components.button></:trigger>
-          <:entry navigate="/" icon="home">Home</:entry>
+          <:entry navigate="/" icon="house">Home</:entry>
           <:entry navigate="/settings" icon="settings">Settings</:entry>
         </ExoUI.Components.dropdown_menu>
       </div>

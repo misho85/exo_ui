@@ -9,6 +9,10 @@
   display: block;
 }
 
+body:has([data-exo="drawer"][data-state="open"]) {
+  overflow: hidden;
+}
+
 :where([data-exo="drawer-backdrop"]) {
   position: fixed;
   inset: 0;
@@ -24,6 +28,15 @@
   width: min(24rem, 85vw);
   background: var(--exo-background);
   box-shadow: var(--exo-shadow-lg);
+  transition: transform var(--exo-duration) var(--exo-easing);
+}
+
+:where([data-exo="drawer"][data-side="right"] [data-exo="drawer-content"]) {
+  transform: translateX(0);
+}
+
+:where([data-exo="drawer"][data-side="left"] [data-exo="drawer-content"]) {
+  transform: translateX(0);
 }
 
 :where([data-exo="drawer"][data-side="right"] [data-exo="drawer-content"]) {

@@ -30,7 +30,7 @@
   left: 2px;
   width: calc(1.5rem - 4px);
   height: calc(1.5rem - 4px);
-  background: white;
+  background: var(--exo-background);
   border-radius: 9999px;
   transition: transform var(--exo-duration) var(--exo-easing);
 }

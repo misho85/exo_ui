@@ -6,12 +6,15 @@ defmodule ExoUI.Components.TableTest do
 
   test "renders table with data" do
     assigns = %{users: [%{id: 1, name: "John", email: "john@example.com"}]}
-    html = rendered_to_string(~H"""
-    <.table id="users" rows={@users} row_id={fn u -> "user-#{u.id}" end}>
-      <:col label="Name" :let={u}>{u.name}</:col>
-      <:col label="Email" :let={u}>{u.email}</:col>
-    </.table>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.table id="users" rows={@users} row_id={fn u -> "user-#{u.id}" end}>
+        <:col :let={u} label="Name">{u.name}</:col>
+        <:col :let={u} label="Email">{u.email}</:col>
+      </.table>
+      """)
+
     assert html =~ ~s(data-exo="table")
     assert html =~ "Name"
     assert html =~ "Email"
@@ -21,12 +24,15 @@ defmodule ExoUI.Components.TableTest do
 
   test "renders table with actions" do
     assigns = %{users: [%{id: 1, name: "John"}]}
-    html = rendered_to_string(~H"""
-    <.table id="users" rows={@users} row_id={fn u -> "user-#{u.id}" end}>
-      <:col label="Name" :let={u}>{u.name}</:col>
-      <:action>Edit</:action>
-    </.table>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.table id="users" rows={@users} row_id={fn u -> "user-#{u.id}" end}>
+        <:col :let={u} label="Name">{u.name}</:col>
+        <:action>Edit</:action>
+      </.table>
+      """)
+
     assert html =~ ~s(data-exo="table-actions")
     assert html =~ "Edit"
     assert html =~ "sr-only"

@@ -6,12 +6,15 @@ defmodule ExoUI.LayoutsTest do
 
   test "renders sidebar layout" do
     assigns = %{}
-    html = rendered_to_string(~H"""
-    <.sidebar_layout>
-      <:nav>Nav content</:nav>
-      Main content
-    </.sidebar_layout>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.sidebar_layout>
+        <:nav>Nav content</:nav>
+        Main content
+      </.sidebar_layout>
+      """)
+
     assert html =~ ~s(data-exo="sidebar")
     assert html =~ ~s(data-exo="sidebar-content")
     assert html =~ ~s(data-exo="sidebar-panel")
@@ -23,7 +26,10 @@ defmodule ExoUI.LayoutsTest do
 
   test "renders sidebar item" do
     assigns = %{}
-    html = rendered_to_string(~H|<.sidebar_item href="/dashboard" label="Dashboard" active={true} />|)
+
+    html =
+      rendered_to_string(~H|<.sidebar_item href="/dashboard" label="Dashboard" active={true} />|)
+
     assert html =~ ~s(data-exo="sidebar-item")
     assert html =~ ~s(data-active)
     assert html =~ "Dashboard"

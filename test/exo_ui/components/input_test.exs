@@ -35,14 +35,22 @@ defmodule ExoUI.Components.InputTest do
 
   test "renders checkbox" do
     assigns = %{}
-    html = rendered_to_string(~H|<.input type="checkbox" name="agree" value="true" label="I agree" />|)
+
+    html =
+      rendered_to_string(~H|<.input type="checkbox" name="agree" value="true" label="I agree" />|)
+
     assert html =~ ~s(type="checkbox")
     assert html =~ "I agree"
   end
 
   test "shows errors" do
     assigns = %{}
-    html = rendered_to_string(~H|<.input type="text" name="email" value="" errors={["is required"]} />|)
+
+    html =
+      rendered_to_string(
+        ~H|<.input type="text" name="email" value="" errors={["is required"]} />|
+      )
+
     assert html =~ ~s(data-invalid)
     assert html =~ "is required"
   end

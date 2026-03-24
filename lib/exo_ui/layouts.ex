@@ -40,7 +40,13 @@ defmodule ExoUI.Layouts do
       <div data-exo="sidebar-content">
         <%!-- Top bar --%>
         <header data-exo="sidebar-topbar">
-          <label for={"#{@id}-toggle"} data-exo="sidebar-hamburger" aria-label="Toggle sidebar">
+          <label
+            for={"#{@id}-toggle"}
+            data-exo="sidebar-hamburger"
+            aria-label="Toggle sidebar"
+            role="button"
+            tabindex="0"
+          >
             ☰
           </label>
 
@@ -52,6 +58,7 @@ defmodule ExoUI.Layouts do
           <div :if={@topbar_end != []} data-exo="topbar-end">
             {render_slot(@topbar_end)}
           </div>
+          <div :if={@topbar_end == []} data-exo="topbar-end" />
         </header>
 
         <%!-- Page content --%>
@@ -64,7 +71,13 @@ defmodule ExoUI.Layouts do
 
       <%!-- Sidebar panel --%>
       <div data-exo="sidebar-panel">
-        <label for={"#{@id}-toggle"} data-exo="sidebar-overlay" aria-label="Close sidebar" />
+        <label
+          for={"#{@id}-toggle"}
+          data-exo="sidebar-overlay"
+          aria-label="Close sidebar"
+          role="button"
+          tabindex="0"
+        />
         <aside data-exo="sidebar-aside">
           <div :if={@brand != []} data-exo="sidebar-brand">
             {render_slot(@brand)}

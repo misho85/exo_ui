@@ -123,7 +123,7 @@
 /* --- Fallback: no anchor-size --- */
 
 @supports not (min-width: anchor-size(width)) {
-  :where([data-exo="select-menu"]) {
+  [data-exo="popover-content"]:has([data-exo="select-menu"]) {
     min-width: 10rem;
   }
 }

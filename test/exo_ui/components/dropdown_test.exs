@@ -6,13 +6,16 @@ defmodule ExoUI.Components.DropdownTest do
 
   test "renders dropdown with trigger and items" do
     assigns = %{}
-    html = rendered_to_string(~H"""
-    <.dropdown id="dd">
-      <:trigger>Menu</:trigger>
-      <:item>Edit</:item>
-      <:item>Delete</:item>
-    </.dropdown>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.dropdown id="dd">
+        <:trigger>Menu</:trigger>
+        <:item>Edit</:item>
+        <:item>Delete</:item>
+      </.dropdown>
+      """)
+
     assert html =~ ~s(data-exo="dropdown")
     assert html =~ ~s(data-exo="dropdown-trigger")
     assert html =~ ~s(data-exo="dropdown-menu")

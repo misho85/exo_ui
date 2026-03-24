@@ -6,13 +6,16 @@ defmodule ExoUI.Components.StructuralTest do
 
   test "renders header" do
     assigns = %{}
-    html = rendered_to_string(~H"""
-    <.header>
-      Page Title
-      <:subtitle>A description</:subtitle>
-      <:actions><.button>Action</.button></:actions>
-    </.header>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.header>
+        Page Title
+        <:subtitle>A description</:subtitle>
+        <:actions><.button>Action</.button></:actions>
+      </.header>
+      """)
+
     assert html =~ ~s(data-exo="header")
     assert html =~ "Page Title"
     assert html =~ "A description"
@@ -20,12 +23,15 @@ defmodule ExoUI.Components.StructuralTest do
 
   test "renders list" do
     assigns = %{}
-    html = rendered_to_string(~H"""
-    <.list>
-      <:item title="Name">John</:item>
-      <:item title="Email">john@example.com</:item>
-    </.list>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.list>
+        <:item title="Name">John</:item>
+        <:item title="Email">john@example.com</:item>
+      </.list>
+      """)
+
     assert html =~ ~s(data-exo="list")
     assert html =~ "Name"
     assert html =~ "John"
@@ -41,7 +47,12 @@ defmodule ExoUI.Components.StructuralTest do
 
   test "renders stat_card" do
     assigns = %{}
-    html = rendered_to_string(~H|<.stat_card title="Revenue" value="$1,234" trend="+12%" trend_direction="up" />|)
+
+    html =
+      rendered_to_string(
+        ~H|<.stat_card title="Revenue" value="$1,234" trend="+12%" trend_direction="up" />|
+      )
+
     assert html =~ ~s(data-exo="stat-card")
     assert html =~ "Revenue"
     assert html =~ "$1,234"
@@ -50,7 +61,12 @@ defmodule ExoUI.Components.StructuralTest do
 
   test "renders metric_card" do
     assigns = %{}
-    html = rendered_to_string(~H|<.metric_card title="Users" value="1,200" subtitle="Total registered" />|)
+
+    html =
+      rendered_to_string(
+        ~H|<.metric_card title="Users" value="1,200" subtitle="Total registered" />|
+      )
+
     assert html =~ ~s(data-exo="metric-card")
     assert html =~ "Users"
     assert html =~ "1,200"

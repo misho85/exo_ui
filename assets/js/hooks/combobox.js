@@ -66,9 +66,11 @@ const ExoCombobox = {
         try { this._popover.showPopover() } catch(_err) {}
       }
       this._onBlur = () => {
+        const popover = this._popover
         setTimeout(() => {
-          if (!this._popover.contains(document.activeElement) && document.activeElement !== this._search) {
-            try { this._popover.hidePopover() } catch(_err) {}
+          if (!popover) return
+          if (!popover.contains(document.activeElement) && document.activeElement !== this._search) {
+            try { popover.hidePopover() } catch(_err) {}
           }
         }, 200)
       }
@@ -78,14 +80,13 @@ const ExoCombobox = {
 
     // Search input handler
     if (this._search) {
-      let timer = null
       this._onInput = () => {
         const query = this._search.value
         if (filter === 'client') {
           this._clientFilter(query)
         } else {
-          clearTimeout(timer)
-          timer = setTimeout(() => {
+          clearTimeout(this._debounceTimer)
+          this._debounceTimer = setTimeout(() => {
             if (onFilter) this.pushEvent(onFilter, { query })
           }, debounce)
         }
@@ -117,6 +118,8 @@ const ExoCombobox = {
         switch (e.key) {
           case 'ArrowDown': next = idx < opts.length - 1 ? idx + 1 : 0; break
           case 'ArrowUp': next = idx > 0 ? idx - 1 : opts.length - 1; break
+          case 'Home': next = 0; break
+          case 'End': next = opts.length - 1; break
           case 'Enter':
             if (idx >= 0) { this._selectOption(opts[idx]); e.preventDefault() }
             return
@@ -149,20 +152,24 @@ const ExoCombobox = {
       this._hidden.dispatchEvent(new Event('input', { bubbles: true }))
     }
     // Update visual state
-    this._listbox.querySelectorAll('[data-exo="combobox-option"]').forEach(o => {
-      o.setAttribute('aria-selected', String(o.dataset.value === value))
-      if (o.dataset.value === value) o.dataset.selected = ''
-      else delete o.dataset.selected
-    })
+    if (this._listbox) {
+      this._listbox.querySelectorAll('[data-exo="combobox-option"]').forEach(o => {
+        o.setAttribute('aria-selected', String(o.dataset.value === value))
+        if (o.dataset.value === value) o.dataset.selected = ''
+        else delete o.dataset.selected
+      })
+    }
     // Update trigger display
     const valSpan = this.el.querySelector('[data-exo="combobox-value"]')
     if (valSpan) valSpan.textContent = opt.textContent.trim()
     // Close (unless multiple)
     if (!this.el.dataset.multiple) {
-      try { this._popover.hidePopover() } catch(_err) {}
+      try { this._popover?.hidePopover() } catch(_err) {}
     }
   },
   _unbind() {
+    clearTimeout(this._debounceTimer)
+    this._debounceTimer = null
     if (this._popover) {
       if (this._onToggle) this._popover.removeEventListener('toggle', this._onToggle)
       if (this._onKeydown) this._popover.removeEventListener('keydown', this._onKeydown)
@@ -178,6 +185,9 @@ const ExoCombobox = {
     this._listbox = null
     this._search = null
     this._clear = null
+    this._empty = null
+    this._create = null
+    this._hidden = null
   }
 }
 

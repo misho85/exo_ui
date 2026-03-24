@@ -30,7 +30,7 @@ defmodule ExoUI.ChartsTest do
     html = rendered_to_string(~H|<.progress_bar label="Done" count={8} max={12} />|)
     assert html =~ ~s(data-exo="progress-bar")
     assert html =~ "Done"
-    assert html =~ "8"
+    assert html =~ "66.7%"
   end
 
   test "renders bar_chart" do
@@ -43,7 +43,10 @@ defmodule ExoUI.ChartsTest do
 
   test "renders horizontal_bar_chart" do
     assigns = %{}
-    html = rendered_to_string(~H|<.horizontal_bar_chart data={[{"Kayaking", 45}, {"Hiking", 30}]} />|)
+
+    html =
+      rendered_to_string(~H|<.horizontal_bar_chart data={[{"Kayaking", 45}, {"Hiking", 30}]} />|)
+
     assert html =~ ~s(data-exo="h-bar-chart")
     assert html =~ "Kayaking"
   end
@@ -52,13 +55,18 @@ defmodule ExoUI.ChartsTest do
     assigns = %{}
     html = rendered_to_string(~H|<.area_chart data={[{"Jan", 100}, {"Feb", 150}]} id="test" />|)
     assert html =~ ~s(data-exo="area-chart")
-    assert html =~ "polyline"
-    assert html =~ "polygon"
+    assert html =~ ~s(<path d=)
+    assert html =~ "fill-opacity"
   end
 
   test "renders stacked_bar_chart" do
     assigns = %{}
-    html = rendered_to_string(~H|<.stacked_bar_chart data={[{"Mon", %{a: 5, b: 3}}]} colors={%{a: "#10b981", b: "#ef4444"}} />|)
+
+    html =
+      rendered_to_string(
+        ~H|<.stacked_bar_chart data={[{"Mon", %{a: 5, b: 3}}]} colors={%{a: "#10b981", b: "#ef4444"}} />|
+      )
+
     assert html =~ ~s(data-exo="stacked-bar-chart")
     assert html =~ "rect"
   end

@@ -11,7 +11,10 @@ defmodule ExoUI.Components do
   attr :variant, :string, default: nil
   attr :size, :string, values: ~w(xs sm md lg), default: "md"
   attr :class, :string, default: nil
-  attr :rest, :global, include: ~w(href navigate patch method disabled name value type form download)
+
+  attr :rest, :global,
+    include: ~w(href navigate patch method disabled name value type form download)
+
   slot :inner_block, required: true
 
   def button(assigns) do
@@ -56,7 +59,10 @@ defmodule ExoUI.Components do
   attr :for, :any, required: true
   attr :as, :any, default: nil
   attr :class, :string, default: nil
-  attr :rest, :global, include: ~w(autocomplete name rel action enctype method novalidate target multipart)
+
+  attr :rest, :global,
+    include: ~w(autocomplete name rel action enctype method novalidate target multipart)
+
   slot :inner_block, required: true
 
   def form(assigns) do
@@ -96,7 +102,9 @@ defmodule ExoUI.Components do
   attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
   attr :multiple, :boolean, default: false, doc: "the multiple flag for select inputs"
   attr :class, :string, default: nil
-  attr :rest, :global, include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
+
+  attr :rest, :global,
+    include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
     pattern placeholder readonly required rows size step)
 
   def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
@@ -117,9 +125,10 @@ defmodule ExoUI.Components do
   end
 
   def input(%{type: "checkbox"} = assigns) do
-    assigns = assign_new(assigns, :checked, fn ->
-      Phoenix.HTML.Form.normalize_value("checkbox", assigns[:value])
-    end)
+    assigns =
+      assign_new(assigns, :checked, fn ->
+        Phoenix.HTML.Form.normalize_value("checkbox", assigns[:value])
+      end)
 
     ~H"""
     <label data-exo="checkbox-item">
@@ -135,7 +144,15 @@ defmodule ExoUI.Components do
         {@rest}
       />
       <span data-exo="checkbox-indicator">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <polyline points="20 6 9 17 4 12" />
         </svg>
       </span>
@@ -145,10 +162,13 @@ defmodule ExoUI.Components do
   end
 
   def input(%{type: "textarea"} = assigns) do
+    assigns = assign_new(assigns, :id, fn -> nil end)
+
     ~H"""
     <div data-exo="field">
-      <label :if={@label} data-exo="label">{@label}</label>
+      <label :if={@label} data-exo="label" for={@id}>{@label}</label>
       <textarea
+        id={@id}
         data-exo="input"
         data-invalid={@errors != [] && ""}
         name={@name}
@@ -182,10 +202,13 @@ defmodule ExoUI.Components do
   end
 
   def input(assigns) do
+    assigns = assign_new(assigns, :id, fn -> nil end)
+
     ~H"""
     <div data-exo="field">
-      <label :if={@label} data-exo="label">{@label}</label>
+      <label :if={@label} data-exo="label" for={@id}>{@label}</label>
       <input
+        id={@id}
         data-exo="input"
         data-invalid={@errors != [] && ""}
         type={@type}
@@ -256,7 +279,7 @@ defmodule ExoUI.Components do
         data-exo="modal-content"
         role="dialog"
         aria-modal="true"
-        aria-labelledby={@title != [] && "#{@id}-title"}
+        aria-labelledby={if @title != [], do: "#{@id}-title"}
         tabindex="-1"
       >
         <div data-exo="modal-header">
@@ -295,7 +318,9 @@ defmodule ExoUI.Components do
       <p>{@message}</p>
       <:actions>
         <.button variant="ghost" phx-click={@on_cancel |> hide_modal(@id)}>{@cancel_text}</.button>
-        <.button variant={@variant} phx-click={@on_confirm |> hide_modal(@id)}>{@confirm_text}</.button>
+        <.button variant={@variant} phx-click={@on_confirm |> hide_modal(@id)}>
+          {@confirm_text}
+        </.button>
       </:actions>
     </.modal>
     """
@@ -481,6 +506,7 @@ defmodule ExoUI.Components do
   attr :rest, :global
 
   slot :trigger
+
   slot :entry do
     attr :type, :string
     attr :click, :string
@@ -498,29 +524,65 @@ defmodule ExoUI.Components do
     ~H"""
     <.popover id={@id} side={@side} align={@align} haspopup="menu">
       <:trigger :if={@trigger != []}>{render_slot(@trigger)}</:trigger>
-      <div data-exo="dropdown-menu" role="menu" aria-label={@id} id={"#{@id}-menu"} phx-hook="ExoDropdownMenu" class={@class} {@rest}>
+      <div
+        data-exo="dropdown-menu"
+        role="menu"
+        aria-label={@id}
+        id={"#{@id}-menu"}
+        phx-hook="ExoDropdownMenu"
+        class={@class}
+        {@rest}
+      >
         <%= for {entry, idx} <- Enum.with_index(@entry) do %>
           <%= cond do %>
             <% entry[:type] == "separator" -> %>
               <div data-exo="dropdown-separator" role="separator" />
             <% entry[:type] == "label" -> %>
-              <span data-exo="dropdown-label" id={"#{@id}-label-#{idx}"} role="none">{render_slot(entry)}</span>
+              <span data-exo="dropdown-label" id={"#{@id}-label-#{idx}"} role="none">
+                {render_slot(entry)}
+              </span>
             <% entry[:type] == "sub_trigger" -> %>
-              <button type="button" data-exo="dropdown-item" role="menuitem" popovertarget={entry.target} disabled={entry[:disabled]}>
-                <span :if={entry[:icon]} data-exo="dropdown-item-icon"><.icon name={entry.icon} class="size-4" /></span>
+              <button
+                type="button"
+                data-exo="dropdown-item"
+                role="menuitem"
+                popovertarget={entry.target}
+                disabled={entry[:disabled]}
+              >
+                <span :if={entry[:icon]} data-exo="dropdown-item-icon">
+                  <.icon name={entry.icon} class="size-4" />
+                </span>
                 <span data-exo="dropdown-item-label">{render_slot(entry)}</span>
-                <svg data-exo="dropdown-item-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+                <svg
+                  data-exo="dropdown-item-chevron"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
               </button>
             <% entry[:navigate] || entry[:patch] || entry[:href] -> %>
               <.link
                 data-exo="dropdown-item"
                 data-variant={entry[:variant]}
+                data-disabled={entry[:disabled] && ""}
+                aria-disabled={to_string(entry[:disabled] || false)}
                 role="menuitem"
+                tabindex={if entry[:disabled], do: "-1"}
                 navigate={entry[:navigate]}
                 patch={entry[:patch]}
                 href={entry[:href]}
               >
-                <span :if={entry[:icon]} data-exo="dropdown-item-icon"><.icon name={entry.icon} class="size-4" /></span>
+                <span :if={entry[:icon]} data-exo="dropdown-item-icon">
+                  <.icon name={entry.icon} class="size-4" />
+                </span>
                 <span data-exo="dropdown-item-label">{render_slot(entry)}</span>
                 <kbd :if={entry[:shortcut]} data-exo="dropdown-item-shortcut">{entry.shortcut}</kbd>
               </.link>
@@ -535,7 +597,9 @@ defmodule ExoUI.Components do
                 phx-click={entry[:click]}
                 disabled={entry[:disabled]}
               >
-                <span :if={entry[:icon]} data-exo="dropdown-item-icon"><.icon name={entry.icon} class="size-4" /></span>
+                <span :if={entry[:icon]} data-exo="dropdown-item-icon">
+                  <.icon name={entry.icon} class="size-4" />
+                </span>
                 <span data-exo="dropdown-item-label">{render_slot(entry)}</span>
                 <kbd :if={entry[:shortcut]} data-exo="dropdown-item-shortcut">{entry.shortcut}</kbd>
               </button>
@@ -588,10 +652,8 @@ defmodule ExoUI.Components do
 
     grouped =
       assigns.option
-      |> Enum.chunk_by(& &1[:group])
-      |> Enum.map(fn chunk ->
-        {List.first(chunk)[:group], chunk}
-      end)
+      |> Enum.group_by(& &1[:group])
+      |> Enum.map(fn {group_name, opts} -> {group_name, opts} end)
 
     label_id = if assigns[:label], do: "#{assigns.id}-label"
 
@@ -613,14 +675,24 @@ defmodule ExoUI.Components do
           data-exo-select="trigger"
           data-invalid={@errors != [] && ""}
           aria-haspopup="listbox"
-          aria-labelledby={@label_id}
+          aria-labelledby={if @label_id, do: @label_id}
           style={"anchor-name: --select-#{@id}"}
           disabled={@disabled}
         >
           <span data-exo="select-value">
             {if @selected_opt, do: render_slot(@selected_opt), else: @prompt}
           </span>
-          <svg data-exo="select-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+          <svg
+            data-exo="select-icon"
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="m6 9 6 6 6-6" />
+          </svg>
         </button>
         <div
           id={@id}
@@ -630,7 +702,7 @@ defmodule ExoUI.Components do
           data-align={@align}
           style={"position-anchor: --select-#{@id}"}
         >
-          <div data-exo="select-menu" role="listbox" aria-labelledby={@label_id}>
+          <div data-exo="select-menu" role="listbox" aria-labelledby={if @label_id, do: @label_id}>
             <%= for {group_name, opts} <- @grouped do %>
               <%= if group_name do %>
                 <div data-exo="select-group" role="group" aria-label={group_name}>
@@ -645,7 +717,9 @@ defmodule ExoUI.Components do
                     aria-selected={to_string(to_string(opt[:value]) == to_string(@value))}
                     tabindex="-1"
                   >
-                    <span :if={opt[:icon]} data-exo="select-option-icon"><.icon name={opt.icon} class="size-4" /></span>
+                    <span :if={opt[:icon]} data-exo="select-option-icon">
+                      <.icon name={opt.icon} class="size-4" />
+                    </span>
                     <span data-exo="select-check"><.icon name="check" class="size-4" /></span>
                     {render_slot(opt)}
                   </div>
@@ -661,7 +735,9 @@ defmodule ExoUI.Components do
                   aria-selected={to_string(to_string(opt[:value]) == to_string(@value))}
                   tabindex="-1"
                 >
-                  <span :if={opt[:icon]} data-exo="select-option-icon"><.icon name={opt.icon} class="size-4" /></span>
+                  <span :if={opt[:icon]} data-exo="select-option-icon">
+                    <.icon name={opt.icon} class="size-4" />
+                  </span>
                   <span data-exo="select-check"><.icon name="check" class="size-4" /></span>
                   {render_slot(opt)}
                 </div>
@@ -756,7 +832,12 @@ defmodule ExoUI.Components do
           data-align={@align}
           style={"position-anchor: --combobox-#{@id}"}
         >
-          <div id={"#{@id}-listbox"} data-exo="combobox-list" role="listbox" aria-labelledby={@label_id}>
+          <div
+            id={"#{@id}-listbox"}
+            data-exo="combobox-list"
+            role="listbox"
+            aria-labelledby={if @label_id, do: @label_id}
+          >
             <div
               :for={opt <- @option}
               data-exo="combobox-option"
@@ -767,7 +848,9 @@ defmodule ExoUI.Components do
               aria-selected={to_string(to_string(opt[:value]) == to_string(@value))}
               tabindex="-1"
             >
-              <span :if={opt[:icon]} data-exo="combobox-option-icon"><.icon name={opt.icon} class="size-4" /></span>
+              <span :if={opt[:icon]} data-exo="combobox-option-icon">
+                <.icon name={opt.icon} class="size-4" />
+              </span>
               <span data-exo="combobox-check"><.icon name="check" class="size-4" /></span>
               {render_slot(opt)}
             </div>
@@ -819,14 +902,24 @@ defmodule ExoUI.Components do
             data-exo-combobox="trigger"
             data-invalid={@errors != [] && ""}
             aria-haspopup="listbox"
-            aria-labelledby={@label_id}
+            aria-labelledby={if @label_id, do: @label_id}
             style={"anchor-name: --combobox-#{@id}"}
             disabled={@disabled}
           >
             <span data-exo="combobox-value">
               {if @selected_opt, do: render_slot(@selected_opt), else: @prompt}
             </span>
-            <svg data-exo="combobox-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5-5 5 5"/><path d="m7 9 5 5 5-5"/></svg>
+            <svg
+              data-exo="combobox-icon"
+              viewBox="0 0 24 24"
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="m7 15 5-5 5 5" /><path d="m7 9 5 5 5-5" />
+            </svg>
           </button>
           <button
             :if={@clearable && @value}
@@ -853,7 +946,12 @@ defmodule ExoUI.Components do
             aria-controls={"#{@id}-listbox"}
             autocomplete="off"
           />
-          <div id={"#{@id}-listbox"} data-exo="combobox-list" role="listbox" aria-labelledby={@label_id}>
+          <div
+            id={"#{@id}-listbox"}
+            data-exo="combobox-list"
+            role="listbox"
+            aria-labelledby={if @label_id, do: @label_id}
+          >
             <div
               :for={opt <- @option}
               data-exo="combobox-option"
@@ -864,7 +962,9 @@ defmodule ExoUI.Components do
               aria-selected={to_string(to_string(opt[:value]) == to_string(@value))}
               tabindex="-1"
             >
-              <span :if={opt[:icon]} data-exo="combobox-option-icon"><.icon name={opt.icon} class="size-4" /></span>
+              <span :if={opt[:icon]} data-exo="combobox-option-icon">
+                <.icon name={opt.icon} class="size-4" />
+              </span>
               <span data-exo="combobox-check"><.icon name="check" class="size-4" /></span>
               {render_slot(opt)}
             </div>
@@ -945,13 +1045,15 @@ defmodule ExoUI.Components do
       </span>
       <span
         id={"#{@id}-content"}
+        popover="manual"
         data-exo="tooltip-content"
         data-side={@side}
         data-align={@align}
         data-arrow={@arrow && ""}
+        data-delay={@delay}
         role="tooltip"
         class={@class}
-        style={"position-anchor: --tooltip-#{@id}; --exo-tooltip-delay: #{@delay}ms"}
+        style={"position-anchor: --tooltip-#{@id}"}
         {@rest}
       >
         {if @content != [], do: render_slot(@content), else: @text}
@@ -1022,6 +1124,7 @@ defmodule ExoUI.Components do
 
   attr :class, :string, default: nil
   attr :rest, :global
+
   slot :item, required: true do
     attr :title, :string, required: true
   end
@@ -1075,7 +1178,9 @@ defmodule ExoUI.Components do
         <div :if={@icon} data-exo="stat-card-icon">{@icon}</div>
       </div>
       <div :if={@subtitle || @trend} data-exo="stat-card-bottom">
-        <span :if={@trend} data-exo="stat-card-trend" data-direction={@trend_direction}>{@trend}</span>
+        <span :if={@trend} data-exo="stat-card-trend" data-direction={@trend_direction}>
+          {@trend}
+        </span>
         <span :if={@subtitle} data-exo="stat-card-subtitle">{@subtitle}</span>
       </div>
     </div>
@@ -1137,10 +1242,17 @@ defmodule ExoUI.Components do
 
   def skeleton(assigns) do
     ~H"""
-    <div data-exo="skeleton" data-type={@type} role="status" aria-label={@label} class={@class} {@rest}>
+    <div
+      data-exo="skeleton"
+      data-type={@type}
+      role="status"
+      aria-label={@label}
+      class={@class}
+      {@rest}
+    >
       <%= case @type do %>
         <% "text" -> %>
-          <div data-exo="skeleton-line" :for={_ <- 1..@rows} />
+          <div :for={_ <- 1..@rows} data-exo="skeleton-line" />
         <% "card" -> %>
           <div data-exo="skeleton-block" style="height: 8rem;" />
           <div data-exo="skeleton-line" />
@@ -1149,7 +1261,7 @@ defmodule ExoUI.Components do
           <div data-exo="skeleton-circle" />
         <% "table" -> %>
           <div data-exo="skeleton-line" style="height: 2rem;" />
-          <div data-exo="skeleton-line" :for={_ <- 1..@rows} style="height: 3rem;" />
+          <div :for={_ <- 1..@rows} data-exo="skeleton-line" style="height: 3rem;" />
       <% end %>
     </div>
     """
@@ -1205,12 +1317,17 @@ defmodule ExoUI.Components do
 
     ~H"""
     <div
-      :if={msg = Phoenix.Flash.get(@flash, @kind) || render_slot(@inner_block)}
+      :if={
+        msg = Phoenix.Flash.get(@flash, @kind) || (@inner_block != [] && render_slot(@inner_block))
+      }
       id={@id}
       data-exo="flash"
       data-kind={@kind}
       role="alert"
-      phx-click={Phoenix.LiveView.JS.push("lv:clear-flash", value: %{key: @kind}) |> Phoenix.LiveView.JS.hide(to: "##{@id}")}
+      phx-click={
+        Phoenix.LiveView.JS.push("lv:clear-flash", value: %{key: @kind})
+        |> Phoenix.LiveView.JS.hide(to: "##{@id}")
+      }
       {@rest}
     >
       <div data-exo="flash-content">
@@ -1273,7 +1390,13 @@ defmodule ExoUI.Components do
           <p :if={toast[:title]} data-exo="toast-title">{toast.title}</p>
           <p data-exo="toast-message">{toast.message}</p>
         </div>
-        <button data-exo="toast-close" phx-click={Phoenix.LiveView.JS.hide(to: "##{dom_id}")} aria-label={@close_label}>✕</button>
+        <button
+          data-exo="toast-close"
+          phx-click={Phoenix.LiveView.JS.hide(to: "##{dom_id}")}
+          aria-label={@close_label}
+        >
+          ✕
+        </button>
       </div>
     </div>
     """
@@ -1284,7 +1407,7 @@ defmodule ExoUI.Components do
 
   def icon(assigns) do
     Code.ensure_loaded!(ExoUI.Lucide)
-    icon_fn = assigns.name |> String.replace("-", "_") |> String.to_existing_atom()
+    icon_fn = assigns.name |> String.replace("-", "_") |> String.to_atom()
     apply(ExoUI.Lucide, icon_fn, [Map.delete(assigns, :name)])
   end
 
@@ -1454,6 +1577,7 @@ defmodule ExoUI.Components do
               is_today = day == @today
               is_selected = @selected != nil and day == @selected
               has_availability = MapSet.member?(@available_set, day)
+
               is_disabled =
                 @disabled or not in_month or
                   (not is_nil(@min) and Date.compare(day, @min) == :lt) or
@@ -1552,9 +1676,13 @@ defmodule ExoUI.Components do
         <li :for={{item, idx} <- Enum.with_index(@item)} data-exo="breadcrumb-item">
           <span :if={idx > 0} data-exo="breadcrumb-separator">/</span>
           <.link :if={item[:navigate]} navigate={item.navigate}>{render_slot(item)}</.link>
-          <.link :if={item[:patch]} patch={item.patch}>{render_slot(item)}</.link>
-          <.link :if={item[:href] && !item[:navigate] && !item[:patch]} href={item.href}>{render_slot(item)}</.link>
-          <span :if={!item[:href] && !item[:navigate] && !item[:patch]} aria-current="page">{render_slot(item)}</span>
+          <.link :if={item[:patch] && !item[:navigate]} patch={item.patch}>{render_slot(item)}</.link>
+          <.link :if={item[:href] && !item[:navigate] && !item[:patch]} href={item.href}>
+            {render_slot(item)}
+          </.link>
+          <span :if={!item[:href] && !item[:navigate] && !item[:patch]} aria-current="page">
+            {render_slot(item)}
+          </span>
         </li>
       </ol>
     </nav>
@@ -1573,9 +1701,15 @@ defmodule ExoUI.Components do
   def collapsible(assigns) do
     ~H"""
     <div data-exo="collapsible" id={@id} class={@class} {@rest}>
-      <div data-exo="collapsible-trigger" phx-click={Phoenix.LiveView.JS.toggle(to: "##{@id}-content")}>
+      <button
+        type="button"
+        data-exo="collapsible-trigger"
+        aria-expanded={to_string(@open)}
+        aria-controls={"#{@id}-content"}
+        phx-click={Phoenix.LiveView.JS.toggle(to: "##{@id}-content")}
+      >
         {render_slot(@trigger)}
-      </div>
+      </button>
       <div
         id={"#{@id}-content"}
         data-exo="collapsible-content"
@@ -1614,7 +1748,11 @@ defmodule ExoUI.Components do
       <div data-exo="drawer-content">
         <div data-exo="drawer-header">
           <h2 :if={@title != []} data-exo="drawer-title">{render_slot(@title)}</h2>
-          <button data-exo="drawer-close" phx-click={@on_cancel |> hide_drawer(@id)} aria-label="close">
+          <button
+            data-exo="drawer-close"
+            phx-click={@on_cancel |> hide_drawer(@id)}
+            aria-label="close"
+          >
             ✕
           </button>
         </div>
@@ -1676,7 +1814,7 @@ defmodule ExoUI.Components do
   attr :rest, :global
 
   def progress(assigns) do
-    pct = min(100, round(assigns.value / assigns.max * 100))
+    pct = if assigns.max == 0, do: 0, else: min(100, round(assigns.value / assigns.max * 100))
     assigns = assign(assigns, :pct, pct)
 
     ~H"""
@@ -1685,7 +1823,13 @@ defmodule ExoUI.Components do
         <span data-exo="label">{@label}</span>
         <span data-exo="progress-value">{@pct}%</span>
       </div>
-      <div data-exo="progress" role="progressbar" aria-valuenow={@value} aria-valuemin="0" aria-valuemax={@max}>
+      <div
+        data-exo="progress"
+        role="progressbar"
+        aria-valuenow={@value}
+        aria-valuemin="0"
+        aria-valuemax={@max}
+      >
         <div data-exo="progress-bar" style={"width: #{@pct}%"} />
       </div>
     </div>

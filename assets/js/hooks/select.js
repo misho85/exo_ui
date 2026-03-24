@@ -110,9 +110,10 @@ const ExoSelect = {
   _typeAhead(char, options) {
     if (char.length !== 1) return
     const lower = char.toLowerCase()
-    const match = options.find((o) =>
-      o.textContent.trim().toLowerCase().startsWith(lower)
-    )
+    const currentIdx = options.indexOf(document.activeElement)
+    const start = currentIdx + 1
+    const rotated = [...options.slice(start), ...options.slice(0, start)]
+    const match = rotated.find(o => o.textContent.trim().toLowerCase().startsWith(lower))
     if (match) match.focus()
   },
 

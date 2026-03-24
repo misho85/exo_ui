@@ -76,6 +76,12 @@
   min-width: anchor-size(width);
 }
 
+@supports not (min-width: anchor-size(width)) {
+  [data-exo="popover-content"]:has([data-exo="combobox-list"]) {
+    min-width: 10rem;
+  }
+}
+
 :where([data-exo="combobox-list"]) {
   display: flex;
   flex-direction: column;

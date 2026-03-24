@@ -55,3 +55,13 @@
 :where([data-exo="radio"]:focus-visible + [data-exo="radio-indicator"]) {
   box-shadow: 0 0 0 2px color-mix(in oklch, var(--exo-ring) 25%, transparent);
 }
+
+:where([data-exo="radio"]:disabled + [data-exo="radio-indicator"]) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+:where([data-exo="radio-item"]:has([data-exo="radio"]:disabled)) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

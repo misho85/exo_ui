@@ -35,6 +35,16 @@
   color: var(--exo-danger-foreground);
 }
 
+:where([data-exo="flash"][data-kind="success"]) {
+  background: var(--exo-success);
+  color: var(--exo-success-foreground);
+}
+
+:where([data-exo="flash"][data-kind="warning"]) {
+  background: var(--exo-warning);
+  color: var(--exo-warning-foreground);
+}
+
 :where([data-exo="flash-title"]) {
   font-weight: 600;
   margin: 0;

@@ -26,7 +26,12 @@ defmodule ExoUI.Components.VisualTest do
 
   test "renders empty_state" do
     assigns = %{}
-    html = rendered_to_string(~H|<.empty_state title="No results" subtitle="Try a different search" />|)
+
+    html =
+      rendered_to_string(
+        ~H|<.empty_state title="No results" subtitle="Try a different search" />|
+      )
+
     assert html =~ ~s(data-exo="empty-state")
     assert html =~ "No results"
     assert html =~ "Try a different search"
@@ -34,11 +39,14 @@ defmodule ExoUI.Components.VisualTest do
 
   test "renders alert" do
     assigns = %{}
-    html = rendered_to_string(~H"""
-    <.alert kind={:success} title="Done">
-      Operation completed.
-    </.alert>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.alert kind={:success} title="Done">
+        Operation completed.
+      </.alert>
+      """)
+
     assert html =~ ~s(data-exo="alert")
     assert html =~ ~s(data-kind="success")
     assert html =~ "Done"

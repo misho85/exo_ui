@@ -6,13 +6,16 @@ defmodule ExoUI.Components.DropdownMenuTest do
 
   test "renders dropdown_menu with trigger and items" do
     assigns = %{}
-    html = rendered_to_string(~H"""
-    <.dropdown_menu id="dd">
-      <:trigger>Menu</:trigger>
-      <:entry>Edit</:entry>
-      <:entry>Delete</:entry>
-    </.dropdown_menu>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.dropdown_menu id="dd">
+        <:trigger>Menu</:trigger>
+        <:entry>Edit</:entry>
+        <:entry>Delete</:entry>
+      </.dropdown_menu>
+      """)
+
     assert html =~ ~s(data-exo="popover")
     assert html =~ ~s(popovertarget="dd")
     assert html =~ ~s(role="menu")
@@ -26,12 +29,15 @@ defmodule ExoUI.Components.DropdownMenuTest do
 
   test "renders item with icon and shortcut" do
     assigns = %{}
-    html = rendered_to_string(~H"""
-    <.dropdown_menu id="dd2">
-      <:trigger>Menu</:trigger>
-      <:entry icon="pencil" shortcut="⌘E">Edit</:entry>
-    </.dropdown_menu>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.dropdown_menu id="dd2">
+        <:trigger>Menu</:trigger>
+        <:entry icon="pencil" shortcut="⌘E">Edit</:entry>
+      </.dropdown_menu>
+      """)
+
     assert html =~ ~s(data-exo="dropdown-item-icon")
     assert html =~ ~s(data-exo="dropdown-item-shortcut")
     assert html =~ "⌘E"
@@ -39,39 +45,48 @@ defmodule ExoUI.Components.DropdownMenuTest do
 
   test "renders separator" do
     assigns = %{}
-    html = rendered_to_string(~H"""
-    <.dropdown_menu id="dd3">
-      <:trigger>Menu</:trigger>
-      <:entry>Edit</:entry>
-      <:entry type="separator" />
-      <:entry>Delete</:entry>
-    </.dropdown_menu>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.dropdown_menu id="dd3">
+        <:trigger>Menu</:trigger>
+        <:entry>Edit</:entry>
+        <:entry type="separator" />
+        <:entry>Delete</:entry>
+      </.dropdown_menu>
+      """)
+
     assert html =~ ~s(data-exo="dropdown-separator")
     assert html =~ ~s(role="separator")
   end
 
   test "renders label" do
     assigns = %{}
-    html = rendered_to_string(~H"""
-    <.dropdown_menu id="dd4">
-      <:trigger>Menu</:trigger>
-      <:entry type="label">Actions</:entry>
-      <:entry>Edit</:entry>
-    </.dropdown_menu>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.dropdown_menu id="dd4">
+        <:trigger>Menu</:trigger>
+        <:entry type="label">Actions</:entry>
+        <:entry>Edit</:entry>
+      </.dropdown_menu>
+      """)
+
     assert html =~ ~s(data-exo="dropdown-label")
     assert html =~ "Actions"
   end
 
   test "renders item with click and popovertargetaction=hide" do
     assigns = %{}
-    html = rendered_to_string(~H"""
-    <.dropdown_menu id="dd5">
-      <:trigger>Menu</:trigger>
-      <:entry click="do-edit">Edit</:entry>
-    </.dropdown_menu>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.dropdown_menu id="dd5">
+        <:trigger>Menu</:trigger>
+        <:entry click="do-edit">Edit</:entry>
+      </.dropdown_menu>
+      """)
+
     assert html =~ ~s(popovertarget="dd5")
     assert html =~ ~s(popovertargetaction="hide")
     assert html =~ ~s(phx-click="do-edit")
@@ -79,103 +94,130 @@ defmodule ExoUI.Components.DropdownMenuTest do
 
   test "renders item with navigate as link" do
     assigns = %{}
-    html = rendered_to_string(~H"""
-    <.dropdown_menu id="dd6">
-      <:trigger>Menu</:trigger>
-      <:entry navigate="/items/1">View</:entry>
-    </.dropdown_menu>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.dropdown_menu id="dd6">
+        <:trigger>Menu</:trigger>
+        <:entry navigate="/items/1">View</:entry>
+      </.dropdown_menu>
+      """)
+
     assert html =~ ~s(href="/items/1")
     refute html =~ ~s(popovertargetaction)
   end
 
   test "renders item with variant=danger" do
     assigns = %{}
-    html = rendered_to_string(~H"""
-    <.dropdown_menu id="dd7">
-      <:trigger>Menu</:trigger>
-      <:entry variant="danger">Delete</:entry>
-    </.dropdown_menu>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.dropdown_menu id="dd7">
+        <:trigger>Menu</:trigger>
+        <:entry variant="danger">Delete</:entry>
+      </.dropdown_menu>
+      """)
+
     assert html =~ ~s(data-variant="danger")
   end
 
   test "renders sub_trigger for sub-menu" do
     assigns = %{}
-    html = rendered_to_string(~H"""
-    <.dropdown_menu id="dd8">
-      <:trigger>Menu</:trigger>
-      <:entry type="sub_trigger" target="sub-menu">Share</:entry>
-    </.dropdown_menu>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.dropdown_menu id="dd8">
+        <:trigger>Menu</:trigger>
+        <:entry type="sub_trigger" target="sub-menu">Share</:entry>
+      </.dropdown_menu>
+      """)
+
     assert html =~ ~s(popovertarget="sub-menu")
     refute html =~ ~s(popovertargetaction="hide")
   end
 
   test "renders without trigger" do
     assigns = %{}
-    html = rendered_to_string(~H"""
-    <.dropdown_menu id="sub">
-      <:entry>Sub item</:entry>
-    </.dropdown_menu>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.dropdown_menu id="sub">
+        <:entry>Sub item</:entry>
+      </.dropdown_menu>
+      """)
+
     refute html =~ ~s(data-exo="popover-trigger")
     assert html =~ ~s(role="menu")
   end
 
   test "sets aria-haspopup=menu on trigger" do
     assigns = %{}
-    html = rendered_to_string(~H"""
-    <.dropdown_menu id="dd9">
-      <:trigger>Menu</:trigger>
-      <:entry>Edit</:entry>
-    </.dropdown_menu>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.dropdown_menu id="dd9">
+        <:trigger>Menu</:trigger>
+        <:entry>Edit</:entry>
+      </.dropdown_menu>
+      """)
+
     assert html =~ ~s(aria-haspopup="menu")
   end
 
   test "renders disabled item" do
     assigns = %{}
-    html = rendered_to_string(~H"""
-    <.dropdown_menu id="dd10">
-      <:trigger>Menu</:trigger>
-      <:entry disabled>Cannot click</:entry>
-    </.dropdown_menu>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.dropdown_menu id="dd10">
+        <:trigger>Menu</:trigger>
+        <:entry disabled>Cannot click</:entry>
+      </.dropdown_menu>
+      """)
+
     assert html =~ ~s(disabled)
   end
 
   test "renders item with href as link" do
     assigns = %{}
-    html = rendered_to_string(~H"""
-    <.dropdown_menu id="dd11">
-      <:trigger>Menu</:trigger>
-      <:entry href="https://example.com">External</:entry>
-    </.dropdown_menu>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.dropdown_menu id="dd11">
+        <:trigger>Menu</:trigger>
+        <:entry href="https://example.com">External</:entry>
+      </.dropdown_menu>
+      """)
+
     assert html =~ ~s(href="https://example.com")
   end
 
   test "renders item with patch as link" do
     assigns = %{}
-    html = rendered_to_string(~H"""
-    <.dropdown_menu id="dd12">
-      <:trigger>Menu</:trigger>
-      <:entry patch="/edit">Edit</:entry>
-    </.dropdown_menu>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.dropdown_menu id="dd12">
+        <:trigger>Menu</:trigger>
+        <:entry patch="/edit">Edit</:entry>
+      </.dropdown_menu>
+      """)
+
     assert html =~ ~s(href="/edit")
     assert html =~ ~s(data-phx-link="patch")
   end
 
   test "plain item without click still closes popover" do
     assigns = %{}
-    html = rendered_to_string(~H"""
-    <.dropdown_menu id="dd13">
-      <:trigger>Menu</:trigger>
-      <:entry>Just text</:entry>
-    </.dropdown_menu>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.dropdown_menu id="dd13">
+        <:trigger>Menu</:trigger>
+        <:entry>Just text</:entry>
+      </.dropdown_menu>
+      """)
+
     assert html =~ ~s(popovertarget="dd13")
     assert html =~ ~s(popovertargetaction="hide")
     refute html =~ ~s(phx-click)
@@ -183,14 +225,17 @@ defmodule ExoUI.Components.DropdownMenuTest do
 
   test "preserves entry order" do
     assigns = %{}
-    html = rendered_to_string(~H"""
-    <.dropdown_menu id="dd14">
-      <:trigger>Menu</:trigger>
-      <:entry>First</:entry>
-      <:entry type="separator" />
-      <:entry>Second</:entry>
-    </.dropdown_menu>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.dropdown_menu id="dd14">
+        <:trigger>Menu</:trigger>
+        <:entry>First</:entry>
+        <:entry type="separator" />
+        <:entry>Second</:entry>
+      </.dropdown_menu>
+      """)
+
     first_pos = :binary.match(html, "First") |> elem(0)
     sep_pos = :binary.match(html, "dropdown-separator") |> elem(0)
     second_pos = :binary.match(html, "Second") |> elem(0)
@@ -200,12 +245,15 @@ defmodule ExoUI.Components.DropdownMenuTest do
 
   test "defaults to bottom/end alignment" do
     assigns = %{}
-    html = rendered_to_string(~H"""
-    <.dropdown_menu id="dd15">
-      <:trigger>Menu</:trigger>
-      <:entry>Edit</:entry>
-    </.dropdown_menu>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.dropdown_menu id="dd15">
+        <:trigger>Menu</:trigger>
+        <:entry>Edit</:entry>
+      </.dropdown_menu>
+      """)
+
     assert html =~ ~s(data-side="bottom")
     assert html =~ ~s(data-align="end")
   end

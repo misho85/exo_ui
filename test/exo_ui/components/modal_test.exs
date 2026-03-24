@@ -17,12 +17,15 @@ defmodule ExoUI.Components.ModalTest do
 
   test "renders modal with title slot" do
     assigns = %{}
-    html = rendered_to_string(~H"""
-    <.modal id="test-modal">
-      <:title>My Title</:title>
-      Body
-    </.modal>
-    """)
+
+    html =
+      rendered_to_string(~H"""
+      <.modal id="test-modal">
+        <:title>My Title</:title>
+        Body
+      </.modal>
+      """)
+
     assert html =~ ~s(data-exo="modal-title")
     assert html =~ "My Title"
   end

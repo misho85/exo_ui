@@ -39,7 +39,7 @@
   background: color-mix(in oklch, var(--exo-danger) 10%, transparent);
 }
 
-:where([data-exo="dropdown-item"][disabled]) {
+:where([data-exo="dropdown-item"][data-disabled]) {
   opacity: 0.5;
   pointer-events: none;
 }

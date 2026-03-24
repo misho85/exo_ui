@@ -7,16 +7,14 @@
   display: inline-flex;
 }
 
-/* Positioning properties need real specificity */
+/* Override UA popover defaults (needs real specificity) */
 [data-exo="tooltip-content"] {
   position: fixed;
   position-try-fallbacks: flip-block;
   margin: 0;
   inset: auto;
   pointer-events: none;
-  z-index: 50;
-  opacity: 0;
-  transition: opacity var(--exo-duration) var(--exo-easing);
+  z-index: 60;
 }
 
 /* Themeable styles (zero specificity) */
@@ -31,13 +29,23 @@
   border-radius: calc(var(--exo-radius) - 2px);
 }
 
-:where([data-exo="tooltip"]):has(:hover, :focus-visible) > :where([data-exo="tooltip-content"]) {
-  opacity: 1;
-  transition-delay: var(--exo-tooltip-delay, 500ms);
+/* --- Show / hide animation --- */
+
+:where([data-exo="tooltip-content"]) {
+  opacity: 0;
+  transition: opacity var(--exo-duration) var(--exo-easing),
+              overlay var(--exo-duration) allow-discrete,
+              display var(--exo-duration) allow-discrete;
 }
 
-:where([data-exo="tooltip"][data-dismissed]) > :where([data-exo="tooltip-content"]) {
-  opacity: 0 !important;
+:where([data-exo="tooltip-content"]):popover-open {
+  opacity: 1;
+}
+
+@starting-style {
+  :where([data-exo="tooltip-content"]):popover-open {
+    opacity: 0;
+  }
 }
 
 /* --- Position-area per side + align (needs real specificity) --- */
@@ -87,62 +95,4 @@
   top: 50%;
   transform: translateY(-50%);
   border-right-color: var(--exo-tooltip-bg);
-}
-
-/* --- Fallback without anchor positioning --- */
-
-@supports not (position-area: top) {
-  [data-exo="tooltip-content"] {
-    position: absolute;
-  }
-
-  /* Top */
-  [data-exo="tooltip-content"][data-side="top"] {
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    margin-bottom: var(--exo-space-1);
-  }
-  [data-exo="tooltip-content"][data-side="top"][data-align="start"] {
-    left: 0;
-    transform: none;
-  }
-  [data-exo="tooltip-content"][data-side="top"][data-align="end"] {
-    left: auto;
-    right: 0;
-    transform: none;
-  }
-
-  /* Bottom */
-  [data-exo="tooltip-content"][data-side="bottom"] {
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    margin-top: var(--exo-space-1);
-  }
-  [data-exo="tooltip-content"][data-side="bottom"][data-align="start"] {
-    left: 0;
-    transform: none;
-  }
-  [data-exo="tooltip-content"][data-side="bottom"][data-align="end"] {
-    left: auto;
-    right: 0;
-    transform: none;
-  }
-
-  /* Left */
-  [data-exo="tooltip-content"][data-side="left"] {
-    right: 100%;
-    top: 50%;
-    transform: translateY(-50%);
-    margin-right: var(--exo-space-1);
-  }
-
-  /* Right */
-  [data-exo="tooltip-content"][data-side="right"] {
-    left: 100%;
-    top: 50%;
-    transform: translateY(-50%);
-    margin-left: var(--exo-space-1);
-  }
 }
