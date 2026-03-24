@@ -29,7 +29,7 @@
   border-radius: calc(var(--exo-radius) - 2px);
 }
 
-/* --- Show / hide animation --- */
+/* --- Show / hide --- */
 
 :where([data-exo="tooltip-content"]) {
   opacity: 0;
@@ -38,6 +38,13 @@
               display var(--exo-duration) allow-discrete;
 }
 
+/* CSS-only fallback (no JS / non-LiveView) — active until hook adds [popover] */
+:where([data-exo="tooltip"]):has(:hover, :focus-visible) > :where([data-exo="tooltip-content"]:not([popover])) {
+  opacity: 1;
+  transition-delay: var(--exo-tooltip-delay, 500ms);
+}
+
+/* JS-enhanced path — hook adds popover="manual", then manages showPopover/hidePopover */
 :where([data-exo="tooltip-content"]):popover-open {
   opacity: 1;
 }
@@ -95,4 +102,58 @@
   top: 50%;
   transform: translateY(-50%);
   border-right-color: var(--exo-tooltip-bg);
+}
+
+/* --- Fallback: no anchor positioning + no JS (CSS-only path) --- */
+
+@supports not (position-area: top) {
+  [data-exo="tooltip-content"]:not([popover]) {
+    position: absolute;
+  }
+
+  [data-exo="tooltip-content"][data-side="top"]:not([popover]) {
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: var(--exo-space-1);
+  }
+  [data-exo="tooltip-content"][data-side="top"][data-align="start"]:not([popover]) {
+    left: 0;
+    transform: none;
+  }
+  [data-exo="tooltip-content"][data-side="top"][data-align="end"]:not([popover]) {
+    left: auto;
+    right: 0;
+    transform: none;
+  }
+
+  [data-exo="tooltip-content"][data-side="bottom"]:not([popover]) {
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: var(--exo-space-1);
+  }
+  [data-exo="tooltip-content"][data-side="bottom"][data-align="start"]:not([popover]) {
+    left: 0;
+    transform: none;
+  }
+  [data-exo="tooltip-content"][data-side="bottom"][data-align="end"]:not([popover]) {
+    left: auto;
+    right: 0;
+    transform: none;
+  }
+
+  [data-exo="tooltip-content"][data-side="left"]:not([popover]) {
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-right: var(--exo-space-1);
+  }
+
+  [data-exo="tooltip-content"][data-side="right"]:not([popover]) {
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: var(--exo-space-1);
+  }
 }

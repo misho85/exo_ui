@@ -1045,7 +1045,6 @@ defmodule ExoUI.Components do
       </span>
       <span
         id={"#{@id}-content"}
-        popover="manual"
         data-exo="tooltip-content"
         data-side={@side}
         data-align={@align}
@@ -1053,7 +1052,7 @@ defmodule ExoUI.Components do
         data-delay={@delay}
         role="tooltip"
         class={@class}
-        style={"position-anchor: --tooltip-#{@id}"}
+        style={"position-anchor: --tooltip-#{@id}; --exo-tooltip-delay: #{@delay}ms"}
         {@rest}
       >
         {if @content != [], do: render_slot(@content), else: @text}
@@ -1739,7 +1738,6 @@ defmodule ExoUI.Components do
       data-exo="drawer"
       data-side={@side}
       data-state={if @show, do: "open", else: "closed"}
-      phx-mounted={@show && show_drawer(@id)}
       phx-remove={hide_drawer(@id)}
       class={@class}
       {@rest}
@@ -1764,16 +1762,14 @@ defmodule ExoUI.Components do
     """
   end
 
-  defp show_drawer(id) do
+  def show_drawer(id) do
     %Phoenix.LiveView.JS{}
-    |> Phoenix.LiveView.JS.show(to: "##{id}")
-    |> Phoenix.LiveView.JS.add_class("overflow-hidden", to: "body")
+    |> Phoenix.LiveView.JS.set_attribute({"data-state", "open"}, to: "##{id}")
   end
 
-  defp hide_drawer(js \\ %Phoenix.LiveView.JS{}, id) do
+  def hide_drawer(js \\ %Phoenix.LiveView.JS{}, id) do
     js
-    |> Phoenix.LiveView.JS.hide(to: "##{id}")
-    |> Phoenix.LiveView.JS.remove_class("overflow-hidden", to: "body")
+    |> Phoenix.LiveView.JS.set_attribute({"data-state", "closed"}, to: "##{id}")
   end
 
   # --- slider ---

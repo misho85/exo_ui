@@ -212,7 +212,7 @@ defmodule ExoUI.Components.TooltipTest do
     assert html =~ ~s(data-delay="500")
   end
 
-  test "renders popover=manual on content" do
+  test "no popover attr in static HTML (JS adds it at mount)" do
     assigns = %{}
 
     html =
@@ -220,7 +220,7 @@ defmodule ExoUI.Components.TooltipTest do
       <.tooltip id="t15" text="tip">X</.tooltip>
       """)
 
-    assert html =~ ~s(popover="manual")
+    refute html =~ ~s(popover=)
   end
 
   test "forwards rest attrs" do

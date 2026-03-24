@@ -11,22 +11,11 @@ defmodule Storybook.Components.Drawer do
       </p>
 
       <div style="display: flex; gap: 1rem;">
-        <ExoUI.Components.button
-          phx-click={
-            Phoenix.LiveView.JS.show(to: "#drawer-right")
-            |> Phoenix.LiveView.JS.add_class("overflow-hidden", to: "body")
-          }
-        >
+        <ExoUI.Components.button phx-click={ExoUI.Components.show_drawer("drawer-right")}>
           Open Right Drawer
         </ExoUI.Components.button>
 
-        <ExoUI.Components.button
-          variant="outline"
-          phx-click={
-            Phoenix.LiveView.JS.show(to: "#drawer-left")
-            |> Phoenix.LiveView.JS.add_class("overflow-hidden", to: "body")
-          }
-        >
+        <ExoUI.Components.button variant="outline" phx-click={ExoUI.Components.show_drawer("drawer-left")}>
           Open Left Drawer
         </ExoUI.Components.button>
       </div>
