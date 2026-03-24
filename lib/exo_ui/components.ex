@@ -1738,7 +1738,7 @@ defmodule ExoUI.Components do
       data-exo="drawer"
       data-side={@side}
       data-state={if @show, do: "open", else: "closed"}
-      phx-remove={hide_drawer(@id)}
+      inert={!@show}
       class={@class}
       {@rest}
     >
@@ -1765,11 +1765,13 @@ defmodule ExoUI.Components do
   def show_drawer(id) do
     %Phoenix.LiveView.JS{}
     |> Phoenix.LiveView.JS.set_attribute({"data-state", "open"}, to: "##{id}")
+    |> Phoenix.LiveView.JS.remove_attribute("inert", to: "##{id}")
   end
 
   def hide_drawer(js \\ %Phoenix.LiveView.JS{}, id) do
     js
     |> Phoenix.LiveView.JS.set_attribute({"data-state", "closed"}, to: "##{id}")
+    |> Phoenix.LiveView.JS.set_attribute({"inert", "true"}, to: "##{id}")
   end
 
   # --- slider ---
@@ -1842,7 +1844,7 @@ defmodule ExoUI.Components do
       Gettext.dgettext(config, "errors", msg, opts)
     else
       Enum.reduce(opts, msg, fn {key, value}, acc ->
-        String.replace(acc, "%{#{key}}", fn -> to_string(value) end)
+        String.replace(acc, "%{#{key}}", fn _ -> to_string(value) end)
       end)
     end
   end

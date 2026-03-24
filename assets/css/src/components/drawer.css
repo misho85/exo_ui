@@ -2,12 +2,11 @@
   position: fixed;
   inset: 0;
   z-index: 100;
-  display: none;
-  transition: display var(--exo-duration) allow-discrete;
+  pointer-events: none;
 }
 
 :where([data-exo="drawer"][data-state="open"]) {
-  display: block;
+  pointer-events: auto;
 }
 
 :where([data-exo="drawer-backdrop"]) {
@@ -52,18 +51,6 @@
 
 :where([data-exo="drawer"][data-state="open"][data-side="left"] [data-exo="drawer-content"]) {
   transform: translateX(0);
-}
-
-@starting-style {
-  :where([data-exo="drawer"][data-state="open"] [data-exo="drawer-backdrop"]) {
-    opacity: 0;
-  }
-  :where([data-exo="drawer"][data-state="open"][data-side="right"] [data-exo="drawer-content"]) {
-    transform: translateX(100%);
-  }
-  :where([data-exo="drawer"][data-state="open"][data-side="left"] [data-exo="drawer-content"]) {
-    transform: translateX(-100%);
-  }
 }
 
 :where([data-exo="drawer-header"]) {
