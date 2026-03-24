@@ -9,18 +9,17 @@
  * The browser's [popover] rule has specificity (0,1,0) and sets
  * inset: 0; margin: auto; display: none which centers/hides the popover.
  * We need at least (0,1,0) to override those defaults.
- * The transition MUST also live here so overlay/display actually animate
- * instead of snapping (zero-specificity :where() loses to the UA rule).
+ *
+ * Transition lives on :popover-open only — exit is instant.
+ * Safari lacks the `overlay` property so it can't keep the element in the
+ * top layer during an exit transition; without that, anchor positioning
+ * breaks and the panel flashes at the wrong position before hiding.
  */
 [data-exo="popover-content"] {
   margin: 0;
   inset: auto;
   position-try-fallbacks: flip-block;
   opacity: 0;
-  transition: opacity var(--exo-duration) var(--exo-easing),
-              transform var(--exo-duration) var(--exo-easing),
-              overlay var(--exo-duration) var(--exo-easing) allow-discrete,
-              display var(--exo-duration) var(--exo-easing) allow-discrete;
 }
 
 /* --- Themeable styles (zero specificity for overridability) --- */
@@ -62,6 +61,10 @@
 [data-exo="popover-content"]:popover-open {
   opacity: 1;
   transform: scale(1);
+  transition: opacity var(--exo-duration) var(--exo-easing),
+              transform var(--exo-duration) var(--exo-easing),
+              overlay var(--exo-duration) var(--exo-easing) allow-discrete,
+              display var(--exo-duration) var(--exo-easing) allow-discrete;
 }
 
 @starting-style {
