@@ -8,7 +8,7 @@ defmodule ExoUI.MixProject do
     [
       app: :exo_ui,
       version: @version,
-      elixir: "~> 1.18",
+      elixir: "~> 1.19",
       deps: deps(),
       name: "ExoUI",
       description: "Headless LiveView component library with default CSS theme",
@@ -23,12 +23,12 @@ defmodule ExoUI.MixProject do
 
   defp deps do
     [
-      {:phoenix, "~> 1.8"},
-      {:phoenix_html, "~> 4.1"},
-      {:phoenix_live_view, "~> 1.1"},
-      {:gettext, "~> 0.26"},
+      {:phoenix, "~> 1.8.5"},
+      {:phoenix_html, "~> 4.3"},
+      {:phoenix_live_view, "~> 1.1.27"},
+      {:gettext, "~> 1.0"},
       {:jason, "~> 1.4", only: :test},
-      {:ex_doc, "~> 0.35", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.40", only: :dev, runtime: false}
     ]
   end
 

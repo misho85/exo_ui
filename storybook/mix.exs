@@ -5,7 +5,7 @@ defmodule ExoUI.Storybook.MixProject do
     [
       app: :exo_ui_storybook,
       version: "0.1.0",
-      elixir: "~> 1.18",
+      elixir: "~> 1.19",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases()
@@ -22,14 +22,14 @@ defmodule ExoUI.Storybook.MixProject do
   defp deps do
     [
       {:exo_ui, path: ".."},
-      {:phoenix, "~> 1.8"},
-      {:phoenix_html, "~> 4.1"},
-      {:phoenix_live_view, "~> 1.1"},
-      {:phoenix_live_reload, "~> 1.5", only: :dev},
+      {:phoenix, "~> 1.8.5"},
+      {:phoenix_html, "~> 4.3"},
+      {:phoenix_live_view, "~> 1.1.27"},
+      {:phoenix_live_reload, "~> 1.6"},
       {:phoenix_storybook, "~> 1.0"},
-      {:esbuild, "~> 0.9", runtime: false},
+      {:esbuild, "~> 0.10", runtime: false},
       {:jason, "~> 1.4"},
-      {:bandit, "~> 1.6"}
+      {:bandit, "~> 1.10"}
     ]
   end
 
