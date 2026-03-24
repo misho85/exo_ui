@@ -39,26 +39,35 @@
 [data-exo="popover-content"][data-side="left"] { position-area: inline-start; margin-right: var(--exo-space-1); }
 [data-exo="popover-content"][data-side="right"] { position-area: inline-end; margin-left: var(--exo-space-1); }
 
-/* --- Animations --- */
+/* --- Transform origin (scale grows from the edge nearest the trigger) --- */
 
-:where([data-exo="popover-content"]):popover-open {
-  opacity: 1;
-  transform: scale(1);
-}
+:where([data-exo="popover-content"][data-side="bottom"][data-align="start"])  { transform-origin: top left; }
+:where([data-exo="popover-content"][data-side="bottom"][data-align="center"]) { transform-origin: top center; }
+:where([data-exo="popover-content"][data-side="bottom"][data-align="end"])    { transform-origin: top right; }
+:where([data-exo="popover-content"][data-side="top"][data-align="start"])     { transform-origin: bottom left; }
+:where([data-exo="popover-content"][data-side="top"][data-align="center"])    { transform-origin: bottom center; }
+:where([data-exo="popover-content"][data-side="top"][data-align="end"])       { transform-origin: bottom right; }
+:where([data-exo="popover-content"][data-side="left"])                        { transform-origin: center right; }
+:where([data-exo="popover-content"][data-side="right"])                       { transform-origin: center left; }
+
+/* --- Animations --- */
 
 :where([data-exo="popover-content"]) {
   opacity: 0;
-  transform: scale(0.95);
   transition: opacity var(--exo-duration) var(--exo-easing),
               transform var(--exo-duration) var(--exo-easing),
               overlay var(--exo-duration) allow-discrete,
               display var(--exo-duration) allow-discrete;
 }
 
+:where([data-exo="popover-content"]):popover-open {
+  opacity: 1;
+}
+
 @starting-style {
   :where([data-exo="popover-content"]):popover-open {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.96);
   }
 }
 
