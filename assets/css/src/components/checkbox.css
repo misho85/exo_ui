@@ -1,0 +1,64 @@
+:where([data-exo="checkbox-item"]) {
+  display: flex;
+  align-items: center;
+  gap: var(--exo-space-2);
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  color: var(--exo-foreground);
+  cursor: pointer;
+}
+
+:where([data-exo="checkbox"]) {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+:where([data-exo="checkbox-indicator"]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border-radius: calc(var(--exo-radius) * 0.5);
+  border: 1px solid var(--exo-input);
+  background: var(--exo-background);
+  flex-shrink: 0;
+  transition: border-color var(--exo-duration) var(--exo-easing),
+              background var(--exo-duration) var(--exo-easing);
+}
+
+:where([data-exo="checkbox-indicator"]) svg {
+  width: 0.75rem;
+  height: 0.75rem;
+  color: var(--exo-primary-foreground);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity var(--exo-duration) var(--exo-easing),
+              transform var(--exo-duration) var(--exo-easing);
+}
+
+:where([data-exo="checkbox"]:checked + [data-exo="checkbox-indicator"]) {
+  border-color: var(--exo-primary);
+  background: var(--exo-primary);
+}
+
+:where([data-exo="checkbox"]:checked + [data-exo="checkbox-indicator"]) svg {
+  opacity: 1;
+  transform: scale(1);
+}
+
+:where([data-exo="checkbox"]:focus-visible + [data-exo="checkbox-indicator"]) {
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--exo-ring) 25%, transparent);
+}
+
+:where([data-exo="checkbox"]:disabled + [data-exo="checkbox-indicator"]) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+:where([data-exo="checkbox"]:disabled ~ span) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -29,6 +29,7 @@
 @import "./src/components/select.css";
 @import "./src/components/combobox.css";
 @import "./src/components/radio.css";
+@import "./src/components/checkbox.css";
 @import "./src/components/accordion.css";
 @import "./src/components/breadcrumb.css";
 @import "./src/components/collapsible.css";

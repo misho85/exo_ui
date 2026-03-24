@@ -122,7 +122,7 @@ defmodule ExoUI.Components do
     end)
 
     ~H"""
-    <label data-exo="field">
+    <label data-exo="checkbox-item">
       <input type="hidden" name={@name} value="false" disabled={@rest[:disabled]} />
       <input
         type="checkbox"
@@ -134,6 +134,11 @@ defmodule ExoUI.Components do
         class={@class}
         {@rest}
       />
+      <span data-exo="checkbox-indicator">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      </span>
       <span :if={@label}>{@label}</span>
     </label>
     """
