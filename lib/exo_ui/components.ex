@@ -1637,6 +1637,8 @@ defmodule ExoUI.Components do
 
   attr :id, :string, required: true
   attr :class, :string, default: nil
+  attr :variant, :string, default: nil
+  attr :joined, :boolean, default: false
   attr :rest, :global
 
   slot :item, required: true do
@@ -1646,7 +1648,14 @@ defmodule ExoUI.Components do
 
   def accordion(assigns) do
     ~H"""
-    <div data-exo="accordion" id={@id} class={@class} {@rest}>
+    <div
+      data-exo="accordion"
+      id={@id}
+      class={@class}
+      data-variant={@variant}
+      data-joined={@joined || nil}
+      {@rest}
+    >
       <details :for={item <- @item} data-exo="accordion-item" open={item[:open]}>
         <summary data-exo="accordion-trigger">{item.title}</summary>
         <div data-exo="accordion-content">
