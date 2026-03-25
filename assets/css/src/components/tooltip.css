@@ -18,6 +18,7 @@
   pointer-events: none;
   z-index: 60;
   opacity: 0;
+  visibility: hidden;
 }
 
 /* Themeable styles (zero specificity) */
@@ -46,12 +47,14 @@
 /* CSS-only fallback (no JS / non-LiveView) — active until hook adds [popover] */
 :where([data-exo="tooltip"]):has(:hover, :focus-visible) > :where([data-exo="tooltip-content"]:not([popover])) {
   opacity: 1;
+  visibility: visible;
   transition-delay: var(--exo-tooltip-delay, 500ms);
 }
 
 /* JS-enhanced path — hook adds popover="manual", then manages showPopover/hidePopover */
 [data-exo="tooltip-content"]:popover-open {
   opacity: 1;
+  visibility: visible;
   transition: opacity var(--exo-duration) var(--exo-easing),
               transform var(--exo-duration) var(--exo-easing),
               overlay var(--exo-duration) var(--exo-easing) allow-discrete,

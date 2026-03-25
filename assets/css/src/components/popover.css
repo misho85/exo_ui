@@ -20,6 +20,7 @@
   inset: auto;
   position-try-fallbacks: flip-block;
   opacity: 0;
+  visibility: hidden;
 }
 
 /* --- Themeable styles (zero specificity for overridability) --- */
@@ -60,6 +61,7 @@
 
 [data-exo="popover-content"]:popover-open {
   opacity: 1;
+  visibility: visible;
   transform: scale(1);
   transition: opacity var(--exo-duration) var(--exo-easing),
               transform var(--exo-duration) var(--exo-easing),

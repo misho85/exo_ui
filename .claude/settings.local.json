@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mix eval:*)",
+      "Bash(MIX_HOME=/Users/miso/.local/share/mise/installs/elixir/1.19.5-otp-28/.mix mix local.hex --force)"
+    ]
+  }
+}
