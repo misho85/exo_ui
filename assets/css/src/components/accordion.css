@@ -7,6 +7,19 @@
 
 :where([data-exo="accordion-item"]) {
   border-bottom: 1px solid var(--exo-border);
+  interpolate-size: allow-keywords;
+}
+
+/* --- Content animation --- */
+
+:where([data-exo="accordion-item"])::details-content {
+  overflow: hidden;
+  height: 0;
+  transition: height 250ms var(--exo-easing), content-visibility 250ms var(--exo-easing) allow-discrete;
+}
+
+:where([data-exo="accordion-item"][open])::details-content {
+  height: auto;
 }
 
 /* --- Trigger (summary) --- */
