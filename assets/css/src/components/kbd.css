@@ -1,0 +1,16 @@
+:where([data-exo="kbd"]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 var(--exo-space-1);
+  font-family: var(--exo-font);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--exo-muted-foreground);
+  background: var(--exo-muted);
+  border: 1px solid var(--exo-border);
+  border-radius: var(--exo-radius);
+  box-shadow: 0 1px 0 var(--exo-border);
+}

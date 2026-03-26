@@ -1,0 +1,48 @@
+:where([data-exo="scroll-area"]) {
+  position: relative;
+  overflow: hidden;
+}
+
+:where([data-exo="scroll-area-viewport"]) {
+  height: 100%;
+  width: 100%;
+  border-radius: inherit;
+}
+
+:where([data-exo="scroll-area"][data-orientation="vertical"] [data-exo="scroll-area-viewport"]) {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+:where([data-exo="scroll-area"][data-orientation="horizontal"] [data-exo="scroll-area-viewport"]) {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+:where([data-exo="scroll-area"][data-orientation="both"] [data-exo="scroll-area-viewport"]) {
+  overflow: auto;
+}
+
+/* Thin scrollbar styling */
+:where([data-exo="scroll-area-viewport"]) {
+  scrollbar-width: thin;
+  scrollbar-color: var(--exo-border) transparent;
+}
+
+:where([data-exo="scroll-area-viewport"])::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+:where([data-exo="scroll-area-viewport"])::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+:where([data-exo="scroll-area-viewport"])::-webkit-scrollbar-thumb {
+  background: var(--exo-border);
+  border-radius: 3px;
+}
+
+:where([data-exo="scroll-area-viewport"])::-webkit-scrollbar-thumb:hover {
+  background: var(--exo-muted-foreground);
+}

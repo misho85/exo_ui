@@ -1,0 +1,31 @@
+:where([data-exo="fieldset"]) {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+:where([data-exo="fieldset-legend"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  font-weight: 600;
+  color: var(--exo-foreground);
+  padding-bottom: var(--exo-space-1);
+}
+
+:where([data-exo="fieldset-description"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  color: var(--exo-muted-foreground);
+  margin: 0 0 var(--exo-space-4) 0;
+}
+
+:where([data-exo="fieldset-content"]) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--exo-space-4);
+}
+
+:where([data-exo="fieldset"]:disabled) {
+  opacity: 0.5;
+  pointer-events: none;
+}

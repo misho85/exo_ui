@@ -1,0 +1,84 @@
+:where([data-exo="steps"]) {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: step;
+}
+
+:where([data-exo="steps"][data-orientation="vertical"]) {
+  flex-direction: column;
+}
+
+:where([data-exo="step"]) {
+  display: flex;
+  align-items: center;
+  gap: var(--exo-space-2);
+  flex: 1;
+  position: relative;
+  counter-increment: step;
+}
+
+:where([data-exo="steps"][data-orientation="vertical"] [data-exo="step"]) {
+  padding-bottom: var(--exo-space-6);
+}
+
+/* Connector line between steps */
+:where([data-exo="step"]:not(:last-child)::after) {
+  content: "";
+  flex: 1;
+  height: 2px;
+  background: var(--exo-border);
+  margin: 0 var(--exo-space-2);
+}
+
+:where([data-exo="steps"][data-orientation="vertical"] [data-exo="step"]:not(:last-child)::after) {
+  position: absolute;
+  left: 0.875rem;
+  top: 2rem;
+  width: 2px;
+  height: calc(100% - 2rem);
+  flex: none;
+  margin: 0;
+}
+
+:where([data-exo="step"][data-status="complete"]:not(:last-child)::after) {
+  background: var(--exo-primary);
+}
+
+:where([data-exo="step-indicator"]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 600;
+  flex-shrink: 0;
+  border: 2px solid var(--exo-border);
+  color: var(--exo-muted-foreground);
+  background: var(--exo-background);
+}
+
+:where([data-exo="step"][data-status="complete"] [data-exo="step-indicator"]) {
+  background: var(--exo-primary);
+  border-color: var(--exo-primary);
+  color: var(--exo-primary-foreground);
+}
+
+:where([data-exo="step"][data-status="current"] [data-exo="step-indicator"]) {
+  border-color: var(--exo-primary);
+  color: var(--exo-primary);
+}
+
+:where([data-exo="step-title"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  font-weight: 500;
+  color: var(--exo-foreground);
+}
+
+:where([data-exo="step"][data-status="upcoming"] [data-exo="step-title"]) {
+  color: var(--exo-muted-foreground);
+}

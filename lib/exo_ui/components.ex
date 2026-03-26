@@ -24,6 +24,9 @@ defmodule ExoUI.Components do
   defdelegate avatar(assigns), to: ExoUI.Components.Core
   defdelegate skeleton(assigns), to: ExoUI.Components.Core
   defdelegate empty_state(assigns), to: ExoUI.Components.Core
+  defdelegate spinner(assigns), to: ExoUI.Components.Core
+  defdelegate kbd(assigns), to: ExoUI.Components.Core
+  defdelegate scroll_area(assigns), to: ExoUI.Components.Core
 
   # Form
   defdelegate form(assigns), to: ExoUI.Components.Form
@@ -36,6 +39,9 @@ defmodule ExoUI.Components do
   defdelegate radio_group(assigns), to: ExoUI.Components.Form
   defdelegate slider(assigns), to: ExoUI.Components.Form
   defdelegate date_picker(assigns), to: ExoUI.Components.Form
+  defdelegate file_input(assigns), to: ExoUI.Components.Form
+  defdelegate fieldset(assigns), to: ExoUI.Components.Form
+  defdelegate rating(assigns), to: ExoUI.Components.Form
   defdelegate translate_error(msg_opts), to: ExoUI.Components.Form
 
   # Overlay
@@ -49,6 +55,11 @@ defmodule ExoUI.Components do
   defdelegate tooltip(assigns), to: ExoUI.Components.Overlay
   defdelegate drawer(assigns), to: ExoUI.Components.Overlay
   defdelegate collapsible(assigns), to: ExoUI.Components.Overlay
+  defdelegate sheet(assigns), to: ExoUI.Components.Overlay
+  defdelegate hover_card(assigns), to: ExoUI.Components.Overlay
+  defdelegate context_menu(assigns), to: ExoUI.Components.Overlay
+  defdelegate command_palette(assigns), to: ExoUI.Components.Overlay
+  defdelegate menubar(assigns), to: ExoUI.Components.Overlay
   defdelegate show_drawer(id), to: ExoUI.Components.Overlay
 
   def hide_drawer(js_or_id, id \\ nil) do
@@ -75,4 +86,7 @@ defmodule ExoUI.Components do
   defdelegate tabs(assigns), to: ExoUI.Components.DataDisplay
   defdelegate pagination(assigns), to: ExoUI.Components.DataDisplay
   defdelegate accordion(assigns), to: ExoUI.Components.DataDisplay
+  defdelegate steps(assigns), to: ExoUI.Components.DataDisplay
+  defdelegate timeline(assigns), to: ExoUI.Components.DataDisplay
+  defdelegate carousel(assigns), to: ExoUI.Components.DataDisplay
 end

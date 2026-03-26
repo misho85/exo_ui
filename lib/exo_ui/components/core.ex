@@ -192,4 +192,59 @@ defmodule ExoUI.Components.Core do
     </div>
     """
   end
+
+  @doc "Renders a loading spinner."
+  attr :size, :string, values: ~w(sm md lg), default: "md"
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def spinner(assigns) do
+    ~H"""
+    <div
+      data-exo="spinner"
+      data-size={@size}
+      role="status"
+      aria-label="Loading"
+      class={@class}
+      {@rest}
+    >
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2.5" opacity="0.25" />
+        <path
+          d="M12 2a10 10 0 0 1 10 10"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        />
+      </svg>
+    </div>
+    """
+  end
+
+  @doc "Renders a keyboard shortcut indicator."
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def kbd(assigns) do
+    ~H"""
+    <kbd data-exo="kbd" class={@class} {@rest}>{render_slot(@inner_block)}</kbd>
+    """
+  end
+
+  @doc "Renders a scrollable container with custom scrollbar styling."
+  attr :class, :string, default: nil
+  attr :orientation, :string, values: ~w(vertical horizontal both), default: "vertical"
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def scroll_area(assigns) do
+    ~H"""
+    <div data-exo="scroll-area" data-orientation={@orientation} class={@class} {@rest}>
+      <div data-exo="scroll-area-viewport">
+        {render_slot(@inner_block)}
+      </div>
+    </div>
+    """
+  end
 end

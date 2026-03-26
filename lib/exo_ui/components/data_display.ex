@@ -350,6 +350,101 @@ defmodule ExoUI.Components.DataDisplay do
     """
   end
 
+  @doc "Renders a multi-step progress indicator."
+  attr :class, :string, default: nil
+  attr :orientation, :string, values: ~w(horizontal vertical), default: "horizontal"
+  attr :rest, :global
+
+  slot :step, required: true do
+    attr :title, :string, required: true
+    attr :status, :string, values: ~w(complete current upcoming)
+  end
+
+  def steps(assigns) do
+    ~H"""
+    <ol data-exo="steps" data-orientation={@orientation} class={@class} {@rest}>
+      <li
+        :for={step <- @step}
+        data-exo="step"
+        data-status={step[:status] || "upcoming"}
+      >
+        <div data-exo="step-indicator">
+          <span :if={step[:status] == "complete"}>&#10003;</span>
+          <span :if={step[:status] != "complete"}></span>
+        </div>
+        <span data-exo="step-title">{step.title}</span>
+      </li>
+    </ol>
+    """
+  end
+
+  @doc "Renders a chronological timeline of events."
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  slot :event, required: true do
+    attr :title, :string, required: true
+    attr :time, :string
+    attr :variant, :string
+  end
+
+  def timeline(assigns) do
+    ~H"""
+    <div data-exo="timeline" class={@class} {@rest}>
+      <div :for={event <- @event} data-exo="timeline-event" data-variant={event[:variant]}>
+        <div data-exo="timeline-indicator" />
+        <div data-exo="timeline-connector" />
+        <div data-exo="timeline-body">
+          <p data-exo="timeline-title">{event.title}</p>
+          <time :if={event[:time]} data-exo="timeline-time">{event.time}</time>
+          <div :if={event[:inner_block]} data-exo="timeline-content">
+            {render_slot(event)}
+          </div>
+        </div>
+      </div>
+    </div>
+    """
+  end
+
+  @doc "Renders a scrollable carousel of items."
+  attr :id, :string, required: true
+  attr :class, :string, default: nil
+  attr :loop, :boolean, default: false
+  attr :rest, :global
+  slot :item, required: true
+
+  def carousel(assigns) do
+    ~H"""
+    <div
+      data-exo="carousel"
+      id={@id}
+      data-loop={@loop || nil}
+      phx-hook="ExoCarousel"
+      class={@class}
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="Carousel"
+      {@rest}
+    >
+      <div data-exo="carousel-viewport">
+        <div data-exo="carousel-track">
+          <div
+            :for={{item, idx} <- Enum.with_index(@item)}
+            data-exo="carousel-slide"
+            role="group"
+            aria-roledescription="slide"
+            aria-label={"Slide #{idx + 1}"}
+          >
+            {render_slot(item)}
+          </div>
+        </div>
+      </div>
+      <button data-exo="carousel-prev" aria-label="Previous slide">‹</button>
+      <button data-exo="carousel-next" aria-label="Next slide">›</button>
+    </div>
+    """
+  end
+
   @doc "Renders an accordion with collapsible detail items."
   attr :id, :string, required: true
   attr :class, :string, default: nil

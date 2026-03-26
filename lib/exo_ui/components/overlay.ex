@@ -332,22 +332,27 @@ defmodule ExoUI.Components.Overlay do
 
   def collapsible(assigns) do
     ~H"""
-    <div data-exo="collapsible" id={@id} class={@class} {@rest}>
+    <div data-exo="collapsible" id={@id} class={@class} phx-hook="ExoCollapsible" {@rest}>
+      <input
+        type="checkbox"
+        id={"#{@id}-state"}
+        checked={@open}
+        data-exo="collapsible-state"
+        aria-hidden="true"
+        tabindex="-1"
+      />
       <button
         type="button"
         data-exo="collapsible-trigger"
         aria-expanded={to_string(@open)}
         aria-controls={"#{@id}-content"}
-        phx-click={Phoenix.LiveView.JS.toggle(to: "##{@id}-content")}
       >
         {render_slot(@trigger)}
       </button>
-      <div
-        id={"#{@id}-content"}
-        data-exo="collapsible-content"
-        style={unless @open, do: "display: none;"}
-      >
-        {render_slot(@inner_block)}
+      <div id={"#{@id}-content"} data-exo="collapsible-content" role="region">
+        <div data-exo="collapsible-body">
+          {render_slot(@inner_block)}
+        </div>
       </div>
     </div>
     """
@@ -406,5 +411,188 @@ defmodule ExoUI.Components.Overlay do
     js
     |> Phoenix.LiveView.JS.set_attribute({"data-state", "closed"}, to: "##{id}")
     |> Phoenix.LiveView.JS.set_attribute({"inert", "true"}, to: "##{id}")
+  end
+
+  @doc "Renders a slide-out panel from the edge of the screen."
+  attr :id, :string, required: true
+  attr :side, :string, values: ~w(left right top bottom), default: "right"
+  attr :class, :string, default: nil
+  attr :on_cancel, Phoenix.LiveView.JS, default: %Phoenix.LiveView.JS{}
+  attr :rest, :global
+  slot :inner_block, required: true
+  slot :title
+  slot :footer
+
+  def sheet(assigns) do
+    ~H"""
+    <div id={@id} data-exo="sheet" data-side={@side} class={@class} {@rest}>
+      <div data-exo="sheet-backdrop" phx-click={hide_sheet(@on_cancel, @id)} />
+      <div data-exo="sheet-content" role="dialog" aria-modal="true">
+        <div :if={@title != []} data-exo="sheet-header">
+          {render_slot(@title)}
+        </div>
+        <div data-exo="sheet-body">
+          {render_slot(@inner_block)}
+        </div>
+        <div :if={@footer != []} data-exo="sheet-footer">
+          {render_slot(@footer)}
+        </div>
+        <button
+          data-exo="sheet-close"
+          aria-label="Close"
+          phx-click={hide_sheet(@on_cancel, @id)}
+        >
+          ✕
+        </button>
+      </div>
+    </div>
+    """
+  end
+
+  @doc "Shows a sheet by ID."
+  def show_sheet(id) do
+    Phoenix.LiveView.JS.show(to: "##{id}")
+    |> Phoenix.LiveView.JS.add_class("open", to: "##{id}")
+  end
+
+  @doc "Hides a sheet by ID."
+  def hide_sheet(%Phoenix.LiveView.JS{} = js \\ %Phoenix.LiveView.JS{}, id) do
+    js
+    |> Phoenix.LiveView.JS.remove_class("open", to: "##{id}")
+    |> Phoenix.LiveView.JS.hide(to: "##{id}", transition: {"", "", ""}, time: 300)
+  end
+
+  @doc "Renders a card that appears on hover."
+  attr :id, :string, required: true
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :trigger, required: true
+  slot :inner_block, required: true
+
+  def hover_card(assigns) do
+    ~H"""
+    <div data-exo="hover-card" id={@id} phx-hook="ExoHoverCard" class={@class} {@rest}>
+      <div data-exo="hover-card-trigger">
+        {render_slot(@trigger)}
+      </div>
+      <div data-exo="hover-card-content" role="tooltip">
+        {render_slot(@inner_block)}
+      </div>
+    </div>
+    """
+  end
+
+  @doc "Renders a right-click context menu."
+  attr :id, :string, required: true
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :trigger, required: true
+
+  slot :item do
+    attr :label, :string, required: true
+    attr :disabled, :boolean
+    attr :separator, :boolean
+  end
+
+  def context_menu(assigns) do
+    ~H"""
+    <div data-exo="context-menu" id={@id} phx-hook="ExoContextMenu" class={@class} {@rest}>
+      <div data-exo="context-menu-trigger">
+        {render_slot(@trigger)}
+      </div>
+      <div data-exo="context-menu-content" role="menu">
+        <template :for={item <- @item}>
+          <div :if={item[:separator]} data-exo="context-menu-separator" role="separator" />
+          <button
+            :if={!item[:separator]}
+            data-exo="context-menu-item"
+            role="menuitem"
+            disabled={item[:disabled]}
+            data-disabled={item[:disabled] || nil}
+          >
+            {item.label}
+          </button>
+        </template>
+      </div>
+    </div>
+    """
+  end
+
+  @doc "Renders a searchable command palette dialog (Ctrl+K)."
+  attr :id, :string, required: true
+  attr :placeholder, :string, default: "Search..."
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def command_palette(assigns) do
+    ~H"""
+    <div data-exo="command-palette" id={@id} phx-hook="ExoCommandPalette" class={@class} {@rest}>
+      <div data-exo="command-palette-backdrop" />
+      <div data-exo="command-palette-dialog" role="dialog" aria-modal="true">
+        <div data-exo="command-palette-input-wrapper">
+          <svg
+            data-exo="command-palette-search-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          <input
+            type="text"
+            data-exo="command-palette-input"
+            placeholder={@placeholder}
+            autocomplete="off"
+            spellcheck="false"
+          />
+        </div>
+        <div data-exo="command-palette-list" role="listbox">
+          {render_slot(@inner_block)}
+        </div>
+      </div>
+    </div>
+    """
+  end
+
+  @doc "Shows a command palette."
+  def show_command_palette(id) do
+    Phoenix.LiveView.JS.show(to: "##{id}")
+    |> Phoenix.LiveView.JS.add_class("open", to: "##{id}")
+    |> Phoenix.LiveView.JS.focus(to: "##{id} [data-exo=\"command-palette-input\"]")
+  end
+
+  @doc "Hides a command palette."
+  def hide_command_palette(js \\ %Phoenix.LiveView.JS{}, id) do
+    js
+    |> Phoenix.LiveView.JS.remove_class("open", to: "##{id}")
+    |> Phoenix.LiveView.JS.hide(to: "##{id}", transition: {"", "", ""}, time: 150)
+  end
+
+  @doc "Renders a horizontal menu bar with dropdown sub-menus."
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  slot :menu, required: true do
+    attr :label, :string, required: true
+  end
+
+  def menubar(assigns) do
+    ~H"""
+    <div data-exo="menubar" role="menubar" class={@class} {@rest}>
+      <div :for={menu <- @menu} data-exo="menubar-menu">
+        <button data-exo="menubar-trigger" role="menuitem" aria-haspopup="true" aria-expanded="false">
+          {menu.label}
+        </button>
+        <div data-exo="menubar-content" role="menu">
+          {render_slot(menu)}
+        </div>
+      </div>
+    </div>
+    """
   end
 end

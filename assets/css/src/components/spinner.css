@@ -1,0 +1,16 @@
+:where([data-exo="spinner"]) {
+  display: inline-flex;
+  color: var(--exo-muted-foreground);
+}
+
+:where([data-exo="spinner"] svg) {
+  animation: exo-spin 750ms linear infinite;
+}
+
+:where([data-exo="spinner"][data-size="sm"]) { width: 1rem; height: 1rem; }
+:where([data-exo="spinner"][data-size="md"]) { width: 1.5rem; height: 1.5rem; }
+:where([data-exo="spinner"][data-size="lg"]) { width: 2rem; height: 2rem; }
+
+@keyframes exo-spin {
+  to { transform: rotate(360deg); }
+}

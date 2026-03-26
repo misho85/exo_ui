@@ -1,0 +1,46 @@
+:where([data-exo="carousel"]) {
+  position: relative;
+}
+
+:where([data-exo="carousel-viewport"]) {
+  overflow: hidden;
+  border-radius: var(--exo-radius);
+}
+
+:where([data-exo="carousel-track"]) {
+  display: flex;
+  gap: var(--exo-space-4);
+}
+
+:where([data-exo="carousel-slide"]) {
+  flex: 0 0 100%;
+  min-width: 0;
+}
+
+:where([data-exo="carousel-prev"]),
+:where([data-exo="carousel-next"]) {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 1px solid var(--exo-border);
+  background: var(--exo-background);
+  color: var(--exo-foreground);
+  font-size: 1.25rem;
+  cursor: pointer;
+  z-index: 1;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
+}
+
+:where([data-exo="carousel-prev"]) { left: -1rem; }
+:where([data-exo="carousel-next"]) { right: -1rem; }
+
+:where([data-exo="carousel-prev"]:hover),
+:where([data-exo="carousel-next"]:hover) {
+  background: var(--exo-accent);
+}

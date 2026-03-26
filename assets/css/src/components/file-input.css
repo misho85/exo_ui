@@ -1,0 +1,34 @@
+:where([data-exo="file-input"]) {
+  display: block;
+  width: 100%;
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  color: var(--exo-foreground);
+  padding: var(--exo-space-2);
+  border: 1px solid var(--exo-border);
+  border-radius: var(--exo-radius);
+  background: transparent;
+  cursor: pointer;
+}
+
+:where([data-exo="file-input"])::file-selector-button {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  font-weight: 500;
+  color: var(--exo-foreground);
+  background: var(--exo-muted);
+  border: 1px solid var(--exo-border);
+  border-radius: var(--exo-radius);
+  padding: var(--exo-space-1) var(--exo-space-3);
+  margin-right: var(--exo-space-3);
+  cursor: pointer;
+}
+
+:where([data-exo="file-input"])::file-selector-button:hover {
+  background: var(--exo-accent);
+}
+
+:where([data-exo="file-input"]:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

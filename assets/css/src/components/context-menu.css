@@ -1,0 +1,56 @@
+:where([data-exo="context-menu"]) {
+  display: inline-block;
+}
+
+:where([data-exo="context-menu-content"]) {
+  display: none;
+  position: fixed;
+  z-index: 50;
+  min-width: 10rem;
+  padding: var(--exo-space-1);
+  background: var(--exo-background);
+  border: 1px solid var(--exo-border);
+  border-radius: var(--exo-radius);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  animation: exo-context-menu-in 100ms var(--exo-easing);
+}
+
+:where([data-exo="context-menu-content"][data-open]) {
+  display: block;
+}
+
+:where([data-exo="context-menu-item"]) {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: var(--exo-space-2) var(--exo-space-3);
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  color: var(--exo-foreground);
+  background: none;
+  border: none;
+  border-radius: calc(var(--exo-radius) - 2px);
+  cursor: pointer;
+  text-align: left;
+}
+
+:where([data-exo="context-menu-item"]:hover) {
+  background: var(--exo-accent);
+}
+
+:where([data-exo="context-menu-item"][data-disabled]) {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+:where([data-exo="context-menu-separator"]) {
+  height: 1px;
+  background: var(--exo-border);
+  margin: var(--exo-space-1) 0;
+}
+
+@keyframes exo-context-menu-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}

@@ -36,3 +36,17 @@
 @import "./src/components/drawer.css";
 @import "./src/components/slider.css";
 @import "./src/components/progress.css";
+@import "./src/components/spinner.css";
+@import "./src/components/kbd.css";
+@import "./src/components/fieldset.css";
+@import "./src/components/file-input.css";
+@import "./src/components/scroll-area.css";
+@import "./src/components/steps.css";
+@import "./src/components/timeline.css";
+@import "./src/components/rating.css";
+@import "./src/components/sheet.css";
+@import "./src/components/hover-card.css";
+@import "./src/components/context-menu.css";
+@import "./src/components/carousel.css";
+@import "./src/components/command-palette.css";
+@import "./src/components/menubar.css";

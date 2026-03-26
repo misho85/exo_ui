@@ -747,6 +747,96 @@ defmodule ExoUI.Components.Form do
     """
   end
 
+  @doc "Renders a star rating input."
+  attr :name, :string, required: true
+  attr :value, :integer, default: 0
+  attr :max, :integer, default: 5
+  attr :readonly, :boolean, default: false
+  attr :size, :string, values: ~w(sm md lg), default: "md"
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def rating(assigns) do
+    assigns = assign(assigns, :stars, Enum.to_list(1..assigns.max))
+
+    ~H"""
+    <div
+      data-exo="rating"
+      data-size={@size}
+      data-readonly={@readonly || nil}
+      class={@class}
+      {@rest}
+    >
+      <input type="hidden" name={@name} value={@value} />
+      <label :for={star <- @stars} data-exo="rating-star" data-active={star <= @value || nil}>
+        <input
+          :if={!@readonly}
+          type="radio"
+          name={"#{@name}-star"}
+          value={star}
+          checked={star == @value}
+          data-exo="rating-input"
+        />
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </label>
+    </div>
+    """
+  end
+
+  @doc "Renders a fieldset for grouping related form elements."
+  attr :legend, :string, default: nil
+  attr :description, :string, default: nil
+  attr :disabled, :boolean, default: false
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def fieldset(assigns) do
+    ~H"""
+    <fieldset data-exo="fieldset" disabled={@disabled} class={@class} {@rest}>
+      <legend :if={@legend} data-exo="fieldset-legend">{@legend}</legend>
+      <p :if={@description} data-exo="fieldset-description">{@description}</p>
+      <div data-exo="fieldset-content">
+        {render_slot(@inner_block)}
+      </div>
+    </fieldset>
+    """
+  end
+
+  @doc "Renders a styled file upload input."
+  attr :name, :string, required: true
+  attr :id, :string, default: nil
+  attr :label, :string, default: nil
+  attr :accept, :string, default: nil
+  attr :multiple, :boolean, default: false
+  attr :class, :string, default: nil
+  attr :rest, :global, include: ~w(disabled required)
+
+  def file_input(assigns) do
+    ~H"""
+    <div data-exo="field">
+      <label :if={@label} data-exo="label" for={@id}>{@label}</label>
+      <input
+        type="file"
+        id={@id}
+        name={@name}
+        accept={@accept}
+        multiple={@multiple}
+        data-exo="file-input"
+        class={@class}
+        {@rest}
+      />
+    </div>
+    """
+  end
+
   @doc """
   Translates an error message using gettext.
   """
