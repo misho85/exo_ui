@@ -354,12 +354,15 @@ defmodule ExoUI.Components.DataDisplay do
   attr :id, :string, required: true
   attr :class, :string, default: nil
   attr :variant, :string, default: nil
+  attr :type, :string, default: "single", values: ["single", "multiple"]
+  attr :collapsible, :boolean, default: true
   attr :joined, :boolean, default: false
   attr :rest, :global
 
   slot :item, required: true do
     attr :title, :string, required: true
     attr :open, :boolean
+    attr :disabled, :boolean
   end
 
   def accordion(assigns) do
@@ -369,20 +372,43 @@ defmodule ExoUI.Components.DataDisplay do
       id={@id}
       class={@class}
       data-variant={@variant}
+      data-type={@type}
+      data-collapsible={@collapsible || nil}
       data-joined={@joined || nil}
+      phx-hook="ExoAccordion"
       {@rest}
     >
-      <div :for={{item, idx} <- Enum.with_index(@item)} data-exo="accordion-item">
+      <div
+        :for={{item, idx} <- Enum.with_index(@item)}
+        data-exo="accordion-item"
+        data-disabled={item[:disabled] || nil}
+      >
         <input
           type="checkbox"
           id={"#{@id}-#{idx}"}
           checked={item[:open]}
+          disabled={item[:disabled]}
           data-exo="accordion-state"
+          aria-hidden="true"
+          tabindex="-1"
         />
-        <label data-exo="accordion-trigger" for={"#{@id}-#{idx}"}>
+        <button
+          type="button"
+          data-exo="accordion-trigger"
+          aria-expanded={to_string(item[:open] == true)}
+          aria-controls={"#{@id}-content-#{idx}"}
+          aria-disabled={to_string(item[:disabled] == true)}
+          disabled={item[:disabled]}
+          id={"#{@id}-trigger-#{idx}"}
+        >
           {item.title}
-        </label>
-        <div data-exo="accordion-content">
+        </button>
+        <div
+          data-exo="accordion-content"
+          id={"#{@id}-content-#{idx}"}
+          role="region"
+          aria-labelledby={"#{@id}-trigger-#{idx}"}
+        >
           <div data-exo="accordion-body">
             {render_slot(item)}
           </div>

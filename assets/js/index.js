@@ -1,3 +1,4 @@
+import { ExoAccordion } from './hooks/accordion.js'
 import { ExoSidebar } from './hooks/sidebar.js'
 import { ExoThemeToggle } from './hooks/theme_toggle.js'
 import { ExoPopover } from './hooks/popover.js'
@@ -7,6 +8,7 @@ import { ExoCombobox } from './hooks/combobox.js'
 import { ExoTooltip } from './hooks/tooltip.js'
 
 const hooks = {
+  ExoAccordion,
   ExoSidebar,
   ExoThemeToggle,
   ExoPopover,

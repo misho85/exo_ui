@@ -16,7 +16,7 @@
   grid-template-rows: max-content 1fr;
 }
 
-/* --- Hidden checkbox (visually hidden, still focusable) --- */
+/* --- Hidden checkbox (visually hidden, drives CSS state) --- */
 
 :where([data-exo="accordion-state"]) {
   position: absolute;
@@ -30,7 +30,7 @@
   border: 0;
 }
 
-/* --- Trigger --- */
+/* --- Trigger (button) --- */
 
 :where([data-exo="accordion-trigger"]) {
   display: flex;
@@ -45,6 +45,9 @@
   color: var(--exo-foreground);
   cursor: pointer;
   user-select: none;
+  background: none;
+  border: none;
+  text-align: left;
 }
 
 :where([data-exo="accordion-trigger"]):hover {
@@ -53,7 +56,7 @@
   text-decoration-thickness: 1px;
 }
 
-:where([data-exo="accordion-state"]:focus-visible) + [data-exo="accordion-trigger"] {
+:where([data-exo="accordion-trigger"]:focus-visible) {
   outline: 2px solid var(--exo-ring);
   outline-offset: 2px;
   border-radius: var(--exo-radius);
@@ -145,4 +148,17 @@
 :where([data-exo="accordion"][data-joined] [data-exo="accordion-body"]) {
   padding-left: var(--exo-space-4);
   padding-right: var(--exo-space-4);
+}
+
+/* ============================
+   Disabled state
+   ============================ */
+
+:where([data-exo="accordion-item"][data-disabled]) {
+  opacity: 0.5;
+}
+
+:where([data-exo="accordion-item"][data-disabled] [data-exo="accordion-trigger"]) {
+  cursor: not-allowed;
+  pointer-events: none;
 }
