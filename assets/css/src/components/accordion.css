@@ -14,8 +14,8 @@
   block-size: 0;
   overflow: clip;
   transition:
-    block-size var(--exo-duration) var(--exo-easing),
-    content-visibility var(--exo-duration) allow-discrete;
+    block-size 250ms var(--exo-easing),
+    content-visibility 250ms allow-discrete;
 }
 
 :where([data-exo="accordion-item"][open])::details-content {
