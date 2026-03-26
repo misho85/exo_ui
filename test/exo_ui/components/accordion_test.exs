@@ -18,7 +18,7 @@ defmodule ExoUI.Components.AccordionTest do
     assert html =~ ~s(id="faq")
   end
 
-  test "renders accordion items" do
+  test "renders accordion items with details/summary" do
     assigns = %{}
 
     html =
@@ -29,10 +29,11 @@ defmodule ExoUI.Components.AccordionTest do
       </.accordion>
       """)
 
+    assert html =~ "<details"
     assert html =~ ~s(data-exo="accordion-item")
+    assert html =~ "<summary"
     assert html =~ ~s(data-exo="accordion-trigger")
     assert html =~ ~s(data-exo="accordion-content")
-    assert html =~ ~s(data-exo="accordion-body")
     assert html =~ "Question 1"
     assert html =~ "Answer 1"
     assert html =~ "Question 2"
@@ -78,7 +79,7 @@ defmodule ExoUI.Components.AccordionTest do
     refute html =~ ~s(data-joined)
   end
 
-  test "renders accordion item with checked checkbox when open" do
+  test "renders accordion item with open attribute" do
     assigns = %{}
 
     html =
@@ -88,7 +89,8 @@ defmodule ExoUI.Components.AccordionTest do
       </.accordion>
       """)
 
-    assert html =~ "checked"
+    assert html =~ ~s(<details )
+    assert html =~ "open"
   end
 
   test "renders accordion with class" do
@@ -102,22 +104,5 @@ defmodule ExoUI.Components.AccordionTest do
       """)
 
     assert html =~ ~s(class="my-accordion")
-  end
-
-  test "renders accordion with checkbox and label elements" do
-    assigns = %{}
-
-    html =
-      rendered_to_string(~H"""
-      <.accordion id="faq">
-        <:item title="Q">A</:item>
-      </.accordion>
-      """)
-
-    assert html =~ ~s(type="checkbox")
-    assert html =~ "<label"
-    assert html =~ ~s(data-exo="accordion-state")
-    assert html =~ ~s(id="faq-0")
-    assert html =~ ~s(for="faq-0")
   end
 end

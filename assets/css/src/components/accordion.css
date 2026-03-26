@@ -3,34 +3,13 @@
   flex-direction: column;
 }
 
-/* --- Item (grid for height animation) --- */
+/* --- Item --- */
 
 :where([data-exo="accordion-item"]) {
-  display: grid;
-  grid-template-rows: max-content 0fr;
   border-bottom: 1px solid var(--exo-border);
-  transition: grid-template-rows 250ms var(--exo-easing);
 }
 
-:where([data-exo="accordion-item"]:has([data-exo="accordion-state"]:checked)) {
-  grid-template-rows: max-content 1fr;
-}
-
-/* --- Hidden checkbox (visually hidden, still focusable) --- */
-
-:where([data-exo="accordion-state"]) {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* --- Trigger --- */
+/* --- Trigger (summary) --- */
 
 :where([data-exo="accordion-trigger"]) {
   display: flex;
@@ -45,6 +24,16 @@
   color: var(--exo-foreground);
   cursor: pointer;
   user-select: none;
+  list-style: none;
+}
+
+:where([data-exo="accordion-trigger"])::-webkit-details-marker {
+  display: none;
+}
+
+:where([data-exo="accordion-trigger"])::marker {
+  display: none;
+  content: "";
 }
 
 :where([data-exo="accordion-trigger"]):hover {
@@ -53,7 +42,7 @@
   text-decoration-thickness: 1px;
 }
 
-:where([data-exo="accordion-state"]:focus-visible) + [data-exo="accordion-trigger"] {
+:where([data-exo="accordion-trigger"]:focus-visible) {
   outline: 2px solid var(--exo-ring);
   outline-offset: 2px;
   border-radius: var(--exo-radius);
@@ -76,20 +65,13 @@
   transition: transform 250ms var(--exo-easing);
 }
 
-:where([data-exo="accordion-item"]:has([data-exo="accordion-state"]:checked)) [data-exo="accordion-trigger"]::after {
+:where([data-exo="accordion-item"][open]) [data-exo="accordion-trigger"]::after {
   transform: rotate(180deg);
 }
 
-/* --- Content (clipping container) --- */
+/* --- Content --- */
 
 :where([data-exo="accordion-content"]) {
-  overflow: hidden;
-  min-height: 0;
-}
-
-/* --- Content body (styling) --- */
-
-:where([data-exo="accordion-body"]) {
   padding-bottom: var(--exo-space-4);
   font-family: var(--exo-font);
   font-size: var(--exo-text-sm);
@@ -117,7 +99,7 @@
   transform: none;
 }
 
-:where([data-exo="accordion"][data-variant="plus"] [data-exo="accordion-item"]:has([data-exo="accordion-state"]:checked)) [data-exo="accordion-trigger"]::after {
+:where([data-exo="accordion"][data-variant="plus"] [data-exo="accordion-item"][open]) [data-exo="accordion-trigger"]::after {
   background-size: 0.75rem 1.5px, 1.5px 0;
   transform: none;
 }
@@ -139,9 +121,10 @@
 :where([data-exo="accordion"][data-joined] [data-exo="accordion-trigger"]) {
   padding-left: var(--exo-space-4);
   padding-right: var(--exo-space-4);
+  box-sizing: border-box;
 }
 
-:where([data-exo="accordion"][data-joined] [data-exo="accordion-body"]) {
+:where([data-exo="accordion"][data-joined] [data-exo="accordion-content"]) {
   padding-left: var(--exo-space-4);
   padding-right: var(--exo-space-4);
 }
