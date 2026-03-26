@@ -41,11 +41,8 @@ defmodule ExoUI.Charts do
   # This converts a list of {x, y} points into an SVG path string using
   # cubic bezier curves (C commands) that produce smooth organic curves.
 
-  defp catmull_rom_to_bezier_path(points) when length(points) < 2, do: ""
-
-  defp catmull_rom_to_bezier_path([{x, y}]) do
-    "M#{r(x)},#{r(y)}"
-  end
+  defp catmull_rom_to_bezier_path([]), do: ""
+  defp catmull_rom_to_bezier_path([{x, y}]), do: "M#{r(x)},#{r(y)}"
 
   defp catmull_rom_to_bezier_path(points) do
     # Catmull-Rom with tension 0 (uniform), matching Recharts "natural"
@@ -1882,10 +1879,10 @@ defmodule ExoUI.Charts do
           end
 
         slice = %{label: label, value: value, color: color, path: path}
-        {acc ++ [slice], end_angle}
+        {[slice | acc], end_angle}
       end)
 
-    slices
+    Enum.reverse(slices)
   end
 
   defp build_donut_slices(data, total, cx, cy, outer_r, inner_r) do
@@ -1922,10 +1919,10 @@ defmodule ExoUI.Charts do
           end
 
         slice = %{label: label, value: value, color: color, path: path}
-        {acc ++ [slice], end_angle}
+        {[slice | acc], end_angle}
       end)
 
-    slices
+    Enum.reverse(slices)
   end
 
   defp polygon_points(n, cx, cy, radius) do

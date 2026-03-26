@@ -180,7 +180,7 @@ defmodule ExoUI.Components do
     """
   end
 
-  # Deprecated: use select/1 instead
+  @deprecated "Use select/1 instead"
   def input(%{type: "select"} = assigns) do
     ~H"""
     <div data-exo="field">
@@ -991,7 +991,7 @@ defmodule ExoUI.Components do
   slot :trigger, required: true
   slot :item, required: true
 
-  # @deprecated "Use dropdown_menu/1 instead"
+  @deprecated "Use dropdown_menu/1 instead"
   def dropdown(assigns) do
     assigns = assign_new(assigns, :id, fn -> "dropdown-#{System.unique_integer([:positive])}" end)
 
@@ -1405,9 +1405,8 @@ defmodule ExoUI.Components do
   attr :class, :any, default: "size-4"
 
   def icon(assigns) do
-    Code.ensure_loaded!(ExoUI.Lucide)
-    icon_fn = assigns.name |> String.replace("-", "_") |> String.to_atom()
-    apply(ExoUI.Lucide, icon_fn, [Map.delete(assigns, :name)])
+    icon_fn = assigns.name |> String.replace("-", "_") |> String.to_existing_atom()
+    ExoUI.Lucide.render(icon_fn, Map.delete(assigns, :name))
   end
 
   attr :id, :string, default: "theme-toggle"

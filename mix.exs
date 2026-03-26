@@ -23,10 +23,10 @@ defmodule ExoUI.MixProject do
 
   defp deps do
     [
-      {:phoenix, "~> 1.8.5"},
+      {:phoenix, "~> 1.8"},
       {:phoenix_html, "~> 4.3"},
-      {:phoenix_live_view, "~> 1.1.27"},
-      {:gettext, "~> 1.0"},
+      {:phoenix_live_view, "~> 1.1"},
+      {:gettext, "~> 1.0", optional: true},
       {:jason, "~> 1.4", only: :test},
       {:ex_doc, "~> 0.40", only: :dev, runtime: false}
     ]
