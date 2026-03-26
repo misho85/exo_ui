@@ -372,12 +372,22 @@ defmodule ExoUI.Components.DataDisplay do
       data-joined={@joined || nil}
       {@rest}
     >
-      <details :for={item <- @item} data-exo="accordion-item" open={item[:open]}>
-        <summary data-exo="accordion-trigger">{item.title}</summary>
+      <div :for={{item, idx} <- Enum.with_index(@item)} data-exo="accordion-item">
+        <input
+          type="checkbox"
+          id={"#{@id}-#{idx}"}
+          checked={item[:open]}
+          data-exo="accordion-state"
+        />
+        <label data-exo="accordion-trigger" for={"#{@id}-#{idx}"}>
+          {item.title}
+        </label>
         <div data-exo="accordion-content">
-          {render_slot(item)}
+          <div data-exo="accordion-body">
+            {render_slot(item)}
+          </div>
         </div>
-      </details>
+      </div>
     </div>
     """
   end

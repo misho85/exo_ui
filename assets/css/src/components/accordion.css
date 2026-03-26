@@ -3,25 +3,31 @@
   flex-direction: column;
 }
 
+/* --- Item (grid for height animation) --- */
+
 :where([data-exo="accordion-item"]) {
+  display: grid;
+  grid-template-rows: max-content 0fr;
   border-bottom: 1px solid var(--exo-border);
+  transition: grid-template-rows 250ms var(--exo-easing);
 }
 
-/* --- Content animation --- */
-
-:where([data-exo="accordion-item"][open]) [data-exo="accordion-content"] {
-  animation: exo-accordion-open 250ms var(--exo-easing);
+:where([data-exo="accordion-item"]:has([data-exo="accordion-state"]:checked)) {
+  grid-template-rows: max-content 1fr;
 }
 
-@keyframes exo-accordion-open {
-  from {
-    opacity: 0;
-    clip-path: inset(0 0 100% 0);
-  }
-  to {
-    opacity: 1;
-    clip-path: inset(0);
-  }
+/* --- Hidden checkbox (visually hidden, still focusable) --- */
+
+:where([data-exo="accordion-state"]) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* --- Trigger --- */
@@ -38,7 +44,6 @@
   font-weight: 500;
   color: var(--exo-foreground);
   cursor: pointer;
-  list-style: none;
   user-select: none;
 }
 
@@ -48,14 +53,10 @@
   text-decoration-thickness: 1px;
 }
 
-:where([data-exo="accordion-trigger"]):focus-visible {
+:where([data-exo="accordion-state"]:focus-visible) + [data-exo="accordion-trigger"] {
   outline: 2px solid var(--exo-ring);
   outline-offset: 2px;
   border-radius: var(--exo-radius);
-}
-
-:where([data-exo="accordion-trigger"])::-webkit-details-marker {
-  display: none;
 }
 
 /* --- Default chevron icon (Lucide chevron-down via CSS mask) --- */
@@ -72,16 +73,23 @@
   mask-repeat: no-repeat;
   -webkit-mask-size: contain;
   mask-size: contain;
-  transition: transform var(--exo-duration) var(--exo-easing);
+  transition: transform 250ms var(--exo-easing);
 }
 
-:where([data-exo="accordion-item"][open] > [data-exo="accordion-trigger"])::after {
+:where([data-exo="accordion-item"]:has([data-exo="accordion-state"]:checked)) [data-exo="accordion-trigger"]::after {
   transform: rotate(180deg);
 }
 
-/* --- Content --- */
+/* --- Content (clipping container) --- */
 
 :where([data-exo="accordion-content"]) {
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* --- Content body (styling) --- */
+
+:where([data-exo="accordion-body"]) {
   padding-bottom: var(--exo-space-4);
   font-family: var(--exo-font);
   font-size: var(--exo-text-sm);
@@ -105,11 +113,11 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: 0.75rem 1.5px, 1.5px 0.75rem;
-  transition: background-size var(--exo-duration) var(--exo-easing);
+  transition: background-size 250ms var(--exo-easing);
   transform: none;
 }
 
-:where([data-exo="accordion"][data-variant="plus"] [data-exo="accordion-item"][open] > [data-exo="accordion-trigger"])::after {
+:where([data-exo="accordion"][data-variant="plus"] [data-exo="accordion-item"]:has([data-exo="accordion-state"]:checked)) [data-exo="accordion-trigger"]::after {
   background-size: 0.75rem 1.5px, 1.5px 0;
   transform: none;
 }
@@ -133,7 +141,7 @@
   padding-right: var(--exo-space-4);
 }
 
-:where([data-exo="accordion"][data-joined] [data-exo="accordion-content"]) {
+:where([data-exo="accordion"][data-joined] [data-exo="accordion-body"]) {
   padding-left: var(--exo-space-4);
   padding-right: var(--exo-space-4);
 }
