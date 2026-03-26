@@ -1,7 +1,6 @@
 :where([data-exo="accordion"]) {
   display: flex;
   flex-direction: column;
-  interpolate-size: allow-keywords;
 }
 
 :where([data-exo="accordion-item"]) {
@@ -10,42 +9,18 @@
 
 /* --- Content animation --- */
 
-/* Fallback: clip-path reveal for browsers without ::details-content (Safari) */
-@supports not selector(::details-content) {
-  :where([data-exo="accordion-item"][open]) [data-exo="accordion-content"] {
-    animation: exo-accordion-open 250ms var(--exo-easing);
-  }
-
-  @keyframes exo-accordion-open {
-    from {
-      opacity: 0;
-      clip-path: inset(0 0 100% 0);
-    }
-    to {
-      opacity: 1;
-      clip-path: inset(0);
-    }
-  }
+:where([data-exo="accordion-item"][open]) [data-exo="accordion-content"] {
+  animation: exo-accordion-open 250ms var(--exo-easing);
 }
 
-/* Height transition with close animation (Chrome 131+, FF 134+) */
-@supports selector(::details-content) {
-  :where([data-exo="accordion-item"])::details-content {
-    block-size: 0;
-    overflow: clip;
-    transition:
-      block-size 250ms var(--exo-easing),
-      content-visibility 250ms allow-discrete;
+@keyframes exo-accordion-open {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
   }
-
-  :where([data-exo="accordion-item"][open])::details-content {
-    block-size: max-content;
-  }
-
-  @starting-style {
-    :where([data-exo="accordion-item"][open])::details-content {
-      block-size: 0;
-    }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
   }
 }
 
