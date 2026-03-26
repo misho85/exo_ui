@@ -1,0 +1,36 @@
+{
+  "config": {
+    "default": true,
+    // Line length - too strict for docs
+    "MD013": false,
+    // Inline HTML allowed
+    "MD033": false,
+    // First line heading not required
+    "MD041": false,
+    // Code blocks without language allowed
+    "MD040": false,
+    // Table formatting - too strict
+    "MD060": false,
+    // Blank lines in blockquotes allowed
+    "MD028": false,
+    // Allow duplicate headings if they have different parents
+    "MD024": { "siblings_only": true },
+    // Allow indented code blocks
+    "MD046": false,
+    // Allow emphasis as heading
+    "MD036": false,
+    // Bare URLs allowed
+    "MD034": false,
+    // Trailing punctuation in headings allowed (e.g., "Pre-publish checklist:")
+    "MD026": false,
+    // Ordered list prefix - allow continuation numbering across sections
+    "MD029": false,
+    // Spaces inside emphasis markers allowed
+    "MD037": false
+  },
+  "ignores": [
+    "**/node_modules/**",
+    "archive/**",
+    "backend/CHANGELOG.md"
+  ]
+}
