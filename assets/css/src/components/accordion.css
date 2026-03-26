@@ -8,8 +8,21 @@
   border-bottom: 1px solid var(--exo-border);
 }
 
-/* --- Content animation (::details-content) --- */
+/* --- Content animation --- */
 
+/* Open animation — works in all browsers */
+:where([data-exo="accordion-item"][open]) [data-exo="accordion-content"] {
+  animation: exo-accordion-open 250ms var(--exo-easing);
+}
+
+@keyframes exo-accordion-open {
+  from {
+    opacity: 0;
+    translate: 0 -0.25rem;
+  }
+}
+
+/* Progressive enhancement: smooth height + close animation (Chrome 131+, FF 134+) */
 :where([data-exo="accordion-item"])::details-content {
   block-size: 0;
   overflow: clip;
