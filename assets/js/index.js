@@ -1,5 +1,6 @@
 import { ExoAccordion } from './hooks/accordion.js'
 import { ExoCarousel } from './hooks/carousel.js'
+import { ExoCollapsible } from './hooks/collapsible.js'
 import { ExoCommandPalette } from './hooks/command_palette.js'
 import { ExoSidebar } from './hooks/sidebar.js'
 import { ExoThemeToggle } from './hooks/theme_toggle.js'
@@ -14,6 +15,7 @@ import { ExoContextMenu } from './hooks/context_menu.js'
 const hooks = {
   ExoAccordion,
   ExoCarousel,
+  ExoCollapsible,
   ExoCommandPalette,
   ExoSidebar,
   ExoThemeToggle,
