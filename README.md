@@ -1,5 +1,7 @@
 # ExoUI
 
+https://exo-ui.krafter.dev
+
 Headless Phoenix LiveView component library with a default CSS theme.
 
 ## Installation
