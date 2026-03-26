@@ -97,7 +97,9 @@ defmodule Storybook.Components.Accordion do
       </section>
 
       <section>
-        <h3 style="margin-bottom: 0.75rem; font-weight: 600;">Non-collapsible (single, cannot close)</h3>
+        <h3 style="margin-bottom: 0.75rem; font-weight: 600;">
+          Non-collapsible (single, cannot close)
+        </h3>
         <ExoUI.Components.accordion id="non-collapsible" collapsible={false}>
           <:item title="Always one open" open>
             Once opened, you can't close this — only switch to another item.
