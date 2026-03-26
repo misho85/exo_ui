@@ -59,8 +59,7 @@ ExoUI is a well-structured component library with clean module conventions, zero
 ### MEDIUM
 
 1. Zero `@doc` on 50+ public component functions and 18 chart functions
-2. `acc ++ [slice]` O(n^2) list building in pie/donut chart builders (charts.ex:1885,1925)
-3. `length/1` in guard and repeated `length/1` calls in charts (charts.ex)
+2. `length/1` in guard and repeated `length/1` calls in charts (charts.ex)
 4. Version pinning too tight for a library (`~> 1.8.5` instead of `~> 1.8`)
 5. Deprecated components use comments instead of `@deprecated` attribute
 6. `Code.ensure_loaded!/1` on every `icon/1` render — unnecessary
@@ -82,7 +81,6 @@ ExoUI is a well-structured component library with clean module conventions, zero
 
 - [ ] Replace `String.to_atom/1` with `String.to_existing_atom/1` in `icon/1`
 - [ ] Remove `Code.ensure_loaded!/1` from `icon/1`
-- [ ] Fix `acc ++ [slice]` to `[slice | acc]` + `Enum.reverse/1` in chart builders
 - [ ] Loosen version constraints: `~> 1.8` and `~> 1.1` for phoenix/live_view
 
 ### Short-term (this month)
