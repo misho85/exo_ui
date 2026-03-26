@@ -7,8 +7,7 @@ defmodule ExoUI.Layouts do
 
   use Phoenix.Component
 
-  # --- sidebar_layout/1 ---
-
+  @doc "Renders an app shell with collapsible sidebar, topbar, and main content area."
   attr :id, :string, default: "sidebar-layout"
   attr :class, :string, default: nil
   attr :content_class, :string, default: nil
@@ -96,8 +95,7 @@ defmodule ExoUI.Layouts do
     """
   end
 
-  # --- sidebar_item/1 ---
-
+  @doc "Renders a sidebar navigation item with optional icon and badge."
   attr :href, :string, required: true
   attr :icon, :string, default: nil
   attr :label, :string, required: true

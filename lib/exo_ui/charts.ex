@@ -13,6 +13,8 @@ defmodule ExoUI.Charts do
 
   use Phoenix.Component
 
+  alias ExoUI.Charts.Helpers, as: H
+
   defp to_number(n) when is_float(n), do: n
   defp to_number(n) when is_integer(n), do: n * 1.0
   defp to_number(%{__struct__: Decimal} = d), do: apply(Decimal, :to_float, [d])
@@ -177,6 +179,7 @@ defmodule ExoUI.Charts do
 
   # --- trend_badge ---
 
+  @doc "Renders a badge showing percentage change between current and previous values."
   attr :current, :any, required: true
   attr :previous, :any, required: true
 
@@ -226,6 +229,7 @@ defmodule ExoUI.Charts do
 
   # --- sparkline ---
 
+  @doc "Renders a compact inline sparkline SVG chart."
   attr :data, :list, required: true
   attr :width, :integer, default: 80
   attr :height, :integer, default: 24
@@ -256,7 +260,7 @@ defmodule ExoUI.Charts do
       line_points = Enum.map_join(points, " ", fn {x, y} -> "#{x},#{y}" end)
       {fx, _} = List.first(points)
       area_points = line_points <> " #{r(pad + w)},#{r(pad + h)} #{r(fx)},#{r(pad + h)}"
-      id = "spark-#{System.unique_integer([:positive])}"
+      id = "spark-#{:erlang.phash2(values)}"
 
       assigns = assign(assigns, id: id, line_points: line_points, area_points: area_points)
 
@@ -290,6 +294,7 @@ defmodule ExoUI.Charts do
 
   # --- progress_bar ---
 
+  @doc "Renders a labeled horizontal progress bar."
   attr :label, :string, required: true
   attr :count, :integer, required: true
   attr :max, :integer, required: true
@@ -319,6 +324,7 @@ defmodule ExoUI.Charts do
   # tickFormatter={(value) => value.slice(0, 3)}
   # Bar radius={8} — fully rounded bars
 
+  @doc "Renders a vertical bar chart with x-axis labels and hover tooltips."
   attr :data, :list, required: true
   attr :height, :integer, default: 200
   attr :color, :string, default: "var(--exo-primary)"
@@ -330,18 +336,17 @@ defmodule ExoUI.Charts do
     else
       data = assigns.data
       height = assigns.height
-      max_val = data |> Enum.map(&elem(&1, 1)) |> Enum.map(&to_number/1) |> Enum.max(fn -> 1 end)
-      max_val = if max_val == 0, do: 1, else: max_val
+
+      max_val =
+        data
+        |> Enum.map(&elem(&1, 1))
+        |> Enum.map(&to_number/1)
+        |> Enum.max(fn -> 1 end)
+        |> H.safe_max()
+
       bar_count = length(data)
-      width = 600
-      pl = 12
-      pr = 12
-      pb = 28
-      pt = 8
-      cw = width - pl - pr
-      ch = height - pb - pt
-      bw = max(cw / bar_count * 0.65, 4)
-      gap = cw / bar_count
+      %{width: width, pl: pl, pr: pr, pt: pt, cw: cw, ch: ch} = H.chart_dimensions(height)
+      {bw, gap} = H.bar_geometry(cw, bar_count)
 
       # Horizontal grid lines (CartesianGrid vertical={false})
       grid = horizontal_grid_lines(pt, ch, pl, width, pr)
@@ -354,12 +359,10 @@ defmodule ExoUI.Charts do
           bar_h = if max_val > 0, do: v / max_val * ch, else: 0
           x = pl + i * gap + (gap - bw) / 2
           y = pt + ch - bar_h
-          # 3-char abbreviated label (shadcn tickFormatter: value.slice(0, 3))
-          short_label = label |> to_string() |> String.slice(0, 3)
 
           %{
             label: label,
-            short_label: short_label,
+            short_label: H.short_label(label),
             value: value,
             x: x,
             y: y,
@@ -368,7 +371,7 @@ defmodule ExoUI.Charts do
           }
         end)
 
-      label_step = max(div(bar_count, 12), 1)
+      label_step = H.label_step(bar_count)
 
       assigns =
         assign(assigns,
@@ -433,6 +436,7 @@ defmodule ExoUI.Charts do
   # Bar radius={5}
   # layout="vertical" orientation
 
+  @doc "Renders a horizontal bar chart with labels on the y-axis."
   attr :data, :list, required: true
   attr :height, :integer, default: 200
   attr :color, :string, default: "var(--exo-primary)"
@@ -443,11 +447,17 @@ defmodule ExoUI.Charts do
       ~H|<div data-exo="chart-empty">{@empty_text}</div>|
     else
       data = assigns.data
-      max_val = data |> Enum.map(&elem(&1, 1)) |> Enum.map(&to_number/1) |> Enum.max(fn -> 1 end)
-      max_val = if max_val == 0, do: 1, else: max_val
+
+      max_val =
+        data
+        |> Enum.map(&elem(&1, 1))
+        |> Enum.map(&to_number/1)
+        |> Enum.max(fn -> 1 end)
+        |> H.safe_max()
+
       row_height = 36
       label_width = 80
-      width = 600
+      width = H.svg_width()
       chart_width = width - label_width - 12
 
       rows =
@@ -456,12 +466,10 @@ defmodule ExoUI.Charts do
         |> Enum.map(fn {{label, value}, i} ->
           v = to_number(value)
           bw = if max_val > 0, do: v / max_val * chart_width, else: 0
-          # 3-char abbreviated label
-          short_label = label |> to_string() |> String.slice(0, 3)
 
           %{
             label: label,
-            short_label: short_label,
+            short_label: H.short_label(label),
             value: value,
             y: i * row_height,
             bar_width: bw
@@ -522,6 +530,7 @@ defmodule ExoUI.Charts do
   # fillOpacity={0.4} with gradient from stopOpacity={0.8} at top to stopOpacity={0.1} at bottom
   # XAxis same as bar chart (3 chars, no tick/axis lines)
 
+  @doc "Renders a smooth area chart with catmull-rom curves and gradient fill."
   attr :data, :list, required: true
   attr :height, :integer, default: 200
   attr :color, :string, default: "var(--exo-primary)"
@@ -529,7 +538,7 @@ defmodule ExoUI.Charts do
   attr :empty_text, :string, default: "No data"
 
   def area_chart(assigns) do
-    id = assigns[:id] || "area-#{System.unique_integer([:positive])}"
+    id = assigns[:id] || "area-#{:erlang.phash2(assigns.data)}"
     assigns = assign(assigns, :id, id)
 
     if Enum.empty?(assigns.data) do
@@ -543,13 +552,7 @@ defmodule ExoUI.Charts do
       range = max_val - min_val
       range = if range == 0, do: 1.0, else: range
       count = length(values)
-      width = 600
-      pl = 12
-      pr = 12
-      pt = 8
-      pb = 28
-      cw = width - pl - pr
-      ch = height - pt - pb
+      %{width: width, pl: pl, pr: pr, pt: pt, cw: cw, ch: ch} = H.chart_dimensions(height)
 
       # Horizontal grid lines (CartesianGrid vertical={false})
       grid = horizontal_grid_lines(pt, ch, pl, width, pr)
@@ -571,16 +574,14 @@ defmodule ExoUI.Charts do
       baseline_y = r(pt + ch)
       area_path = catmull_rom_area_path(points, baseline_y, first_x, last_x)
 
-      label_step = max(div(count, 12), 1)
+      label_step = H.label_step(count)
 
       labels =
         data
         |> Enum.with_index()
         |> Enum.map(fn {{label, _}, i} ->
           x = pl + i / max(count - 1, 1) * cw
-          # 3-char abbreviated label
-          short_label = label |> to_string() |> String.slice(0, 3)
-          %{label: short_label, x: r(x), show: rem(i, label_step) == 0 or i == count - 1}
+          %{label: H.short_label(label), x: r(x), show: rem(i, label_step) == 0 or i == count - 1}
         end)
 
       assigns =
@@ -648,6 +649,7 @@ defmodule ExoUI.Charts do
   # Top bar: radius={[4, 4, 0, 0]} — rounded top corners only
   # No y-axis, 3-char x-axis labels, legend below
 
+  @doc "Renders a stacked bar chart with multiple series and legend."
   attr :data, :list, required: true
   attr :height, :integer, default: 200
   attr :colors, :map, required: true
@@ -668,18 +670,10 @@ defmodule ExoUI.Charts do
           Enum.reduce(keys, 0, fn k, acc -> acc + (Map.get(vals, k, 0) |> to_number()) end)
         end)
 
-      max_val = Enum.max(totals)
-      max_val = if max_val == 0, do: 1, else: max_val
+      max_val = Enum.max(totals) |> H.safe_max()
       count = length(data)
-      width = 600
-      pl = 12
-      pr = 12
-      pb = 52
-      pt = 8
-      cw = width - pl - pr
-      ch = height - pb - pt
-      bw = max(cw / count * 0.65, 4)
-      gap = cw / count
+      %{width: width, pl: pl, pr: pr, pt: pt, cw: cw, ch: ch} = H.chart_dimensions(height, pb: 52)
+      {bw, gap} = H.bar_geometry(cw, count)
 
       # Horizontal grid lines (CartesianGrid vertical={false})
       grid = horizontal_grid_lines(pt, ch, pl, width, pr)
@@ -691,8 +685,6 @@ defmodule ExoUI.Charts do
         |> Enum.with_index()
         |> Enum.map(fn {{label, vals}, i} ->
           x = pl + i * gap + (gap - bw) / 2
-          # 3-char abbreviated label
-          short_label = label |> to_string() |> String.slice(0, 3)
 
           segments =
             keys
@@ -732,13 +724,13 @@ defmodule ExoUI.Charts do
 
           %{
             label: label,
-            short_label: short_label,
+            short_label: H.short_label(label),
             x: x,
             segments: Enum.reverse(elem(segments, 0))
           }
         end)
 
-      label_step = max(div(count, 12), 1)
+      label_step = H.label_step(count)
 
       legend =
         Enum.map(keys, fn k ->
@@ -848,6 +840,7 @@ defmodule ExoUI.Charts do
   # --- bar_chart_multiple ---
   # Two bars side by side per group, radius=4, horizontal grid, 3-char x labels
 
+  @doc "Renders a grouped bar chart with two series side by side."
   attr :data, :list, required: true
   attr :height, :integer, default: 200
   attr :color1, :string, default: "var(--exo-primary)"
@@ -861,18 +854,10 @@ defmodule ExoUI.Charts do
       data = assigns.data
       height = assigns.height
       values = Enum.flat_map(data, fn {_l, v1, v2} -> [to_number(v1), to_number(v2)] end)
-      max_val = Enum.max(values, fn -> 1 end)
-      max_val = if max_val == 0, do: 1, else: max_val
+      max_val = Enum.max(values, fn -> 1 end) |> H.safe_max()
       count = length(data)
-      width = 600
-      pl = 12
-      pr = 12
-      pb = 28
-      pt = 8
-      cw = width - pl - pr
-      ch = height - pb - pt
-      gap = cw / count
-      bw = max(gap * 0.3, 4)
+      %{width: width, pl: pl, pr: pr, pt: pt, cw: cw, ch: ch} = H.chart_dimensions(height)
+      {bw, gap} = H.bar_geometry(cw, count, bar_ratio: 0.3)
 
       grid = horizontal_grid_lines(pt, ch, pl, width, pr)
 
@@ -887,11 +872,10 @@ defmodule ExoUI.Charts do
           center = pl + i * gap + gap / 2
           x1 = center - bw - 1
           x2 = center + 1
-          short_label = label |> to_string() |> String.slice(0, 3)
 
           %{
             label: label,
-            short_label: short_label,
+            short_label: H.short_label(label),
             v1: v1,
             v2: v2,
             x1: x1,
@@ -904,7 +888,7 @@ defmodule ExoUI.Charts do
           }
         end)
 
-      label_step = max(div(count, 12), 1)
+      label_step = H.label_step(count)
 
       assigns =
         assign(assigns,
@@ -955,6 +939,7 @@ defmodule ExoUI.Charts do
   # --- bar_chart_label ---
   # Same as bar_chart but with value labels ABOVE each bar (LabelList position="top" offset=12)
 
+  @doc "Renders a bar chart with value labels displayed on each bar."
   attr :data, :list, required: true
   attr :height, :integer, default: 200
   attr :color, :string, default: "var(--exo-primary)"
@@ -966,18 +951,17 @@ defmodule ExoUI.Charts do
     else
       data = assigns.data
       height = assigns.height
-      max_val = data |> Enum.map(&elem(&1, 1)) |> Enum.map(&to_number/1) |> Enum.max(fn -> 1 end)
-      max_val = if max_val == 0, do: 1, else: max_val
+
+      max_val =
+        data
+        |> Enum.map(&elem(&1, 1))
+        |> Enum.map(&to_number/1)
+        |> Enum.max(fn -> 1 end)
+        |> H.safe_max()
+
       count = length(data)
-      width = 600
-      pl = 12
-      pr = 12
-      pb = 28
-      pt = 24
-      cw = width - pl - pr
-      ch = height - pb - pt
-      bw = max(cw / count * 0.65, 4)
-      gap = cw / count
+      %{width: width, pl: pl, pr: pr, pt: pt, cw: cw, ch: ch} = H.chart_dimensions(height, pt: 24)
+      {bw, gap} = H.bar_geometry(cw, count)
 
       grid = horizontal_grid_lines(pt, ch, pl, width, pr)
 
@@ -989,11 +973,10 @@ defmodule ExoUI.Charts do
           bar_h = if max_val > 0, do: v / max_val * ch, else: 0
           x = pl + i * gap + (gap - bw) / 2
           y = pt + ch - bar_h
-          short_label = label |> to_string() |> String.slice(0, 3)
 
           %{
             label: label,
-            short_label: short_label,
+            short_label: H.short_label(label),
             value: value,
             x: x,
             y: y,
@@ -1002,7 +985,7 @@ defmodule ExoUI.Charts do
           }
         end)
 
-      label_step = max(div(count, 12), 1)
+      label_step = H.label_step(count)
 
       assigns =
         assign(assigns,
@@ -1070,6 +1053,7 @@ defmodule ExoUI.Charts do
   # --- bar_chart_negative ---
   # Bars go up AND down from a zero baseline, month name labels above each bar
 
+  @doc "Renders a bar chart with distinct colors for positive and negative values."
   attr :data, :list, required: true
   attr :height, :integer, default: 200
   attr :color_positive, :string, default: "var(--exo-primary)"
@@ -1083,20 +1067,15 @@ defmodule ExoUI.Charts do
       data = assigns.data
       height = assigns.height
       values = Enum.map(data, fn {_l, v} -> to_number(v) end)
-      max_abs = values |> Enum.map(&abs/1) |> Enum.max(fn -> 1 end)
-      max_abs = if max_abs == 0, do: 1, else: max_abs
+      max_abs = values |> Enum.map(&abs/1) |> Enum.max(fn -> 1 end) |> H.safe_max()
       count = length(data)
-      width = 600
-      pl = 12
-      pr = 12
-      pb = 8
-      pt = 24
-      cw = width - pl - pr
-      ch = height - pb - pt
+
+      %{width: width, pl: pl, pr: pr, pt: pt, cw: cw, ch: ch} =
+        H.chart_dimensions(height, pb: 8, pt: 24)
+
       half_ch = ch / 2
       zero_y = pt + half_ch
-      bw = max(cw / count * 0.65, 4)
-      gap = cw / count
+      {bw, gap} = H.bar_geometry(cw, count)
 
       grid = horizontal_grid_lines(pt, ch, pl, width, pr)
 
@@ -1107,7 +1086,6 @@ defmodule ExoUI.Charts do
           v = to_number(value)
           bar_h = abs(v) / max_abs * half_ch
           x = pl + i * gap + (gap - bw) / 2
-          short_label = label |> to_string() |> String.slice(0, 3)
 
           {y, color} =
             if v >= 0 do
@@ -1118,7 +1096,7 @@ defmodule ExoUI.Charts do
 
           %{
             label: label,
-            short_label: short_label,
+            short_label: H.short_label(label),
             value: value,
             x: x,
             y: y,
@@ -1192,6 +1170,7 @@ defmodule ExoUI.Charts do
   # --- line_chart ---
   # Smooth catmull-rom curve, no dots, strokeWidth=2, horizontal grid, 3-char labels
 
+  @doc "Renders a single-series line chart with catmull-rom smoothing."
   attr :data, :list, required: true
   attr :height, :integer, default: 200
   attr :color, :string, default: "var(--exo-primary)"
@@ -1205,13 +1184,7 @@ defmodule ExoUI.Charts do
     range = max_val - min_val
     range = if range == 0, do: 1.0, else: range
     count = length(values)
-    width = 600
-    pl = 12
-    pr = 12
-    pt = 8
-    pb = 28
-    cw = width - pl - pr
-    ch = height - pt - pb
+    %{width: width, pl: pl, pr: pr, pt: pt, cw: cw, ch: ch} = H.chart_dimensions(height)
 
     grid = horizontal_grid_lines(pt, ch, pl, width, pr)
 
@@ -1226,15 +1199,14 @@ defmodule ExoUI.Charts do
 
     curve_path = catmull_rom_to_bezier_path(points)
 
-    label_step = max(div(count, 12), 1)
+    label_step = H.label_step(count)
 
     labels =
       data
       |> Enum.with_index()
       |> Enum.map(fn {{label, _}, i} ->
         x = pl + i / max(count - 1, 1) * cw
-        short_label = label |> to_string() |> String.slice(0, 3)
-        %{label: short_label, x: r(x), show: rem(i, label_step) == 0 or i == count - 1}
+        %{label: H.short_label(label), x: r(x), show: rem(i, label_step) == 0 or i == count - 1}
       end)
 
     assigns =
@@ -1285,6 +1257,7 @@ defmodule ExoUI.Charts do
   # --- line_chart_multiple ---
   # Two smooth lines
 
+  @doc "Renders a two-series line chart with catmull-rom smoothing."
   attr :data, :list, required: true
   attr :height, :integer, default: 200
   attr :color1, :string, default: "var(--exo-primary)"
@@ -1299,13 +1272,7 @@ defmodule ExoUI.Charts do
     range = max_val - min_val
     range = if range == 0, do: 1.0, else: range
     count = length(data)
-    width = 600
-    pl = 12
-    pr = 12
-    pt = 8
-    pb = 28
-    cw = width - pl - pr
-    ch = height - pt - pb
+    %{width: width, pl: pl, pr: pr, pt: pt, cw: cw, ch: ch} = H.chart_dimensions(height)
 
     grid = horizontal_grid_lines(pt, ch, pl, width, pr)
 
@@ -1330,15 +1297,14 @@ defmodule ExoUI.Charts do
     curve1 = catmull_rom_to_bezier_path(points1)
     curve2 = catmull_rom_to_bezier_path(points2)
 
-    label_step = max(div(count, 12), 1)
+    label_step = H.label_step(count)
 
     labels =
       data
       |> Enum.with_index()
       |> Enum.map(fn {{label, _, _}, i} ->
         x = pl + i / max(count - 1, 1) * cw
-        short_label = label |> to_string() |> String.slice(0, 3)
-        %{label: short_label, x: r(x), show: rem(i, label_step) == 0 or i == count - 1}
+        %{label: H.short_label(label), x: r(x), show: rem(i, label_step) == 0 or i == count - 1}
       end)
 
     assigns =
@@ -1398,6 +1364,7 @@ defmodule ExoUI.Charts do
   # --- pie_chart ---
   # SVG pie chart using arc paths
 
+  @doc "Renders a pie chart with colored slices and hover tooltips."
   attr :data, :list, required: true
   attr :size, :integer, default: 250
 
@@ -1434,6 +1401,7 @@ defmodule ExoUI.Charts do
   # --- donut_chart ---
   # Donut with hole in center
 
+  @doc "Renders a donut chart (pie chart with hollow center)."
   attr :data, :list, required: true
   attr :size, :integer, default: 250
   attr :inner_radius, :integer, default: 60
@@ -1472,6 +1440,7 @@ defmodule ExoUI.Charts do
   # --- donut_chart_text ---
   # Donut with centered text (big number + small label)
 
+  @doc "Renders a donut chart with centered text (value and label)."
   attr :data, :list, required: true
   attr :size, :integer, default: 250
   attr :inner_radius, :integer, default: 60
@@ -1533,6 +1502,7 @@ defmodule ExoUI.Charts do
   # --- radar_chart ---
   # Radar/spider chart with polar grid
 
+  @doc "Renders a radar/spider chart with polygon grid and data overlay."
   attr :data, :list, required: true
   attr :size, :integer, default: 250
   attr :color, :string, default: "var(--exo-primary)"
@@ -1544,8 +1514,9 @@ defmodule ExoUI.Charts do
     cy = size / 2
     max_radius = size / 2 - 28
     count = length(data)
-    max_val = data |> Enum.map(fn {_l, v} -> to_number(v) end) |> Enum.max(fn -> 1 end)
-    max_val = if max_val == 0, do: 1, else: max_val
+
+    max_val =
+      data |> Enum.map(fn {_l, v} -> to_number(v) end) |> Enum.max(fn -> 1 end) |> H.safe_max()
 
     # Concentric grid polygons at 20%, 40%, 60%, 80%, 100%
     grid_levels = [0.2, 0.4, 0.6, 0.8, 1.0]
@@ -1587,8 +1558,7 @@ defmodule ExoUI.Charts do
         angle = -:math.pi() / 2 + 2 * :math.pi() * i / count
         lx = cx + (max_radius + 16) * :math.cos(angle)
         ly = cy + (max_radius + 16) * :math.sin(angle)
-        short_label = label |> to_string() |> String.slice(0, 3)
-        %{label: short_label, x: r(lx), y: r(ly)}
+        %{label: H.short_label(label), x: r(lx), y: r(ly)}
       end)
 
     assigns =
@@ -1646,6 +1616,7 @@ defmodule ExoUI.Charts do
   # --- radial_chart ---
   # Concentric arc bars, each proportional to value
 
+  @doc "Renders a radial/gauge chart with arc segments."
   attr :data, :list, required: true
   attr :size, :integer, default: 250
   attr :inner_radius, :integer, default: 40
@@ -1707,9 +1678,7 @@ defmodule ExoUI.Charts do
     """
   end
 
-  # --- area_chart_stacked ---
-  # Two stacked areas using catmull-rom curves
-
+  @doc "Renders a stacked area chart with two series and catmull-rom curves."
   attr :data, :list, required: true
   attr :height, :integer, default: 200
   attr :color1, :string, default: "var(--exo-primary)"
@@ -1717,23 +1686,16 @@ defmodule ExoUI.Charts do
   attr :id, :string, default: nil
 
   def area_chart_stacked(assigns) do
-    id = assigns[:id] || "area-stacked-#{System.unique_integer([:positive])}"
+    id = assigns[:id] || "area-stacked-#{:erlang.phash2(assigns.data)}"
     assigns = assign(assigns, :id, id)
 
     data = assigns.data
     height = assigns.height
     # Stacked: total = v1 + v2 at each point
     stacked_vals = Enum.map(data, fn {_l, v1, v2} -> to_number(v1) + to_number(v2) end)
-    max_val = Enum.max(stacked_vals, fn -> 1 end)
-    max_val = if max_val == 0, do: 1, else: max_val
+    max_val = Enum.max(stacked_vals, fn -> 1 end) |> H.safe_max()
     count = length(data)
-    width = 600
-    pl = 12
-    pr = 12
-    pt = 8
-    pb = 28
-    cw = width - pl - pr
-    ch = height - pt - pb
+    %{width: width, pl: pl, pr: pr, pt: pt, cw: cw, ch: ch} = H.chart_dimensions(height)
     baseline_y = r(pt + ch)
 
     grid = horizontal_grid_lines(pt, ch, pl, width, pr)
@@ -1769,15 +1731,14 @@ defmodule ExoUI.Charts do
     area2_path = catmull_rom_area_path(points2, baseline_y, first_x, last_x)
     curve2_path = catmull_rom_to_bezier_path(points2)
 
-    label_step = max(div(count, 12), 1)
+    label_step = H.label_step(count)
 
     labels =
       data
       |> Enum.with_index()
       |> Enum.map(fn {{label, _, _}, i} ->
         x = pl + i / max(count - 1, 1) * cw
-        short_label = label |> to_string() |> String.slice(0, 3)
-        %{label: short_label, x: r(x), show: rem(i, label_step) == 0 or i == count - 1}
+        %{label: H.short_label(label), x: r(x), show: rem(i, label_step) == 0 or i == count - 1}
       end)
 
     assigns =
