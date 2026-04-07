@@ -75,6 +75,15 @@
 :where([data-exo="combobox-icon"]) {
   flex-shrink: 0;
   opacity: 0.5;
+  transition: transform var(--exo-duration) var(--exo-easing);
+}
+
+:where([data-exo="popover"]):has(:popover-open) :where([data-exo="combobox-icon"]) {
+  transform: rotate(180deg);
+}
+
+:where([data-exo="combobox-value"][data-placeholder]) {
+  color: var(--exo-muted-foreground);
 }
 
 :where([data-exo="combobox-search"]) {

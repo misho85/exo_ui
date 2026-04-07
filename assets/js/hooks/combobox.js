@@ -35,7 +35,10 @@ const ExoCombobox = {
         }
         // Reset trigger display
         const valSpan = this.el.querySelector('[data-exo="combobox-value"]')
-        if (valSpan) valSpan.textContent = this._search?.placeholder || ''
+        if (valSpan) {
+          valSpan.textContent = this._search?.placeholder || ''
+          valSpan.setAttribute('data-placeholder', '')
+        }
         // Clear visual selection
         if (this._listbox) {
           this._listbox.querySelectorAll('[data-exo="combobox-option"]').forEach(o => {
@@ -161,7 +164,10 @@ const ExoCombobox = {
     }
     // Update trigger display
     const valSpan = this.el.querySelector('[data-exo="combobox-value"]')
-    if (valSpan) valSpan.textContent = opt.textContent.trim()
+    if (valSpan) {
+      valSpan.textContent = opt.textContent.trim()
+      valSpan.removeAttribute('data-placeholder')
+    }
     // Close (unless multiple)
     if (!this.el.dataset.multiple) {
       try { this._popover?.hidePopover() } catch(_err) {}

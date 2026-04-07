@@ -305,7 +305,7 @@ defmodule ExoUI.Components.Form do
           style={"anchor-name: --select-#{@id}"}
           disabled={@disabled}
         >
-          <span data-exo="select-value">
+          <span data-exo="select-value" data-placeholder={!@selected_opt && ""}>
             {if @selected_opt, do: render_slot(@selected_opt), else: @prompt}
           </span>
           <svg
@@ -536,7 +536,7 @@ defmodule ExoUI.Components.Form do
             style={"anchor-name: --combobox-#{@id}"}
             disabled={@disabled}
           >
-            <span data-exo="combobox-value">
+            <span data-exo="combobox-value" data-placeholder={!@selected_opt && ""}>
               {if @selected_opt, do: render_slot(@selected_opt), else: @prompt}
             </span>
             <svg

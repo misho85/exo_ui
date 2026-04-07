@@ -47,6 +47,16 @@
 :where([data-exo="select-icon"]) {
   flex-shrink: 0;
   opacity: 0.5;
+  transition: transform var(--exo-duration) var(--exo-easing);
+}
+
+:where([data-exo="popover"]):has(:popover-open) :where([data-exo="select-icon"]) {
+  transform: rotate(180deg);
+}
+
+:where([data-exo="select-value"]:empty)::before,
+:where([data-exo="select-value"][data-placeholder]) {
+  color: var(--exo-muted-foreground);
 }
 
 /* --- Popover content width matching for select --- */

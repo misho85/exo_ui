@@ -45,6 +45,29 @@ defmodule Storybook.Components.Select do
       </div>
 
       <div>
+        <h3>With description</h3>
+        <ExoUI.Components.select
+          id="sel-desc"
+          name="category"
+          label="Category"
+          description="Choose the primary category for this item"
+          prompt="Select..."
+        >
+          <:option value="tech">Technology</:option>
+          <:option value="science">Science</:option>
+          <:option value="art">Art</:option>
+        </ExoUI.Components.select>
+      </div>
+
+      <div>
+        <h3>Disabled</h3>
+        <ExoUI.Components.select id="sel-disabled" name="locked" label="Locked field" disabled prompt="Cannot select">
+          <:option value="a">Option A</:option>
+          <:option value="b">Option B</:option>
+        </ExoUI.Components.select>
+      </div>
+
+      <div>
         <h3>With errors</h3>
         <ExoUI.Components.select id="sel-err" name="x" label="Required field" errors={["can't be blank"]} prompt="Select...">
           <:option value="a">Option A</:option>

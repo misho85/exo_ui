@@ -100,7 +100,10 @@ const ExoSelect = {
 
     // Update trigger display text
     const valueEl = this._trigger.querySelector('[data-exo="select-value"]')
-    if (valueEl) valueEl.textContent = text
+    if (valueEl) {
+      valueEl.textContent = text
+      valueEl.removeAttribute('data-placeholder')
+    }
 
     // Close popover
     this._popover.hidePopover()
