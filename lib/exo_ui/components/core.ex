@@ -78,6 +78,7 @@ defmodule ExoUI.Components.Core do
   attr :class, :any, default: "size-4"
 
   def icon(assigns) do
+    Code.ensure_loaded!(ExoUI.Lucide)
     icon_fn = assigns.name |> String.replace("-", "_") |> String.to_existing_atom()
     ExoUI.Lucide.render(icon_fn, Map.delete(assigns, :name))
   end

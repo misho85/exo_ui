@@ -18,7 +18,7 @@ RUN mix local.hex --force && mix local.rebar --force
 ENV MIX_ENV="prod"
 
 # Copy root exo_ui source (path dependency used by storybook)
-COPY mix.exs mix.lock ./
+COPY mix.exs mix.lock README.md ./
 COPY lib ./lib
 COPY assets ./assets
 COPY priv ./priv
