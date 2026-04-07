@@ -311,4 +311,31 @@ defmodule ExoUI.Components.SelectTest do
     assert html =~ ~s(data-side="top")
     assert html =~ ~s(data-align="end")
   end
+
+  test "renders description" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.select id="s22" name="x" description="Choose your role">
+        <:option value="a">A</:option>
+      </.select>
+      """)
+
+    assert html =~ ~s(data-exo="field-description")
+    assert html =~ "Choose your role"
+  end
+
+  test "does not render description when not provided" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.select id="s23" name="x">
+        <:option value="a">A</:option>
+      </.select>
+      """)
+
+    refute html =~ "field-description"
+  end
 end

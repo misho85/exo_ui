@@ -107,4 +107,71 @@ defmodule ExoUI.Components.RadioGroupTest do
     assert html =~ "<fieldset"
     assert html =~ "</fieldset>"
   end
+
+  test "renders radio group with slot-based items" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.radio_group name="color" value="red">
+        <:item value="red">Red</:item>
+        <:item value="blue">Blue</:item>
+      </.radio_group>
+      """)
+
+    assert html =~ ~s(data-exo="radio-item")
+    assert html =~ "Red"
+    assert html =~ "Blue"
+    assert html =~ ~s(value="red")
+    assert html =~ ~s(value="blue")
+    assert html =~ "checked"
+  end
+
+  test "renders slot-based item with disabled" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.radio_group name="color">
+        <:item value="red">Red</:item>
+        <:item value="blue" disabled>Blue</:item>
+      </.radio_group>
+      """)
+
+    assert html =~ ~s(data-disabled)
+    assert html =~ "disabled"
+  end
+
+  test "renders radio group with field struct" do
+    assigns = %{form: Phoenix.Component.to_form(%{"color" => "blue"})}
+
+    html =
+      rendered_to_string(~H"""
+      <.radio_group field={@form[:color]} options={[{"Red", "red"}, {"Blue", "blue"}]} />
+      """)
+
+    assert html =~ ~s(name="color")
+    assert html =~ "checked"
+  end
+
+  test "renders radio group with description" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(
+        ~H|<.radio_group name="color" options={[{"Red", "red"}]} description="Pick your favorite" />|
+      )
+
+    assert html =~ ~s(data-exo="field-description")
+    assert html =~ "Pick your favorite"
+  end
+
+  test "renders radio group with disabled attribute" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H|<.radio_group name="color" options={[{"Red", "red"}]} disabled />|)
+
+    assert html =~ "disabled"
+  end
 end

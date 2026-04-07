@@ -54,4 +54,40 @@ defmodule ExoUI.Components.InputTest do
     assert html =~ ~s(data-invalid)
     assert html =~ "is required"
   end
+
+  test "renders description" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(
+        ~H|<.input type="text" name="email" value="" description="Your work email" />|
+      )
+
+    assert html =~ ~s(data-exo="field-description")
+    assert html =~ "Your work email"
+  end
+
+  test "does not render description when not provided" do
+    assigns = %{}
+    html = rendered_to_string(~H|<.input type="text" name="email" value="" />|)
+    refute html =~ "field-description"
+  end
+
+  test "renders textarea with description" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(
+        ~H|<.input type="textarea" name="bio" value="" description="Tell us about yourself" />|
+      )
+
+    assert html =~ ~s(data-exo="field-description")
+    assert html =~ "Tell us about yourself"
+  end
+
+  test "renders disabled input" do
+    assigns = %{}
+    html = rendered_to_string(~H|<.input type="text" name="email" value="" disabled />|)
+    assert html =~ "disabled"
+  end
 end

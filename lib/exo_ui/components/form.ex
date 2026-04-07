@@ -32,6 +32,7 @@ defmodule ExoUI.Components.Form do
   attr :name, :any
   attr :value, :any
   attr :label, :string, default: nil
+  attr :description, :string, default: nil
   attr :errors, :list, default: []
   attr :checked, :boolean, doc: "the checked flag for checkbox inputs"
   attr :prompt, :string, default: nil, doc: "the prompt for select inputs"
@@ -113,6 +114,7 @@ defmodule ExoUI.Components.Form do
         class={@class}
         {@rest}
       >{Phoenix.HTML.Form.normalize_value("textarea", @value)}</textarea>
+      <p :if={@description} data-exo="field-description">{@description}</p>
       <.field_errors errors={@errors} />
     </div>
     """
@@ -134,6 +136,7 @@ defmodule ExoUI.Components.Form do
         <option :if={@prompt} value="">{@prompt}</option>
         {Phoenix.HTML.Form.options_for_select(@options, @value)}
       </select>
+      <p :if={@description} data-exo="field-description">{@description}</p>
       <.field_errors errors={@errors} />
     </div>
     """
@@ -155,6 +158,7 @@ defmodule ExoUI.Components.Form do
         class={@class}
         {@rest}
       />
+      <p :if={@description} data-exo="field-description">{@description}</p>
       <.field_errors errors={@errors} />
     </div>
     """
@@ -169,17 +173,57 @@ defmodule ExoUI.Components.Form do
   end
 
   @doc "Renders a toggle switch (on/off)."
+  attr :field, Phoenix.HTML.FormField, default: nil, doc: "a form field struct"
+  attr :id, :any, default: nil
   attr :checked, :boolean, default: false
   attr :name, :string, default: nil
+  attr :label, :string, default: nil
+  attr :description, :string, default: nil
+  attr :errors, :list, default: []
   attr :class, :any, default: nil
-  attr :rest, :global
+  attr :rest, :global, include: ~w(disabled)
+
+  def toggle(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
+    errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
+
+    assigns
+    |> assign(field: nil, id: assigns[:id] || field.id)
+    |> assign(:errors, Enum.map(errors, &translate_error(&1)))
+    |> assign(:name, if(is_nil(assigns.name), do: field.name, else: assigns.name))
+    |> assign(:checked, Phoenix.HTML.Form.normalize_value("checkbox", field.value))
+    |> toggle()
+  end
 
   def toggle(assigns) do
+    wrap? = assigns.label != nil or assigns.description != nil or assigns.errors != []
+    assigns = assign(assigns, :wrap, wrap?)
+
     ~H"""
-    <label data-exo="toggle" data-checked={@checked && ""}>
+    <div :if={@wrap} data-exo="field">
+      <label data-exo="toggle" data-checked={@checked && ""}>
+        <input :if={@name} type="hidden" name={@name} value="false" />
+        <input
+          type="checkbox"
+          id={@id}
+          name={@name}
+          value="true"
+          checked={@checked}
+          class={@class}
+          {@rest}
+        />
+        <span data-exo="toggle-track">
+          <span data-exo="toggle-thumb" />
+        </span>
+        <span :if={@label}>{@label}</span>
+      </label>
+      <p :if={@description} data-exo="field-description">{@description}</p>
+      <.field_errors errors={@errors} />
+    </div>
+    <label :if={!@wrap} data-exo="toggle" data-checked={@checked && ""}>
       <input :if={@name} type="hidden" name={@name} value="false" />
       <input
         type="checkbox"
+        id={@id}
         name={@name}
         value="true"
         checked={@checked}
@@ -199,6 +243,7 @@ defmodule ExoUI.Components.Form do
   attr :value, :any, default: nil
   attr :field, Phoenix.HTML.FormField, default: nil
   attr :label, :string, default: nil
+  attr :description, :string, default: nil
   attr :prompt, :string, default: nil
   attr :multiple, :boolean, default: false
   attr :errors, :list, default: []
@@ -328,6 +373,7 @@ defmodule ExoUI.Components.Form do
         </div>
       </div>
       <input type="hidden" name={@name} value={@value || ""} />
+      <p :if={@description} data-exo="field-description">{@description}</p>
       <.field_errors errors={@errors} />
     </div>
     """
@@ -339,6 +385,7 @@ defmodule ExoUI.Components.Form do
   attr :value, :any, default: nil
   attr :field, Phoenix.HTML.FormField, default: nil
   attr :label, :string, default: nil
+  attr :description, :string, default: nil
   attr :prompt, :string, default: nil
   attr :trigger, :string, values: ~w(button input), default: "button"
   attr :filter, :string, values: ~w(client server), default: "server"
@@ -444,6 +491,7 @@ defmodule ExoUI.Components.Form do
         </div>
       </div>
       <input type="hidden" name={@name} value={@value || ""} />
+      <p :if={@description} data-exo="field-description">{@description}</p>
       <.field_errors errors={@errors} />
     </div>
     """
@@ -561,24 +609,56 @@ defmodule ExoUI.Components.Form do
         </div>
       </div>
       <input type="hidden" name={@name} value={@value || ""} />
+      <p :if={@description} data-exo="field-description">{@description}</p>
       <.field_errors errors={@errors} />
     </div>
     """
   end
 
-  @doc "Renders a radio button group from a list of {label, value} tuples."
-  attr :name, :string, required: true
+  @doc "Renders a radio button group from a list of {label, value} tuples or slot-based items."
+  attr :field, Phoenix.HTML.FormField, default: nil, doc: "a form field struct"
+  attr :name, :string
   attr :value, :any, default: nil
-  attr :options, :list, required: true, doc: "list of {label, value} tuples"
+  attr :options, :list, default: [], doc: "list of {label, value} tuples"
   attr :label, :string, default: nil
+  attr :description, :string, default: nil
   attr :errors, :list, default: []
+  attr :disabled, :boolean, default: false
   attr :class, :any, default: nil
-  attr :rest, :global, include: ~w(disabled)
+  attr :rest, :global
+
+  slot :item do
+    attr :value, :any, required: true
+    attr :disabled, :boolean
+  end
+
+  def radio_group(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
+    errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
+
+    assigns
+    |> assign(field: nil)
+    |> assign(:errors, Enum.map(errors, &translate_error(&1)))
+    |> assign(:name, if(is_nil(assigns[:name]), do: field.name, else: assigns[:name]))
+    |> assign(:value, if(is_nil(assigns.value), do: field.value, else: assigns.value))
+    |> radio_group()
+  end
 
   def radio_group(assigns) do
     ~H"""
-    <fieldset data-exo="radio-group" class={@class} {@rest}>
+    <fieldset data-exo="radio-group" class={@class} disabled={@disabled} {@rest}>
       <legend :if={@label} data-exo="label">{@label}</legend>
+      <label :for={item <- @item} data-exo="radio-item" data-disabled={item[:disabled] && ""}>
+        <input
+          type="radio"
+          data-exo="radio"
+          name={@name}
+          value={item[:value]}
+          checked={to_string(@value) == to_string(item[:value])}
+          disabled={@disabled || item[:disabled]}
+        />
+        <span data-exo="radio-indicator" />
+        <span>{render_slot(item)}</span>
+      </label>
       <label :for={{opt_label, opt_value} <- @options} data-exo="radio-item">
         <input
           type="radio"
@@ -586,10 +666,12 @@ defmodule ExoUI.Components.Form do
           name={@name}
           value={opt_value}
           checked={to_string(@value) == to_string(opt_value)}
+          disabled={@disabled}
         />
         <span data-exo="radio-indicator" />
         <span>{opt_label}</span>
       </label>
+      <p :if={@description} data-exo="field-description">{@description}</p>
       <.field_errors errors={@errors} />
     </fieldset>
     """
@@ -602,6 +684,7 @@ defmodule ExoUI.Components.Form do
   attr :max, :integer, default: 100
   attr :step, :integer, default: 1
   attr :label, :string, default: nil
+  attr :description, :string, default: nil
   attr :class, :any, default: nil
   attr :rest, :global, include: ~w(disabled)
 
@@ -619,6 +702,7 @@ defmodule ExoUI.Components.Form do
         step={@step}
         {@rest}
       />
+      <p :if={@description} data-exo="field-description">{@description}</p>
     </div>
     """
   end
@@ -811,6 +895,7 @@ defmodule ExoUI.Components.Form do
   attr :name, :string, required: true
   attr :id, :string, default: nil
   attr :label, :string, default: nil
+  attr :description, :string, default: nil
   attr :accept, :string, default: nil
   attr :multiple, :boolean, default: false
   attr :class, :any, default: nil
@@ -830,6 +915,7 @@ defmodule ExoUI.Components.Form do
         class={@class}
         {@rest}
       />
+      <p :if={@description} data-exo="field-description">{@description}</p>
     </div>
     """
   end

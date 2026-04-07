@@ -37,9 +37,25 @@
   box-shadow: 0 0 0 2px color-mix(in oklch, var(--exo-danger) 25%, transparent);
 }
 
+:where([data-exo="input"]):disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+:where([data-exo="input"])::placeholder {
+  color: var(--exo-muted-foreground);
+}
+
 :where(textarea[data-exo="input"]) {
   min-height: 5rem;
   resize: vertical;
+}
+
+:where([data-exo="field-description"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-xs);
+  color: var(--exo-muted-foreground);
+  margin: 0;
 }
 
 :where([data-exo="field-error"]) {

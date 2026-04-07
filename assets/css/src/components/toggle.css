@@ -38,3 +38,8 @@
 :where([data-exo="toggle"][data-checked] [data-exo="toggle-thumb"]) {
   transform: translateX(1rem);
 }
+
+:where([data-exo="toggle"]:has(input:disabled)) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

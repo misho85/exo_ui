@@ -46,6 +46,24 @@
   box-shadow: 0 0 0 2px color-mix(in oklch, var(--exo-ring) 25%, transparent);
 }
 
+:where([data-exo-combobox="trigger"]:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+:where([data-exo-combobox="input-trigger"]:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+:where([data-exo-combobox="input-trigger"])::placeholder {
+  color: var(--exo-muted-foreground);
+}
+
+:where([data-exo="combobox-search"])::placeholder {
+  color: var(--exo-muted-foreground);
+}
+
 :where([data-exo="combobox-value"]) {
   flex: 1;
   text-align: left;
