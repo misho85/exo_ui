@@ -8,7 +8,7 @@ defmodule ExoUI.Components.Core do
   @doc "Renders a button or link styled as a button."
   attr :variant, :string, default: nil
   attr :size, :string, values: ~w(xs sm md lg), default: "md"
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
 
   attr :rest, :global,
     include: ~w(href navigate patch method disabled name value type form download)
@@ -43,7 +43,7 @@ defmodule ExoUI.Components.Core do
 
   @doc "Renders an inline badge/tag."
   attr :variant, :string, default: "primary"
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
   slot :inner_block, required: true
 
@@ -57,7 +57,7 @@ defmodule ExoUI.Components.Core do
 
   @doc "Renders a horizontal or vertical separator line."
   attr :orientation, :string, values: ~w(horizontal vertical), default: "horizontal"
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
 
   def separator(assigns) do
@@ -96,7 +96,7 @@ defmodule ExoUI.Components.Core do
   end
 
   @doc "Renders a page header with title, optional subtitle, and action buttons."
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
   slot :inner_block, required: true
   slot :subtitle
@@ -118,7 +118,7 @@ defmodule ExoUI.Components.Core do
   attr :name, :string, required: true
   attr :src, :string, default: nil
   attr :size, :string, values: ~w(xs sm md lg xl), default: "md"
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
 
   def avatar(assigns) do
@@ -144,7 +144,7 @@ defmodule ExoUI.Components.Core do
   attr :type, :string, values: ~w(text card avatar table), default: "text"
   attr :rows, :integer, default: 3
   attr :label, :string, default: "Loading..."
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
 
   def skeleton(assigns) do
@@ -178,7 +178,7 @@ defmodule ExoUI.Components.Core do
   attr :icon, :string, default: nil
   attr :title, :string, required: true
   attr :subtitle, :string, default: nil
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
   slot :action
 
@@ -195,7 +195,7 @@ defmodule ExoUI.Components.Core do
 
   @doc "Renders a loading spinner."
   attr :size, :string, values: ~w(sm md lg), default: "md"
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
 
   def spinner(assigns) do
@@ -222,7 +222,7 @@ defmodule ExoUI.Components.Core do
   end
 
   @doc "Renders a keyboard shortcut indicator."
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
   slot :inner_block, required: true
 
@@ -233,7 +233,7 @@ defmodule ExoUI.Components.Core do
   end
 
   @doc "Renders a scrollable container with custom scrollbar styling."
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :orientation, :string, values: ~w(vertical horizontal both), default: "vertical"
   attr :rest, :global
   slot :inner_block, required: true

@@ -1,17 +1,10 @@
 defmodule ExoUI do
-  @moduledoc """
-  ExoUI — Headless LiveView component library with default CSS theme.
+  @external_resource readme = Path.join([__DIR__, "..", "README.md"])
 
-  Components emit semantic HTML with `data-exo` attributes.
-  Styling is done via CSS custom properties in a shipped theme file.
-
-  ## Usage
-
-      use ExoUI
-
-  This imports `ExoUI.Components`, `ExoUI.Charts`, and `ExoUI.Layouts`
-  into your module so all components are available in HEEx templates.
-  """
+  @moduledoc readme
+             |> File.read!()
+             |> String.split("<!-- MDOC -->")
+             |> Enum.fetch!(1)
 
   @version Mix.Project.config()[:version]
 
@@ -28,6 +21,7 @@ defmodule ExoUI do
       import ExoUI.Components.DataDisplay
       import ExoUI.Charts
       import ExoUI.Layouts
+      import ExoUI.Utils, only: [classes: 1, maybe_add_class: 2]
     end
   end
 end

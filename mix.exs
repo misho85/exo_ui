@@ -9,6 +9,7 @@ defmodule ExoUI.MixProject do
       app: :exo_ui,
       version: @version,
       elixir: "~> 1.19",
+      elixirc_paths: elixirc_paths(Mix.env()),
       deps: deps(),
       name: "ExoUI",
       description: "Headless LiveView component library with default CSS theme",
@@ -21,12 +22,16 @@ defmodule ExoUI.MixProject do
     [extra_applications: [:logger]]
   end
 
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
+
   defp deps do
     [
       {:phoenix, "~> 1.8"},
       {:phoenix_html, "~> 4.3"},
       {:phoenix_live_view, "~> 1.1"},
       {:gettext, "~> 1.0", optional: true},
+      {:floki, "~> 0.37", only: :test},
       {:jason, "~> 1.4", only: :test},
       {:ex_doc, "~> 0.40", only: :dev, runtime: false}
     ]

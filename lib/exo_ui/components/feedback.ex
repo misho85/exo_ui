@@ -109,7 +109,7 @@ defmodule ExoUI.Components.Feedback do
   @doc "Renders an alert banner with kind-based styling (info, success, warning, error)."
   attr :kind, :atom, required: true, values: [:info, :success, :warning, :error]
   attr :title, :string, default: nil
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
   slot :inner_block, required: true
   slot :action
@@ -130,7 +130,7 @@ defmodule ExoUI.Components.Feedback do
   attr :value, :integer, required: true
   attr :max, :integer, default: 100
   attr :label, :string, default: nil
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
 
   def progress(assigns) do

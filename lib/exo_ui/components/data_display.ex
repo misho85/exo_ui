@@ -12,7 +12,7 @@ defmodule ExoUI.Components.DataDisplay do
   attr :row_click, :any, default: nil
   attr :row_item, :any, default: &Function.identity/1
   attr :actions_label, :string, default: "Actions"
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
 
   slot :col, required: true do
@@ -68,7 +68,7 @@ defmodule ExoUI.Components.DataDisplay do
   end
 
   @doc "Renders a description list of title/content pairs."
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
 
   slot :item, required: true do
@@ -88,7 +88,7 @@ defmodule ExoUI.Components.DataDisplay do
 
   @doc "Renders a content card with optional title, header action, and body."
   attr :title, :string, default: nil
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
   slot :action
   slot :inner_block, required: true
@@ -112,7 +112,7 @@ defmodule ExoUI.Components.DataDisplay do
   attr :subtitle, :string, default: nil
   attr :trend, :string, default: nil
   attr :trend_direction, :string, default: nil
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
 
   def stat_card(assigns) do
@@ -139,7 +139,7 @@ defmodule ExoUI.Components.DataDisplay do
   attr :title, :string, required: true
   attr :value, :any, required: true
   attr :subtitle, :string, default: nil
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
   slot :trailing
 
@@ -161,7 +161,7 @@ defmodule ExoUI.Components.DataDisplay do
   @doc "Renders a wizard/stepper sidebar showing step progress."
   attr :steps, :list, required: true, doc: "list of %{id: string, label: string, status: atom}"
   attr :on_click, :string, default: "goto-step", doc: "phx-click event name"
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
 
   def wizard_sidebar(assigns) do
@@ -202,7 +202,7 @@ defmodule ExoUI.Components.DataDisplay do
   end
 
   @doc "Renders a breadcrumb navigation trail."
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
 
   slot :item, required: true do
@@ -233,7 +233,7 @@ defmodule ExoUI.Components.DataDisplay do
 
   @doc "Renders a tab bar with click or navigation-based tabs."
   attr :active, :string, required: true, doc: "the id of the currently active tab"
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
 
   slot :tab, required: true do
     attr :id, :string, required: true
@@ -283,7 +283,7 @@ defmodule ExoUI.Components.DataDisplay do
   attr :prev_label, :string, default: "Previous page"
   attr :next_label, :string, default: "Next page"
   attr :aria_label, :string, default: "Pagination"
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
 
   def pagination(assigns) do
     range =
@@ -351,7 +351,7 @@ defmodule ExoUI.Components.DataDisplay do
   end
 
   @doc "Renders a multi-step progress indicator."
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :orientation, :string, values: ~w(horizontal vertical), default: "horizontal"
   attr :rest, :global
 
@@ -379,7 +379,7 @@ defmodule ExoUI.Components.DataDisplay do
   end
 
   @doc "Renders a chronological timeline of events."
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
 
   slot :event, required: true do
@@ -408,7 +408,7 @@ defmodule ExoUI.Components.DataDisplay do
 
   @doc "Renders a scrollable carousel of items."
   attr :id, :string, required: true
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :loop, :boolean, default: false
   attr :rest, :global
   slot :item, required: true
@@ -447,7 +447,7 @@ defmodule ExoUI.Components.DataDisplay do
 
   @doc "Renders an accordion with collapsible detail items."
   attr :id, :string, required: true
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :variant, :string, default: nil
   attr :type, :string, default: "single", values: ["single", "multiple"]
   attr :collapsible, :boolean, default: true

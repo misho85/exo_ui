@@ -9,8 +9,8 @@ defmodule ExoUI.Layouts do
 
   @doc "Renders an app shell with collapsible sidebar, topbar, and main content area."
   attr :id, :string, default: "sidebar-layout"
-  attr :class, :string, default: nil
-  attr :content_class, :string, default: nil
+  attr :class, :any, default: nil
+  attr :content_class, :any, default: nil
 
   slot :brand, doc: "branding area at top of sidebar (logo, tenant name)"
   slot :nav, required: true, doc: "navigation menu items"
@@ -101,7 +101,7 @@ defmodule ExoUI.Layouts do
   attr :label, :string, required: true
   attr :active, :boolean, default: false
   attr :badge, :integer, default: nil
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
 
   def sidebar_item(assigns) do

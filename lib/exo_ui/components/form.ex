@@ -10,7 +10,7 @@ defmodule ExoUI.Components.Form do
   @doc "Renders a form wrapper with `data-exo=\"form\"`."
   attr :for, :any, required: true
   attr :as, :any, default: nil
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
 
   attr :rest, :global,
     include: ~w(autocomplete name rel action enctype method novalidate target multipart)
@@ -37,7 +37,7 @@ defmodule ExoUI.Components.Form do
   attr :prompt, :string, default: nil, doc: "the prompt for select inputs"
   attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
   attr :multiple, :boolean, default: false, doc: "the multiple flag for select inputs"
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
 
   attr :rest, :global,
     include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
@@ -171,7 +171,7 @@ defmodule ExoUI.Components.Form do
   @doc "Renders a toggle switch (on/off)."
   attr :checked, :boolean, default: false
   attr :name, :string, default: nil
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
 
   def toggle(assigns) do
@@ -205,7 +205,7 @@ defmodule ExoUI.Components.Form do
   attr :disabled, :boolean, default: false
   attr :side, :string, values: ~w(top bottom left right), default: "bottom"
   attr :align, :string, values: ~w(start center end), default: "start"
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
 
   slot :option do
@@ -356,7 +356,7 @@ defmodule ExoUI.Components.Form do
   attr :disabled, :boolean, default: false
   attr :side, :string, values: ~w(top bottom left right), default: "bottom"
   attr :align, :string, values: ~w(start center end), default: "start"
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
 
   slot :option do
@@ -575,7 +575,7 @@ defmodule ExoUI.Components.Form do
   attr :options, :list, required: true, doc: "list of {label, value} tuples"
   attr :label, :string, default: nil
   attr :errors, :list, default: []
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global, include: ~w(disabled)
 
   def radio_group(assigns) do
@@ -605,7 +605,7 @@ defmodule ExoUI.Components.Form do
   attr :max, :integer, default: 100
   attr :step, :integer, default: 1
   attr :label, :string, default: nil
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global, include: ~w(disabled)
 
   def slider(assigns) do
@@ -753,7 +753,7 @@ defmodule ExoUI.Components.Form do
   attr :max, :integer, default: 5
   attr :readonly, :boolean, default: false
   attr :size, :string, values: ~w(sm md lg), default: "md"
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
 
   def rating(assigns) do
@@ -794,7 +794,7 @@ defmodule ExoUI.Components.Form do
   attr :legend, :string, default: nil
   attr :description, :string, default: nil
   attr :disabled, :boolean, default: false
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
   slot :inner_block, required: true
 
@@ -816,7 +816,7 @@ defmodule ExoUI.Components.Form do
   attr :label, :string, default: nil
   attr :accept, :string, default: nil
   attr :multiple, :boolean, default: false
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global, include: ~w(disabled required)
 
   def file_input(assigns) do
@@ -838,17 +838,12 @@ defmodule ExoUI.Components.Form do
   end
 
   @doc """
-  Translates an error message using gettext.
-  """
-  def translate_error({msg, opts}) do
-    config = Application.get_env(:exo_ui, :gettext_backend)
+  Translates an error message.
 
-    if config do
-      Gettext.dgettext(config, "errors", msg, opts)
-    else
-      Enum.reduce(opts, msg, fn {key, value}, acc ->
-        String.replace(acc, "%{#{key}}", fn _ -> to_string(value) end)
-      end)
-    end
-  end
+  Delegates to `ExoUI.Utils.translate_error/1`. Configure a custom
+  translate function via:
+
+      config :exo_ui, :translate_function, {MyAppWeb.CoreComponents, :translate_error}
+  """
+  defdelegate translate_error(msg_opts), to: ExoUI.Utils
 end

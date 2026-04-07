@@ -2,6 +2,8 @@
 
 https://exo-ui.krafter.dev
 
+<!-- MDOC -->
+
 Headless Phoenix LiveView component library with a default CSS theme.
 
 ## Installation
@@ -23,3 +25,5 @@ Import hooks in your `assets/js/app.js`:
 ```js
 import { hooks as exoHooks } from "../../deps/exo_ui/assets/js/index.js"
 ```
+
+<!-- MDOC -->

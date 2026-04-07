@@ -11,7 +11,7 @@ defmodule ExoUI.Components.Overlay do
   attr :id, :string, required: true
   attr :show, :boolean, default: false
   attr :on_cancel, Phoenix.LiveView.JS, default: %Phoenix.LiveView.JS{}
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
   slot :title
   slot :inner_block, required: true
@@ -99,7 +99,7 @@ defmodule ExoUI.Components.Overlay do
   attr :align, :string, values: ~w(start center end), default: "center"
   attr :mode, :string, values: ~w(auto manual), default: "auto"
   attr :haspopup, :string, default: "true"
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
 
   slot :trigger
@@ -138,7 +138,7 @@ defmodule ExoUI.Components.Overlay do
   attr :id, :string, required: true
   attr :side, :string, values: ~w(top bottom left right), default: "bottom"
   attr :align, :string, values: ~w(start center end), default: "end"
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
 
   slot :trigger
@@ -248,7 +248,7 @@ defmodule ExoUI.Components.Overlay do
 
   attr :id, :string, default: nil
   attr :position, :string, values: ~w(bottom-start bottom-end), default: "bottom-end"
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
   slot :trigger, required: true
   slot :item, required: true
@@ -287,7 +287,7 @@ defmodule ExoUI.Components.Overlay do
   attr :align, :string, values: ~w(start center end), default: "center"
   attr :delay, :integer, default: 500
   attr :arrow, :boolean, default: true
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
 
   slot :inner_block, required: true
@@ -325,7 +325,7 @@ defmodule ExoUI.Components.Overlay do
   @doc "Renders a collapsible section with a toggle trigger."
   attr :id, :string, required: true
   attr :open, :boolean, default: false
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
   slot :trigger, required: true
   slot :inner_block, required: true
@@ -363,7 +363,7 @@ defmodule ExoUI.Components.Overlay do
   attr :show, :boolean, default: false
   attr :side, :string, values: ~w(left right), default: "right"
   attr :on_cancel, Phoenix.LiveView.JS, default: %Phoenix.LiveView.JS{}
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
   slot :title
   slot :inner_block, required: true
@@ -416,7 +416,7 @@ defmodule ExoUI.Components.Overlay do
   @doc "Renders a slide-out panel from the edge of the screen."
   attr :id, :string, required: true
   attr :side, :string, values: ~w(left right top bottom), default: "right"
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :on_cancel, Phoenix.LiveView.JS, default: %Phoenix.LiveView.JS{}
   attr :rest, :global
   slot :inner_block, required: true
@@ -464,7 +464,7 @@ defmodule ExoUI.Components.Overlay do
 
   @doc "Renders a card that appears on hover."
   attr :id, :string, required: true
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
   slot :trigger, required: true
   slot :inner_block, required: true
@@ -484,7 +484,7 @@ defmodule ExoUI.Components.Overlay do
 
   @doc "Renders a right-click context menu."
   attr :id, :string, required: true
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
   slot :trigger, required: true
 
@@ -521,7 +521,7 @@ defmodule ExoUI.Components.Overlay do
   @doc "Renders a searchable command palette dialog (Ctrl+K)."
   attr :id, :string, required: true
   attr :placeholder, :string, default: "Search..."
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
   slot :inner_block, required: true
 
@@ -574,7 +574,7 @@ defmodule ExoUI.Components.Overlay do
   end
 
   @doc "Renders a horizontal menu bar with dropdown sub-menus."
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global
 
   slot :menu, required: true do
