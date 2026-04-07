@@ -26,16 +26,22 @@ defmodule ExoUI.Utils do
   """
   @spec classes(list()) :: String.t() | nil
   def classes(list) when is_list(list) do
-    result =
-      list
-      |> List.flatten()
-      |> Enum.reject(&is_nil/1)
-      |> Enum.map(&to_string/1)
-      |> Enum.map(&String.trim/1)
-      |> Enum.reject(&(&1 == ""))
-      |> Enum.join(" ")
+    list
+    |> List.flatten()
+    |> Enum.reduce([], fn
+      nil, acc ->
+        acc
 
-    if result == "", do: nil, else: result
+      item, acc ->
+        case String.trim(to_string(item)) do
+          "" -> acc
+          s -> [s | acc]
+        end
+    end)
+    |> case do
+      [] -> nil
+      parts -> parts |> Enum.reverse() |> Enum.join(" ")
+    end
   end
 
   @doc """
@@ -97,9 +103,11 @@ defmodule ExoUI.Utils do
 
   If no function is configured, performs basic `%{key}` interpolation.
   """
+  @translate_fn Application.compile_env(:exo_ui, :translate_function, nil)
+
   @spec translate_error({String.t(), keyword()}) :: String.t()
   def translate_error({msg, opts}) do
-    case Application.get_env(:exo_ui, :translate_function) do
+    case @translate_fn do
       {mod, fun} ->
         apply(mod, fun, [{msg, opts}])
 

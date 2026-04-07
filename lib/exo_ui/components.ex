@@ -27,6 +27,11 @@ defmodule ExoUI.Components do
   defdelegate spinner(assigns), to: ExoUI.Components.Core
   defdelegate kbd(assigns), to: ExoUI.Components.Core
   defdelegate scroll_area(assigns), to: ExoUI.Components.Core
+  defdelegate navbar(assigns), to: ExoUI.Components.Core
+  defdelegate footer(assigns), to: ExoUI.Components.Core
+  defdelegate bottom_nav(assigns), to: ExoUI.Components.Core
+  defdelegate indicator(assigns), to: ExoUI.Components.Core
+  defdelegate swap(assigns), to: ExoUI.Components.Core
 
   # Form
   defdelegate form(assigns), to: ExoUI.Components.Form
@@ -74,6 +79,7 @@ defmodule ExoUI.Components do
   defdelegate toast_container(assigns), to: ExoUI.Components.Feedback
   defdelegate alert(assigns), to: ExoUI.Components.Feedback
   defdelegate progress(assigns), to: ExoUI.Components.Feedback
+  defdelegate radial_progress(assigns), to: ExoUI.Components.Feedback
 
   # DataDisplay
   defdelegate table(assigns), to: ExoUI.Components.DataDisplay
@@ -89,4 +95,6 @@ defmodule ExoUI.Components do
   defdelegate steps(assigns), to: ExoUI.Components.DataDisplay
   defdelegate timeline(assigns), to: ExoUI.Components.DataDisplay
   defdelegate carousel(assigns), to: ExoUI.Components.DataDisplay
+  defdelegate hero(assigns), to: ExoUI.Components.DataDisplay
+  defdelegate chat_bubble(assigns), to: ExoUI.Components.DataDisplay
 end

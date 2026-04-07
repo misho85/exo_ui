@@ -155,4 +155,70 @@ defmodule ExoUI.Components.Feedback do
     </div>
     """
   end
+
+  @doc "Renders a circular progress indicator using SVG."
+  attr :value, :integer, required: true
+  attr :max, :integer, default: 100
+  attr :size, :string, values: ~w(sm md lg), default: "md"
+  attr :show_value, :boolean, default: true
+  attr :class, :any, default: nil
+  attr :rest, :global
+  slot :inner_block
+
+  def radial_progress(assigns) do
+    pct = if assigns.max == 0, do: 0, else: min(100, round(assigns.value / assigns.max * 100))
+    circumference = 2 * :math.pi() * 40
+    offset = circumference - pct / 100 * circumference
+
+    assigns =
+      assigns
+      |> assign(:pct, pct)
+      |> assign(:circumference, circumference)
+      |> assign(:offset, offset)
+
+    ~H"""
+    <div
+      data-exo="radial-progress"
+      data-size={@size}
+      role="progressbar"
+      aria-valuenow={@value}
+      aria-valuemin="0"
+      aria-valuemax={@max}
+      class={@class}
+      {@rest}
+    >
+      <svg viewBox="0 0 100 100">
+        <circle
+          data-exo="radial-progress-track"
+          cx="50"
+          cy="50"
+          r="40"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="8"
+          opacity="0.2"
+        />
+        <circle
+          data-exo="radial-progress-fill"
+          cx="50"
+          cy="50"
+          r="40"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="8"
+          stroke-linecap="round"
+          stroke-dasharray={@circumference}
+          stroke-dashoffset={@offset}
+          transform="rotate(-90 50 50)"
+        />
+      </svg>
+      <span :if={@show_value && @inner_block == []} data-exo="radial-progress-label">
+        {@pct}%
+      </span>
+      <span :if={@inner_block != []} data-exo="radial-progress-label">
+        {render_slot(@inner_block)}
+      </span>
+    </div>
+    """
+  end
 end

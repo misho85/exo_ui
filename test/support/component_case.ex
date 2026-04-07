@@ -65,7 +65,7 @@ defmodule ExoUI.ComponentCase do
       if selector do
         Floki.find(tree, selector)
       else
-        tree
+        Enum.filter(tree, &is_tuple/1)
       end
 
     found =
@@ -87,7 +87,7 @@ defmodule ExoUI.ComponentCase do
       if selector do
         Floki.find(tree, selector)
       else
-        tree
+        Enum.filter(tree, &is_tuple/1)
       end
 
     found =
@@ -185,7 +185,7 @@ defmodule ExoUI.ComponentCase do
   def refute_element({html, tree} = component, selector) do
     found = Floki.find(tree, selector)
 
-    assert Enum.empty?(found),
+    refute found != [],
            "Expected NO elements matching #{inspect(selector)}, but found #{length(found)} in:\n#{html}"
 
     component

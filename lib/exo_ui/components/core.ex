@@ -248,4 +248,120 @@ defmodule ExoUI.Components.Core do
     </div>
     """
   end
+
+  @doc "Renders a top navigation bar with brand, center content, and end content."
+  attr :class, :any, default: nil
+  attr :rest, :global
+  slot :brand
+  slot :center
+  slot :end_content
+
+  def navbar(assigns) do
+    ~H"""
+    <nav data-exo="navbar" class={@class} {@rest}>
+      <div :if={@brand != []} data-exo="navbar-brand">{render_slot(@brand)}</div>
+      <div :if={@center != []} data-exo="navbar-center">{render_slot(@center)}</div>
+      <div :if={@end_content != []} data-exo="navbar-end">{render_slot(@end_content)}</div>
+    </nav>
+    """
+  end
+
+  @doc "Renders a page footer with columns of links and a bottom section."
+  attr :class, :any, default: nil
+  attr :rest, :global
+
+  slot :column do
+    attr :title, :string, required: true
+  end
+
+  slot :bottom
+
+  def footer(assigns) do
+    ~H"""
+    <footer data-exo="footer" class={@class} {@rest}>
+      <div :if={@column != []} data-exo="footer-columns">
+        <div :for={col <- @column} data-exo="footer-column">
+          <h4 data-exo="footer-column-title">{col.title}</h4>
+          {render_slot(col)}
+        </div>
+      </div>
+      <div :if={@bottom != []} data-exo="footer-bottom">{render_slot(@bottom)}</div>
+    </footer>
+    """
+  end
+
+  @doc "Renders a mobile bottom navigation bar with icon items."
+  attr :class, :any, default: nil
+  attr :rest, :global
+
+  slot :item, required: true do
+    attr :label, :string, required: true
+    attr :icon, :string
+    attr :href, :string
+    attr :navigate, :string
+    attr :patch, :string
+    attr :active, :boolean
+  end
+
+  def bottom_nav(assigns) do
+    ~H"""
+    <nav data-exo="bottom-nav" class={@class} {@rest}>
+      <.link
+        :for={item <- @item}
+        data-exo="bottom-nav-item"
+        data-active={item[:active] && ""}
+        href={item[:href]}
+        navigate={item[:navigate]}
+        patch={item[:patch]}
+        aria-current={item[:active] && "page"}
+      >
+        <span :if={item[:icon]} data-exo="bottom-nav-icon">{item.icon}</span>
+        <span data-exo="bottom-nav-label">{item.label}</span>
+      </.link>
+    </nav>
+    """
+  end
+
+  @doc "Renders a notification dot/badge overlay on another element."
+  attr :position, :string,
+    values: ~w(top-right top-left bottom-right bottom-left top-center bottom-center),
+    default: "top-right"
+
+  attr :class, :any, default: nil
+  attr :rest, :global
+  slot :badge
+  slot :inner_block, required: true
+
+  def indicator(assigns) do
+    ~H"""
+    <div data-exo="indicator" data-position={@position} class={@class} {@rest}>
+      {render_slot(@inner_block)}
+      <span :if={@badge != []} data-exo="indicator-badge">{render_slot(@badge)}</span>
+    </div>
+    """
+  end
+
+  @doc "Renders a toggle that swaps between two elements."
+  attr :id, :string, required: true
+  attr :active, :boolean, default: false
+  attr :class, :any, default: nil
+  attr :rest, :global
+  slot :on, required: true
+  slot :off, required: true
+
+  def swap(assigns) do
+    ~H"""
+    <label data-exo="swap" id={@id} class={@class} {@rest}>
+      <input
+        type="checkbox"
+        checked={@active}
+        data-exo="swap-state"
+        aria-hidden="true"
+        tabindex="-1"
+      />
+      <div data-exo="swap-on">{render_slot(@on)}</div>
+      <div data-exo="swap-off">{render_slot(@off)}</div>
+    </label>
+    """
+  end
 end

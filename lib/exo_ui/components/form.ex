@@ -234,10 +234,7 @@ defmodule ExoUI.Components.Form do
         to_string(opt[:value]) == to_string(assigns[:value])
       end)
 
-    grouped =
-      assigns.option
-      |> Enum.group_by(& &1[:group])
-      |> Enum.map(fn {group_name, opts} -> {group_name, opts} end)
+    grouped = Enum.group_by(assigns.option, & &1[:group])
 
     label_id = if assigns[:label], do: "#{assigns.id}-label"
 

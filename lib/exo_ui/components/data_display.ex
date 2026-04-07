@@ -165,6 +165,8 @@ defmodule ExoUI.Components.DataDisplay do
   attr :rest, :global
 
   def wizard_sidebar(assigns) do
+    assigns = assign(assigns, :last_idx, length(assigns.steps) - 1)
+
     ~H"""
     <nav data-exo="wizard" class={@class} {@rest}>
       <ol>
@@ -194,7 +196,7 @@ defmodule ExoUI.Components.DataDisplay do
             <span data-exo="wizard-indicator">{idx + 1}</span>
             <span data-exo="wizard-label">{step.label}</span>
           </div>
-          <div :if={idx < length(@steps) - 1} data-exo="wizard-connector" data-status={step.status} />
+          <div :if={idx < @last_idx} data-exo="wizard-connector" data-status={step.status} />
         </li>
       </ol>
     </nav>
@@ -397,7 +399,7 @@ defmodule ExoUI.Components.DataDisplay do
         <div data-exo="timeline-body">
           <p data-exo="timeline-title">{event.title}</p>
           <time :if={event[:time]} data-exo="timeline-time">{event.time}</time>
-          <div :if={event[:inner_block]} data-exo="timeline-content">
+          <div :if={event.inner_block} data-exo="timeline-content">
             {render_slot(event)}
           </div>
         </div>
@@ -508,6 +510,49 @@ defmodule ExoUI.Components.DataDisplay do
             {render_slot(item)}
           </div>
         </div>
+      </div>
+    </div>
+    """
+  end
+
+  @doc "Renders a hero/banner section with title, subtitle, and action area."
+  attr :class, :any, default: nil
+  attr :rest, :global
+  slot :title, required: true
+  slot :subtitle
+  slot :actions
+  slot :inner_block
+
+  def hero(assigns) do
+    ~H"""
+    <section data-exo="hero" class={@class} {@rest}>
+      <div data-exo="hero-content">
+        <h1 data-exo="hero-title">{render_slot(@title)}</h1>
+        <p :if={@subtitle != []} data-exo="hero-subtitle">{render_slot(@subtitle)}</p>
+        <div :if={@actions != []} data-exo="hero-actions">{render_slot(@actions)}</div>
+      </div>
+      {render_slot(@inner_block)}
+    </section>
+    """
+  end
+
+  @doc "Renders a chat message bubble with sender, timestamp, and avatar."
+  attr :side, :string, values: ~w(start end), default: "start"
+  attr :class, :any, default: nil
+  attr :rest, :global
+  slot :avatar
+  slot :header
+  slot :inner_block, required: true
+  slot :footer
+
+  def chat_bubble(assigns) do
+    ~H"""
+    <div data-exo="chat-bubble" data-side={@side} class={@class} {@rest}>
+      <div :if={@avatar != []} data-exo="chat-bubble-avatar">{render_slot(@avatar)}</div>
+      <div data-exo="chat-bubble-message">
+        <div :if={@header != []} data-exo="chat-bubble-header">{render_slot(@header)}</div>
+        <div data-exo="chat-bubble-content">{render_slot(@inner_block)}</div>
+        <div :if={@footer != []} data-exo="chat-bubble-footer">{render_slot(@footer)}</div>
       </div>
     </div>
     """
