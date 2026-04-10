@@ -101,6 +101,7 @@
 /* Popover content width matching for combobox */
 [data-exo="popover-content"]:has([data-exo="combobox-list"]) {
   min-width: anchor-size(width);
+  overflow: hidden;
 }
 
 @supports not (min-width: anchor-size(width)) {
@@ -112,7 +113,8 @@
 :where([data-exo="combobox-list"]) {
   display: flex;
   flex-direction: column;
-  max-height: 15rem;
+  gap: var(--exo-space-1);
+  max-height: 24rem;
   overflow-y: auto;
   padding: var(--exo-space-1);
 }
@@ -122,19 +124,22 @@
   display: flex;
   align-items: center;
   gap: var(--exo-space-2);
-  padding: var(--exo-space-2) var(--exo-space-3) var(--exo-space-2) 2rem;
+  padding: 0.375rem var(--exo-space-2) 0.375rem 2rem;
   font-family: var(--exo-font);
   font-size: var(--exo-text-sm);
   color: var(--exo-foreground);
-  cursor: pointer;
+  cursor: default;
   border-radius: calc(var(--exo-radius) - 2px);
-  transition: background var(--exo-duration) var(--exo-easing);
+  outline: none;
   user-select: none;
+  transition: background var(--exo-duration) var(--exo-easing),
+              color var(--exo-duration) var(--exo-easing);
 }
 
 :where([data-exo="combobox-option"]):hover,
 :where([data-exo="combobox-option"]):focus {
-  background: var(--exo-muted);
+  background: var(--exo-secondary);
+  color: var(--exo-secondary-foreground);
   outline: none;
 }
 
@@ -156,8 +161,16 @@
   left: var(--exo-space-2);
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 0.875rem;
+  height: 0.875rem;
   color: var(--exo-primary);
   opacity: 0;
+}
+
+:where([data-exo="combobox-check"]) svg {
+  width: 100%;
+  height: 100%;
 }
 
 :where([data-exo="combobox-option"][data-selected]) :where([data-exo="combobox-check"]) {

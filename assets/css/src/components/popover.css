@@ -17,8 +17,10 @@
  */
 [data-exo="popover-content"] {
   margin: 0;
+  padding: 0;
   inset: auto;
   position-try-fallbacks: flip-block;
+  box-sizing: border-box;
   opacity: 0;
   visibility: hidden;
 }
