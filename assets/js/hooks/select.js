@@ -19,11 +19,9 @@ const ExoSelect = {
       const open = this._popover.matches(':popover-open')
       this._trigger.setAttribute('aria-expanded', String(open))
       if (open) {
-        // Focus selected or first option
+        // Focus selected option only — don't pre-highlight first option
         const selected = this._listbox.querySelector('[data-selected]')
-        const first = this._listbox.querySelector('[data-exo="select-option"]:not([data-disabled])')
-        const target = selected || first
-        if (target) target.focus()
+        if (selected) selected.focus()
       }
     }
     this._popover.addEventListener('toggle', this._onToggle)
