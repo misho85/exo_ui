@@ -18,7 +18,7 @@
 - Browser interaction coverage now exists for `popover`, `select`, `combobox`, `tooltip`, and `command_palette`
 - `bun run test:browser` passes (`10 tests, 0 failures`)
 - `class/rest` forwarding is now covered by a dedicated regression suite across the interactive component surface
-- Phase 2 is functionally complete; the next highest-value work is Phase 3 documentation/support policy hardening
+- Phase 2 and Phase 3 are functionally complete; the next highest-value work is Phase 4 maintainability or a focused `mix exo.install` hardening pass
 
 ---
 
@@ -138,7 +138,7 @@
 
 **Outcome:** the repo explains the current product clearly and consistently.
 
-- [ ] Expand `README.md` with:
+- [x] Expand `README.md` with:
   - installation
   - `use ExoUI` usage
   - CSS import options
@@ -146,15 +146,15 @@
   - theme/token override guidance
   - browser support expectations
   - Storybook/dev workflow
-- [ ] Align `CHANGELOG.md` with the real release state
-- [ ] Add a support matrix for:
+- [x] Align `CHANGELOG.md` with the real release state
+- [x] Add a support matrix for:
   - Popover API
   - CSS anchor positioning
   - `:has()`
   - expected fallback behavior
-- [ ] Audit `docs/specs` and `docs/plans` for stale references
-- [ ] Fix the CSS watch workflow so tokens are not forgotten during development
-- [ ] Document a release checklist
+- [x] Audit `docs/specs` and `docs/plans` for stale references
+- [x] Fix the CSS watch workflow so tokens are not forgotten during development
+- [x] Document a release checklist
 
 **Primary files:**
 

@@ -1,5 +1,11 @@
 # Native Popover Components Design
 
+> **Status (April 23, 2026):** Historical design record. The current source of
+> truth is the codebase, [README](../../README.md), and the
+> [improvement roadmap](../plans/2026-04-22-exo-ui-improvement-roadmap.md).
+> Sections that describe `select/1` or `combobox/1` `multiple` support are
+> superseded; the shipped API currently supports single selection only.
+
 ExoUI floating components rebuilt on the native HTML Popover API + CSS Anchor Positioning. Zero custom JS for popover mechanics — browser handles dismiss, escape, z-index, overflow escape, and viewport-aware positioning natively.
 
 ## Decision Record

@@ -1,12 +1,18 @@
 # ExoUI Phase 2: Core Components
 
+> **Status (April 23, 2026):** Historical implementation plan. Use
+> [README](../../README.md) for current component integration guidance and
+> [2026-04-22-exo-ui-improvement-roadmap.md](./2026-04-22-exo-ui-improvement-roadmap.md)
+> for the active hardening roadmap. Some examples in this plan predate the
+> current API surface.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Implement the first batch of headless components with CSS theme and Storybook stories.
 
 **Architecture:** Each component: Elixir function in `ExoUI.Components` emitting `data-exo` attributes → CSS file using `:where()` selectors → Storybook story → ExUnit test.
 
-**Spec:** `docs/superpowers/specs/2026-03-21-exo-ui-design.md`
+**Spec:** `docs/specs/2026-03-21-exo-ui-design.md`
 
 **Working directory:** `/Users/miso/Developer/exo_ui`
 

@@ -1,5 +1,11 @@
 # ExoUI — Headless LiveView Component Library
 
+> **Status (April 23, 2026):** Historical design record. The current source of
+> truth is the codebase, [README](../../README.md), and the
+> [improvement roadmap](../plans/2026-04-22-exo-ui-improvement-roadmap.md).
+> Repo structure, build scripts, and some integration details in this document
+> no longer match the current implementation exactly.
+
 ## Overview
 
 **ExoUI** (`exo_ui`) is a headless Phoenix LiveView component library with a default CSS theme, designed to be shared across 6 Elixir/Phoenix projects. Extracted from KrafterUI (DinaricHub's internal component library).

@@ -1,5 +1,11 @@
 # ExoUI Phase 1: Repo Scaffold, Tokens, Build Pipeline & Storybook
 
+> **Status (April 23, 2026):** Historical implementation plan. Use
+> [README](../../README.md) for current install/development guidance and
+> [2026-04-22-exo-ui-improvement-roadmap.md](./2026-04-22-exo-ui-improvement-roadmap.md)
+> for the active stabilization roadmap. Some paths and build-script examples in
+> this plan are intentionally outdated.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Create the `exo_ui` repository with project structure, CSS design tokens, Lightning CSS build pipeline, and Phoenix Storybook for visual development.
@@ -8,7 +14,7 @@
 
 **Tech Stack:** Elixir 1.18, Phoenix 1.8, Phoenix LiveView 1.1, Phoenix Storybook 1.0, Lightning CSS, PostCSS (none — Lightning CSS replaces it).
 
-**Spec:** `docs/superpowers/specs/2026-03-21-exo-ui-design.md`
+**Spec:** `docs/specs/2026-03-21-exo-ui-design.md`
 
 **Working directory:** `/Users/miso/Developer/exo_ui` (new repo, sibling to `dinaric-hub`)
 

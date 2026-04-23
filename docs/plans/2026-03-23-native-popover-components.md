@@ -1,5 +1,12 @@
 # Native Popover Components Implementation Plan
 
+> **Status (April 23, 2026):** Historical implementation plan. Use
+> [README](../../README.md), the live tests, and
+> [2026-04-22-exo-ui-improvement-roadmap.md](./2026-04-22-exo-ui-improvement-roadmap.md)
+> as the current source of truth. Sections in this plan that mention
+> `multiple` select/combobox behavior are superseded by the current
+> single-select contract.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Rebuild all floating UI components (popover, dropdown, select, combobox, tooltip) on native HTML Popover API + CSS Anchor Positioning with minimal JS hooks.

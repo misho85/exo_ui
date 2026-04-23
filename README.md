@@ -39,12 +39,10 @@ in your own stylesheet and keep only the markup.
 
 <.badge variant="success">Active</.badge>
 
-<.combobox
-  id="country"
-  name="country"
-  options={@countries}
-  placeholder="Pick a country"
-/>
+<.select id="status" name="status" value="active" label="Status">
+  <:option value="active">Active</:option>
+  <:option value="inactive">Inactive</:option>
+</.select>
 
 <.theme_toggle />
 ```
@@ -59,7 +57,10 @@ in your own stylesheet and keep only the markup.
 
 ## Installation
 
-Add the dep to `mix.exs`.
+ExoUI is currently consumed as a git or path dependency. Until a stable Hex
+release exists, pin a known commit or tag.
+
+### 1. Add the dependency
 
 For a git dependency, pin a known `ref` (commit or release tag once you cut
 one):
@@ -82,16 +83,48 @@ def deps do
 end
 ```
 
-Import the CSS in `assets/css/app.css`:
+### 2. Choose an integration path
+
+You can either run the installer task or wire the pieces manually.
+
+For the standard Phoenix 1.8 project layout, the fastest path is:
+
+```sh
+mix exo.install
+```
+
+`mix exo.install` is idempotent and tries to patch:
+
+- `assets/css/app.css`
+- `assets/js/app.js`
+- your `html_helpers/0` block in `lib/<app>_web.ex`
+
+Review the diff afterwards. If your project diverges from the default Phoenix
+layout, manual integration is usually clearer.
+
+### 3. Import CSS
+
+Full default theme:
 
 ```css
 @import "../../deps/exo_ui/priv/static/exo.css";
 ```
 
-If you only want the design tokens (to build a theme on top), import
-`exo.tokens.css` instead.
+Tokens only, if you want to build your own component styles on top:
 
-Wire the JS hooks in `assets/js/app.js`:
+```css
+@import "../../deps/exo_ui/priv/static/exo.tokens.css";
+```
+
+Or import neither file and style the emitted `data-exo="..."` markup yourself.
+
+### 4. Wire JS hooks
+
+JS hooks are only required for interactive components such as popovers,
+dropdown menus, select, combobox, tooltip, hover card, carousel, sidebar, and
+command palette.
+
+In `assets/js/app.js`:
 
 ```js
 import { hooks as exoHooks } from "../../deps/exo_ui/assets/js/index.js"
@@ -102,14 +135,14 @@ const liveSocket = new LiveSocket("/live", Socket, {
 })
 ```
 
-If you want ExoUI to patch the common Phoenix integration points for you, run:
+If your app already has hooks, merge them instead of replacing them:
 
-```sh
-mix exo.install
+```js
+const liveSocket = new LiveSocket("/live", Socket, {
+  hooks: { ...exoHooks, ...appHooks },
+  params: { _csrf_token: csrfToken }
+})
 ```
-
-The task is idempotent and updates your CSS import, JS hooks import, and
-`html_helpers` integration where possible.
 
 ## Usage
 
@@ -134,7 +167,18 @@ use ExoUI, core_components: false
 That excludes `button/1`, `header/1`, `form/1`, `input/1`, `flash/1`,
 `flash_group/1` and `table/1` — everything else is still imported.
 
-## Theming
+If you prefer explicit imports over `use ExoUI`, the lower-level modules remain
+available:
+
+- `ExoUI.Components.Core`
+- `ExoUI.Components.Form`
+- `ExoUI.Components.Overlay`
+- `ExoUI.Components.Feedback`
+- `ExoUI.Components.DataDisplay`
+- `ExoUI.Charts`
+- `ExoUI.Layouts`
+
+## Theme And CSS Modes
 
 All colors, borders, shadows and radii are defined as CSS custom properties on
 `:root` in `exo.tokens.css`. Override them anywhere downstream to restyle
@@ -152,17 +196,35 @@ Dark mode is activated by setting `data-theme="dark"` (or the class
 `.exo-dark`) on any ancestor — typically `<html>`. The `<.theme_toggle />`
 component handles switching and persistence.
 
+Practical integration modes:
+
+- `exo.css`: ship ExoUI's default theme and component styles.
+- `exo.tokens.css`: ship only the design tokens and write your own component
+  CSS.
+- no ExoUI CSS import: treat the library as purely headless HTML + hooks.
+
 ## Browser support
 
-ExoUI is built for modern evergreen browsers. The floating UI primitives rely
-on:
+ExoUI targets modern evergreen browsers. The main contract is:
 
-- HTML Popover API
-- CSS Anchor Positioning
-- `:has()`
+- Native Popover API is required for the interactive floating primitives.
+- CSS anchor positioning is the preferred placement path; simpler fallback
+  positioning exists where practical.
+- `:has()` is used for visual state selectors and progressive enhancement, not
+  for the core JS interaction path.
 
-Fallbacks exist for some cases, but the full experience is designed around
-current browser engines, not legacy compatibility targets.
+Support matrix, checked against MDN on April 23, 2026:
+
+| Feature | Where ExoUI uses it | Policy | Fallback / note |
+| --- | --- | --- | --- |
+| [Popover API](https://developer.mozilla.org/en-US/docs/Web/API/Popover_API) | `popover`, `dropdown_menu`, `select`, `combobox`, `command_palette`, JS-enhanced `tooltip` | Required | No supported fallback for browsers without the Popover API. |
+| [`position-area`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/position-area) and [`position-anchor`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/position-anchor) | Floating placement and anchored sizing | Preferred modern path | `popover.css` and `tooltip.css` ship `@supports not (position-area: top)` fallback placement; combobox width matching falls back from `anchor-size(width)` to a fixed minimum width. |
+| [`:has()`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:has) | Trigger-open styling, icon rotation, CSS-only tooltip fallback | Optional / cosmetic | Unsupported selectors fail closed; primary JS interactions still work. |
+
+MDN currently marks the Popover API as Baseline 2025, `position-area` as
+Baseline 2026, and still shows `position-anchor` with a limited-availability
+warning. ExoUI therefore treats the anchor-positioning family as a
+modern-browser feature even where reduced fallback behavior exists.
 
 ## Storybook
 
@@ -173,6 +235,13 @@ public preview at https://exo-ui.krafter.dev. To run it locally:
 cd storybook
 mix setup
 mix phx.server
+```
+
+For browser-test debugging, you can run Storybook without watcher processes:
+
+```sh
+cd storybook
+PLAYWRIGHT=1 mix phx.server
 ```
 
 ## Browser tests
@@ -189,7 +258,7 @@ bun run test:browser
 Current browser coverage includes `popover`, `select`, `combobox`, `tooltip`,
 and `command_palette`.
 
-## CSS build
+## Development
 
 The distributed CSS in `priv/static/` is generated from sources in
 `assets/css/` using [lightningcss](https://lightningcss.dev/). Only needed
@@ -199,6 +268,22 @@ when contributing to ExoUI:
 bun install
 bun run build:all    # builds exo.css and exo.tokens.css
 bun run watch        # rebuilds on change
+```
+
+`bun run watch` rebuilds both compiled outputs, so token changes are no longer
+easy to miss during local development.
+
+## Release Workflow
+
+Use [docs/release-checklist.md](docs/release-checklist.md) before cutting a
+public tag. The short version is:
+
+```sh
+mix test
+mix compile --warnings-as-errors
+bun run build:all
+bun run test:browser
+cd storybook && mix compile --warnings-as-errors
 ```
 
 ## License
