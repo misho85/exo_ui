@@ -14,7 +14,7 @@ defmodule ExoUI.Components.SpinnerTest do
 
   test "renders spinner with custom size" do
     assigns = %{}
-    html = rendered_to_string(~H"<.spinner size=\"lg\" />")
+    html = rendered_to_string(~H|<.spinner size="lg" />|)
     assert html =~ ~s(data-size="lg")
   end
 end
