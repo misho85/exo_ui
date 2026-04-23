@@ -31,6 +31,19 @@ const ExoCombobox = {
       if (this._search) this._search.setAttribute('aria-expanded', String(open))
     }
 
+    const focusSearch = () => {
+      setTimeout(() => {
+        if (!this._popover?.matches(':popover-open')) return
+        this._search?.focus()
+
+        if (document.activeElement !== this._search) {
+          requestAnimationFrame(() => {
+            if (this._popover?.matches(':popover-open')) this._search?.focus()
+          })
+        }
+      }, 0)
+    }
+
     syncExpanded()
 
     // Clear button
@@ -65,9 +78,7 @@ const ExoCombobox = {
       if (open && this._search && !isInputTrigger) {
         this._search.value = ''
         if (filter === 'client') this._clientFilter('')
-        requestAnimationFrame(() => {
-          if (this._popover?.matches(':popover-open')) this._search?.focus()
-        })
+        focusSearch()
       }
     }
     this._popover.addEventListener('toggle', this._onToggle)

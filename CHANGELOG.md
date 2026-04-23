@@ -12,9 +12,13 @@ Current state of the pre-release line:
   removed, grouped combobox rendering was completed, and public forwarding
   contracts are now regression-tested
 - browser interaction coverage for `popover`, `select`, `combobox`, `tooltip`,
-  and `command_palette`
+  `command_palette`, `hover_card`, and `context_menu`
 - README/install/release workflow hardening, including a browser support matrix
   and release checklist
+- `mix exo.install` now aligns with the documented `use ExoUI,
+  core_components: false` integration path for standard Phoenix project layouts
+- `ExoUI.Charts` has been split into smaller implementation modules while
+  keeping the same public import surface
 
 ## v0.1.0-alpha — Historical scaffold tag
 

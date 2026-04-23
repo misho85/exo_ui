@@ -15,10 +15,14 @@
 
 **Status update on April 23, 2026:**
 
-- Browser interaction coverage now exists for `popover`, `select`, `combobox`, `tooltip`, and `command_palette`
-- `bun run test:browser` passes (`10 tests, 0 failures`)
+- Browser interaction coverage now exists for `popover`, `select`, `combobox`, `tooltip`, `command_palette`, `hover_card`, and `context_menu`
+- `bun run test:browser` passes (`12 tests, 0 failures`)
 - `class/rest` forwarding is now covered by a dedicated regression suite across the interactive component surface
-- Phase 2 and Phase 3 are functionally complete; the next highest-value work is Phase 4 maintainability or a focused `mix exo.install` hardening pass
+- `mix exo.install` has been hardened and regression-tested against standard Phoenix-style project shapes
+- `form.ex` has started to shrink: `select/1` and `combobox/1` now share extracted choice helpers instead of duplicating grouping/selection rendering
+- `ExoUI.Charts` now delegates through smaller implementation modules for primitives, cartesian charts, and radial charts while keeping the same public API
+- Hook cleanup guarantees are now normalized where they mattered most in the floating/hover surface
+- The stabilization and productization roadmap is functionally complete
 
 ---
 
@@ -176,21 +180,21 @@
 
 **Outcome:** the codebase becomes easier to evolve without behavior drift.
 
-- [ ] Split `lib/exo_ui/charts.ex` into smaller modules by chart family
+- [x] Split `lib/exo_ui/charts.ex` into smaller modules by chart family
   - shared helpers
   - sparkline/progress primitives
   - cartesian charts
   - radial/pie/donut charts
-- [ ] Review `lib/exo_ui/components/form.ex` for extraction opportunities
+- [x] Review `lib/exo_ui/components/form.ex` for extraction opportunities
   - shared option rendering
   - selected-value helpers
   - hidden input helpers
   - ARIA/ID helpers
-- [ ] Normalize hook structure where useful
+- [x] Normalize hook structure where useful
   - mount/update/destroy lifecycle symmetry
   - cleanup guarantees
   - naming consistency
-- [ ] Add module-level comments only where they reduce real cognitive load
+- [x] Add module-level comments only where they reduce real cognitive load
 
 **Primary files:**
 
@@ -211,11 +215,11 @@
 
 **Outcome:** ExoUI is easier to ship and safer to adopt across projects.
 
-- [ ] Define the support policy for modern browser features
-- [ ] Decide what “officially supported” means for older Safari/iOS behavior
-- [ ] Review `mix exo.install` against current Phoenix project shapes
-- [ ] Decide whether installation should stay regex-driven or move toward clearer manual/documented integration
-- [ ] Add a release checklist covering:
+- [x] Define the support policy for modern browser features
+- [x] Decide what “officially supported” means for older Safari/iOS behavior
+- [x] Review `mix exo.install` against current Phoenix project shapes
+- [x] Decide whether installation should stay regex-driven or move toward clearer manual/documented integration
+- [x] Add a release checklist covering:
   - compile
   - unit tests
   - browser tests
@@ -267,7 +271,7 @@ Run these after each meaningful milestone:
 - [x] `mix test`
 - [x] `mix compile --warnings-as-errors`
 - [x] `bun run build:all`
-- [ ] relevant Storybook manual sanity check
+- [x] relevant Storybook manual sanity check
 - [x] browser interaction tests once added
 
 ---
@@ -276,11 +280,11 @@ Run these after each meaningful milestone:
 
 The next release should not go out until all of the following are true:
 
-- [ ] No misleading public props or slots remain
+- [x] No misleading public props or slots remain
 - [x] Core interactive hooks are covered by browser-level tests
-- [ ] README and changelog match the shipped behavior
-- [ ] Storybook shows only supported patterns
-- [ ] The release process is documented and repeatable
+- [x] README and changelog match the shipped behavior
+- [x] Storybook shows only supported patterns
+- [x] The release process is documented and repeatable
 
 ---
 

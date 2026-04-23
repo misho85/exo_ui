@@ -97,10 +97,13 @@ mix exo.install
 
 - `assets/css/app.css`
 - `assets/js/app.js`
-- your `html_helpers/0` block in `lib/<app>_web.ex`
+- your `html_helpers/0` block in `lib/<app>_web.ex` with `use ExoUI, core_components: false`
 
 Review the diff afterwards. If your project diverges from the default Phoenix
-layout, manual integration is usually clearer.
+layout, manual integration is usually clearer. The installer intentionally keeps
+Phoenix's generated `CoreComponents` in place instead of importing ExoUI's
+clashing `button`, `form`, `input`, `flash`, `flash_group`, `header`, and
+`table` helpers over them.
 
 ### 3. Import CSS
 
@@ -225,6 +228,17 @@ MDN currently marks the Popover API as Baseline 2025, `position-area` as
 Baseline 2026, and still shows `position-anchor` with a limited-availability
 warning. ExoUI therefore treats the anchor-positioning family as a
 modern-browser feature even where reduced fallback behavior exists.
+
+Official support policy:
+
+- Latest stable Chrome, Edge, Firefox, Safari, and current iOS Safari are the
+  supported browser targets.
+- Older Safari/iOS builds that miss the Popover API are not supported for
+  floating primitives such as `popover`, `select`, `combobox`, `tooltip`,
+  `hover_card`, `context_menu`, and `command_palette`.
+- Browsers that support Popover but lag on anchor positioning may render reduced
+  placement fidelity through the documented CSS/JS fallback paths; functional
+  interaction still takes priority over pixel parity there.
 
 ## Storybook
 

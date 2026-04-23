@@ -1,6 +1,7 @@
 const { test, expect } = require("@playwright/test");
 
 const {
+  expectAttribute,
   expectFocused,
   expectHiddenState,
   expectPopoverState,
@@ -20,6 +21,7 @@ test.describe("combobox", () => {
     const serbia = canvas.locator("#cb-client [data-exo=\"combobox-option\"][data-value=\"rs\"]");
     const value = canvas.locator("input[name=\"country\"]");
 
+    await expectAttribute(search, "aria-expanded", "false");
     await trigger.click();
 
     await expectPopoverState(popover, true);
@@ -46,6 +48,7 @@ test.describe("combobox", () => {
     const search = canvas.locator("#cb-empty [data-exo=\"combobox-search\"]");
     const empty = canvas.locator("#cb-empty [data-exo=\"combobox-empty\"]");
 
+    await expectAttribute(search, "aria-expanded", "false");
     await trigger.click();
 
     await expectPopoverState(popover, true);
