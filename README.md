@@ -59,12 +59,25 @@ in your own stylesheet and keep only the markup.
 
 ## Installation
 
-Add the dep to `mix.exs`:
+Add the dep to `mix.exs`.
+
+For a git dependency, pin a known `ref` (commit or release tag once you cut
+one):
 
 ```elixir
 def deps do
   [
-    {:exo_ui, git: "https://github.com/misho85/exo_ui.git", tag: "v0.1.0"}
+    {:exo_ui, git: "https://github.com/misho85/exo_ui.git", ref: "<commit-or-tag>"}
+  ]
+end
+```
+
+For local sibling development:
+
+```elixir
+def deps do
+  [
+    {:exo_ui, path: "../exo_ui"}
   ]
 end
 ```
@@ -88,6 +101,15 @@ const liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken }
 })
 ```
+
+If you want ExoUI to patch the common Phoenix integration points for you, run:
+
+```sh
+mix exo.install
+```
+
+The task is idempotent and updates your CSS import, JS hooks import, and
+`html_helpers` integration where possible.
 
 ## Usage
 
@@ -129,6 +151,18 @@ without touching ExoUI:
 Dark mode is activated by setting `data-theme="dark"` (or the class
 `.exo-dark`) on any ancestor — typically `<html>`. The `<.theme_toggle />`
 component handles switching and persistence.
+
+## Browser support
+
+ExoUI is built for modern evergreen browsers. The floating UI primitives rely
+on:
+
+- HTML Popover API
+- CSS Anchor Positioning
+- `:has()`
+
+Fallbacks exist for some cases, but the full experience is designed around
+current browser engines, not legacy compatibility targets.
 
 ## Storybook
 

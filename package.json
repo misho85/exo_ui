@@ -10,6 +10,6 @@
     "build": "lightningcss --bundle --minify assets/css/exo.css -o priv/static/exo.css",
     "build:tokens": "lightningcss --bundle --minify assets/css/src/tokens.css -o priv/static/exo.tokens.css",
     "build:all": "bun run build && bun run build:tokens",
-    "watch": "nodemon --watch assets/css -e css --exec 'bun run build'"
+    "watch": "nodemon --watch assets/css -e css --exec 'bun run build:all'"
   }
 }
