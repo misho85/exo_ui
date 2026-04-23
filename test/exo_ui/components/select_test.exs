@@ -338,4 +338,18 @@ defmodule ExoUI.Components.SelectTest do
 
     refute html =~ "field-description"
   end
+
+  test "forwards class and rest attrs to field wrapper" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.select id="s24" name="x" class="field-shell" data-track="select">
+        <:option value="a">A</:option>
+      </.select>
+      """)
+
+    assert html =~ ~s(class="field-shell")
+    assert html =~ ~s(data-track="select")
+  end
 end

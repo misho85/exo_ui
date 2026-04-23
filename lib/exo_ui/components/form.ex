@@ -245,7 +245,6 @@ defmodule ExoUI.Components.Form do
   attr :label, :string, default: nil
   attr :description, :string, default: nil
   attr :prompt, :string, default: nil
-  attr :multiple, :boolean, default: false
   attr :errors, :list, default: []
   attr :disabled, :boolean, default: false
   attr :side, :string, values: ~w(top bottom left right), default: "bottom"
@@ -266,9 +265,7 @@ defmodule ExoUI.Components.Form do
     assigns
     |> assign(field: nil, id: assigns[:id] || field.id)
     |> assign(:errors, Enum.map(errors, &translate_error(&1)))
-    |> assign_new(:name, fn ->
-      if assigns.multiple, do: field.name <> "[]", else: field.name
-    end)
+    |> assign_new(:name, fn -> field.name end)
     |> assign_new(:value, fn -> field.value end)
     |> select()
   end
@@ -276,10 +273,10 @@ defmodule ExoUI.Components.Form do
   def select(assigns) do
     selected_opt =
       Enum.find(assigns.option, fn opt ->
-        to_string(opt[:value]) == to_string(assigns[:value])
+        option_selected?(opt[:value], assigns[:value])
       end)
 
-    grouped = Enum.group_by(assigns.option, & &1[:group])
+    grouped = group_options(assigns.option)
 
     label_id = if assigns[:label], do: "#{assigns.id}-label"
 
@@ -291,7 +288,7 @@ defmodule ExoUI.Components.Form do
       )
 
     ~H"""
-    <div data-exo="field">
+    <div data-exo="field" class={@class} {@rest}>
       <label :if={@label} data-exo="label" id={@label_id}>{@label}</label>
       <div data-exo="popover" phx-hook="ExoSelect" id={"#{@id}-select"}>
         <button
@@ -391,7 +388,6 @@ defmodule ExoUI.Components.Form do
   attr :filter, :string, values: ~w(client server), default: "server"
   attr :on_filter, :string, default: "combobox-filter"
   attr :debounce, :integer, default: 300
-  attr :multiple, :boolean, default: false
   attr :creatable, :boolean, default: false
   attr :on_create, :string, default: "combobox-create"
   attr :clearable, :boolean, default: true
@@ -418,18 +414,16 @@ defmodule ExoUI.Components.Form do
     assigns
     |> assign(field: nil, id: assigns[:id] || field.id)
     |> assign(:errors, Enum.map(errors, &translate_error(&1)))
-    |> assign_new(:name, fn ->
-      if assigns.multiple, do: field.name <> "[]", else: field.name
-    end)
+    |> assign_new(:name, fn -> field.name end)
     |> assign_new(:value, fn -> field.value end)
     |> combobox()
   end
 
   def combobox(%{trigger: "input"} = assigns) do
-    assigns = assign(assigns, label_id: if(assigns[:label], do: "#{assigns.id}-label"))
+    assigns = prepare_combobox(assigns)
 
     ~H"""
-    <div data-exo="field">
+    <div data-exo="field" class={@class} {@rest}>
       <label :if={@label} data-exo="label" id={@label_id}>{@label}</label>
       <div
         data-exo="popover"
@@ -439,7 +433,6 @@ defmodule ExoUI.Components.Form do
         data-on-filter={@on_filter}
         data-debounce={to_string(@debounce)}
         data-trigger="input"
-        data-multiple={@multiple && ""}
       >
         <input
           type="text"
@@ -467,22 +460,7 @@ defmodule ExoUI.Components.Form do
             role="listbox"
             aria-labelledby={if @label_id, do: @label_id}
           >
-            <div
-              :for={opt <- @option}
-              data-exo="combobox-option"
-              role="option"
-              data-value={opt[:value]}
-              data-selected={to_string(opt[:value]) == to_string(@value) && ""}
-              data-disabled={opt[:disabled] && ""}
-              aria-selected={to_string(to_string(opt[:value]) == to_string(@value))}
-              tabindex="-1"
-            >
-              <span :if={opt[:icon]} data-exo="combobox-option-icon">
-                <.icon name={opt.icon} class="size-4" />
-              </span>
-              <span data-exo="combobox-check"><.icon name="check" class="size-4" /></span>
-              {render_slot(opt)}
-            </div>
+            <.combobox_options grouped={@grouped} value={@value} />
           </div>
           <div :for={empty <- @empty} data-exo="combobox-empty">{render_slot(empty)}</div>
           <div data-exo="combobox-loading" style={if !@loading, do: "display:none"}>
@@ -498,21 +476,10 @@ defmodule ExoUI.Components.Form do
   end
 
   def combobox(assigns) do
-    selected_opt =
-      Enum.find(assigns.option, fn opt ->
-        to_string(opt[:value]) == to_string(assigns[:value])
-      end)
-
-    label_id = if assigns[:label], do: "#{assigns.id}-label"
-
-    assigns =
-      assign(assigns,
-        selected_opt: selected_opt,
-        label_id: label_id
-      )
+    assigns = prepare_combobox(assigns)
 
     ~H"""
-    <div data-exo="field">
+    <div data-exo="field" class={@class} {@rest}>
       <label :if={@label} data-exo="label" id={@label_id}>{@label}</label>
       <div
         data-exo="popover"
@@ -522,7 +489,6 @@ defmodule ExoUI.Components.Form do
         data-on-filter={@on_filter}
         data-debounce={to_string(@debounce)}
         data-trigger="button"
-        data-multiple={@multiple && ""}
       >
         <div data-exo="combobox-trigger-group">
           <button
@@ -582,22 +548,7 @@ defmodule ExoUI.Components.Form do
             role="listbox"
             aria-labelledby={if @label_id, do: @label_id}
           >
-            <div
-              :for={opt <- @option}
-              data-exo="combobox-option"
-              role="option"
-              data-value={opt[:value]}
-              data-selected={to_string(opt[:value]) == to_string(@value) && ""}
-              data-disabled={opt[:disabled] && ""}
-              aria-selected={to_string(to_string(opt[:value]) == to_string(@value))}
-              tabindex="-1"
-            >
-              <span :if={opt[:icon]} data-exo="combobox-option-icon">
-                <.icon name={opt.icon} class="size-4" />
-              </span>
-              <span data-exo="combobox-check"><.icon name="check" class="size-4" /></span>
-              {render_slot(opt)}
-            </div>
+            <.combobox_options grouped={@grouped} value={@value} />
           </div>
           <div :for={empty <- @empty} data-exo="combobox-empty">{render_slot(empty)}</div>
           <div data-exo="combobox-loading" style={if !@loading, do: "display:none"}>
@@ -613,6 +564,77 @@ defmodule ExoUI.Components.Form do
       <.field_errors errors={@errors} />
     </div>
     """
+  end
+
+  attr :grouped, :list, required: true
+  attr :value, :any, default: nil
+
+  defp combobox_options(assigns) do
+    ~H"""
+    <%= for {group_name, opts} <- @grouped do %>
+      <%= if group_name do %>
+        <div data-exo="combobox-group" role="group" aria-label={group_name}>
+          <span data-exo="combobox-group-label">{group_name}</span>
+          <div
+            :for={opt <- opts}
+            data-exo="combobox-option"
+            role="option"
+            data-value={opt[:value]}
+            data-selected={option_selected?(opt[:value], @value) && ""}
+            data-disabled={opt[:disabled] && ""}
+            aria-selected={to_string(option_selected?(opt[:value], @value))}
+            tabindex="-1"
+          >
+            <span :if={opt[:icon]} data-exo="combobox-option-icon">
+              <.icon name={opt.icon} class="size-4" />
+            </span>
+            <span data-exo="combobox-check"><.icon name="check" class="size-4" /></span>
+            {render_slot(opt)}
+          </div>
+        </div>
+      <% else %>
+        <div
+          :for={opt <- opts}
+          data-exo="combobox-option"
+          role="option"
+          data-value={opt[:value]}
+          data-selected={option_selected?(opt[:value], @value) && ""}
+          data-disabled={opt[:disabled] && ""}
+          aria-selected={to_string(option_selected?(opt[:value], @value))}
+          tabindex="-1"
+        >
+          <span :if={opt[:icon]} data-exo="combobox-option-icon">
+            <.icon name={opt.icon} class="size-4" />
+          </span>
+          <span data-exo="combobox-check"><.icon name="check" class="size-4" /></span>
+          {render_slot(opt)}
+        </div>
+      <% end %>
+    <% end %>
+    """
+  end
+
+  defp prepare_combobox(assigns) do
+    selected_opt =
+      Enum.find(assigns.option, fn opt ->
+        option_selected?(opt[:value], assigns[:value])
+      end)
+
+    assign(assigns,
+      grouped: group_options(assigns.option),
+      label_id: if(assigns[:label], do: "#{assigns.id}-label"),
+      selected_opt: selected_opt
+    )
+  end
+
+  defp group_options(options) do
+    options
+    |> Enum.chunk_by(& &1[:group])
+    |> Enum.map(fn [first | _] = grouped_options -> {first[:group], grouped_options} end)
+  end
+
+  defp option_selected?(option_value, value) do
+    to_string(option_value) == to_string(value)
   end
 
   @doc "Renders a radio button group from a list of {label, value} tuples or slot-based items."

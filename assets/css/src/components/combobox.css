@@ -177,6 +177,18 @@
   opacity: 1;
 }
 
+:where([data-exo="combobox-group"]) {
+  padding: var(--exo-space-1) 0;
+}
+
+:where([data-exo="combobox-group-label"]) {
+  padding: var(--exo-space-1) var(--exo-space-3);
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-xs);
+  font-weight: 600;
+  color: var(--exo-muted-foreground);
+}
+
 :where([data-exo="combobox-clear"]) {
   display: flex;
   align-items: center;
@@ -221,39 +233,4 @@
 
 :where([data-exo="combobox-create"]):hover {
   background: var(--exo-muted);
-}
-
-/* --- Tags for multiple mode --- */
-
-:where([data-exo="combobox-tags"]) {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--exo-space-1);
-  flex: 1;
-}
-
-:where([data-exo="combobox-tag"]) {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--exo-space-1);
-  padding: 0 var(--exo-space-2);
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-xs);
-  background: var(--exo-muted);
-  border-radius: calc(var(--exo-radius) - 2px);
-  line-height: 1.5rem;
-}
-
-:where([data-exo="combobox-tag-remove"]) {
-  display: flex;
-  border: none;
-  background: none;
-  cursor: pointer;
-  padding: 0;
-  color: var(--exo-muted-foreground);
-  font-size: var(--exo-text-xs);
-}
-
-:where([data-exo="combobox-tag-remove"]):hover {
-  color: var(--exo-foreground);
 }

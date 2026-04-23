@@ -195,6 +195,23 @@ defmodule ExoUI.Components.ComboboxTest do
     assert html =~ ~s(data-debounce="500")
   end
 
+  test "renders grouped options" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.combobox id="c13-groups" name="x">
+        <:option value="a" group="Admin">A</:option>
+        <:option value="b" group="Admin">B</:option>
+        <:option value="c" group="User">C</:option>
+      </.combobox>
+      """)
+
+    assert html =~ ~s(role="group")
+    assert html =~ "Admin"
+    assert html =~ "User"
+  end
+
   test "renders label" do
     assigns = %{}
 
@@ -332,5 +349,19 @@ defmodule ExoUI.Components.ComboboxTest do
 
     assert html =~ ~s(name="q")
     assert html =~ ~s(value="")
+  end
+
+  test "forwards class and rest attrs to field wrapper" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.combobox id="c25" name="x" class="field-shell" data-track="combobox">
+        <:option value="a">A</:option>
+      </.combobox>
+      """)
+
+    assert html =~ ~s(class="field-shell")
+    assert html =~ ~s(data-track="combobox")
   end
 end

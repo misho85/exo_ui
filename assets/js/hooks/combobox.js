@@ -168,10 +168,7 @@ const ExoCombobox = {
       valSpan.textContent = opt.textContent.trim()
       valSpan.removeAttribute('data-placeholder')
     }
-    // Close (unless multiple)
-    if (!this.el.dataset.multiple) {
-      try { this._popover?.hidePopover() } catch(_err) {}
-    }
+    try { this._popover?.hidePopover() } catch(_err) {}
   },
   _unbind() {
     clearTimeout(this._debounceTimer)
