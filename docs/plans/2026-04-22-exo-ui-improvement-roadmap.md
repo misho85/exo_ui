@@ -17,6 +17,7 @@
 
 - Browser interaction coverage now exists for `popover`, `select`, `combobox`, `tooltip`, and `command_palette`
 - `bun run test:browser` passes (`10 tests, 0 failures`)
+- `class/rest` forwarding is now covered by a dedicated regression suite across the interactive component surface
 - Phase 2 is functionally complete; the next highest-value work is Phase 3 documentation/support policy hardening
 
 ---
@@ -75,7 +76,7 @@
   - Option A: implement real multi-select behavior
   - Option B: remove/deprecate `multiple` until fully supported
 - [x] Either implement grouped `combobox` rendering or remove the `group` option attr
-- [ ] Audit `class` and `rest` forwarding across interactive components
+- [x] Audit `class` and `rest` forwarding across interactive components
 - [x] Decide whether `command_palette/1` remains a visual primitive or becomes a real searchable command surface
 - [x] Update Storybook stories so they only demonstrate supported behavior
 - [x] Add regression tests for every resolved API decision
