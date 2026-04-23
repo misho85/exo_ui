@@ -64,8 +64,10 @@ const ExoCombobox = {
       syncExpanded()
       if (open && this._search && !isInputTrigger) {
         this._search.value = ''
-        this._search.focus()
         if (filter === 'client') this._clientFilter('')
+        requestAnimationFrame(() => {
+          if (this._popover?.matches(':popover-open')) this._search?.focus()
+        })
       }
     }
     this._popover.addEventListener('toggle', this._onToggle)
