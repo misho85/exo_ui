@@ -298,6 +298,7 @@ defmodule ExoUI.Components.Form do
           data-exo-select="trigger"
           data-invalid={@errors != [] && ""}
           aria-haspopup="listbox"
+          aria-expanded="false"
           aria-labelledby={if @label_id, do: @label_id}
           style={"anchor-name: --select-#{@id}"}
           disabled={@disabled}
@@ -442,6 +443,7 @@ defmodule ExoUI.Components.Form do
           placeholder={@prompt}
           autocomplete="off"
           aria-haspopup="listbox"
+          aria-expanded="false"
           aria-controls={"#{@id}-listbox"}
           style={"anchor-name: --combobox-#{@id}"}
           disabled={@disabled}
@@ -498,6 +500,7 @@ defmodule ExoUI.Components.Form do
             data-exo-combobox="trigger"
             data-invalid={@errors != [] && ""}
             aria-haspopup="listbox"
+            aria-expanded="false"
             aria-labelledby={if @label_id, do: @label_id}
             style={"anchor-name: --combobox-#{@id}"}
             disabled={@disabled}

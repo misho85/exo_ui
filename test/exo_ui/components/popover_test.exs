@@ -83,7 +83,7 @@ defmodule ExoUI.Components.PopoverTest do
     assert html =~ ~s(position-anchor: --popover-anc)
   end
 
-  test "sets type=button and aria-haspopup on trigger" do
+  test "sets type=button, aria-haspopup, and collapsed aria-expanded on trigger" do
     assigns = %{}
 
     html =
@@ -96,6 +96,7 @@ defmodule ExoUI.Components.PopoverTest do
 
     assert html =~ ~s(type="button")
     assert html =~ ~s(aria-haspopup="true")
+    assert html =~ ~s(aria-expanded="false")
   end
 
   test "allows haspopup override" do

@@ -8,10 +8,12 @@ const ExoPopover = {
     const id = trigger?.getAttribute('popovertarget')
     this._popover = id ? document.getElementById(id) : null
     if (!this._popover) return
-    this._onToggle = () => {
+    const syncExpanded = () => {
       const open = this._popover.matches(':popover-open')
       trigger.setAttribute('aria-expanded', String(open))
     }
+    syncExpanded()
+    this._onToggle = () => syncExpanded()
     this._popover.addEventListener('toggle', this._onToggle)
   },
   _unbind() {

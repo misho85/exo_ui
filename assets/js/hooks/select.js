@@ -24,6 +24,7 @@ const ExoSelect = {
         if (selected) selected.focus()
       }
     }
+    this._trigger.setAttribute('aria-expanded', String(this._popover.matches(':popover-open')))
     this._popover.addEventListener('toggle', this._onToggle)
 
     // Click on option

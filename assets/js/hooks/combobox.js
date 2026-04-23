@@ -25,6 +25,14 @@ const ExoCombobox = {
 
     if (!this._popover) return
 
+    const syncExpanded = () => {
+      const open = this._popover.matches(':popover-open')
+      if (triggerBtn) triggerBtn.setAttribute('aria-expanded', String(open))
+      if (this._search) this._search.setAttribute('aria-expanded', String(open))
+    }
+
+    syncExpanded()
+
     // Clear button
     if (this._clear) {
       this._onClear = (e) => {
@@ -53,8 +61,7 @@ const ExoCombobox = {
     // Toggle event for aria-expanded
     this._onToggle = () => {
       const open = this._popover.matches(':popover-open')
-      if (triggerBtn) triggerBtn.setAttribute('aria-expanded', String(open))
-      if (this._search) this._search.setAttribute('aria-expanded', String(open))
+      syncExpanded()
       if (open && this._search && !isInputTrigger) {
         this._search.value = ''
         this._search.focus()

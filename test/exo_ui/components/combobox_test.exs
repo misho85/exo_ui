@@ -55,6 +55,7 @@ defmodule ExoUI.Components.ComboboxTest do
     assert html =~ ~s(popover="manual")
     assert html =~ ~s(data-exo-combobox="input-trigger")
     assert html =~ ~s(role="combobox")
+    assert html =~ ~s(aria-expanded="false")
     refute html =~ ~s(popovertarget)
   end
 
@@ -193,6 +194,19 @@ defmodule ExoUI.Components.ComboboxTest do
       """)
 
     assert html =~ ~s(data-debounce="500")
+  end
+
+  test "button trigger starts collapsed" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.combobox id="c13-collapsed" name="x">
+        <:option value="a">A</:option>
+      </.combobox>
+      """)
+
+    assert html =~ ~s(aria-expanded="false")
   end
 
   test "renders grouped options" do

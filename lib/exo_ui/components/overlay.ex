@@ -114,6 +114,7 @@ defmodule ExoUI.Components.Overlay do
         popovertarget={@id}
         data-exo="popover-trigger"
         aria-haspopup={@haspopup}
+        aria-expanded="false"
         style={"anchor-name: --popover-#{@id}"}
       >
         {render_slot(@trigger)}

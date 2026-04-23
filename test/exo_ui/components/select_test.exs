@@ -179,6 +179,7 @@ defmodule ExoUI.Components.SelectTest do
       """)
 
     assert html =~ ~s(aria-haspopup="listbox")
+    assert html =~ ~s(aria-expanded="false")
   end
 
   test "shows selected option label in trigger" do
