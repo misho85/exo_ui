@@ -175,6 +175,20 @@ mix setup
 mix phx.server
 ```
 
+## Browser tests
+
+The browser interaction suite runs against the local Storybook and starts it
+automatically:
+
+```sh
+bun install
+bun run test:browser:install
+bun run test:browser
+```
+
+Current browser coverage includes `popover`, `select`, `combobox`, `tooltip`,
+and `command_palette`.
+
 ## CSS build
 
 The distributed CSS in `priv/static/` is generated from sources in

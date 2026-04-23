@@ -13,6 +13,12 @@
 - `bun run build:all` passes
 - Main risks are not compilation failures, but API/behavior gaps, incomplete interaction coverage, and documentation/release drift
 
+**Status update on April 23, 2026:**
+
+- Browser interaction coverage now exists for `popover`, `select`, `combobox`, `tooltip`, and `command_palette`
+- `bun run test:browser` passes (`10 tests, 0 failures`)
+- Phase 2 is functionally complete; the next highest-value work is Phase 3 documentation/support policy hardening
+
 ---
 
 ## What This Plan Optimizes For
@@ -62,17 +68,17 @@
 
 **Outcome:** remove all misleading API surface from the next release.
 
-- [ ] Decide the contract for `multiple` on `select/1`
+- [x] Decide the contract for `multiple` on `select/1`
   - Option A: implement real multi-select behavior
   - Option B: remove/deprecate `multiple` until fully supported
-- [ ] Decide the contract for `multiple` on `combobox/1`
+- [x] Decide the contract for `multiple` on `combobox/1`
   - Option A: implement real multi-select behavior
   - Option B: remove/deprecate `multiple` until fully supported
-- [ ] Either implement grouped `combobox` rendering or remove the `group` option attr
+- [x] Either implement grouped `combobox` rendering or remove the `group` option attr
 - [ ] Audit `class` and `rest` forwarding across interactive components
-- [ ] Decide whether `command_palette/1` remains a visual primitive or becomes a real searchable command surface
-- [ ] Update Storybook stories so they only demonstrate supported behavior
-- [ ] Add regression tests for every resolved API decision
+- [x] Decide whether `command_palette/1` remains a visual primitive or becomes a real searchable command surface
+- [x] Update Storybook stories so they only demonstrate supported behavior
+- [x] Add regression tests for every resolved API decision
 
 **Primary files:**
 
@@ -98,16 +104,16 @@
 
 **Outcome:** interactive regressions become visible before release.
 
-- [ ] Add a lightweight browser-level test setup for JS hooks
-- [ ] Cover the core interaction flows:
+- [x] Add a lightweight browser-level test setup for JS hooks
+- [x] Cover the core interaction flows:
   - popover open/close
   - select keyboard navigation and value submission
   - combobox filtering and option selection
   - tooltip hover/focus behavior
   - command palette open/close behavior
-- [ ] Keep the existing ExUnit/Floki tests for HTML shape; do not replace them
-- [ ] Add at least one failure-focused test per complex hook
-- [ ] Make browser tests runnable in CI and locally with one command
+- [x] Keep the existing ExUnit/Floki tests for HTML shape; do not replace them
+- [x] Add at least one failure-focused test per complex hook
+- [x] Make browser tests runnable in CI and locally with one command
 
 **Recommended approach:**
 
@@ -234,9 +240,9 @@
 
 If the goal is to reduce risk quickly, do these first:
 
-- [ ] **Step 1:** resolve the `multiple` contract in `select/1` and `combobox/1`
-- [ ] **Step 2:** add browser-level tests for select and combobox interactions
-- [ ] **Step 3:** align Storybook and README with the supported API only
+- [x] **Step 1:** resolve the `multiple` contract in `select/1` and `combobox/1`
+- [x] **Step 2:** add browser-level tests for select and combobox interactions
+- [x] **Step 3:** align Storybook and README with the supported API only
 
 This is the highest-value sequence because it removes the biggest gap between what the library says and what it actually does.
 
@@ -257,11 +263,11 @@ Keep Phase 1 and Phase 2 separate if possible. They will be easier to review and
 
 Run these after each meaningful milestone:
 
-- [ ] `mix test`
-- [ ] `mix compile --warnings-as-errors`
-- [ ] `bun run build:all`
+- [x] `mix test`
+- [x] `mix compile --warnings-as-errors`
+- [x] `bun run build:all`
 - [ ] relevant Storybook manual sanity check
-- [ ] browser interaction tests once added
+- [x] browser interaction tests once added
 
 ---
 
@@ -270,7 +276,7 @@ Run these after each meaningful milestone:
 The next release should not go out until all of the following are true:
 
 - [ ] No misleading public props or slots remain
-- [ ] Core interactive hooks are covered by browser-level tests
+- [x] Core interactive hooks are covered by browser-level tests
 - [ ] README and changelog match the shipped behavior
 - [ ] Storybook shows only supported patterns
 - [ ] The release process is documented and repeatable

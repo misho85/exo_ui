@@ -37,19 +37,24 @@ const ExoTooltip = {
 
     const hide = () => {
       clearTimeout(this._timeout)
+      let didHide = false
       try {
         if (content.matches(':popover-open')) {
           content.hidePopover()
-          lastHideTime = Date.now()
-          content.dataset.side = this._declaredSide
-          if (!hasAnchorPos) {
-            content.style.top = ''
-            content.style.left = ''
-          }
+          didHide = true
         }
       } catch (_) {}
+      if (didHide) {
+        lastHideTime = Date.now()
+        content.dataset.side = this._declaredSide
+        if (!hasAnchorPos) {
+          content.style.top = ''
+          content.style.left = ''
+        }
+      }
     }
 
+    this._wrapper = wrapper
     wrapper.addEventListener('mouseenter', this._show = () => show())
     wrapper.addEventListener('mouseleave', this._hide = () => hide())
     anchor.addEventListener('focusin', this._focusIn = () => show())
@@ -99,6 +104,15 @@ const ExoTooltip = {
 
   destroyed() {
     clearTimeout(this._timeout)
+    if (this._wrapper) {
+      if (this._show) this._wrapper.removeEventListener('mouseenter', this._show)
+      if (this._hide) this._wrapper.removeEventListener('mouseleave', this._hide)
+      if (this._keydown) this._wrapper.removeEventListener('keydown', this._keydown)
+    }
+    if (this._anchor) {
+      if (this._focusIn) this._anchor.removeEventListener('focusin', this._focusIn)
+      if (this._focusOut) this._anchor.removeEventListener('focusout', this._focusOut)
+    }
   }
 }
 

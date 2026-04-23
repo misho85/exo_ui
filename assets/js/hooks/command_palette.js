@@ -8,10 +8,14 @@ const ExoCommandPalette = {
     this.list = this.el.querySelector('[data-exo="command-palette-list"]')
 
     const isOpen = () => this.el.classList.contains("open")
+    const syncState = () => {
+      this.el.dataset.state = isOpen() ? "open" : "closed"
+    }
 
     const open = () => {
       this.el.style.display = "block"
       this.el.classList.add("open")
+      syncState()
       requestAnimationFrame(() => {
         if (this.input) this.input.focus()
       })
@@ -20,8 +24,11 @@ const ExoCommandPalette = {
     const close = () => {
       this.el.classList.remove("open")
       this.el.style.display = "none"
+      syncState()
       if (this.input) this.input.value = ""
     }
+
+    syncState()
 
     // Global Ctrl+K / Cmd+K
     document.addEventListener("keydown", this._onGlobalKey = (e) => {
