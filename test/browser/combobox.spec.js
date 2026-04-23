@@ -1,6 +1,7 @@
 const { test, expect } = require("@playwright/test");
 
 const {
+  expectFocused,
   expectHiddenState,
   expectPopoverState,
   gotoStory,
@@ -48,6 +49,8 @@ test.describe("combobox", () => {
     await trigger.click();
 
     await expectPopoverState(popover, true);
+    await expect(trigger).toHaveAttribute("aria-expanded", "true");
+    await expectFocused(search);
     await search.fill("zzz");
 
     await expect(empty).toBeVisible();
