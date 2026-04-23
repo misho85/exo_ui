@@ -1,11 +1,8 @@
 # Changelog
 
-## 0.1.0 — Current pre-release development line
+## 0.1.0 — 2026-04-24
 
-No stable `v0.1.0` tag has been cut yet. The latest historical tag in the repo
-is `v0.1.0-alpha`.
-
-Current state of the pre-release line:
+Initial public `0.1.0` release:
 
 - native popover-based floating primitives with minimal LiveView hooks
 - `select/1` and `combobox/1` API hardening: unfinished `multiple` support was

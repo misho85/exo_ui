@@ -2,7 +2,8 @@
 
 Headless Phoenix LiveView component library with a default CSS theme.
 
-> **Status:** pre-1.0 (`0.1.0`). APIs may change before a stable release.
+> **Status:** first public pre-1.0 release (`0.1.0`). APIs may still change in
+> future pre-1.0 releases.
 
 - **Live Storybook:** https://exo-ui.krafter.dev
 - **Source:** https://github.com/misho85/exo_ui
@@ -57,13 +58,13 @@ in your own stylesheet and keep only the markup.
 
 ## Installation
 
-ExoUI is currently consumed as a git or path dependency. Until a stable Hex
-release exists, pin a known commit or tag.
+ExoUI is currently consumed as a git or path dependency. Until a Hex package
+exists, pin a known commit or release tag.
 
 ### 1. Add the dependency
 
-For a git dependency, pin a known `ref` (commit or release tag once you cut
-one):
+For a git dependency, pin a known `ref` (for example `v0.1.0`, or a newer tag
+once you cut one):
 
 ```elixir
 def deps do
