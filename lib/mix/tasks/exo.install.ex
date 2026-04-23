@@ -11,7 +11,7 @@ defmodule Mix.Tasks.Exo.Install do
     * Add CSS import to `assets/css/app.css`
     * Add JS hooks import to `assets/js/app.js`
     * Merge ExoUI hooks into your LiveSocket configuration
-    * Add ExoUI imports to your `html_helpers` in `*_web.ex`
+    * Add `use ExoUI, core_components: false` to your `html_helpers` in `*_web.ex`
 
   The task is idempotent and can be safely run multiple times.
   """
@@ -20,16 +20,7 @@ defmodule Mix.Tasks.Exo.Install do
 
   @css_import ~s|@import "../../deps/exo_ui/priv/static/exo.css";|
   @js_hooks_import ~s|import { hooks as exoHooks } from "../../deps/exo_ui/assets/js/index.js"|
-  @web_module_imports """
-        import ExoUI.Utils, only: [classes: 1, maybe_add_class: 2]
-        import ExoUI.Components.Core
-        import ExoUI.Components.Form
-        import ExoUI.Components.Overlay
-        import ExoUI.Components.Feedback
-        import ExoUI.Components.DataDisplay
-        import ExoUI.Charts
-        import ExoUI.Layouts\
-  """
+  @web_module_use "use ExoUI, core_components: false"
 
   @impl Mix.Task
   def run(_args) do
@@ -55,6 +46,9 @@ defmodule Mix.Tasks.Exo.Install do
           hooks: {...exoHooks, ...myOtherHooks},
           ...
         })
+
+    The html_helpers patch uses `use ExoUI, core_components: false`
+    to avoid clashing with Phoenix's generated CoreComponents.
     """)
   end
 
@@ -213,18 +207,17 @@ defmodule Mix.Tasks.Exo.Install do
 
     case read_file(path) do
       {:ok, content} ->
-        if String.contains?(content, "ExoUI.Components.Core") do
-          already_exists(path, "ExoUI imports")
+        if web_module_configured?(content) do
+          already_exists(path, "ExoUI html_helpers integration")
         else
           new_content = inject_into_html_helpers(content, path)
 
           case new_content do
             {:ok, updated} ->
               File.write!(path, updated)
-              injected(path, "ExoUI imports into html_helpers")
+              injected(path, "ExoUI html_helpers integration")
 
             :error ->
-              # Fallback: try to inject `use ExoUI` instead
               inject_use_exo_ui(content, path)
           end
         end
@@ -234,7 +227,7 @@ defmodule Mix.Tasks.Exo.Install do
 
         print_manual_instruction(path, """
         # Add to your html_helpers/0 function, inside the quote block:
-        #{@web_module_imports}
+        #{@web_module_use}
         """)
     end
   end
@@ -246,9 +239,12 @@ defmodule Mix.Tasks.Exo.Install do
       content =~ ~r/defp html_helpers do\s*\n\s*quote do/ ->
         new_content =
           Regex.replace(
-            ~r/(defp html_helpers do\s*\n\s*quote do\n)/,
+            ~r/(defp html_helpers do\s*\n)(\s*)quote do\n/,
             content,
-            "\\1#{@web_module_imports}\n",
+            fn _match, before, indent ->
+              body_indent = indent <> "  "
+              before <> indent <> "quote do\n" <> body_indent <> @web_module_use <> "\n"
+            end,
             global: false
           )
 
@@ -264,7 +260,7 @@ defmodule Mix.Tasks.Exo.Install do
                 {:ok,
                  before <>
                    "defp html_helpers do" <>
-                   between <> "quote do\n" <> @web_module_imports <> "\n" <> after_quote}
+                   between <> "quote do\n" <> indent(@web_module_use, 6) <> "\n" <> after_quote}
 
               _ ->
                 Mix.shell().info(
@@ -288,12 +284,11 @@ defmodule Mix.Tasks.Exo.Install do
   end
 
   defp inject_use_exo_ui(_content, path) do
-    # Fallback: suggest adding `use ExoUI` manually
     Mix.shell().info(
       "  #{IO.ANSI.yellow()}* unable to auto-inject#{IO.ANSI.reset()} ExoUI imports into #{path}\n" <>
         "    Add the following inside your html_helpers quote block:\n\n" <>
-        "#{indent(@web_module_imports, 8)}\n\n" <>
-        "    Or add `use ExoUI` to import all components at once."
+        "#{indent(@web_module_use, 8)}\n\n" <>
+        "    The recommended form is `use ExoUI, core_components: false` to avoid clashes with Phoenix CoreComponents."
     )
   end
 
@@ -324,6 +319,12 @@ defmodule Mix.Tasks.Exo.Install do
     end
 
     web_module
+  end
+
+  defp web_module_configured?(content) do
+    String.contains?(content, @web_module_use) or
+      String.contains?(content, "use ExoUI") or
+      String.contains?(content, "ExoUI.Components.Core")
   end
 
   # ---------------------------------------------------------------------------
