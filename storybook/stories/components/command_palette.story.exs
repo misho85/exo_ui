@@ -1,7 +1,7 @@
 defmodule Storybook.Components.CommandPalette do
   use PhoenixStorybook.Story, :page
 
-  def doc, do: "Searchable command palette dialog (Ctrl+K / Cmd+K)."
+  def doc, do: "Command palette dialog shell (Ctrl+K / Cmd+K)."
 
   def render(assigns) do
     ~H"""

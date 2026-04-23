@@ -519,7 +519,7 @@ defmodule ExoUI.Components.Overlay do
     """
   end
 
-  @doc "Renders a searchable command palette dialog (Ctrl+K)."
+  @doc "Renders a command palette dialog shell (Ctrl+K / Cmd+K)."
   attr :id, :string, required: true
   attr :placeholder, :string, default: "Search..."
   attr :class, :any, default: nil

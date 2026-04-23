@@ -1,5 +1,5 @@
 /**
- * ExoCommandPalette hook — Ctrl+K / Cmd+K searchable command dialog.
+ * ExoCommandPalette hook — Ctrl+K / Cmd+K command dialog shell.
  */
 const ExoCommandPalette = {
   mounted() {
