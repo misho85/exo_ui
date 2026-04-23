@@ -5,6 +5,19 @@ defmodule Storybook.Components.CommandPalette do
 
   def render(assigns) do
     ~H"""
+    <style>
+      .cmd-item {
+        display: flex;
+        width: 100%;
+        padding: 0.5rem;
+        border: none;
+        background: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.875rem;
+      }
+      .cmd-item:hover { background: var(--exo-accent); }
+    </style>
     <div style="padding: 1rem;">
       <p style="font-size: 0.875rem; color: var(--exo-muted-foreground); margin-bottom: 1rem;">
         Press
@@ -19,20 +32,8 @@ defmodule Storybook.Components.CommandPalette do
           <p style="padding: 0.5rem; color: var(--exo-muted-foreground); font-size: 0.75rem; font-weight: 600;">
             Suggestions
           </p>
-          <button
-            style="display: flex; width: 100%; padding: 0.5rem; border: none; background: none; border-radius: 4px; cursor: pointer; font-size: 0.875rem;"
-            onmouseover="this.style.background='var(--exo-accent)'"
-            onmouseout="this.style.background='none'"
-          >
-            Search documentation
-          </button>
-          <button
-            style="display: flex; width: 100%; padding: 0.5rem; border: none; background: none; border-radius: 4px; cursor: pointer; font-size: 0.875rem;"
-            onmouseover="this.style.background='var(--exo-accent)'"
-            onmouseout="this.style.background='none'"
-          >
-            Go to settings
-          </button>
+          <button class="cmd-item">Search documentation</button>
+          <button class="cmd-item">Go to settings</button>
         </div>
       </ExoUI.Components.command_palette>
     </div>

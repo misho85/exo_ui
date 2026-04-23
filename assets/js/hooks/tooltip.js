@@ -6,12 +6,18 @@ const hasAnchorPos =
 const GAP = 4 // matches var(--exo-space-1)
 
 const ExoTooltip = {
-  mounted() {
+  mounted() { this._bind() },
+  updated() { this._bind() },
+  destroyed() { this._unbind() },
+
+  _bind() {
+    this._unbind()
     const wrapper = this.el
     const anchor = wrapper.querySelector('[data-exo="tooltip-anchor"]')
     const content = wrapper.querySelector('[data-exo="tooltip-content"]')
     if (!anchor || !content) return
 
+    this._wrapper = wrapper
     this._anchor = anchor
     this._content = content
     this._timeout = null
@@ -54,16 +60,21 @@ const ExoTooltip = {
       }
     }
 
-    this._wrapper = wrapper
-    wrapper.addEventListener('mouseenter', this._show = () => show())
-    wrapper.addEventListener('mouseleave', this._hide = () => hide())
-    anchor.addEventListener('focusin', this._focusIn = () => show())
-    anchor.addEventListener('focusout', this._focusOut = (e) => {
+    this._show = () => show()
+    this._hide = () => hide()
+    this._focusIn = () => show()
+    this._focusOut = (e) => {
       if (!wrapper.contains(e.relatedTarget)) hide()
-    })
-    wrapper.addEventListener('keydown', this._keydown = (e) => {
+    }
+    this._keydown = (e) => {
       if (e.key === 'Escape') hide()
-    })
+    }
+
+    wrapper.addEventListener('mouseenter', this._show)
+    wrapper.addEventListener('mouseleave', this._hide)
+    anchor.addEventListener('focusin', this._focusIn)
+    anchor.addEventListener('focusout', this._focusOut)
+    wrapper.addEventListener('keydown', this._keydown)
   },
 
   /** Detect if anchor positioning flipped the side and update data-side for arrow CSS. */
@@ -102,7 +113,7 @@ const ExoTooltip = {
     this._content.style.left = `${left}px`
   },
 
-  destroyed() {
+  _unbind() {
     clearTimeout(this._timeout)
     if (this._wrapper) {
       if (this._show) this._wrapper.removeEventListener('mouseenter', this._show)
@@ -113,6 +124,15 @@ const ExoTooltip = {
       if (this._focusIn) this._anchor.removeEventListener('focusin', this._focusIn)
       if (this._focusOut) this._anchor.removeEventListener('focusout', this._focusOut)
     }
+    this._wrapper = null
+    this._anchor = null
+    this._content = null
+    this._show = null
+    this._hide = null
+    this._focusIn = null
+    this._focusOut = null
+    this._keydown = null
+    this._timeout = null
   }
 }
 

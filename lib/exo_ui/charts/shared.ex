@@ -13,10 +13,18 @@ defmodule ExoUI.Charts.Shared do
         do: :erlang.float_to_binary(value, decimals: 2)
 
       defp format_tooltip(value) when is_integer(value) do
+        abs_value = abs(value)
+        sign = if value < 0, do: "-", else: ""
+
         cond do
-          value >= 1_000_000 -> "#{:erlang.float_to_binary(value / 1_000_000, decimals: 1)}M"
-          value >= 1_000 -> "#{:erlang.float_to_binary(value / 1_000, decimals: 1)}K"
-          true -> to_string(value)
+          abs_value >= 1_000_000 ->
+            "#{sign}#{:erlang.float_to_binary(abs_value / 1_000_000, decimals: 1)}M"
+
+          abs_value >= 1_000 ->
+            "#{sign}#{:erlang.float_to_binary(abs_value / 1_000, decimals: 1)}K"
+
+          true ->
+            to_string(value)
         end
       end
 

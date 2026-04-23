@@ -51,7 +51,12 @@ defmodule ExoUI.Components.InteractiveForwardingTest do
       Content
     </.popover>
     """
-    |> assert_forwarding(~s([data-exo="popover-content"]), "popover-panel", "data-track", "popover")
+    |> assert_forwarding(
+      ~s([data-exo="popover-content"]),
+      "popover-panel",
+      "data-track",
+      "popover"
+    )
   end
 
   test "dropdown_menu forwards class and rest attrs to the menu element" do
@@ -74,7 +79,12 @@ defmodule ExoUI.Components.InteractiveForwardingTest do
       Hover
     </.tooltip>
     """
-    |> assert_forwarding(~s([data-exo="tooltip-content"]), "tooltip-panel", "data-track", "tooltip")
+    |> assert_forwarding(
+      ~s([data-exo="tooltip-content"]),
+      "tooltip-panel",
+      "data-track",
+      "tooltip"
+    )
   end
 
   test "collapsible forwards class and rest attrs to the root container" do
@@ -86,7 +96,12 @@ defmodule ExoUI.Components.InteractiveForwardingTest do
       Content
     </.collapsible>
     """
-    |> assert_forwarding(~s([data-exo="collapsible"]), "collapsible-shell", "data-track", "collapsible")
+    |> assert_forwarding(
+      ~s([data-exo="collapsible"]),
+      "collapsible-shell",
+      "data-track",
+      "collapsible"
+    )
   end
 
   test "drawer forwards class and rest attrs to the root container" do
@@ -120,7 +135,12 @@ defmodule ExoUI.Components.InteractiveForwardingTest do
       Content
     </.hover_card>
     """
-    |> assert_forwarding(~s([data-exo="hover-card"]), "hover-card-shell", "data-track", "hover-card")
+    |> assert_forwarding(
+      ~s([data-exo="hover-card"]),
+      "hover-card-shell",
+      "data-track",
+      "hover-card"
+    )
   end
 
   test "context_menu forwards class and rest attrs to the root container" do
@@ -132,14 +152,23 @@ defmodule ExoUI.Components.InteractiveForwardingTest do
       <:item label="Copy" />
     </.context_menu>
     """
-    |> assert_forwarding(~s([data-exo="context-menu"]), "context-menu-shell", "data-track", "context-menu")
+    |> assert_forwarding(
+      ~s([data-exo="context-menu"]),
+      "context-menu-shell",
+      "data-track",
+      "context-menu"
+    )
   end
 
   test "command_palette forwards class and rest attrs to the root container" do
     assigns = %{}
 
     ~H"""
-    <.command_palette id="command-palette-forwarding" class="command-palette-shell" data-track="command-palette">
+    <.command_palette
+      id="command-palette-forwarding"
+      class="command-palette-shell"
+      data-track="command-palette"
+    >
       <p>Items</p>
     </.command_palette>
     """

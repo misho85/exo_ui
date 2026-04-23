@@ -386,6 +386,7 @@ defmodule ExoUI.Components.Form do
           type="text"
           data-exo="popover-trigger"
           data-exo-combobox="input-trigger"
+          data-invalid={@errors != [] && ""}
           role="combobox"
           placeholder={@prompt}
           autocomplete="off"
@@ -629,30 +630,33 @@ defmodule ExoUI.Components.Form do
     ~H"""
     <fieldset data-exo="radio-group" class={@class} disabled={@disabled} {@rest}>
       <legend :if={@label} data-exo="label">{@label}</legend>
-      <label :for={item <- @item} data-exo="radio-item" data-disabled={item[:disabled] && ""}>
-        <input
-          type="radio"
-          data-exo="radio"
-          name={@name}
-          value={item[:value]}
-          checked={to_string(@value) == to_string(item[:value])}
-          disabled={@disabled || item[:disabled]}
-        />
-        <span data-exo="radio-indicator" />
-        <span>{render_slot(item)}</span>
-      </label>
-      <label :for={{opt_label, opt_value} <- @options} data-exo="radio-item">
-        <input
-          type="radio"
-          data-exo="radio"
-          name={@name}
-          value={opt_value}
-          checked={to_string(@value) == to_string(opt_value)}
-          disabled={@disabled}
-        />
-        <span data-exo="radio-indicator" />
-        <span>{opt_label}</span>
-      </label>
+      <%= if @item != [] do %>
+        <label :for={item <- @item} data-exo="radio-item" data-disabled={item[:disabled] && ""}>
+          <input
+            type="radio"
+            data-exo="radio"
+            name={@name}
+            value={item[:value]}
+            checked={to_string(@value) == to_string(item[:value])}
+            disabled={@disabled || item[:disabled]}
+          />
+          <span data-exo="radio-indicator" />
+          <span>{render_slot(item)}</span>
+        </label>
+      <% else %>
+        <label :for={{opt_label, opt_value} <- @options} data-exo="radio-item">
+          <input
+            type="radio"
+            data-exo="radio"
+            name={@name}
+            value={opt_value}
+            checked={to_string(@value) == to_string(opt_value)}
+            disabled={@disabled}
+          />
+          <span data-exo="radio-indicator" />
+          <span>{opt_label}</span>
+        </label>
+      <% end %>
       <p :if={@description} data-exo="field-description">{@description}</p>
       <.field_errors errors={@errors} />
     </fieldset>
