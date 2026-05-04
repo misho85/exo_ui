@@ -33,6 +33,9 @@ defmodule ExoUI.Components.StructuralTest do
       """)
 
     assert html =~ ~s(data-exo="list")
+    assert html =~ "<dl"
+    assert html =~ "<dt"
+    assert html =~ "<dd"
     assert html =~ "Name"
     assert html =~ "John"
   end

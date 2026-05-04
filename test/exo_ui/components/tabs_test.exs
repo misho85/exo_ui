@@ -19,6 +19,9 @@ defmodule ExoUI.Components.TabsTest do
     assert html =~ ~s(data-exo="tab")
     assert html =~ ~s(role="tablist")
     assert html =~ ~s(aria-label="Profile sections")
+    assert html =~ ~s(phx-hook="ExoTabs")
+    assert html =~ ~s(data-orientation="horizontal")
+    assert html =~ ~s(data-activation="manual")
     assert html =~ ~s(id="profile-tabs-tab-tab1")
     assert html =~ ~s(aria-controls="profile-tabs-panel-tab1")
     assert html =~ ~s(tabindex="0")
@@ -57,5 +60,44 @@ defmodule ExoUI.Components.TabsTest do
     assert html =~ ~s(aria-disabled="true")
     assert html =~ "Disabled"
     refute html =~ ~s(phx-value-tab="b")
+  end
+
+  test "renders icons and tab panels" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.tabs id="account-tabs" active="overview">
+        <:tab id="overview" label="Overview" icon="layout-dashboard" />
+        <:tab id="details" label="Details" icon="user" />
+        <:panel tab="overview">Overview content</:panel>
+        <:panel tab="details">Details content</:panel>
+      </.tabs>
+      """)
+
+    assert html =~ ~s(data-exo="tab-icon")
+    assert html =~ ~s(id="account-tabs-panel-overview")
+    assert html =~ ~s(role="tabpanel")
+    assert html =~ ~s(aria-labelledby="account-tabs-tab-overview")
+    assert html =~ ~s(tabindex="0")
+    assert html =~ "Overview content"
+    assert html =~ "Details content"
+    assert html =~ ~s(hidden)
+  end
+
+  test "renders vertical tabs orientation" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.tabs id="vertical-tabs" active="a" orientation="vertical" activation="automatic">
+        <:tab id="a" label="A" />
+        <:tab id="b" label="B" />
+      </.tabs>
+      """)
+
+    assert html =~ ~s(data-orientation="vertical")
+    assert html =~ ~s(data-activation="automatic")
+    assert html =~ ~s(aria-orientation="vertical")
   end
 end

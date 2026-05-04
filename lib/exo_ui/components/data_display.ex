@@ -5,6 +5,8 @@ defmodule ExoUI.Components.DataDisplay do
 
   use Phoenix.Component
 
+  import ExoUI.Components.Core, only: [icon: 1]
+
   @doc "Renders a data table with columns, optional row click, and action slots. Supports LiveView streams."
   attr :id, :string, required: true
   attr :rows, :list, required: true
@@ -116,12 +118,12 @@ defmodule ExoUI.Components.DataDisplay do
 
   def list(assigns) do
     ~H"""
-    <ul data-exo="list" class={@class} {@rest}>
-      <li :for={item <- @item} data-exo="list-item">
-        <div data-exo="list-title">{item.title}</div>
-        <div data-exo="list-content">{render_slot(item)}</div>
-      </li>
-    </ul>
+    <dl data-exo="list" class={@class} {@rest}>
+      <div :for={item <- @item} data-exo="list-item">
+        <dt data-exo="list-title">{item.title}</dt>
+        <dd data-exo="list-content">{render_slot(item)}</dd>
+      </div>
+    </dl>
     """
   end
 
@@ -324,6 +326,8 @@ defmodule ExoUI.Components.DataDisplay do
   attr :id, :string, default: nil
   attr :active, :string, required: true, doc: "the id of the currently active tab"
   attr :aria_label, :string, default: "Tabs"
+  attr :orientation, :string, values: ~w(horizontal vertical), default: "horizontal"
+  attr :activation, :string, values: ~w(manual automatic), default: "manual"
   attr :class, :any, default: nil
   attr :rest, :global
 
@@ -339,9 +343,28 @@ defmodule ExoUI.Components.DataDisplay do
     attr :disabled, :boolean
   end
 
+  slot :panel do
+    attr :tab, :string, required: true
+    attr :id, :string
+    attr :class, :any
+  end
+
   def tabs(assigns) do
+    assigns = assign(assigns, :panel_lookup, tab_panel_lookup(assigns.id, assigns.panel))
+
     ~H"""
-    <div id={@id} data-exo="tabs" role="tablist" aria-label={@aria_label} class={@class} {@rest}>
+    <div
+      id={@id}
+      data-exo="tabs"
+      data-orientation={@orientation}
+      data-activation={@activation}
+      role="tablist"
+      aria-label={@aria_label}
+      aria-orientation={@orientation == "vertical" && "vertical"}
+      phx-hook={@id && "ExoTabs"}
+      class={@class}
+      {@rest}
+    >
       <%= for tab <- @tab do %>
         <span
           :if={tab[:disabled]}
@@ -351,9 +374,12 @@ defmodule ExoUI.Components.DataDisplay do
           role="tab"
           aria-disabled="true"
           aria-selected="false"
-          aria-controls={tab_panel_id(@id, tab)}
+          aria-controls={tab_panel_id(@id, tab, @panel_lookup)}
           tabindex="-1"
         >
+          <span :if={tab[:icon]} data-exo="tab-icon" aria-hidden="true">
+            <.icon name={tab.icon} class="size-4" />
+          </span>
           {tab.label}
         </span>
         <button
@@ -366,9 +392,12 @@ defmodule ExoUI.Components.DataDisplay do
           phx-value-tab={tab[:click_value] || tab.id}
           role="tab"
           aria-selected={to_string(tab.id == @active)}
-          aria-controls={tab_panel_id(@id, tab)}
+          aria-controls={tab_panel_id(@id, tab, @panel_lookup)}
           tabindex={tab_tabindex(tab, @active)}
         >
+          <span :if={tab[:icon]} data-exo="tab-icon" aria-hidden="true">
+            <.icon name={tab.icon} class="size-4" />
+          </span>
           {tab.label}
         </button>
         <.link
@@ -380,12 +409,27 @@ defmodule ExoUI.Components.DataDisplay do
           navigate={tab[:navigate]}
           role="tab"
           aria-selected={to_string(tab.id == @active)}
-          aria-controls={tab_panel_id(@id, tab)}
+          aria-controls={tab_panel_id(@id, tab, @panel_lookup)}
           tabindex={tab_tabindex(tab, @active)}
         >
+          <span :if={tab[:icon]} data-exo="tab-icon" aria-hidden="true">
+            <.icon name={tab.icon} class="size-4" />
+          </span>
           {tab.label}
         </.link>
       <% end %>
+    </div>
+    <div
+      :for={panel <- @panel}
+      id={tab_panel_slot_id(@id, panel)}
+      data-exo="tab-panel"
+      role="tabpanel"
+      aria-labelledby={tab_dom_id(@id, %{id: panel.tab})}
+      tabindex="0"
+      hidden={panel.tab != @active}
+      class={panel[:class]}
+    >
+      {render_slot(panel)}
     </div>
     """
   end
@@ -393,9 +437,20 @@ defmodule ExoUI.Components.DataDisplay do
   defp tab_dom_id(nil, _tab), do: nil
   defp tab_dom_id(id, tab), do: "#{id}-tab-#{tab.id}"
 
-  defp tab_panel_id(_id, %{panel_id: panel_id}) when panel_id not in [nil, ""], do: panel_id
-  defp tab_panel_id(nil, _tab), do: nil
-  defp tab_panel_id(id, tab), do: "#{id}-panel-#{tab.id}"
+  defp tab_panel_id(_id, %{panel_id: panel_id}, _panel_lookup) when panel_id not in [nil, ""],
+    do: panel_id
+
+  defp tab_panel_id(id, tab, panel_lookup),
+    do: Map.get(panel_lookup, tab.id) || default_tab_panel_id(id, tab.id)
+
+  defp tab_panel_slot_id(id, panel), do: panel[:id] || default_tab_panel_id(id, panel.tab)
+
+  defp default_tab_panel_id(nil, _tab_id), do: nil
+  defp default_tab_panel_id(id, tab_id), do: "#{id}-panel-#{tab_id}"
+
+  defp tab_panel_lookup(id, panels) do
+    Map.new(panels, fn panel -> {panel.tab, tab_panel_slot_id(id, panel)} end)
+  end
 
   defp tab_tabindex(tab, active), do: if(tab.id == active, do: "0", else: "-1")
 

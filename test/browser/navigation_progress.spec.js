@@ -1,6 +1,6 @@
 const { test, expect } = require("@playwright/test");
 
-const { expectAttribute, gotoStory, story } = require("./helpers/storybook");
+const { expectAttribute, expectFocused, gotoStory, story } = require("./helpers/storybook");
 
 test.describe("navigation and progress components", () => {
   test("tabs expose tablist semantics, active focus order, and disabled state", async ({ page }) => {
@@ -9,14 +9,33 @@ test.describe("navigation and progress components", () => {
     const canvas = story(page);
     const tabs = canvas.locator('[data-exo="tabs"]');
     const activeTab = tabs.locator('[data-exo="tab"][data-active]');
+    const detailsTab = tabs.getByRole("tab", { name: /Details/ });
+    const settingsTab = tabs.getByRole("tab", { name: /Settings/ });
     const disabledTab = tabs.locator('[data-exo="tab"][data-disabled]');
+    const activePanel = canvas.locator("#account-overview-panel");
 
+    await expectAttribute(tabs, "data-ready", "");
     await expectAttribute(tabs, "role", "tablist");
     await expectAttribute(tabs, "aria-label", "Account sections");
     await expectAttribute(activeTab, "aria-selected", "true");
     await expectAttribute(activeTab, "tabindex", "0");
+    await expect(activeTab.locator('[data-exo="tab-icon"]')).toHaveCount(1);
+    await expect(activePanel).toHaveAttribute("role", "tabpanel");
+    const activeTabId = await activeTab.getAttribute("id");
+    expect(activeTabId).toBeTruthy();
+    await expect(activePanel).toHaveAttribute("aria-labelledby", activeTabId);
     await expectAttribute(disabledTab, "aria-disabled", "true");
     await expectAttribute(disabledTab, "tabindex", "-1");
+
+    await activeTab.focus();
+    await page.keyboard.press("ArrowRight");
+    await expectFocused(detailsTab);
+    await page.keyboard.press("ArrowRight");
+    await expectFocused(settingsTab);
+    await page.keyboard.press("ArrowRight");
+    await expectFocused(activeTab);
+    await page.keyboard.press("End");
+    await expectFocused(settingsTab);
   });
 
   test("pagination exposes page labels, current page, and disabled controls", async ({ page }) => {

@@ -24,4 +24,5 @@
   font-family: var(--exo-font);
   font-size: var(--exo-text-sm);
   color: var(--exo-muted-foreground);
+  margin: 0;
 }

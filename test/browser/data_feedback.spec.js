@@ -34,6 +34,17 @@ test.describe("data and feedback components", () => {
     await expect(emptyTable.locator('[data-exo="table-empty"]')).toContainText("No archived members.");
   });
 
+  test("list renders description-list semantics", async ({ page }) => {
+    await gotoStory(page, "/components/data_display/list");
+
+    const canvas = story(page);
+    const list = canvas.locator('dl[data-exo="list"]');
+
+    await expect(list).toHaveCount(1);
+    await expect(list.locator('dt[data-exo="list-title"]').first()).toHaveText("Full name");
+    await expect(list.locator('dd[data-exo="list-content"]').first()).toHaveText("Alice Smith");
+  });
+
   test("flash and toast notifications expose live-region roles and close controls", async ({ page }) => {
     await gotoStory(page, "/components/feedback/flash");
 
