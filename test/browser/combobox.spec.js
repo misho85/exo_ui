@@ -18,6 +18,7 @@ test.describe("combobox", () => {
     const trigger = root.locator("[data-exo-combobox=\"trigger\"]");
     const popover = canvas.locator("#cb-client");
     const search = canvas.locator("#cb-client [data-exo=\"combobox-search\"]");
+    const listbox = canvas.locator("#cb-client-listbox");
     const croatia = canvas.locator("#cb-client [data-exo=\"combobox-option\"][data-value=\"hr\"]");
     const serbia = canvas.locator("#cb-client [data-exo=\"combobox-option\"][data-value=\"rs\"]");
     const value = canvas.locator("input[name=\"country\"]");
@@ -32,8 +33,11 @@ test.describe("combobox", () => {
     await search.fill("cro");
     await expect(croatia).toBeVisible();
     await expectHiddenState(serbia, true);
+    await expectFocused(search);
+    await expect(search).toHaveAttribute("aria-activedescendant", await croatia.getAttribute("id"));
+    await expect(listbox).toHaveAttribute("aria-activedescendant", await croatia.getAttribute("id"));
 
-    await croatia.click();
+    await page.keyboard.press("Enter");
 
     await expectPopoverState(popover, false);
     await expect(trigger).toHaveAttribute("aria-expanded", "false");

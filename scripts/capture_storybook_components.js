@@ -18,6 +18,8 @@ const STORY_ROOTS = [
 ];
 const OUT_ROOT = path.join(ROOT, "output", "playwright", "exo-ui-components");
 const BASE_URL = process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:4100";
+const NAVIGATION_TIMEOUT = Number.parseInt(process.env.CAPTURE_NAVIGATION_TIMEOUT || "30000", 10);
+const STORY_READY_TIMEOUT = Number.parseInt(process.env.CAPTURE_STORY_READY_TIMEOUT || "15000", 10);
 
 function timestamp() {
   return new Date().toISOString().replace(/[:.]/g, "-");
@@ -253,8 +255,11 @@ async function captureComponent(browser, runDir, story) {
   let error = null;
 
   try {
-    const response = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 15_000 });
-    await page.locator("#story-live").waitFor({ state: "visible", timeout: 10_000 });
+    const response = await page.goto(url, {
+      waitUntil: "domcontentloaded",
+      timeout: NAVIGATION_TIMEOUT
+    });
+    await page.locator("#story-live").waitFor({ state: "visible", timeout: STORY_READY_TIMEOUT });
     await componentDemo(page, name);
     dataExoCount = await page.locator("#story-live [data-exo]").count();
     await page.screenshot({ path: screenshotPath, fullPage: true });

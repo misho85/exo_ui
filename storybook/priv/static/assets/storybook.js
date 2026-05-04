@@ -833,12 +833,15 @@
       this._listbox = this.el.querySelector('[role="listbox"]');
       this._hidden = this.el.closest('[data-exo="field"]')?.querySelector('input[type="hidden"]');
       if (!this._popover || !this._listbox) return;
+      this._syncOptions();
       this._onToggle = () => {
         const open = this._popover.matches(":popover-open");
         this._trigger.setAttribute("aria-expanded", String(open));
         if (open) {
           const selected = this._listbox.querySelector("[data-selected]");
-          if (selected) selected.focus();
+          if (selected) this._setActiveOption(selected);
+        } else {
+          this._clearActiveOption();
         }
       };
       this._trigger.setAttribute("aria-expanded", String(this._popover.matches(":popover-open")));
@@ -850,9 +853,9 @@
       };
       this._listbox.addEventListener("click", this._onClick);
       this._onKeydown = (e) => {
-        const options = [...this._listbox.querySelectorAll('[data-exo="select-option"]:not([data-disabled])')];
+        const options = this._enabledOptions();
         if (!options.length) return;
-        const idx = options.indexOf(document.activeElement);
+        const idx = Math.max(options.indexOf(this._activeOption), options.indexOf(document.activeElement));
         let next = -1;
         switch (e.key) {
           case "ArrowDown":
@@ -881,9 +884,37 @@
             return;
         }
         e.preventDefault();
-        if (next >= 0) options[next].focus();
+        if (next >= 0) this._setActiveOption(options[next]);
       };
       this._listbox.addEventListener("keydown", this._onKeydown);
+    },
+    _syncOptions() {
+      this._listbox.querySelectorAll('[data-exo="select-option"]').forEach((option, index) => {
+        if (!option.id) option.id = `${this.el.id}-option-${index}`;
+        option.setAttribute("role", "option");
+        option.setAttribute("tabindex", "-1");
+      });
+    },
+    _enabledOptions() {
+      return [...this._listbox.querySelectorAll('[data-exo="select-option"]:not([data-disabled])')];
+    },
+    _setActiveOption(option) {
+      if (!option) return;
+      if (this._activeOption && this._activeOption !== option) {
+        delete this._activeOption.dataset.active;
+      }
+      this._activeOption = option;
+      option.dataset.active = "";
+      this._trigger?.setAttribute("aria-activedescendant", option.id);
+      this._listbox?.setAttribute("aria-activedescendant", option.id);
+      option.scrollIntoView({ block: "nearest" });
+      option.focus();
+    },
+    _clearActiveOption() {
+      if (this._activeOption) delete this._activeOption.dataset.active;
+      this._activeOption = null;
+      this._trigger?.removeAttribute("aria-activedescendant");
+      this._listbox?.removeAttribute("aria-activedescendant");
     },
     _selectOption(opt) {
       const value = opt.getAttribute("data-value");
@@ -901,6 +932,7 @@
           o.removeAttribute("data-selected");
         }
       });
+      this._setActiveOption(opt);
       const valueEl = this._trigger.querySelector('[data-exo="select-value"]');
       if (valueEl) {
         valueEl.textContent = text;
@@ -912,11 +944,11 @@
     _typeAhead(char, options) {
       if (char.length !== 1) return;
       const lower = char.toLowerCase();
-      const currentIdx = options.indexOf(document.activeElement);
+      const currentIdx = Math.max(options.indexOf(this._activeOption), options.indexOf(document.activeElement));
       const start = currentIdx + 1;
       const rotated = [...options.slice(start), ...options.slice(0, start)];
       const match = rotated.find((o) => o.textContent.trim().toLowerCase().startsWith(lower));
-      if (match) match.focus();
+      if (match) this._setActiveOption(match);
     },
     _unbind() {
       if (this._popover && this._onToggle) {
@@ -932,6 +964,7 @@
       this._popover = null;
       this._listbox = null;
       this._hidden = null;
+      this._activeOption = null;
       this._onToggle = null;
       this._onClick = null;
       this._onKeydown = null;
@@ -965,6 +998,7 @@
       this._create = this.el.querySelector('[data-exo="combobox-create"]');
       this._clear = this.el.querySelector('[data-exo="combobox-clear"]');
       if (!this._popover) return;
+      if (this._listbox) this._syncOptions();
       const syncExpanded = () => {
         const open = this._popover.matches(":popover-open");
         if (triggerBtn) triggerBtn.setAttribute("aria-expanded", String(open));
@@ -1000,16 +1034,22 @@
               delete o.dataset.selected;
             });
           }
+          this._clearActiveOption();
         };
         this._clear.addEventListener("click", this._onClear);
       }
       this._onToggle = () => {
         const open = this._popover.matches(":popover-open");
         syncExpanded();
-        if (open && this._search && !isInputTrigger) {
-          this._search.value = "";
-          if (filter === "client") this._clientFilter("");
-          focusSearch();
+        if (open && this._search) {
+          if (!isInputTrigger) {
+            this._search.value = "";
+            if (filter === "client") this._clientFilter("");
+            focusSearch();
+          }
+          this._setInitialActiveOption();
+        } else if (!open) {
+          this._clearActiveOption();
         }
       };
       this._popover.addEventListener("toggle", this._onToggle);
@@ -1051,6 +1091,7 @@
             if (span) span.textContent = query;
             this._create.hidden = !query;
           }
+          this._syncActiveAfterFilter();
         };
         this._search.addEventListener("input", this._onInput);
       }
@@ -1062,9 +1103,9 @@
         };
         this._listbox.addEventListener("click", this._onClick);
         this._onKeydown = (e) => {
-          const opts = [...this._listbox.querySelectorAll('[data-exo="combobox-option"]:not([data-disabled]):not([hidden])')];
+          const opts = this._visibleOptions();
           if (!opts.length) return;
-          const idx = opts.indexOf(document.activeElement);
+          const idx = Math.max(opts.indexOf(this._activeOption), opts.indexOf(document.activeElement));
           let next = -1;
           switch (e.key) {
             case "ArrowDown":
@@ -1095,11 +1136,53 @@
               return;
           }
           e.preventDefault();
-          opts[next]?.focus();
+          this._setActiveOption(opts[next]);
         };
         this._popover.addEventListener("keydown", this._onKeydown);
       }
       this.el.setAttribute("data-ready", "");
+    },
+    _syncOptions() {
+      this._listbox.querySelectorAll('[data-exo="combobox-option"]').forEach((option, index) => {
+        if (!option.id) option.id = `${this.el.id}-option-${index}`;
+        option.setAttribute("role", "option");
+        option.setAttribute("tabindex", "-1");
+      });
+    },
+    _visibleOptions() {
+      if (!this._listbox) return [];
+      return [...this._listbox.querySelectorAll('[data-exo="combobox-option"]:not([data-disabled]):not([hidden])')];
+    },
+    _setInitialActiveOption() {
+      const selected = this._listbox?.querySelector('[data-exo="combobox-option"][data-selected]:not([hidden])');
+      if (selected && !selected.hasAttribute("data-disabled")) this._setActiveOption(selected);
+    },
+    _setActiveOption(option) {
+      if (!option) return;
+      if (this._activeOption && this._activeOption !== option) {
+        delete this._activeOption.dataset.active;
+      }
+      this._activeOption = option;
+      option.dataset.active = "";
+      this._search?.setAttribute("aria-activedescendant", option.id);
+      this._listbox?.setAttribute("aria-activedescendant", option.id);
+      option.scrollIntoView({ block: "nearest" });
+    },
+    _clearActiveOption() {
+      if (this._activeOption) delete this._activeOption.dataset.active;
+      this._activeOption = null;
+      this._search?.removeAttribute("aria-activedescendant");
+      this._listbox?.removeAttribute("aria-activedescendant");
+    },
+    _syncActiveAfterFilter() {
+      const visible = this._visibleOptions();
+      if (!visible.length) {
+        this._clearActiveOption();
+        return;
+      }
+      if (!this._activeOption || this._activeOption.hidden || !visible.includes(this._activeOption)) {
+        this._setActiveOption(visible[0]);
+      }
     },
     _clientFilter(query) {
       if (!this._listbox) return;
@@ -1125,6 +1208,7 @@
           else delete o.dataset.selected;
         });
       }
+      this._setActiveOption(opt);
       const valSpan = this.el.querySelector('[data-exo="combobox-value"]');
       if (valSpan) {
         valSpan.textContent = opt.textContent.trim();
@@ -1157,6 +1241,7 @@
       this._empty = null;
       this._create = null;
       this._hidden = null;
+      this._activeOption = null;
     }
   };
 

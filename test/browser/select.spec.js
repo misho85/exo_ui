@@ -17,6 +17,7 @@ test.describe("select", () => {
     const nextOption = canvas.locator("#sel-value [data-exo=\"select-option\"][data-value=\"inactive\"]");
     const value = canvas.locator("input[name=\"status\"]");
     const popover = canvas.locator("#sel-value");
+    const listbox = canvas.locator("#sel-value-listbox");
 
     await trigger.click();
 
@@ -24,9 +25,13 @@ test.describe("select", () => {
     await expect(trigger).toHaveAttribute("aria-expanded", "true");
     await selectedOption.focus();
     await expectFocused(selectedOption);
+    await expect(trigger).toHaveAttribute("aria-activedescendant", await selectedOption.getAttribute("id"));
+    await expect(listbox).toHaveAttribute("aria-activedescendant", await selectedOption.getAttribute("id"));
 
     await selectedOption.press("ArrowDown");
     await expectFocused(nextOption);
+    await expect(trigger).toHaveAttribute("aria-activedescendant", await nextOption.getAttribute("id"));
+    await expect(listbox).toHaveAttribute("aria-activedescendant", await nextOption.getAttribute("id"));
 
     await nextOption.press("Enter");
 

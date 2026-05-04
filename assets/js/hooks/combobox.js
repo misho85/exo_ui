@@ -24,6 +24,7 @@ const ExoCombobox = {
     this._clear = this.el.querySelector('[data-exo="combobox-clear"]')
 
     if (!this._popover) return
+    if (this._listbox) this._syncOptions()
 
     const syncExpanded = () => {
       const open = this._popover.matches(':popover-open')
@@ -67,6 +68,7 @@ const ExoCombobox = {
             delete o.dataset.selected
           })
         }
+        this._clearActiveOption()
       }
       this._clear.addEventListener('click', this._onClear)
     }
@@ -75,10 +77,15 @@ const ExoCombobox = {
     this._onToggle = () => {
       const open = this._popover.matches(':popover-open')
       syncExpanded()
-      if (open && this._search && !isInputTrigger) {
-        this._search.value = ''
-        if (filter === 'client') this._clientFilter('')
-        focusSearch()
+      if (open && this._search) {
+        if (!isInputTrigger) {
+          this._search.value = ''
+          if (filter === 'client') this._clientFilter('')
+          focusSearch()
+        }
+        this._setInitialActiveOption()
+      } else if (!open) {
+        this._clearActiveOption()
       }
     }
     this._popover.addEventListener('toggle', this._onToggle)
@@ -119,6 +126,7 @@ const ExoCombobox = {
           if (span) span.textContent = query
           this._create.hidden = !query
         }
+        this._syncActiveAfterFilter()
       }
       this._search.addEventListener('input', this._onInput)
     }
@@ -134,9 +142,9 @@ const ExoCombobox = {
 
       // Keyboard
       this._onKeydown = (e) => {
-        const opts = [...this._listbox.querySelectorAll('[data-exo="combobox-option"]:not([data-disabled]):not([hidden])')]
+        const opts = this._visibleOptions()
         if (!opts.length) return
-        const idx = opts.indexOf(document.activeElement)
+        const idx = Math.max(opts.indexOf(this._activeOption), opts.indexOf(document.activeElement))
         let next = -1
         switch (e.key) {
           case 'ArrowDown': next = idx < opts.length - 1 ? idx + 1 : 0; break
@@ -152,13 +160,67 @@ const ExoCombobox = {
           default: return
         }
         e.preventDefault()
-        opts[next]?.focus()
+        this._setActiveOption(opts[next])
       }
       this._popover.addEventListener('keydown', this._onKeydown)
     }
 
     this.el.setAttribute('data-ready', '')
   },
+
+  _syncOptions() {
+    this._listbox.querySelectorAll('[data-exo="combobox-option"]').forEach((option, index) => {
+      if (!option.id) option.id = `${this.el.id}-option-${index}`
+      option.setAttribute('role', 'option')
+      option.setAttribute('tabindex', '-1')
+    })
+  },
+
+  _visibleOptions() {
+    if (!this._listbox) return []
+
+    return [...this._listbox.querySelectorAll('[data-exo="combobox-option"]:not([data-disabled]):not([hidden])')]
+  },
+
+  _setInitialActiveOption() {
+    const selected = this._listbox?.querySelector('[data-exo="combobox-option"][data-selected]:not([hidden])')
+    if (selected && !selected.hasAttribute('data-disabled')) this._setActiveOption(selected)
+  },
+
+  _setActiveOption(option) {
+    if (!option) return
+
+    if (this._activeOption && this._activeOption !== option) {
+      delete this._activeOption.dataset.active
+    }
+
+    this._activeOption = option
+    option.dataset.active = ''
+    this._search?.setAttribute('aria-activedescendant', option.id)
+    this._listbox?.setAttribute('aria-activedescendant', option.id)
+    option.scrollIntoView({ block: 'nearest' })
+  },
+
+  _clearActiveOption() {
+    if (this._activeOption) delete this._activeOption.dataset.active
+    this._activeOption = null
+    this._search?.removeAttribute('aria-activedescendant')
+    this._listbox?.removeAttribute('aria-activedescendant')
+  },
+
+  _syncActiveAfterFilter() {
+    const visible = this._visibleOptions()
+
+    if (!visible.length) {
+      this._clearActiveOption()
+      return
+    }
+
+    if (!this._activeOption || this._activeOption.hidden || !visible.includes(this._activeOption)) {
+      this._setActiveOption(visible[0])
+    }
+  },
+
   _clientFilter(query) {
     if (!this._listbox) return
     const q = query.toLowerCase()
@@ -184,6 +246,7 @@ const ExoCombobox = {
         else delete o.dataset.selected
       })
     }
+    this._setActiveOption(opt)
     // Update trigger display
     const valSpan = this.el.querySelector('[data-exo="combobox-value"]')
     if (valSpan) {
@@ -214,6 +277,7 @@ const ExoCombobox = {
     this._empty = null
     this._create = null
     this._hidden = null
+    this._activeOption = null
   }
 }
 

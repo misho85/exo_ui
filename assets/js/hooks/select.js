@@ -14,14 +14,17 @@ const ExoSelect = {
 
     if (!this._popover || !this._listbox) return
 
+    this._syncOptions()
+
     // Toggle aria-expanded on popover open/close
     this._onToggle = () => {
       const open = this._popover.matches(':popover-open')
       this._trigger.setAttribute('aria-expanded', String(open))
       if (open) {
-        // Focus selected option only — don't pre-highlight first option
         const selected = this._listbox.querySelector('[data-selected]')
-        if (selected) selected.focus()
+        if (selected) this._setActiveOption(selected)
+      } else {
+        this._clearActiveOption()
       }
     }
     this._trigger.setAttribute('aria-expanded', String(this._popover.matches(':popover-open')))
@@ -37,9 +40,9 @@ const ExoSelect = {
 
     // Keyboard navigation
     this._onKeydown = (e) => {
-      const options = [...this._listbox.querySelectorAll('[data-exo="select-option"]:not([data-disabled])')]
+      const options = this._enabledOptions()
       if (!options.length) return
-      const idx = options.indexOf(document.activeElement)
+      const idx = Math.max(options.indexOf(this._activeOption), options.indexOf(document.activeElement))
       let next = -1
 
       switch (e.key) {
@@ -71,9 +74,43 @@ const ExoSelect = {
       }
 
       e.preventDefault()
-      if (next >= 0) options[next].focus()
+      if (next >= 0) this._setActiveOption(options[next])
     }
     this._listbox.addEventListener('keydown', this._onKeydown)
+  },
+
+  _syncOptions() {
+    this._listbox.querySelectorAll('[data-exo="select-option"]').forEach((option, index) => {
+      if (!option.id) option.id = `${this.el.id}-option-${index}`
+      option.setAttribute('role', 'option')
+      option.setAttribute('tabindex', '-1')
+    })
+  },
+
+  _enabledOptions() {
+    return [...this._listbox.querySelectorAll('[data-exo="select-option"]:not([data-disabled])')]
+  },
+
+  _setActiveOption(option) {
+    if (!option) return
+
+    if (this._activeOption && this._activeOption !== option) {
+      delete this._activeOption.dataset.active
+    }
+
+    this._activeOption = option
+    option.dataset.active = ''
+    this._trigger?.setAttribute('aria-activedescendant', option.id)
+    this._listbox?.setAttribute('aria-activedescendant', option.id)
+    option.scrollIntoView({ block: 'nearest' })
+    option.focus()
+  },
+
+  _clearActiveOption() {
+    if (this._activeOption) delete this._activeOption.dataset.active
+    this._activeOption = null
+    this._trigger?.removeAttribute('aria-activedescendant')
+    this._listbox?.removeAttribute('aria-activedescendant')
   },
 
   _selectOption(opt) {
@@ -97,6 +134,8 @@ const ExoSelect = {
       }
     })
 
+    this._setActiveOption(opt)
+
     // Update trigger display text
     const valueEl = this._trigger.querySelector('[data-exo="select-value"]')
     if (valueEl) {
@@ -112,11 +151,11 @@ const ExoSelect = {
   _typeAhead(char, options) {
     if (char.length !== 1) return
     const lower = char.toLowerCase()
-    const currentIdx = options.indexOf(document.activeElement)
+    const currentIdx = Math.max(options.indexOf(this._activeOption), options.indexOf(document.activeElement))
     const start = currentIdx + 1
     const rotated = [...options.slice(start), ...options.slice(0, start)]
     const match = rotated.find(o => o.textContent.trim().toLowerCase().startsWith(lower))
-    if (match) match.focus()
+    if (match) this._setActiveOption(match)
   },
 
   _unbind() {
@@ -133,6 +172,7 @@ const ExoSelect = {
     this._popover = null
     this._listbox = null
     this._hidden = null
+    this._activeOption = null
     this._onToggle = null
     this._onClick = null
     this._onKeydown = null
