@@ -121,4 +121,41 @@ test.describe("combobox", () => {
     await expect(disabledTrigger).toBeDisabled();
     await expect(canvas.locator("input[name=\"locked_owner\"]")).toHaveValue("ops");
   });
+
+  test("supports async server filtering with LiveView loading state", async ({ page }) => {
+    await gotoStory(page, "/components/forms/combobox_async");
+
+    const canvas = story(page);
+    const root = canvas.locator("#cb-async-combobox");
+    const trigger = root.locator("[data-exo-combobox=\"trigger\"]");
+    const popover = canvas.locator("#cb-async");
+    const search = popover.locator("[data-exo=\"combobox-search\"]");
+    const listbox = canvas.locator("#cb-async-listbox");
+    const status = canvas.locator("#cb-async-status");
+    const maria = popover.locator("[data-exo=\"combobox-option\"][data-value=\"maria\"]");
+    const value = canvas.locator("input[name=\"async_user\"]");
+
+    await expectAttribute(root, "data-ready", "");
+    await trigger.click();
+    await expectPopoverState(popover, true);
+
+    await search.fill("maria");
+    await expect(status).toHaveText("Loading results");
+    await expect(listbox).toHaveAttribute("aria-busy", "true");
+
+    await expect(maria).toBeVisible();
+    await expect(listbox).toHaveAttribute("aria-busy", "false");
+    await expect(status).toHaveText("1 result available");
+
+    await search.press("ArrowDown");
+    await expect(search).toHaveAttribute("aria-activedescendant", await maria.getAttribute("id"));
+    await page.keyboard.press("Enter");
+    await expect(value).toHaveValue("maria");
+
+    await trigger.click();
+    await search.fill("zzzz");
+    await expect(status).toHaveText("Loading results");
+    await expect(popover.locator("[data-exo=\"combobox-empty\"]")).toContainText("No remote users found");
+    await expect(status).toContainText("No remote users found");
+  });
 });

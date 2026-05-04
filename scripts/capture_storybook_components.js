@@ -120,6 +120,14 @@ async function componentDemo(page, name) {
         node.fill("ser", { timeout: 1500 })
       );
       break;
+    case "combobox_async":
+      await clickFirst(page, '#story-live [data-exo-combobox="trigger"]');
+      await page.waitForTimeout(250);
+      await safe(page.locator('#story-live [data-exo="combobox-search"]'), (node) =>
+        node.fill("maria", { timeout: 1500 })
+      );
+      await page.waitForTimeout(900);
+      break;
     case "command_palette":
       await page.keyboard.press(process.platform === "darwin" ? "Meta+K" : "Control+K");
       await page.waitForTimeout(400);

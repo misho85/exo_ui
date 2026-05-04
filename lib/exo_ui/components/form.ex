@@ -422,11 +422,13 @@ defmodule ExoUI.Components.Form do
   attr :trigger, :string, values: ~w(button input), default: "button"
   attr :filter, :string, values: ~w(client server), default: "server"
   attr :on_filter, :string, default: "combobox-filter"
+  attr :on_filter_target, :any, default: nil
   attr :debounce, :integer, default: 300
   attr :creatable, :boolean, default: false
   attr :on_create, :string, default: "combobox-create"
   attr :clearable, :boolean, default: true
   attr :loading, :boolean, default: false
+  attr :status, :string, default: nil, doc: "custom live-region text for server-filtered results"
   attr :errors, :list, default: []
   attr :disabled, :boolean, default: false
   attr :side, :string, values: ~w(top bottom left right), default: "bottom"
@@ -468,6 +470,7 @@ defmodule ExoUI.Components.Form do
         data-on-filter={@on_filter}
         data-debounce={to_string(@debounce)}
         data-trigger="input"
+        phx-target={@on_filter_target}
       >
         <input
           type="text"
@@ -515,7 +518,7 @@ defmodule ExoUI.Components.Form do
           aria-live="polite"
           aria-atomic="true"
         >
-          {if @loading, do: "Loading results", else: ""}
+          {combobox_status(@status, @loading)}
         </span>
       </div>
       <.choice_hidden_input name={@name} value={@value} />
@@ -539,6 +542,7 @@ defmodule ExoUI.Components.Form do
         data-on-filter={@on_filter}
         data-debounce={to_string(@debounce)}
         data-trigger="button"
+        phx-target={@on_filter_target}
       >
         <div data-exo="combobox-trigger-group">
           <button
@@ -621,7 +625,7 @@ defmodule ExoUI.Components.Form do
           aria-live="polite"
           aria-atomic="true"
         >
-          {if @loading, do: "Loading results", else: ""}
+          {combobox_status(@status, @loading)}
         </span>
       </div>
       <.choice_hidden_input name={@name} value={@value} />
@@ -684,6 +688,10 @@ defmodule ExoUI.Components.Form do
     <input :if={@name} type="hidden" name={@name} value={hidden_choice_value(@value)} />
     """
   end
+
+  defp combobox_status(status, _loading) when is_binary(status), do: status
+  defp combobox_status(_status, true), do: "Loading results"
+  defp combobox_status(_status, _loading), do: ""
 
   defp prepare_choice(assigns) do
     assigns = prepare_basic_field(assigns)

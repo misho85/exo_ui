@@ -182,6 +182,9 @@ available:
 - `ExoUI.Charts`
 - `ExoUI.Layouts`
 
+Component-specific copy-paste notes live under `docs/guides/`, starting with
+the targetable server-filter [combobox guide](docs/guides/combobox.md).
+
 ## Theme And CSS Modes
 
 All colors, borders, shadows and radii are defined as CSS custom properties on

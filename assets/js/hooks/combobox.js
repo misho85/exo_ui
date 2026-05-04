@@ -7,6 +7,7 @@ const ExoCombobox = {
     const isInputTrigger = this.el.dataset.trigger === 'input'
     const filter = this.el.dataset.filter || 'server'
     const onFilter = this.el.dataset.onFilter
+    const onFilterTarget = this.el.getAttribute('phx-target')
     const debounce = parseInt(this.el.dataset.debounce || '300', 10)
 
     this._search = isInputTrigger
@@ -22,6 +23,7 @@ const ExoCombobox = {
     this._create = this.el.querySelector('[data-exo="combobox-create"]')
     this._loading = this.el.querySelector('[data-exo="combobox-loading"]')
     this._status = this.el.querySelector('[data-exo="combobox-status"]')
+    this._serverStatus = this._status?.textContent.trim() || ''
 
     this._clear = this.el.querySelector('[data-exo="combobox-clear"]')
 
@@ -72,6 +74,7 @@ const ExoCombobox = {
           })
         }
         this._clearActiveOption()
+        this._serverStatus = ''
         this._announceStatus('Selection cleared')
       }
       this._clear.addEventListener('click', this._onClear)
@@ -84,6 +87,8 @@ const ExoCombobox = {
       if (open && this._search) {
         if (!isInputTrigger) {
           this._search.value = ''
+          this._lastQuery = ''
+          this._serverStatus = ''
           if (filter === 'client') this._clientFilter('')
           focusSearch()
         }
@@ -91,6 +96,7 @@ const ExoCombobox = {
         this._syncStatusFromState()
       } else if (!open) {
         this._clearActiveOption()
+        this._serverStatus = ''
         this._syncStatusFromState()
       }
     }
@@ -118,6 +124,8 @@ const ExoCombobox = {
     if (this._search) {
       this._onInput = () => {
         const query = this._search.value
+        this._lastQuery = query
+        this._serverStatus = ''
         if (filter === 'client') {
           this._clientFilter(query)
           this._syncActiveAfterFilter()
@@ -125,7 +133,8 @@ const ExoCombobox = {
         } else {
           clearTimeout(this._debounceTimer)
           this._debounceTimer = setTimeout(() => {
-            if (onFilter) this.pushEvent(onFilter, { query })
+            if (onFilterTarget) this.pushEventTo(onFilterTarget, onFilter, { query })
+            else if (onFilter) this.pushEvent(onFilter, { query })
           }, debounce)
           this._announceStatus(query ? 'Searching results' : '')
         }
@@ -249,7 +258,20 @@ const ExoCombobox = {
       return
     }
 
-    if (!this._isOpen() || this.el.dataset.filter !== 'client') {
+    if (!this._isOpen()) {
+      this._announceStatus('')
+      return
+    }
+
+    if (this._serverStatus) {
+      this._announceStatus(this._serverStatus)
+      return
+    }
+
+    const query = this._search?.value || this._lastQuery || ''
+    const hasQuery = query.trim().length > 0
+    const shouldAnnounceResults = this.el.dataset.filter === 'client' || hasQuery || this._empty
+    if (!shouldAnnounceResults) {
       this._announceStatus('')
       return
     }
@@ -329,6 +351,10 @@ const ExoCombobox = {
     this._status = null
     this._hidden = null
     this._activeOption = null
+    if (!this.el?.isConnected) {
+      this._lastQuery = ''
+      this._serverStatus = ''
+    }
   }
 }
 

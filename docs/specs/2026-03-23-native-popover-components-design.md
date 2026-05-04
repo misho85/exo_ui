@@ -463,7 +463,8 @@ Select + text search. Two modes: client-side filter and server-side filter. Two 
 
 <%-- Server-side filter --%>
 <.combobox id="user" field={@form[:user_id]} prompt="Search users..."
-           filter="server" on_filter="search-users" loading={@searching}>
+           filter="server" on_filter="search-users" loading={@searching}
+           status={@user_search_status}>
   <:option :for={user <- @user_results} value={user.id} icon="user">
     {user.name}
   </:option>
@@ -497,12 +498,14 @@ Select + text search. Two modes: client-side filter and server-side filter. Two 
 | `trigger`   | `:string`   | `"button"`          | `"button"` (enhanced select) \| `"input"` (autocomplete) |
 | `filter`    | `:string`   | `"server"`          | `"client"` \| `"server"`                |
 | `on_filter` | `:string`   | `"combobox-filter"` | Server filter event name                 |
+| `on_filter_target` | `:any` | `nil`      | Optional LiveComponent target, usually `@myself` |
 | `debounce`  | `:integer`  | `300`               | Debounce ms for server filter            |
 | `multiple`  | `:boolean`  | `false`             |                                          |
 | `creatable` | `:boolean`  | `false`             | Allow new values                         |
 | `on_create` | `:string`   | `"combobox-create"` | Create event name                        |
 | `clearable` | `:boolean`  | `true`              | Show X to clear selection                |
 | `loading`   | `:boolean`  | `false`             | Loading state for server filter          |
+| `status`    | `:string`   | `nil`               | Custom live-region text for async/server results |
 | `errors`    | `:list`     | `[]`                |                                          |
 | `disabled`  | `:boolean`  | `false`             |                                          |
 | `side`      | `:string`   | `"bottom"`          |                                          |

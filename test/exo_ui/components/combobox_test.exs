@@ -105,6 +105,19 @@ defmodule ExoUI.Components.ComboboxTest do
     assert html =~ ~s(data-on-filter="search")
   end
 
+  test "renders server filter target for nested LiveComponents" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.combobox id="c6-target" name="x" filter="server" on_filter_target="#owner">
+        <:option value="a">A</:option>
+      </.combobox>
+      """)
+
+    assert html =~ ~s(phx-target="#owner")
+  end
+
   test "renders loading state" do
     assigns = %{}
 
