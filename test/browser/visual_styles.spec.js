@@ -62,14 +62,27 @@ test.describe("component visual styles", () => {
 
     const indicator = story(page).locator('[data-exo="indicator"]').first();
     const indicatorBadge = indicator.locator('[data-exo="indicator-badge"]').first();
+    const dotIndicator = story(page).locator('[data-exo="indicator"]').last();
 
     const indicatorDisplay = await indicator.evaluate(
       (node) => window.getComputedStyle(node).display
     );
+    const dotIndicatorAfter = await dotIndicator.evaluate((node) => {
+      const styles = window.getComputedStyle(node, "::after");
+
+      return {
+        content: styles.content,
+        position: styles.position,
+        width: styles.width
+      };
+    });
 
     await expect(indicator).toHaveCSS("position", "relative");
     expect(["flex", "inline-flex"]).toContain(indicatorDisplay);
     await expect(indicatorBadge).toHaveCSS("position", "absolute");
+    expect(dotIndicatorAfter.content).toBe('""');
+    expect(dotIndicatorAfter.position).toBe("absolute");
+    expect(Number.parseFloat(dotIndicatorAfter.width)).toBeGreaterThan(6);
 
     await gotoStory(page, "/components/feedback/radial_progress");
 

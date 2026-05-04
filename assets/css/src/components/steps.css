@@ -24,7 +24,7 @@
 }
 
 /* Connector line between steps */
-:where([data-exo="step"]:not(:last-child)::after) {
+:where([data-exo="step"]:not(:last-child))::after {
   content: "";
   flex: 1;
   height: 2px;
@@ -32,7 +32,7 @@
   margin: 0 var(--exo-space-2);
 }
 
-:where([data-exo="steps"][data-orientation="vertical"] [data-exo="step"]:not(:last-child)::after) {
+:where([data-exo="steps"][data-orientation="vertical"] [data-exo="step"]:not(:last-child))::after {
   position: absolute;
   left: 0.875rem;
   top: 2rem;
@@ -42,7 +42,7 @@
   margin: 0;
 }
 
-:where([data-exo="step"][data-status="complete"]:not(:last-child)::after) {
+:where([data-exo="step"][data-status="complete"]:not(:last-child))::after {
   background: var(--exo-primary);
 }
 

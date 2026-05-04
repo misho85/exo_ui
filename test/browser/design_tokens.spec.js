@@ -5,6 +5,7 @@ const { test, expect } = require("@playwright/test");
 
 const root = path.resolve(__dirname, "../..");
 const cssRoot = path.join(root, "assets/css/src");
+const bundledCss = path.join(root, "priv/static/exo.css");
 
 function cssFiles(dir) {
   return fs
@@ -46,5 +47,11 @@ test.describe("design tokens", () => {
     }
 
     expect(missing).toEqual([]);
+  });
+
+  test("bundled CSS does not contain empty where selectors", () => {
+    const css = fs.readFileSync(bundledCss, "utf8");
+
+    expect(css).not.toContain(":where(){");
   });
 });

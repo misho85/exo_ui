@@ -86,9 +86,20 @@ test.describe("navigation and progress components", () => {
 
     const canvas = story(page);
     const currentStep = canvas.locator('[data-exo="step"][aria-current="step"]').first();
+    const firstStep = canvas.locator('[data-exo="step"]').first();
+    const firstStepConnector = await firstStep.evaluate((node) => {
+      const styles = window.getComputedStyle(node, "::after");
+
+      return {
+        content: styles.content,
+        height: styles.height
+      };
+    });
 
     await expect(currentStep).toHaveAttribute("aria-label", "Step 2, Profile, current");
     await expect(currentStep.locator('[data-exo="step-description"]')).toHaveText("Add public profile data");
+    expect(firstStepConnector.content).toBe('""');
+    expect(Number.parseFloat(firstStepConnector.height)).toBeGreaterThan(0);
 
     await gotoStory(page, "/components/navigation/wizard_sidebar");
 
