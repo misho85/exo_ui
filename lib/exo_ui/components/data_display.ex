@@ -200,6 +200,7 @@ defmodule ExoUI.Components.DataDisplay do
   @doc "Renders a wizard/stepper sidebar showing step progress."
   attr :steps, :list, required: true, doc: "list of %{id: string, label: string, status: atom}"
   attr :on_click, :string, default: "goto-step", doc: "phx-click event name"
+  attr :aria_label, :string, default: "Wizard progress"
   attr :class, :any, default: nil
   attr :rest, :global
 
@@ -207,21 +208,25 @@ defmodule ExoUI.Components.DataDisplay do
     assigns = assign(assigns, :last_idx, length(assigns.steps) - 1)
 
     ~H"""
-    <nav data-exo="wizard" class={@class} {@rest}>
+    <nav data-exo="wizard" aria-label={@aria_label} class={@class} {@rest}>
       <ol>
         <li
           :for={{step, idx} <- Enum.with_index(@steps)}
           data-exo="wizard-step"
           data-status={step.status}
+          aria-current={step.status == :current && "step"}
         >
           <button
             :if={step.status in [:completed, :current]}
+            type="button"
             data-exo="wizard-btn"
             data-status={step.status}
             phx-click={@on_click}
             phx-value-step={step.id}
+            aria-label={wizard_step_label(step, idx)}
+            aria-current={step.status == :current && "step"}
           >
-            <span data-exo="wizard-indicator">
+            <span data-exo="wizard-indicator" aria-hidden="true">
               <span :if={step.status == :completed}>✓</span>
               <span :if={step.status != :completed}>{idx + 1}</span>
             </span>
@@ -231,8 +236,10 @@ defmodule ExoUI.Components.DataDisplay do
             :if={step.status not in [:completed, :current]}
             data-exo="wizard-btn"
             data-status={step.status}
+            aria-disabled="true"
+            aria-label={wizard_step_label(step, idx)}
           >
-            <span data-exo="wizard-indicator">{idx + 1}</span>
+            <span data-exo="wizard-indicator" aria-hidden="true">{idx + 1}</span>
             <span data-exo="wizard-label">{step.label}</span>
           </div>
           <div :if={idx < @last_idx} data-exo="wizard-connector" data-status={step.status} />
@@ -240,6 +247,15 @@ defmodule ExoUI.Components.DataDisplay do
       </ol>
     </nav>
     """
+  end
+
+  defp wizard_step_label(step, idx) do
+    status =
+      step.status
+      |> to_string()
+      |> String.replace("_", " ")
+
+    "Step #{idx + 1}, #{step.label}, #{status}"
   end
 
   @doc "Renders a breadcrumb navigation trail."
@@ -273,8 +289,11 @@ defmodule ExoUI.Components.DataDisplay do
   end
 
   @doc "Renders a tab bar with click or navigation-based tabs."
+  attr :id, :string, default: nil
   attr :active, :string, required: true, doc: "the id of the currently active tab"
+  attr :aria_label, :string, default: "Tabs"
   attr :class, :any, default: nil
+  attr :rest, :global
 
   slot :tab, required: true do
     attr :id, :string, required: true
@@ -284,31 +303,53 @@ defmodule ExoUI.Components.DataDisplay do
     attr :click, :string
     attr :click_value, :string
     attr :icon, :string
+    attr :panel_id, :string
+    attr :disabled, :boolean
   end
 
   def tabs(assigns) do
     ~H"""
-    <div data-exo="tabs" role="tablist" class={@class}>
+    <div id={@id} data-exo="tabs" role="tablist" aria-label={@aria_label} class={@class} {@rest}>
       <%= for tab <- @tab do %>
+        <span
+          :if={tab[:disabled]}
+          id={tab_dom_id(@id, tab)}
+          data-exo="tab"
+          data-disabled
+          role="tab"
+          aria-disabled="true"
+          aria-selected="false"
+          aria-controls={tab_panel_id(@id, tab)}
+          tabindex="-1"
+        >
+          {tab.label}
+        </span>
         <button
-          :if={tab[:click]}
+          :if={!tab[:disabled] && tab[:click]}
+          type="button"
+          id={tab_dom_id(@id, tab)}
           data-exo="tab"
           data-active={tab.id == @active && ""}
           phx-click={tab[:click]}
           phx-value-tab={tab[:click_value] || tab.id}
           role="tab"
           aria-selected={to_string(tab.id == @active)}
+          aria-controls={tab_panel_id(@id, tab)}
+          tabindex={tab_tabindex(tab, @active)}
         >
           {tab.label}
         </button>
         <.link
-          :if={!tab[:click]}
+          :if={!tab[:disabled] && !tab[:click]}
+          id={tab_dom_id(@id, tab)}
           data-exo="tab"
           data-active={tab.id == @active && ""}
           patch={tab[:patch]}
           navigate={tab[:navigate]}
           role="tab"
           aria-selected={to_string(tab.id == @active)}
+          aria-controls={tab_panel_id(@id, tab)}
+          tabindex={tab_tabindex(tab, @active)}
         >
           {tab.label}
         </.link>
@@ -317,37 +358,45 @@ defmodule ExoUI.Components.DataDisplay do
     """
   end
 
+  defp tab_dom_id(nil, _tab), do: nil
+  defp tab_dom_id(id, tab), do: "#{id}-tab-#{tab.id}"
+
+  defp tab_panel_id(_id, %{panel_id: panel_id}) when panel_id not in [nil, ""], do: panel_id
+  defp tab_panel_id(nil, _tab), do: nil
+  defp tab_panel_id(id, tab), do: "#{id}-panel-#{tab.id}"
+
+  defp tab_tabindex(tab, active), do: if(tab.id == active, do: "0", else: "-1")
+
   @doc "Renders a pagination control with page numbers and prev/next buttons."
   attr :page, :integer, required: true
   attr :total_pages, :integer, required: true
   attr :patch_fn, :any, required: true, doc: "function taking page number, returns path"
   attr :prev_label, :string, default: "Previous page"
   attr :next_label, :string, default: "Next page"
+  attr :page_label, :string, default: "Page %{page}"
   attr :aria_label, :string, default: "Pagination"
   attr :class, :any, default: nil
+  attr :rest, :global
 
   def pagination(assigns) do
-    range =
-      cond do
-        assigns.total_pages <= 7 ->
-          Enum.to_list(1..assigns.total_pages)
+    total_pages = max(assigns.total_pages, 0)
+    page = assigns.page |> max(1) |> min(max(total_pages, 1))
 
-        assigns.page <= 3 ->
-          Enum.to_list(1..5) ++ [:ellipsis, assigns.total_pages]
-
-        assigns.page >= assigns.total_pages - 2 ->
-          [1, :ellipsis | Enum.to_list((assigns.total_pages - 4)..assigns.total_pages)]
-
-        true ->
-          [1, :ellipsis] ++
-            Enum.to_list((assigns.page - 1)..(assigns.page + 1)) ++
-            [:ellipsis, assigns.total_pages]
-      end
-
-    assigns = assign(assigns, :range, range)
+    assigns =
+      assign(assigns,
+        page: page,
+        total_pages: total_pages,
+        range: pagination_range(page, total_pages)
+      )
 
     ~H"""
-    <nav :if={@total_pages > 1} data-exo="pagination" aria-label={@aria_label} class={@class}>
+    <nav
+      :if={@total_pages > 1}
+      data-exo="pagination"
+      aria-label={@aria_label}
+      class={@class}
+      {@rest}
+    >
       <.link
         :if={@page > 1}
         data-exo="pagination-btn"
@@ -356,19 +405,26 @@ defmodule ExoUI.Components.DataDisplay do
       >
         ‹
       </.link>
-      <span :if={@page <= 1} data-exo="pagination-btn" data-disabled aria-disabled="true">
+      <span
+        :if={@page <= 1}
+        data-exo="pagination-btn"
+        data-disabled
+        aria-disabled="true"
+        aria-label={@prev_label}
+      >
         ‹
       </span>
 
       <%= for item <- @range do %>
         <%= case item do %>
           <% :ellipsis -> %>
-            <span data-exo="pagination-ellipsis">…</span>
+            <span data-exo="pagination-ellipsis" aria-hidden="true">…</span>
           <% num -> %>
             <.link
               data-exo="pagination-btn"
               data-active={num == @page && ""}
               patch={@patch_fn.(num)}
+              aria-label={pagination_page_label(@page_label, num, num == @page)}
               aria-current={num == @page && "page"}
             >
               {num}
@@ -384,14 +440,47 @@ defmodule ExoUI.Components.DataDisplay do
       >
         ›
       </.link>
-      <span :if={@page >= @total_pages} data-exo="pagination-btn" data-disabled aria-disabled="true">
+      <span
+        :if={@page >= @total_pages}
+        data-exo="pagination-btn"
+        data-disabled
+        aria-disabled="true"
+        aria-label={@next_label}
+      >
         ›
       </span>
     </nav>
     """
   end
 
+  defp pagination_range(_page, total_pages) when total_pages <= 0, do: []
+
+  defp pagination_range(_page, total_pages) when total_pages <= 7 do
+    Enum.to_list(1..total_pages)
+  end
+
+  defp pagination_range(page, total_pages) when page <= 3 do
+    Enum.to_list(1..5) ++ [:ellipsis, total_pages]
+  end
+
+  defp pagination_range(page, total_pages) when page >= total_pages - 2 do
+    [1, :ellipsis | Enum.to_list((total_pages - 4)..total_pages)]
+  end
+
+  defp pagination_range(page, total_pages) do
+    [1, :ellipsis] ++ Enum.to_list((page - 1)..(page + 1)) ++ [:ellipsis, total_pages]
+  end
+
+  defp pagination_page_label(template, page, true) do
+    "#{pagination_page_label(template, page, false)}, current page"
+  end
+
+  defp pagination_page_label(template, page, false) do
+    String.replace(template, "%{page}", to_string(page))
+  end
+
   @doc "Renders a multi-step progress indicator."
+  attr :aria_label, :string, default: "Progress"
   attr :class, :any, default: nil
   attr :orientation, :string, values: ~w(horizontal vertical), default: "horizontal"
   attr :rest, :global
@@ -399,24 +488,41 @@ defmodule ExoUI.Components.DataDisplay do
   slot :step, required: true do
     attr :title, :string, required: true
     attr :status, :string, values: ~w(complete current upcoming)
+    attr :description, :string
   end
 
   def steps(assigns) do
     ~H"""
-    <ol data-exo="steps" data-orientation={@orientation} class={@class} {@rest}>
+    <ol
+      data-exo="steps"
+      data-orientation={@orientation}
+      aria-label={@aria_label}
+      class={@class}
+      {@rest}
+    >
       <li
-        :for={step <- @step}
+        :for={{step, idx} <- Enum.with_index(@step)}
         data-exo="step"
         data-status={step[:status] || "upcoming"}
+        aria-current={step[:status] == "current" && "step"}
+        aria-label={step_label(step, idx)}
       >
-        <div data-exo="step-indicator">
+        <div data-exo="step-indicator" aria-hidden="true">
           <span :if={step[:status] == "complete"}>&#10003;</span>
-          <span :if={step[:status] != "complete"}></span>
+          <span :if={step[:status] != "complete"}>{idx + 1}</span>
         </div>
-        <span data-exo="step-title">{step.title}</span>
+        <span data-exo="step-body">
+          <span data-exo="step-title">{step.title}</span>
+          <span :if={step[:description]} data-exo="step-description">{step.description}</span>
+        </span>
       </li>
     </ol>
     """
+  end
+
+  defp step_label(step, idx) do
+    status = step[:status] || "upcoming"
+    "Step #{idx + 1}, #{step.title}, #{status}"
   end
 
   @doc "Renders a chronological timeline of events."

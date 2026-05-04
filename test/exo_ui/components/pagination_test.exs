@@ -9,6 +9,10 @@ defmodule ExoUI.Components.PaginationTest do
     html = rendered_to_string(~H|<.pagination page={1} total_pages={5} patch_fn={@patch_fn} />|)
     assert html =~ ~s(data-exo="pagination")
     assert html =~ ~s(aria-label="Pagination")
+    assert html =~ ~s(aria-label="Previous page")
+    assert html =~ ~s(aria-disabled="true")
+    assert html =~ ~s(aria-label="Page 1, current page")
+    assert html =~ ~s(aria-label="Page 2")
   end
 
   test "hides when total_pages is 1" do
@@ -21,5 +25,26 @@ defmodule ExoUI.Components.PaginationTest do
     assigns = %{patch_fn: &"/items?page=#{&1}"}
     html = rendered_to_string(~H|<.pagination page={1} total_pages={20} patch_fn={@patch_fn} />|)
     assert html =~ "…"
+    assert html =~ ~s(data-exo="pagination-ellipsis" aria-hidden="true")
+  end
+
+  test "clamps out-of-range page values" do
+    assigns = %{patch_fn: &"/items?page=#{&1}"}
+    html = rendered_to_string(~H|<.pagination page={99} total_pages={3} patch_fn={@patch_fn} />|)
+
+    assert html =~ ~s(aria-label="Page 3, current page")
+    assert html =~ ~s(aria-label="Next page")
+    assert html =~ ~s(aria-disabled="true")
+  end
+
+  test "supports custom page labels" do
+    assigns = %{patch_fn: &"/items?page=#{&1}"}
+
+    html =
+      rendered_to_string(
+        ~H|<.pagination page={2} total_pages={3} patch_fn={@patch_fn} page_label="Go to page %{page}" />|
+      )
+
+    assert html =~ ~s(aria-label="Go to page 2, current page")
   end
 end

@@ -34,6 +34,11 @@
   background: var(--exo-muted);
 }
 
+:where(button[data-exo="wizard-btn"]):focus-visible {
+  outline: 2px solid var(--exo-ring);
+  outline-offset: 2px;
+}
+
 :where([data-exo="wizard-indicator"]) {
   display: flex;
   align-items: center;

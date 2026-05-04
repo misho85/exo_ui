@@ -79,6 +79,17 @@
   color: var(--exo-foreground);
 }
 
+:where([data-exo="step-body"]) {
+  display: grid;
+  gap: 0.125rem;
+}
+
+:where([data-exo="step-description"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-xs);
+  color: var(--exo-muted-foreground);
+}
+
 :where([data-exo="step"][data-status="upcoming"] [data-exo="step-title"]) {
   color: var(--exo-muted-foreground);
 }

@@ -15,9 +15,14 @@ defmodule ExoUI.Components.WizardTest do
 
     html = rendered_to_string(~H|<.wizard_sidebar steps={@steps} />|)
     assert html =~ ~s(data-exo="wizard")
+    assert html =~ ~s(aria-label="Wizard progress")
     assert html =~ ~s(data-status="completed")
     assert html =~ ~s(data-status="current")
     assert html =~ ~s(data-status="pending")
+    assert html =~ ~s(type="button")
+    assert html =~ ~s(aria-current="step")
+    assert html =~ ~s(aria-disabled="true")
+    assert html =~ ~s(aria-label="Step 2, Payment, current")
     assert html =~ "Details"
     assert html =~ "Payment"
     assert html =~ "Confirm"

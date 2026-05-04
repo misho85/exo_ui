@@ -23,11 +23,22 @@
               border-color var(--exo-duration) var(--exo-easing);
 }
 
-:where([data-exo="tab"]):hover {
+:where([data-exo="tab"]):hover:not([data-disabled]) {
   color: var(--exo-foreground);
+}
+
+:where([data-exo="tab"]):focus-visible {
+  outline: 2px solid var(--exo-ring);
+  outline-offset: 2px;
+  border-radius: var(--exo-radius-sm);
 }
 
 :where([data-exo="tab"][data-active]) {
   color: var(--exo-foreground);
   border-bottom-color: var(--exo-primary);
+}
+
+:where([data-exo="tab"][data-disabled]) {
+  cursor: not-allowed;
+  opacity: 0.45;
 }

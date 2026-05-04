@@ -9,15 +9,15 @@ defmodule Storybook.Components.Steps do
       <section>
         <h3 style="margin-bottom: 0.75rem; font-weight: 600;">Horizontal</h3>
         <ExoUI.Components.steps>
-          <:step title="Account" status="complete" />
-          <:step title="Profile" status="current" />
-          <:step title="Review" status="upcoming" />
+          <:step title="Account" status="complete" description="Login details saved" />
+          <:step title="Profile" status="current" description="Add public profile data" />
+          <:step title="Review" status="upcoming" description="Confirm and submit" />
         </ExoUI.Components.steps>
       </section>
 
       <section>
         <h3 style="margin-bottom: 0.75rem; font-weight: 600;">Vertical</h3>
-        <ExoUI.Components.steps orientation="vertical">
+        <ExoUI.Components.steps orientation="vertical" aria_label="Shipping progress">
           <:step title="Order placed" status="complete" />
           <:step title="Processing" status="complete" />
           <:step title="Shipped" status="current" />

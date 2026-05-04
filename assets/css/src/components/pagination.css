@@ -26,6 +26,11 @@
   background: var(--exo-muted);
 }
 
+:where([data-exo="pagination-btn"]):focus-visible {
+  outline: 2px solid var(--exo-ring);
+  outline-offset: 2px;
+}
+
 :where([data-exo="pagination-btn"][data-active]) {
   background: var(--exo-primary);
   color: var(--exo-primary-foreground);
