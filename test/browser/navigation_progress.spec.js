@@ -7,7 +7,8 @@ test.describe("navigation and progress components", () => {
     await gotoStory(page, "/components/navigation/tabs");
 
     const canvas = story(page);
-    const tabs = canvas.locator('[data-exo="tabs"]');
+    const tabs = canvas.locator("#tabs-single-default");
+    const verticalTabs = canvas.locator("#tabs-single-vertical-automatic");
     const activeTab = tabs.locator('[data-exo="tab"][data-active]');
     const detailsTab = tabs.getByRole("tab", { name: /Details/ });
     const settingsTab = tabs.getByRole("tab", { name: /Settings/ });
@@ -36,6 +37,13 @@ test.describe("navigation and progress components", () => {
     await expectFocused(activeTab);
     await page.keyboard.press("End");
     await expectFocused(settingsTab);
+
+    await expectAttribute(verticalTabs, "aria-orientation", "vertical");
+    await expectAttribute(verticalTabs, "data-activation", "automatic");
+    await expect(verticalTabs.getByRole("tab", { name: /Profile/ })).toHaveAttribute(
+      "aria-selected",
+      "true"
+    );
   });
 
   test("pagination exposes page labels, current page, and disabled controls", async ({ page }) => {
@@ -64,10 +72,13 @@ test.describe("navigation and progress components", () => {
 
     const canvas = story(page);
     const iconNav = canvas.locator('[data-exo="bottom-nav"]').nth(1);
+    const appNav = canvas.locator('[aria-label="Main app navigation"]');
     const activeItem = iconNav.locator('[data-exo="bottom-nav-item"][aria-current="page"]');
 
     await expect(activeItem).toContainText("Home");
     await expect(activeItem.locator('[data-exo="bottom-nav-icon"] svg')).toHaveCount(1);
+    await expect(appNav.locator('[data-exo="bottom-nav-item"]')).toHaveCount(5);
+    await expect(appNav.locator('[aria-current="page"]')).toContainText("Home");
   });
 
   test("steps and wizard mark the current step for assistive tech", async ({ page }) => {

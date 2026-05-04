@@ -13,7 +13,7 @@ const ExoThemeToggle = {
       if (!btn || !this.el.contains(btn)) return
       const value = btn.getAttribute('data-theme-value')
       this._apply(value)
-      localStorage.setItem('exo-theme', value)
+      this._writeTheme(value)
     }
     this.el.addEventListener('click', this._onClick)
   },
@@ -25,7 +25,11 @@ const ExoThemeToggle = {
   },
 
   _current() {
-    return localStorage.getItem('exo-theme') || 'system'
+    try {
+      return localStorage.getItem('exo-theme') || 'system'
+    } catch (_err) {
+      return 'system'
+    }
   },
 
   _apply(theme) {
@@ -42,6 +46,12 @@ const ExoThemeToggle = {
     } else {
       root.setAttribute('data-theme', theme)
     }
+  },
+
+  _writeTheme(theme) {
+    try {
+      localStorage.setItem('exo-theme', theme)
+    } catch (_err) {}
   }
 }
 

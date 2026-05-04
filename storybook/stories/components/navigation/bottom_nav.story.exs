@@ -24,6 +24,17 @@ defmodule Storybook.Components.BottomNav do
           <:item label="Account" icon="user" href="#">Account</:item>
         </ExoUI.Components.bottom_nav>
       </section>
+
+      <section>
+        <h3 style="margin-bottom: 0.75rem; font-weight: 600;">Five item app nav</h3>
+        <ExoUI.Components.bottom_nav aria-label="Main app navigation">
+          <:item label="Home" icon="house" href="#" active={true}>Home</:item>
+          <:item label="Search" icon="search" href="#">Search</:item>
+          <:item label="Create" icon="circle-plus" href="#">Create</:item>
+          <:item label="Activity" icon="bell" href="#">Activity</:item>
+          <:item label="Profile" icon="user" href="#">Profile</:item>
+        </ExoUI.Components.bottom_nav>
+      </section>
     </div>
     """
   end

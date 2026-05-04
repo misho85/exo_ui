@@ -23,6 +23,7 @@ defmodule ExoUI.Layouts do
     ~H"""
     <div
       data-exo="sidebar"
+      data-state="open"
       id={@id}
       phx-hook="ExoSidebar"
       class={@class}
@@ -32,6 +33,8 @@ defmodule ExoUI.Layouts do
         type="checkbox"
         data-exo="sidebar-toggle"
         checked
+        aria-hidden="true"
+        tabindex="-1"
         phx-update="ignore"
       />
 
@@ -39,15 +42,15 @@ defmodule ExoUI.Layouts do
       <div data-exo="sidebar-content">
         <%!-- Top bar --%>
         <header data-exo="sidebar-topbar">
-          <label
-            for={"#{@id}-toggle"}
+          <button
+            type="button"
             data-exo="sidebar-hamburger"
             aria-label="Toggle sidebar"
-            role="button"
-            tabindex="0"
+            aria-controls={"#{@id}-panel"}
+            aria-expanded="true"
           >
-            ☰
-          </label>
+            <span aria-hidden="true">☰</span>
+          </button>
 
           <div :if={@topbar_start != []} data-exo="topbar-start">
             {render_slot(@topbar_start)}
@@ -69,13 +72,11 @@ defmodule ExoUI.Layouts do
       </div>
 
       <%!-- Sidebar panel --%>
-      <div data-exo="sidebar-panel">
-        <label
-          for={"#{@id}-toggle"}
+      <div id={"#{@id}-panel"} data-exo="sidebar-panel" data-state="open">
+        <button
+          type="button"
           data-exo="sidebar-overlay"
           aria-label="Close sidebar"
-          role="button"
-          tabindex="0"
         />
         <aside data-exo="sidebar-aside">
           <div :if={@brand != []} data-exo="sidebar-brand">

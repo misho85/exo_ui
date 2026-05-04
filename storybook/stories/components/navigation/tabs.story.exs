@@ -17,6 +17,24 @@ defmodule Storybook.Components.Tabs do
           ~s|<:panel tab="details">Profile, contact, and ownership details.</:panel>|,
           ~s|<:panel tab="settings">Notification and access settings.</:panel>|
         ]
+      },
+      %Variation{
+        id: :vertical_automatic,
+        attributes: %{
+          id: "settings-tabs",
+          active: "profile",
+          aria_label: "Settings sections",
+          orientation: "vertical",
+          activation: "automatic"
+        },
+        slots: [
+          ~s|<:tab id="profile" label="Profile" icon="user" click="switch-settings" />|,
+          ~s|<:tab id="security" label="Security" icon="shield" click="switch-settings" />|,
+          ~s|<:tab id="billing" label="Billing" icon="credit-card" click="switch-settings" />|,
+          ~s|<:panel tab="profile">Public profile, avatar, and handle.</:panel>|,
+          ~s|<:panel tab="security">Password, sessions, and two-factor settings.</:panel>|,
+          ~s|<:panel tab="billing">Payment method and invoice preferences.</:panel>|
+        ]
       }
     ]
   end

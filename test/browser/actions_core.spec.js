@@ -32,6 +32,28 @@ test.describe("core action components", () => {
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   });
 
+  test("theme toggle keeps working when localStorage writes fail", async ({ page }) => {
+    const errors = [];
+    page.on("pageerror", (err) => errors.push(err.message));
+    await gotoStory(page, "/components/actions/theme_toggle");
+
+    const toggle = story(page).locator('[data-exo="theme-toggle"]');
+    const dark = toggle.getByRole("button", { name: "Dark theme" });
+
+    await expect(toggle).toHaveAttribute("data-ready", "");
+    await page.evaluate(() => {
+      Storage.prototype.setItem = () => {
+        throw new Error("storage blocked");
+      };
+    });
+
+    await dark.click();
+
+    await expect(dark).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    expect(errors).toEqual([]);
+  });
+
   test("swap toggles switch state with keyboard and pointer", async ({ page }) => {
     await gotoStory(page, "/components/actions/swap");
 

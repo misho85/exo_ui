@@ -21,6 +21,13 @@ defmodule Storybook.Components.Drawer do
         >
           Open Left Drawer
         </ExoUI.Components.button>
+
+        <ExoUI.Components.button
+          variant="secondary"
+          phx-click={ExoUI.Components.show_drawer("drawer-labelled")}
+        >
+          Open labelled drawer
+        </ExoUI.Components.button>
       </div>
 
       <ExoUI.Components.drawer id="drawer-right" side="right">
@@ -31,6 +38,10 @@ defmodule Storybook.Components.Drawer do
       <ExoUI.Components.drawer id="drawer-left" side="left">
         <:title>Navigation</:title>
         <p>Left-side navigation drawer.</p>
+      </ExoUI.Components.drawer>
+
+      <ExoUI.Components.drawer id="drawer-labelled" side="right" label="Filters drawer">
+        <p>Drawer without a visible title uses aria-label.</p>
       </ExoUI.Components.drawer>
     </div>
     """

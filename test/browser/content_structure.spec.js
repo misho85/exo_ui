@@ -8,6 +8,8 @@ test.describe("content structure components", () => {
 
     const canvas = story(page);
     const carousel = canvas.locator("#demo-carousel");
+    const singleCarousel = canvas.locator("#single-carousel");
+    const noControlsCarousel = canvas.locator("#no-controls-carousel");
     const viewport = carousel.locator("#demo-carousel-viewport");
     const prev = carousel.locator('[data-exo="carousel-prev"]');
     const next = carousel.locator('[data-exo="carousel-next"]');
@@ -23,6 +25,11 @@ test.describe("content structure components", () => {
     await expect
       .poll(async () => await prev.getAttribute("aria-disabled"))
       .toBe("false");
+
+    await expect(singleCarousel.locator('[data-exo="carousel-prev"]')).toBeDisabled();
+    await expect(singleCarousel.locator('[data-exo="carousel-next"]')).toBeDisabled();
+    await expect(noControlsCarousel.locator('[data-exo="carousel-prev"]')).toHaveCount(0);
+    await expect(noControlsCarousel.locator('[data-exo="carousel-next"]')).toHaveCount(0);
   });
 
   test("breadcrumb and timeline expose current item semantics", async ({ page }) => {

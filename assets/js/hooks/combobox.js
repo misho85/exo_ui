@@ -156,6 +156,8 @@ const ExoCombobox = {
       }
       this._popover.addEventListener('keydown', this._onKeydown)
     }
+
+    this.el.setAttribute('data-ready', '')
   },
   _clientFilter(query) {
     if (!this._listbox) return
@@ -204,6 +206,7 @@ const ExoCombobox = {
       if (this._onBlur) this._search.removeEventListener('blur', this._onBlur)
     }
     if (this._clear && this._onClear) this._clear.removeEventListener('click', this._onClear)
+    if (this.el) this.el.removeAttribute('data-ready')
     this._popover = null
     this._listbox = null
     this._search = null

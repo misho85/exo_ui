@@ -5,19 +5,28 @@ defmodule Storybook.Components.Sheet do
 
   def render(assigns) do
     ~H"""
-    <div style="display: flex; gap: 1rem; padding: 1rem;">
-      <button
-        data-exo="btn"
-        phx-click={ExoUI.Components.Overlay.show_sheet("sheet-right")}
-      >
+    <div style="display: flex; gap: 1rem; padding: 1rem; flex-wrap: wrap;">
+      <ExoUI.Components.button phx-click={ExoUI.Components.Overlay.show_sheet("sheet-right")}>
         Open right sheet
-      </button>
-      <button
-        data-exo="btn"
+      </ExoUI.Components.button>
+      <ExoUI.Components.button
+        variant="outline"
         phx-click={ExoUI.Components.Overlay.show_sheet("sheet-left")}
       >
         Open left sheet
-      </button>
+      </ExoUI.Components.button>
+      <ExoUI.Components.button
+        variant="secondary"
+        phx-click={ExoUI.Components.Overlay.show_sheet("sheet-top")}
+      >
+        Open top sheet
+      </ExoUI.Components.button>
+      <ExoUI.Components.button
+        variant="ghost"
+        phx-click={ExoUI.Components.Overlay.show_sheet("sheet-bottom")}
+      >
+        Open bottom sheet
+      </ExoUI.Components.button>
     </div>
 
     <ExoUI.Components.sheet id="sheet-right">
@@ -38,6 +47,15 @@ defmodule Storybook.Components.Sheet do
     <ExoUI.Components.sheet id="sheet-left" side="left">
       <:title>Left sheet</:title>
       <p>Content from the left side.</p>
+    </ExoUI.Components.sheet>
+
+    <ExoUI.Components.sheet id="sheet-top" side="top">
+      <:title>Top sheet</:title>
+      <p>Compact sheet for command palettes or global search.</p>
+    </ExoUI.Components.sheet>
+
+    <ExoUI.Components.sheet id="sheet-bottom" side="bottom" label="Mobile actions">
+      <p>Bottom sheet without a visible title uses aria-label.</p>
     </ExoUI.Components.sheet>
     """
   end

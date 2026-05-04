@@ -27,6 +27,15 @@ defmodule Storybook.Components.Collapsible do
           These are hidden by default. Click the button above to reveal.
         </div>
       </ExoUI.Components.collapsible>
+
+      <ExoUI.Components.collapsible id="col-3" open>
+        <:trigger>
+          <ExoUI.Components.button variant="ghost" size="sm">
+            API response details
+          </ExoUI.Components.button>
+        </:trigger>
+        <pre style="margin: 0; padding: 0.75rem; border-radius: var(--exo-radius); background: var(--exo-muted); overflow: auto; font-size: 0.8125rem;"><code>{~s({"status": "ok", "duration_ms": 128})}</code></pre>
+      </ExoUI.Components.collapsible>
     </div>
     """
   end

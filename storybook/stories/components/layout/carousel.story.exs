@@ -36,6 +36,31 @@ defmodule Storybook.Components.Carousel do
           </div>
         </:item>
       </ExoUI.Components.carousel>
+
+      <ExoUI.Components.carousel id="single-carousel" aria_label="Single announcement">
+        <:item label="Only slide">
+          <div style="background: var(--exo-muted); border-radius: var(--exo-radius); padding: 2rem; text-align: center; font-weight: 600;">
+            Single slide
+          </div>
+        </:item>
+      </ExoUI.Components.carousel>
+
+      <ExoUI.Components.carousel
+        id="no-controls-carousel"
+        aria_label="Static highlights"
+        controls={false}
+      >
+        <:item label="Static highlight one">
+          <div style="background: var(--exo-muted); border-radius: var(--exo-radius); padding: 2rem; text-align: center; font-weight: 600;">
+            No controls A
+          </div>
+        </:item>
+        <:item label="Static highlight two">
+          <div style="background: var(--exo-muted); border-radius: var(--exo-radius); padding: 2rem; text-align: center; font-weight: 600;">
+            No controls B
+          </div>
+        </:item>
+      </ExoUI.Components.carousel>
     </div>
     """
   end

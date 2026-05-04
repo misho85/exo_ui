@@ -4,7 +4,18 @@ const { spawnSync } = require("child_process");
 const { chromium } = require("playwright");
 
 const ROOT = path.resolve(__dirname, "..");
-const STORIES_DIR = path.join(ROOT, "storybook", "stories", "components");
+const STORY_ROOTS = [
+  {
+    dir: path.join(ROOT, "storybook", "stories", "components"),
+    namePrefix: "",
+    routePrefix: "/components"
+  },
+  {
+    dir: path.join(ROOT, "storybook", "stories", "layouts"),
+    namePrefix: "layouts/",
+    routePrefix: "/layouts"
+  }
+];
 const OUT_ROOT = path.join(ROOT, "output", "playwright", "exo-ui-components");
 const BASE_URL = process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:4100";
 
@@ -12,24 +23,31 @@ function timestamp() {
   return new Date().toISOString().replace(/[:.]/g, "-");
 }
 
-function listComponents() {
-  const components = [];
+function listStories() {
+  const stories = [];
 
-  function walk(dir, prefix = "") {
+  function walk(root, dir, prefix = "") {
     for (const entry of fs.readdirSync(dir).sort()) {
       const entryPath = path.join(dir, entry);
       const stat = fs.statSync(entryPath);
 
       if (stat.isDirectory()) {
-        walk(entryPath, `${prefix}${entry}/`);
+        walk(root, entryPath, `${prefix}${entry}/`);
       } else if (entry.endsWith(".story.exs")) {
-        components.push(`${prefix}${entry.replace(/\.story\.exs$/, "")}`);
+        const localName = `${prefix}${entry.replace(/\.story\.exs$/, "")}`;
+        stories.push({
+          name: `${root.namePrefix}${localName}`,
+          route: `${root.routePrefix}/${localName}`
+        });
       }
     }
   }
 
-  walk(STORIES_DIR);
-  return components.sort();
+  for (const root of STORY_ROOTS) {
+    if (fs.existsSync(root.dir)) walk(root, root.dir);
+  }
+
+  return stories.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 function artifactName(name) {
@@ -138,6 +156,11 @@ async function componentDemo(page, name) {
       await hoverFirst(page, '#story-live [data-exo="hover-card-trigger"]');
       await page.waitForTimeout(650);
       break;
+    case "sidebar_layout":
+      await clickFirst(page, '#story-live [data-exo="sidebar-hamburger"]');
+      await page.waitForTimeout(300);
+      await clickFirst(page, '#story-live [data-exo="sidebar-hamburger"]');
+      break;
     case "modal":
       await clickFirst(page, '#story-live button, #story-live [role="button"]');
       await page.waitForTimeout(400);
@@ -196,7 +219,8 @@ async function componentDemo(page, name) {
   await page.waitForTimeout(400);
 }
 
-async function captureComponent(browser, runDir, name) {
+async function captureComponent(browser, runDir, story) {
+  const { name, route } = story;
   const artifact = artifactName(name);
   const rawVideoDir = path.join(runDir, "videos-raw");
   const screenshotsDir = path.join(runDir, "screenshots");
@@ -220,7 +244,6 @@ async function captureComponent(browser, runDir, name) {
     if (msg.type() === "error") errors.push(msg.text());
   });
 
-  const route = `/components/${name}`;
   const url = `${BASE_URL}${route}`;
   const screenshotPath = path.join(screenshotsDir, `${artifact}.png`);
   const videoPath = path.join(videosDir, `${artifact}.webm`);
@@ -425,7 +448,7 @@ function writeViewer(runDir, results, conversion) {
 }
 
 async function main() {
-  const names = listComponents();
+  const stories = listStories();
   const runDir = path.join(OUT_ROOT, timestamp());
   fs.mkdirSync(runDir, { recursive: true });
 
@@ -433,9 +456,9 @@ async function main() {
   const results = [];
 
   try {
-    for (const name of names) {
-      process.stdout.write(`capture ${name} ... `);
-      const result = await captureComponent(browser, runDir, name);
+    for (const story of stories) {
+      process.stdout.write(`capture ${story.name} ... `);
+      const result = await captureComponent(browser, runDir, story);
       results.push(result);
       process.stdout.write(`${result.ok ? "ok" : "check"}\n`);
     }

@@ -18,6 +18,7 @@ defmodule ExoUI.LayoutsTest do
       """)
 
     assert html =~ ~s(data-exo="sidebar")
+    assert html =~ ~s(data-state="open")
     assert html =~ ~s(data-exo="sidebar-content")
     assert html =~ ~s(data-exo="sidebar-panel")
     assert html =~ ~s(data-exo="sidebar-topbar")
@@ -222,11 +223,13 @@ defmodule ExoUI.LayoutsTest do
 
     assert html =~ ~s(data-exo="sidebar-toggle")
     assert html =~ ~s(type="checkbox")
+    assert html =~ ~s(aria-hidden="true")
+    assert html =~ ~s(tabindex="-1")
     assert html =~ "checked"
     assert html =~ ~s(phx-update="ignore")
   end
 
-  test "renders sidebar hamburger label" do
+  test "renders sidebar hamburger as an accessible button" do
     assigns = %{}
 
     html =
@@ -238,10 +241,13 @@ defmodule ExoUI.LayoutsTest do
       """)
 
     assert html =~ ~s(data-exo="sidebar-hamburger")
+    assert html =~ ~s(type="button")
     assert html =~ ~s(aria-label="Toggle sidebar")
+    assert html =~ ~s(aria-controls="sidebar-layout-panel")
+    assert html =~ ~s(aria-expanded="true")
   end
 
-  test "renders sidebar overlay label" do
+  test "renders sidebar overlay as a close button" do
     assigns = %{}
 
     html =
@@ -252,7 +258,10 @@ defmodule ExoUI.LayoutsTest do
       </.sidebar_layout>
       """)
 
+    assert html =~ ~s(id="sidebar-layout-panel")
+    assert html =~ ~s(data-state="open")
     assert html =~ ~s(data-exo="sidebar-overlay")
+    assert html =~ ~s(type="button")
     assert html =~ ~s(aria-label="Close sidebar")
   end
 
