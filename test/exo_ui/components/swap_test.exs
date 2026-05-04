@@ -40,6 +40,23 @@ defmodule ExoUI.Components.SwapTest do
     |> assert_component("label")
   end
 
+  test "renders switch semantics and label" do
+    assigns = %{}
+
+    ~H"""
+    <.swap id="s1" label="Enable alerts">
+      <:on>ON</:on>
+      <:off>OFF</:off>
+    </.swap>
+    """
+    |> parse_component()
+    |> assert_attribute("role", "switch")
+    |> assert_attribute("tabindex", "0")
+    |> assert_attribute("aria-label", "Enable alerts")
+    |> assert_attribute("aria-checked", "false")
+    |> assert_attribute("phx-hook", "ExoSwap")
+  end
+
   test "renders hidden checkbox for state" do
     assigns = %{}
 
@@ -67,6 +84,7 @@ defmodule ExoUI.Components.SwapTest do
     """
     |> parse_component()
     |> assert_component("[data-exo='swap-on']")
+    |> assert_attribute("aria-hidden", "true", "[data-exo='swap-on']")
     |> assert_text("Sun")
   end
 
@@ -81,6 +99,7 @@ defmodule ExoUI.Components.SwapTest do
     """
     |> parse_component()
     |> assert_component("[data-exo='swap-off']")
+    |> assert_attribute("aria-hidden", "true", "[data-exo='swap-off']")
     |> assert_text("Moon")
   end
 
@@ -107,6 +126,8 @@ defmodule ExoUI.Components.SwapTest do
     </.swap>
     """
     |> parse_component()
+    |> assert_attribute("aria-checked", "true")
+    |> assert_attribute("data-active", "")
     |> assert_attribute("checked", "checked", "[data-exo=\"swap-state\"]")
   end
 

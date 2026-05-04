@@ -176,9 +176,12 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(250);
       await clickFirst(page, '#story-live [data-theme-value="light"]');
       break;
-    case "toggle":
     case "swap":
-      await clickFirst(page, '#story-live input[type="checkbox"], #story-live [data-exo="toggle"]');
+      await focusFirst(page, '#story-live [data-exo="swap"]');
+      await page.keyboard.press("Space");
+      break;
+    case "toggle":
+      await clickFirst(page, '#story-live [data-exo="toggle"], #story-live input[type="checkbox"]');
       break;
     case "tooltip":
       await hoverFirst(page, '#story-live [data-exo="tooltip-anchor"]');

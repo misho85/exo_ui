@@ -23,6 +23,7 @@
 @import "./src/components/alert.css";
 @import "./src/components/flash.css";
 @import "./src/components/theme-toggle.css";
+@import "./src/components/swap.css";
 @import "./src/components/table.css";
 @import "./src/components/date-picker.css";
 @import "./src/components/charts.css";

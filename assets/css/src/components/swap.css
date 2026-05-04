@@ -1,0 +1,57 @@
+:where([data-exo="swap"]) {
+  display: inline-grid;
+  place-items: center;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  border-radius: var(--exo-radius);
+}
+
+:where([data-exo="swap"]:focus-visible) {
+  outline: 2px solid var(--exo-ring);
+  outline-offset: 2px;
+}
+
+:where([data-exo="swap-state"]) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+:where([data-exo="swap-on"],
+[data-exo="swap-off"]) {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    opacity var(--exo-duration) var(--exo-easing),
+    transform var(--exo-duration) var(--exo-easing);
+}
+
+:where([data-exo="swap-on"]) {
+  opacity: 0;
+  transform: scale(0.92) rotate(-8deg);
+  pointer-events: none;
+}
+
+:where([data-exo="swap-off"]) {
+  opacity: 1;
+  transform: scale(1) rotate(0);
+}
+
+:where([data-exo="swap"][data-active] [data-exo="swap-on"],
+[data-exo="swap"]:has([data-exo="swap-state"]:checked) [data-exo="swap-on"]) {
+  opacity: 1;
+  transform: scale(1) rotate(0);
+  pointer-events: auto;
+}
+
+:where([data-exo="swap"][data-active] [data-exo="swap-off"],
+[data-exo="swap"]:has([data-exo="swap-state"]:checked) [data-exo="swap-off"]) {
+  opacity: 0;
+  transform: scale(0.92) rotate(8deg);
+  pointer-events: none;
+}

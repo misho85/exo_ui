@@ -425,6 +425,7 @@ defmodule ExoUI.Components.Core do
   @doc "Renders a toggle that swaps between two elements."
   attr :id, :string, required: true
   attr :active, :boolean, default: false
+  attr :label, :string, default: "Toggle"
   attr :class, :any, default: nil
   attr :rest, :global
   slot :on, required: true
@@ -432,7 +433,18 @@ defmodule ExoUI.Components.Core do
 
   def swap(assigns) do
     ~H"""
-    <label data-exo="swap" id={@id} class={@class} {@rest}>
+    <label
+      data-exo="swap"
+      id={@id}
+      class={@class}
+      role="switch"
+      tabindex="0"
+      aria-label={@label}
+      aria-checked={to_string(@active)}
+      data-active={@active && ""}
+      phx-hook="ExoSwap"
+      {@rest}
+    >
       <input
         type="checkbox"
         checked={@active}
@@ -440,8 +452,8 @@ defmodule ExoUI.Components.Core do
         aria-hidden="true"
         tabindex="-1"
       />
-      <div data-exo="swap-on">{render_slot(@on)}</div>
-      <div data-exo="swap-off">{render_slot(@off)}</div>
+      <div data-exo="swap-on" aria-hidden="true">{render_slot(@on)}</div>
+      <div data-exo="swap-off" aria-hidden="true">{render_slot(@off)}</div>
     </label>
     """
   end

@@ -15,6 +15,7 @@ import { ExoRating } from './hooks/rating.js'
 import { ExoMenubar } from './hooks/menubar.js'
 import { ExoOverlay } from './hooks/overlay.js'
 import { ExoTabs } from './hooks/tabs.js'
+import { ExoSwap } from './hooks/swap.js'
 
 const hooks = {
   ExoAccordion,
@@ -33,7 +34,8 @@ const hooks = {
   ExoRating,
   ExoMenubar,
   ExoOverlay,
-  ExoTabs
+  ExoTabs,
+  ExoSwap
 }
 
 export { hooks }

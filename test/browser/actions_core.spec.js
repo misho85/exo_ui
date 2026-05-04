@@ -31,4 +31,27 @@ test.describe("core action components", () => {
     await expect(dark).toHaveAttribute("aria-pressed", "true");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   });
+
+  test("swap toggles switch state with keyboard and pointer", async ({ page }) => {
+    await gotoStory(page, "/components/actions/swap");
+
+    const canvas = story(page);
+    const swap = canvas.locator("#swap-1");
+    const input = swap.locator('[data-exo="swap-state"]');
+
+    await expect(swap).toHaveAttribute("data-ready", "");
+    await expect(swap).toHaveAttribute("role", "switch");
+    await expect(swap).toHaveAttribute("aria-label", "Enable notifications");
+    await expect(swap).toHaveAttribute("aria-checked", "false");
+    await expect(input).not.toBeChecked();
+
+    await swap.focus();
+    await page.keyboard.press("Space");
+    await expect(swap).toHaveAttribute("aria-checked", "true");
+    await expect(input).toBeChecked();
+
+    await swap.click();
+    await expect(swap).toHaveAttribute("aria-checked", "false");
+    await expect(input).not.toBeChecked();
+  });
 });
