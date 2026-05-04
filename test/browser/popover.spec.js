@@ -10,6 +10,7 @@ test.describe("popover", () => {
     const trigger = canvas.locator("#pop-default-popover [data-exo=\"popover-trigger\"]");
     const content = canvas.locator("#pop-default");
 
+    await expect(canvas.locator("#pop-default-popover")).toHaveAttribute("data-ready", "");
     await expect(trigger).toHaveAttribute("aria-expanded", "false");
     await expectPopoverState(content, false);
 
@@ -32,6 +33,7 @@ test.describe("popover", () => {
     const content = canvas.locator("#pop-close");
     const closeButton = canvas.getByRole("button", { name: "Close" });
 
+    await expect(canvas.locator("#pop-close-popover")).toHaveAttribute("data-ready", "");
     await trigger.click();
 
     await expectPopoverState(content, true);

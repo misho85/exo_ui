@@ -13,6 +13,7 @@
     "build:all": "bun run build && bun run build:tokens",
     "watch": "nodemon --watch assets/css -e css --exec 'bun run build:all'",
     "test:browser": "playwright test",
-    "test:browser:install": "playwright install chromium"
+    "test:browser:install": "playwright install chromium",
+    "capture:components": "node scripts/capture_storybook_components.js"
   }
 }

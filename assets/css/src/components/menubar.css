@@ -48,8 +48,41 @@
   animation: exo-menubar-in 100ms var(--exo-easing);
 }
 
+:where([data-exo="menubar-content"][hidden]) {
+  display: none;
+}
+
 :where([data-exo="menubar-content"][data-open]) {
   display: block;
+}
+
+:where([data-exo="menubar-content"] [role="menuitem"]),
+:where([data-exo="menubar-content"] button),
+:where([data-exo="menubar-content"] a) {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: var(--exo-space-2);
+  padding: var(--exo-space-2) var(--exo-space-3);
+  color: var(--exo-foreground);
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  text-align: left;
+  text-decoration: none;
+  background: transparent;
+  border: 0;
+  border-radius: calc(var(--exo-radius) - 2px);
+  cursor: pointer;
+}
+
+:where([data-exo="menubar-content"] [role="menuitem"]:hover),
+:where([data-exo="menubar-content"] [role="menuitem"]:focus),
+:where([data-exo="menubar-content"] button:hover),
+:where([data-exo="menubar-content"] button:focus),
+:where([data-exo="menubar-content"] a:hover),
+:where([data-exo="menubar-content"] a:focus) {
+  background: var(--exo-accent);
+  outline: none;
 }
 
 @keyframes exo-menubar-in {

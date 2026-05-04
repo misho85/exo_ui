@@ -9,6 +9,10 @@ defmodule ExoUI.Components.DrawerTest do
     html = rendered_to_string(~H|<.drawer id="d1">Content</.drawer>|)
     assert html =~ ~s(data-exo="drawer")
     assert html =~ ~s(id="d1")
+    assert html =~ ~s(aria-hidden="true")
+    assert html =~ ~s(phx-hook="ExoOverlay")
+    assert html =~ ~s(role="dialog")
+    assert html =~ ~s(aria-modal="true")
     assert html =~ "Content"
   end
 
@@ -48,6 +52,8 @@ defmodule ExoUI.Components.DrawerTest do
       """)
 
     assert html =~ ~s(data-exo="drawer-title")
+    assert html =~ ~s(id="d1-title")
+    assert html =~ ~s(aria-labelledby="d1-title")
     assert html =~ "Drawer Title"
   end
 
@@ -92,8 +98,12 @@ defmodule ExoUI.Components.DrawerTest do
   test "renders drawer without inert when open" do
     assigns = %{}
     html = rendered_to_string(~H|<.drawer id="d1" show={true}>Content</.drawer>|)
+    {:ok, tree} = Floki.parse_fragment(html)
+
     # When show is true, inert should not be set
     # The opening div should not have inert
     assert html =~ ~s(data-state="open")
+    assert html =~ ~s(aria-hidden="false")
+    assert Floki.find(tree, "#d1[inert]") == []
   end
 end

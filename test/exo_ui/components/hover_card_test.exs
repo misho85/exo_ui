@@ -16,8 +16,17 @@ defmodule ExoUI.Components.HoverCardTest do
       """)
 
     assert html =~ ~s(data-exo="hover-card")
+    assert html =~ ~s(data-open-delay="300")
+    assert html =~ ~s(data-close-delay="150")
     assert html =~ ~s(data-exo="hover-card-trigger")
+    assert html =~ ~s(aria-describedby="hc-content")
+    assert html =~ ~s(aria-expanded="false")
+    assert html =~ ~s(id="hc-content")
     assert html =~ ~s(data-exo="hover-card-content")
+    assert html =~ ~s(data-side="bottom")
+    assert html =~ ~s(data-align="center")
+    assert html =~ ~s(role="tooltip")
+    assert html =~ ~s(hidden)
     assert html =~ ~s(phx-hook="ExoHoverCard")
     assert html =~ "Trigger"
     assert html =~ "Content"

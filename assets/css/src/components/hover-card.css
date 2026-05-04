@@ -11,9 +11,6 @@
   display: none;
   position: absolute;
   z-index: 50;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
   margin-top: var(--exo-space-2);
   min-width: 16rem;
   padding: var(--exo-space-4);
@@ -29,6 +26,61 @@
 
 :where([data-exo="hover-card-content"][data-open]) {
   display: block;
+}
+
+:where([data-exo="hover-card-content"][data-side="bottom"]) {
+  top: 100%;
+}
+
+:where([data-exo="hover-card-content"][data-side="top"]) {
+  bottom: 100%;
+  margin-top: 0;
+  margin-bottom: var(--exo-space-2);
+}
+
+:where([data-exo="hover-card-content"][data-side="bottom"][data-align="center"]),
+:where([data-exo="hover-card-content"][data-side="top"][data-align="center"]) {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+:where([data-exo="hover-card-content"][data-side="bottom"][data-align="start"]),
+:where([data-exo="hover-card-content"][data-side="top"][data-align="start"]) {
+  left: 0;
+}
+
+:where([data-exo="hover-card-content"][data-side="bottom"][data-align="end"]),
+:where([data-exo="hover-card-content"][data-side="top"][data-align="end"]) {
+  right: 0;
+}
+
+:where([data-exo="hover-card-content"][data-side="left"]) {
+  top: 50%;
+  right: 100%;
+  margin-top: 0;
+  margin-right: var(--exo-space-2);
+  transform: translateY(-50%);
+}
+
+:where([data-exo="hover-card-content"][data-side="right"]) {
+  top: 50%;
+  left: 100%;
+  margin-top: 0;
+  margin-left: var(--exo-space-2);
+  transform: translateY(-50%);
+}
+
+:where([data-exo="hover-card-content"][data-side="left"][data-align="start"]),
+:where([data-exo="hover-card-content"][data-side="right"][data-align="start"]) {
+  top: 0;
+  transform: none;
+}
+
+:where([data-exo="hover-card-content"][data-side="left"][data-align="end"]),
+:where([data-exo="hover-card-content"][data-side="right"][data-align="end"]) {
+  top: auto;
+  bottom: 0;
+  transform: none;
 }
 
 @keyframes exo-hover-card-in {

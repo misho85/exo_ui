@@ -65,6 +65,57 @@
   padding: var(--exo-space-2);
 }
 
+:where([data-exo="command-palette-item"]) {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--exo-space-3);
+  padding: var(--exo-space-2) var(--exo-space-3);
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  color: var(--exo-foreground);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: calc(var(--exo-radius) - 2px);
+  cursor: pointer;
+}
+
+:where([data-exo="command-palette-item"][hidden]) {
+  display: none;
+}
+
+:where([data-exo="command-palette-item"][data-active="true"]),
+:where([data-exo="command-palette-item"]:hover) {
+  background: var(--exo-accent);
+}
+
+:where([data-exo="command-palette-item"][data-disabled]) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+:where([data-exo="command-palette-item-label"]) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:where([data-exo="command-palette-shortcut"]) {
+  flex-shrink: 0;
+  color: var(--exo-muted-foreground);
+  font-size: var(--exo-text-xs);
+}
+
+:where([data-exo="command-palette-empty"]) {
+  padding: var(--exo-space-6) var(--exo-space-3);
+  color: var(--exo-muted-foreground);
+  font-size: var(--exo-text-sm);
+  text-align: center;
+}
+
 @keyframes exo-cmd-fade-in {
   from { opacity: 0; }
   to { opacity: 1; }

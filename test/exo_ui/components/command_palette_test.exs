@@ -10,15 +10,21 @@ defmodule ExoUI.Components.CommandPaletteTest do
     html =
       rendered_to_string(~H"""
       <.command_palette id="cmd">
-        <p>Items</p>
+        <:item label="Search docs" value="docs" shortcut="D" />
+        <:item label="Settings" value="settings" />
       </.command_palette>
       """)
 
     assert html =~ ~s(data-exo="command-palette")
     assert html =~ ~s(phx-hook="ExoCommandPalette")
+    assert html =~ ~s(aria-hidden="true")
     assert html =~ ~s(data-exo="command-palette-input")
+    assert html =~ ~s(data-exo="command-palette-item")
+    assert html =~ ~s(data-value="docs")
+    assert html =~ ~s(data-exo="command-palette-shortcut")
     assert html =~ ~s(role="dialog")
-    assert html =~ "Items"
+    assert html =~ "Search docs"
+    assert html =~ "Settings"
   end
 
   test "renders with custom placeholder" do
@@ -32,5 +38,18 @@ defmodule ExoUI.Components.CommandPaletteTest do
       """)
 
     assert html =~ ~s(placeholder="Type a command...")
+  end
+
+  test "keeps legacy inner content when no item slot is provided" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.command_palette id="cmd">
+        <button data-exo="command-palette-item">Legacy item</button>
+      </.command_palette>
+      """)
+
+    assert html =~ "Legacy item"
   end
 end

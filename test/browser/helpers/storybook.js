@@ -7,7 +7,7 @@ async function gotoStory(page, path) {
 
 async function expectAttribute(locator, name, value) {
   await expect
-    .poll(async () => locator.getAttribute(name))
+    .poll(async () => await locator.getAttribute(name))
     .toBe(value);
 }
 

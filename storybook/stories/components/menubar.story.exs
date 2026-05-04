@@ -6,47 +6,17 @@ defmodule Storybook.Components.Menubar do
   def render(assigns) do
     ~H"""
     <div style="padding: 1rem;">
-      <ExoUI.Components.menubar>
+      <ExoUI.Components.menubar id="demo-menubar">
         <:menu label="File">
-          <button
-            style="display: flex; width: 100%; padding: 0.375rem 0.75rem; border: none; background: none; border-radius: 4px; cursor: pointer; font-size: 0.875rem; text-align: left;"
-            onmouseover="this.style.background='var(--exo-accent)'"
-            onmouseout="this.style.background='none'"
-          >
-            New File
-          </button>
-          <button
-            style="display: flex; width: 100%; padding: 0.375rem 0.75rem; border: none; background: none; border-radius: 4px; cursor: pointer; font-size: 0.875rem; text-align: left;"
-            onmouseover="this.style.background='var(--exo-accent)'"
-            onmouseout="this.style.background='none'"
-          >
-            Save
-          </button>
+          <button>New File</button>
+          <button>Save</button>
         </:menu>
         <:menu label="Edit">
-          <button
-            style="display: flex; width: 100%; padding: 0.375rem 0.75rem; border: none; background: none; border-radius: 4px; cursor: pointer; font-size: 0.875rem; text-align: left;"
-            onmouseover="this.style.background='var(--exo-accent)'"
-            onmouseout="this.style.background='none'"
-          >
-            Undo
-          </button>
-          <button
-            style="display: flex; width: 100%; padding: 0.375rem 0.75rem; border: none; background: none; border-radius: 4px; cursor: pointer; font-size: 0.875rem; text-align: left;"
-            onmouseover="this.style.background='var(--exo-accent)'"
-            onmouseout="this.style.background='none'"
-          >
-            Redo
-          </button>
+          <button>Undo</button>
+          <button>Redo</button>
         </:menu>
         <:menu label="View">
-          <button
-            style="display: flex; width: 100%; padding: 0.375rem 0.75rem; border: none; background: none; border-radius: 4px; cursor: pointer; font-size: 0.875rem; text-align: left;"
-            onmouseover="this.style.background='var(--exo-accent)'"
-            onmouseout="this.style.background='none'"
-          >
-            Toggle sidebar
-          </button>
+          <button>Toggle sidebar</button>
         </:menu>
       </ExoUI.Components.menubar>
     </div>

@@ -9,9 +9,14 @@ defmodule ExoUI.Components.ModalTest do
     html = rendered_to_string(~H|<.modal id="test-modal">Content</.modal>|)
     assert html =~ ~s(data-exo="modal")
     assert html =~ ~s(data-state="closed")
+    assert html =~ ~s(aria-hidden="true")
+    assert html =~ ~s(inert)
+    assert html =~ ~s(phx-hook="ExoOverlay")
     assert html =~ ~s(data-exo="modal-content")
     assert html =~ ~s(role="dialog")
     assert html =~ ~s(aria-modal="true")
+    assert html =~ ~s(aria-describedby="test-modal-body")
+    assert html =~ ~s(id="test-modal-body")
     assert html =~ "Content"
   end
 
@@ -33,13 +38,18 @@ defmodule ExoUI.Components.ModalTest do
   test "renders modal with open state" do
     assigns = %{}
     html = rendered_to_string(~H|<.modal id="test-modal" show={true}>Content</.modal>|)
+    {:ok, tree} = Floki.parse_fragment(html)
+
     assert html =~ ~s(data-state="open")
+    assert html =~ ~s(aria-hidden="false")
+    assert Floki.find(tree, "#test-modal[inert]") == []
   end
 
   test "renders confirm modal" do
     assigns = %{}
     html = rendered_to_string(~H|<.confirm_modal id="confirm" message="Are you sure?" />|)
     assert html =~ ~s(data-exo="modal")
+    assert html =~ ~s(role="alertdialog")
     assert html =~ "Are you sure?"
     assert html =~ "Confirm"
     assert html =~ "Cancel"

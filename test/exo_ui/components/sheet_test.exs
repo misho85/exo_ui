@@ -16,6 +16,12 @@ defmodule ExoUI.Components.SheetTest do
 
     assert html =~ ~s(data-exo="sheet")
     assert html =~ ~s(data-side="right")
+    assert html =~ ~s(data-state="closed")
+    assert html =~ ~s(aria-hidden="true")
+    assert html =~ ~s(inert)
+    assert html =~ ~s(phx-hook="ExoOverlay")
+    assert html =~ ~s(role="dialog")
+    assert html =~ ~s(aria-modal="true")
     assert html =~ ~s(id="test-sheet")
     assert html =~ "Content"
   end
@@ -46,8 +52,29 @@ defmodule ExoUI.Components.SheetTest do
       """)
 
     assert html =~ ~s(data-exo="sheet-header")
+    assert html =~ ~s(data-exo="sheet-title")
+    assert html =~ ~s(id="s-title")
+    assert html =~ ~s(aria-labelledby="s-title")
     assert html =~ "Title"
     assert html =~ ~s(data-exo="sheet-footer")
     assert html =~ "Footer"
+  end
+
+  test "renders sheet open when show is true" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.sheet id="s" show>
+        <p>Open</p>
+      </.sheet>
+      """)
+
+    {:ok, tree} = Floki.parse_fragment(html)
+
+    assert html =~ ~s(data-state="open")
+    assert html =~ ~s(aria-hidden="false")
+    assert html =~ ~s(class="open")
+    assert Floki.find(tree, "#s[inert]") == []
   end
 end

@@ -829,12 +829,14 @@ defmodule ExoUI.Components.Form do
     ~H"""
     <div
       data-exo="rating"
+      phx-hook={if !@readonly, do: "ExoRating"}
       data-size={@size}
       data-readonly={@readonly || nil}
+      data-value={@value}
       class={@class}
       {@rest}
     >
-      <input type="hidden" name={@name} value={@value} />
+      <input type="hidden" name={@name} value={@value} data-exo="rating-value" />
       <label :for={star <- @stars} data-exo="rating-star" data-active={star <= @value || nil}>
         <input
           :if={!@readonly}

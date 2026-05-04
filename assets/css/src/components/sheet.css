@@ -5,7 +5,8 @@
   z-index: 50;
 }
 
-:where([data-exo="sheet"].open) {
+:where([data-exo="sheet"].open),
+:where([data-exo="sheet"][data-state="open"]) {
   display: block;
 }
 
@@ -60,10 +61,14 @@
 :where([data-exo="sheet-header"]) {
   padding: var(--exo-space-6);
   border-bottom: 1px solid var(--exo-border);
+}
+
+:where([data-exo="sheet-title"]) {
   font-family: var(--exo-font);
   font-size: 1.125rem;
   font-weight: 600;
   color: var(--exo-foreground);
+  margin: 0;
 }
 
 :where([data-exo="sheet-body"]) {
@@ -137,4 +142,8 @@
 @keyframes exo-sheet-slide-in-bottom {
   from { transform: translateY(100%); }
   to { transform: translateY(0); }
+}
+
+body:has([data-exo="sheet"][data-state="open"]) {
+  overflow: hidden;
 }

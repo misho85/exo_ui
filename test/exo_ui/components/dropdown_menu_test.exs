@@ -164,6 +164,23 @@ defmodule ExoUI.Components.DropdownMenuTest do
     assert html =~ ~s(aria-haspopup="menu")
   end
 
+  test "does not nest a button when trigger slot contains a button component" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.dropdown_menu id="dd-trigger">
+        <:trigger><.button variant="ghost">Actions</.button></:trigger>
+        <:entry>Edit</:entry>
+      </.dropdown_menu>
+      """)
+
+    {:ok, tree} = Floki.parse_fragment(html)
+
+    assert Floki.find(tree, ~s([data-exo="popover-trigger"] [data-exo="btn"])) != []
+    assert Floki.find(tree, "button button") == []
+  end
+
   test "renders disabled item" do
     assigns = %{}
 

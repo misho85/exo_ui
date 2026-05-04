@@ -7,9 +7,11 @@ test.describe("hover card", () => {
     await gotoStory(page, "/components/hover_card");
 
     const canvas = story(page);
-    const trigger = canvas.locator("#hc-demo [data-exo=\"hover-card-trigger\"]");
-    const content = canvas.locator("#hc-demo [data-exo=\"hover-card-content\"]");
+    const hoverCard = canvas.locator("#hc-demo");
+    const trigger = hoverCard.locator('[data-exo="hover-card-trigger"]');
+    const content = hoverCard.locator('[data-exo="hover-card-content"]');
 
+    await expectAttribute(hoverCard, "data-ready", "true");
     await expect(content).not.toHaveAttribute("data-open", "");
 
     await trigger.hover();
@@ -17,7 +19,7 @@ test.describe("hover card", () => {
 
     await page.mouse.move(0, 0);
     await expect
-      .poll(async () => content.getAttribute("data-open"))
+      .poll(async () => await content.getAttribute("data-open"))
       .toBe(null);
   });
 });

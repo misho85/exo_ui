@@ -16,7 +16,7 @@ defmodule ExoUI.Components.PopoverTest do
       """)
 
     assert html =~ ~s(data-exo="popover")
-    assert html =~ ~s(popovertarget="test-pop")
+    assert html =~ ~s(data-popover-target="test-pop")
     assert html =~ ~s(data-exo="popover-trigger")
     assert html =~ ~s(data-exo="popover-content")
     assert html =~ ~s(popover="auto")
@@ -83,7 +83,7 @@ defmodule ExoUI.Components.PopoverTest do
     assert html =~ ~s(position-anchor: --popover-anc)
   end
 
-  test "sets type=button, aria-haspopup, and collapsed aria-expanded on trigger" do
+  test "sets popover target metadata, aria-haspopup, and collapsed aria-expanded on trigger" do
     assigns = %{}
 
     html =
@@ -94,7 +94,7 @@ defmodule ExoUI.Components.PopoverTest do
       </.popover>
       """)
 
-    assert html =~ ~s(type="button")
+    assert html =~ ~s(data-popover-target="aria")
     assert html =~ ~s(aria-haspopup="true")
     assert html =~ ~s(aria-expanded="false")
   end
@@ -111,6 +111,24 @@ defmodule ExoUI.Components.PopoverTest do
       """)
 
     assert html =~ ~s(aria-haspopup="menu")
+    assert html =~ ~s(data-popover-haspopup="menu")
+  end
+
+  test "does not nest a button when trigger slot contains a button component" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.popover id="nested">
+        <:trigger><.button>Open</.button></:trigger>
+        Content
+      </.popover>
+      """)
+
+    {:ok, tree} = Floki.parse_fragment(html)
+
+    assert Floki.find(tree, ~s([data-exo="popover-trigger"] [data-exo="btn"])) != []
+    assert Floki.find(tree, "button button") == []
   end
 
   test "applies class to content div" do

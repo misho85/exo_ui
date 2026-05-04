@@ -9,7 +9,7 @@ defmodule ExoUI.Components.MenubarTest do
 
     html =
       rendered_to_string(~H"""
-      <.menubar>
+      <.menubar id="app-menu">
         <:menu label="File">
           <button>New</button>
         </:menu>
@@ -20,8 +20,13 @@ defmodule ExoUI.Components.MenubarTest do
       """)
 
     assert html =~ ~s(data-exo="menubar")
+    assert html =~ ~s(id="app-menu")
+    assert html =~ ~s(phx-hook="ExoMenubar")
     assert html =~ ~s(role="menubar")
     assert html =~ ~s(data-exo="menubar-trigger")
+    assert html =~ ~s(aria-haspopup="menu")
+    assert html =~ ~s(aria-controls="app-menu-content-0")
+    assert html =~ ~s(hidden)
     assert html =~ "File"
     assert html =~ "Edit"
     assert html =~ "New"

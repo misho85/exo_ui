@@ -171,43 +171,223 @@
   // ../../assets/js/hooks/command_palette.js
   var ExoCommandPalette = {
     mounted() {
+      this._bind();
+    },
+    updated() {
+      this._bind();
+    },
+    destroyed() {
+      this._unbind();
+    },
+    _bind() {
+      this._unbind();
       this.backdrop = this.el.querySelector('[data-exo="command-palette-backdrop"]');
       this.input = this.el.querySelector('[data-exo="command-palette-input"]');
       this.list = this.el.querySelector('[data-exo="command-palette-list"]');
+      this.empty = this.el.querySelector('[data-exo="command-palette-empty"]');
+      this.items = Array.from(this.el.querySelectorAll('[data-exo="command-palette-item"]'));
+      this.activeIndex = -1;
+      if (this.list && !this.list.id) this.list.id = `${this.el.id}-list`;
+      this.items.forEach((item, index) => {
+        if (!item.id) item.id = `${this.el.id}-item-${index}`;
+        item.setAttribute("role", "option");
+        item.setAttribute("tabindex", "-1");
+        if (!item.dataset.value) item.dataset.value = item.textContent.trim();
+        if (!item.dataset.search) item.dataset.search = item.textContent.trim();
+        if (item.disabled || item.getAttribute("aria-disabled") === "true") {
+          item.dataset.disabled = "true";
+          item.setAttribute("aria-disabled", "true");
+        }
+        if (item.tagName === "BUTTON" && !item.hasAttribute("type")) {
+          item.setAttribute("type", "button");
+        }
+      });
+      if (this.input) {
+        this.input.setAttribute("role", "combobox");
+        this.input.setAttribute("aria-autocomplete", "list");
+        if (this.list) this.input.setAttribute("aria-controls", this.list.id);
+      }
       const isOpen = () => this.el.classList.contains("open");
       const syncState = () => {
         this.el.dataset.state = isOpen() ? "open" : "closed";
+        this.el.setAttribute("aria-hidden", isOpen() ? "false" : "true");
+        if (this.input) this.input.setAttribute("aria-expanded", isOpen() ? "true" : "false");
       };
-      const open = () => {
+      this._open = () => {
         this.el.style.display = "block";
         this.el.classList.add("open");
         syncState();
+        this._filter();
         requestAnimationFrame(() => {
           if (this.input) this.input.focus();
         });
       };
-      const close = () => {
+      this._close = () => {
         this.el.classList.remove("open");
         this.el.style.display = "none";
         syncState();
         if (this.input) this.input.value = "";
+        this.items.forEach((item) => {
+          item.hidden = false;
+          this._setItemActive(item, false);
+        });
+        if (this.empty) this.empty.hidden = true;
+        this.activeIndex = -1;
+        this._syncActiveDescendant();
       };
       syncState();
-      document.addEventListener("keydown", this._onGlobalKey = (e) => {
+      if (!isOpen()) this.el.style.display = "none";
+      if (this.empty) this.empty.hidden = true;
+      this.el.dataset.ready = "true";
+      this._onGlobalKey = (e) => {
         if ((e.metaKey || e.ctrlKey) && e.key === "k") {
           e.preventDefault();
-          isOpen() ? close() : open();
+          isOpen() ? this._close() : this._open();
         }
-      });
-      this.el.addEventListener("keydown", this._onKey = (e) => {
-        if (e.key === "Escape") close();
-      });
+      };
+      document.addEventListener("keydown", this._onGlobalKey);
+      this._onKey = (e) => {
+        if (e.key === "Escape") {
+          this._close();
+          return;
+        }
+        if (!isOpen()) return;
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          this._moveActive(1);
+          return;
+        }
+        if (e.key === "ArrowUp") {
+          e.preventDefault();
+          this._moveActive(-1);
+          return;
+        }
+        if (e.key === "Home") {
+          e.preventDefault();
+          this._setActiveByVisibleIndex(0);
+          return;
+        }
+        if (e.key === "End") {
+          e.preventDefault();
+          const visible = this._visibleItems();
+          this._setActiveByVisibleIndex(visible.length - 1);
+          return;
+        }
+        if (e.key === "Enter" && this.activeIndex >= 0) {
+          const item = this.items[this.activeIndex];
+          if (item && !this._isDisabled(item) && !item.hidden) {
+            e.preventDefault();
+            item.click();
+          }
+        }
+      };
+      this.el.addEventListener("keydown", this._onKey);
+      this._onInput = () => this._filter();
+      if (this.input) this.input.addEventListener("input", this._onInput);
+      this._onItemPointerMove = (e) => {
+        const item = e.target.closest('[data-exo="command-palette-item"]');
+        if (!item || this._isDisabled(item) || item.hidden) return;
+        this._setActive(this.items.indexOf(item));
+      };
+      this.el.addEventListener("pointermove", this._onItemPointerMove);
+      this._onItemClick = (e) => {
+        const item = e.target.closest('[data-exo="command-palette-item"]');
+        if (!item) return;
+        if (this._isDisabled(item)) {
+          e.preventDefault();
+          return;
+        }
+        if (item.dataset.close !== "false") {
+          setTimeout(() => this._close(), 0);
+        }
+      };
+      this.el.addEventListener("click", this._onItemClick);
       if (this.backdrop) {
-        this.backdrop.addEventListener("click", this._onBackdrop = () => close());
+        this._onBackdrop = () => this._close();
+        this.backdrop.addEventListener("click", this._onBackdrop);
       }
     },
-    destroyed() {
+    _isDisabled(item) {
+      return item.disabled || item.dataset.disabled === "true" || item.getAttribute("aria-disabled") === "true";
+    },
+    _visibleItems() {
+      return this.items.filter((item) => !item.hidden && !this._isDisabled(item));
+    },
+    _filter() {
+      const query = (this.input?.value || "").trim().toLowerCase();
+      let visibleCount = 0;
+      this.items.forEach((item) => {
+        const text = `${item.dataset.search || ""} ${item.dataset.value || ""} ${item.textContent || ""}`.toLowerCase();
+        const visible = !query || text.includes(query);
+        item.hidden = !visible;
+        if (visible && !this._isDisabled(item)) visibleCount += 1;
+      });
+      if (this.empty) this.empty.hidden = visibleCount > 0;
+      this._setActiveByVisibleIndex(0);
+    },
+    _moveActive(delta) {
+      const visible = this._visibleItems();
+      if (!visible.length) {
+        this._setActive(-1);
+        return;
+      }
+      const current = visible.indexOf(this.items[this.activeIndex]);
+      const next = current === -1 ? delta > 0 ? 0 : visible.length - 1 : (current + delta + visible.length) % visible.length;
+      this._setActive(this.items.indexOf(visible[next]));
+    },
+    _setActiveByVisibleIndex(index) {
+      const visible = this._visibleItems();
+      if (!visible.length || index < 0) {
+        this._setActive(-1);
+        return;
+      }
+      const bounded = Math.max(0, Math.min(index, visible.length - 1));
+      this._setActive(this.items.indexOf(visible[bounded]));
+    },
+    _setActive(index) {
+      this.items.forEach((item2, itemIndex) => this._setItemActive(item2, itemIndex === index));
+      this.activeIndex = index;
+      this._syncActiveDescendant();
+      const item = this.items[index];
+      if (item) item.scrollIntoView({ block: "nearest" });
+    },
+    _setItemActive(item, active) {
+      item.dataset.active = active ? "true" : "false";
+      item.setAttribute("aria-selected", active ? "true" : "false");
+    },
+    _syncActiveDescendant() {
+      if (!this.input) return;
+      const item = this.items[this.activeIndex];
+      if (item && !item.hidden) {
+        this.input.setAttribute("aria-activedescendant", item.id);
+      } else {
+        this.input.removeAttribute("aria-activedescendant");
+      }
+    },
+    _unbind() {
       if (this._onGlobalKey) document.removeEventListener("keydown", this._onGlobalKey);
+      if (this._onKey) this.el.removeEventListener("keydown", this._onKey);
+      if (this.input && this._onInput) this.input.removeEventListener("input", this._onInput);
+      if (this._onItemPointerMove) this.el.removeEventListener("pointermove", this._onItemPointerMove);
+      if (this._onItemClick) this.el.removeEventListener("click", this._onItemClick);
+      if (this.backdrop && this._onBackdrop) {
+        this.backdrop.removeEventListener("click", this._onBackdrop);
+      }
+      delete this.el.dataset.ready;
+      this.backdrop = null;
+      this.input = null;
+      this.list = null;
+      this.empty = null;
+      this.items = [];
+      this.activeIndex = -1;
+      this._onGlobalKey = null;
+      this._onKey = null;
+      this._onInput = null;
+      this._onItemPointerMove = null;
+      this._onItemClick = null;
+      this._onBackdrop = null;
+      this._open = null;
+      this._close = null;
     }
   };
 
@@ -296,23 +476,83 @@
     },
     _bind() {
       this._unbind();
-      const trigger = this.el.querySelector('[data-exo="popover-trigger"]');
-      const id = trigger?.getAttribute("popovertarget");
+      this._trigger = this.el.querySelector('[data-exo="popover-trigger"]');
+      const id = this._trigger?.dataset.popoverTarget || this._trigger?.getAttribute("popovertarget");
       this._popover = id ? document.getElementById(id) : null;
-      if (!this._popover) return;
-      const syncExpanded = () => {
+      if (!this._popover || !this._trigger) return;
+      this._control = this._findControl();
+      this._prepareControl();
+      this.el.setAttribute("data-ready", "");
+      this._syncExpanded = () => {
         const open = this._popover.matches(":popover-open");
-        trigger.setAttribute("aria-expanded", String(open));
+        this._control?.setAttribute("aria-expanded", String(open));
+        this._trigger.setAttribute("aria-expanded", String(open));
       };
-      syncExpanded();
-      this._onToggle = () => syncExpanded();
+      this._syncExpanded();
+      this._onClick = (event) => {
+        event.preventDefault();
+        this._togglePopover();
+      };
+      this._onKeydown = (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        if (event.target !== this._control && !this._control?.contains?.(event.target)) return;
+        event.preventDefault();
+        this._togglePopover();
+      };
+      this._onToggle = () => this._syncExpanded();
+      this._trigger.addEventListener("click", this._onClick);
+      this._trigger.addEventListener("keydown", this._onKeydown);
       this._popover.addEventListener("toggle", this._onToggle);
+    },
+    _findControl() {
+      const selector = [
+        "button",
+        "a[href]",
+        'input:not([type="hidden"])',
+        "select",
+        "textarea",
+        '[role="button"]',
+        '[tabindex]:not([tabindex="-1"])'
+      ].join(",");
+      return this._trigger.matches(selector) ? this._trigger : this._trigger.querySelector(selector) || this._trigger;
+    },
+    _prepareControl() {
+      const hasPopup = this._trigger.dataset.popoverHaspopup || "true";
+      this._control.setAttribute("aria-haspopup", hasPopup);
+      this._control.setAttribute("aria-expanded", "false");
+      if (this._control === this._trigger) {
+        this._control.setAttribute("role", "button");
+        this._control.setAttribute("tabindex", "0");
+      }
+      if (this._control instanceof HTMLButtonElement && !this._control.getAttribute("type")) {
+        this._control.setAttribute("type", "button");
+      }
+    },
+    _togglePopover() {
+      try {
+        if (this._popover.matches(":popover-open")) {
+          this._popover.hidePopover();
+        } else {
+          this._popover.showPopover();
+        }
+      } catch (_err) {
+      }
     },
     _unbind() {
       if (this._popover && this._onToggle) {
         this._popover.removeEventListener("toggle", this._onToggle);
       }
+      if (this._trigger) {
+        if (this._onClick) this._trigger.removeEventListener("click", this._onClick);
+        if (this._onKeydown) this._trigger.removeEventListener("keydown", this._onKeydown);
+      }
+      if (this.el) this.el.removeAttribute("data-ready");
+      this._trigger = null;
+      this._control = null;
       this._popover = null;
+      this._syncExpanded = null;
+      this._onClick = null;
+      this._onKeydown = null;
       this._onToggle = null;
     }
   };
@@ -718,10 +958,21 @@
   var GAP = 4;
   var ExoTooltip = {
     mounted() {
+      this._bind();
+    },
+    updated() {
+      this._bind();
+    },
+    destroyed() {
+      this._unbind();
+    },
+    _bind() {
+      this._unbind();
       const wrapper = this.el;
       const anchor = wrapper.querySelector('[data-exo="tooltip-anchor"]');
       const content = wrapper.querySelector('[data-exo="tooltip-content"]');
       if (!anchor || !content) return;
+      this._wrapper = wrapper;
       this._anchor = anchor;
       this._content = content;
       this._timeout = null;
@@ -763,16 +1014,20 @@
           }
         }
       };
-      this._wrapper = wrapper;
-      wrapper.addEventListener("mouseenter", this._show = () => show());
-      wrapper.addEventListener("mouseleave", this._hide = () => hide());
-      anchor.addEventListener("focusin", this._focusIn = () => show());
-      anchor.addEventListener("focusout", this._focusOut = (e) => {
+      this._show = () => show();
+      this._hide = () => hide();
+      this._focusIn = () => show();
+      this._focusOut = (e) => {
         if (!wrapper.contains(e.relatedTarget)) hide();
-      });
-      wrapper.addEventListener("keydown", this._keydown = (e) => {
+      };
+      this._keydown = (e) => {
         if (e.key === "Escape") hide();
-      });
+      };
+      wrapper.addEventListener("mouseenter", this._show);
+      wrapper.addEventListener("mouseleave", this._hide);
+      anchor.addEventListener("focusin", this._focusIn);
+      anchor.addEventListener("focusout", this._focusOut);
+      wrapper.addEventListener("keydown", this._keydown);
     },
     /** Detect if anchor positioning flipped the side and update data-side for arrow CSS. */
     _detectFlip() {
@@ -806,7 +1061,7 @@
       this._content.style.top = `${top}px`;
       this._content.style.left = `${left}px`;
     },
-    destroyed() {
+    _unbind() {
       clearTimeout(this._timeout);
       if (this._wrapper) {
         if (this._show) this._wrapper.removeEventListener("mouseenter", this._show);
@@ -817,6 +1072,15 @@
         if (this._focusIn) this._anchor.removeEventListener("focusin", this._focusIn);
         if (this._focusOut) this._anchor.removeEventListener("focusout", this._focusOut);
       }
+      this._wrapper = null;
+      this._anchor = null;
+      this._content = null;
+      this._show = null;
+      this._hide = null;
+      this._focusIn = null;
+      this._focusOut = null;
+      this._keydown = null;
+      this._timeout = null;
     }
   };
 
@@ -838,36 +1102,63 @@
       if (!this.trigger || !this.content) return;
       this._showTimeout = null;
       this._hideTimeout = null;
+      this._openDelay = Number.parseInt(this.el.dataset.openDelay || "300", 10);
+      this._closeDelay = Number.parseInt(this.el.dataset.closeDelay || "150", 10);
       this._show = () => {
         clearTimeout(this._hideTimeout);
+        clearTimeout(this._showTimeout);
         this._showTimeout = setTimeout(() => {
+          this.content.hidden = false;
           this.content.setAttribute("data-open", "");
-        }, 300);
+          this.trigger.setAttribute("aria-expanded", "true");
+        }, this._openDelay);
       };
       this._hide = () => {
         clearTimeout(this._showTimeout);
         this._hideTimeout = setTimeout(() => {
           this.content.removeAttribute("data-open");
-        }, 200);
+          this.content.hidden = true;
+          this.trigger.setAttribute("aria-expanded", "false");
+        }, this._closeDelay);
       };
-      this._cancelHide = () => clearTimeout(this._hideTimeout);
-      this.trigger.addEventListener("mouseenter", this._show);
-      this.trigger.addEventListener("mouseleave", this._hide);
-      this.content.addEventListener("mouseenter", this._cancelHide);
-      this.content.addEventListener("mouseleave", this._hide);
-      this.trigger.addEventListener("focus", this._show);
-      this.trigger.addEventListener("blur", this._hide);
+      this._onFocusOut = (event) => {
+        if (!this.el.contains(event.relatedTarget)) this._hide();
+      };
+      this._onKeydown = (event) => {
+        if (event.key !== "Escape" || !this.content.hasAttribute("data-open")) return;
+        event.preventDefault();
+        this._hideNow();
+        this._firstFocusableTrigger()?.focus?.({ preventScroll: true });
+      };
+      this.el.addEventListener("pointerenter", this._show);
+      this.el.addEventListener("pointerleave", this._hide);
+      this.trigger.addEventListener("focusin", this._show);
+      this.trigger.addEventListener("focusout", this._onFocusOut);
+      this.content.addEventListener("focusin", this._show);
+      this.content.addEventListener("focusout", this._onFocusOut);
+      this.el.addEventListener("keydown", this._onKeydown);
+      this.el.dataset.ready = "true";
+    },
+    _hideNow() {
+      clearTimeout(this._showTimeout);
+      clearTimeout(this._hideTimeout);
+      this.content.removeAttribute("data-open");
+      this.content.hidden = true;
+      this.trigger?.setAttribute("aria-expanded", "false");
+    },
+    _firstFocusableTrigger() {
+      return this.trigger?.querySelector("a[href],button:not([disabled]),[tabindex]:not([tabindex='-1'])");
     },
     _unbind() {
-      if (this.trigger) {
-        if (this._show) this.trigger.removeEventListener("mouseenter", this._show);
-        if (this._hide) this.trigger.removeEventListener("mouseleave", this._hide);
-        if (this._show) this.trigger.removeEventListener("focus", this._show);
-        if (this._hide) this.trigger.removeEventListener("blur", this._hide);
-      }
+      if (this.el && this._show) this.el.removeEventListener("pointerenter", this._show);
+      if (this.el && this._hide) this.el.removeEventListener("pointerleave", this._hide);
+      if (this.el && this._onKeydown) this.el.removeEventListener("keydown", this._onKeydown);
+      if (this.el) delete this.el.dataset.ready;
+      if (this.trigger && this._show) this.trigger.removeEventListener("focusin", this._show);
+      if (this.trigger && this._onFocusOut) this.trigger.removeEventListener("focusout", this._onFocusOut);
       if (this.content) {
-        if (this._cancelHide) this.content.removeEventListener("mouseenter", this._cancelHide);
-        if (this._hide) this.content.removeEventListener("mouseleave", this._hide);
+        if (this._show) this.content.removeEventListener("focusin", this._show);
+        if (this._onFocusOut) this.content.removeEventListener("focusout", this._onFocusOut);
       }
       clearTimeout(this._showTimeout);
       clearTimeout(this._hideTimeout);
@@ -875,9 +1166,12 @@
       this.content = null;
       this._show = null;
       this._hide = null;
-      this._cancelHide = null;
+      this._onFocusOut = null;
+      this._onKeydown = null;
       this._showTimeout = null;
       this._hideTimeout = null;
+      this._openDelay = null;
+      this._closeDelay = null;
     }
   };
 
@@ -897,54 +1191,587 @@
       this.trigger = this.el.querySelector('[data-exo="context-menu-trigger"]');
       this.menu = this.el.querySelector('[data-exo="context-menu-content"]');
       if (!this.trigger || !this.menu) return;
+      this.el.setAttribute("data-ready", "");
+      this.trigger.setAttribute("tabindex", this.trigger.getAttribute("tabindex") || "0");
+      this.trigger.setAttribute("role", this.trigger.getAttribute("role") || "button");
+      this.trigger.setAttribute("aria-haspopup", "menu");
+      this.trigger.setAttribute("aria-expanded", String(this.menu.hasAttribute("data-open")));
+      this._items = () => [...this.menu.querySelectorAll('[data-exo="context-menu-item"]:not([disabled])')];
       this._close = (e) => {
         if (this.trigger?.contains(e.target)) return;
         if (!this.menu.contains(e.target)) {
-          this.menu.removeAttribute("data-open");
-          document.removeEventListener("click", this._close);
-          document.removeEventListener("contextmenu", this._close);
+          this._hide();
         }
       };
       this._onContext = (e) => {
         e.preventDefault();
-        this.menu.style.left = e.clientX + "px";
-        this.menu.style.top = e.clientY + "px";
-        this.menu.setAttribute("data-open", "");
-        document.addEventListener("click", this._close);
-        document.addEventListener("contextmenu", this._close);
+        this._openAt(e.clientX, e.clientY);
       };
       this.trigger.addEventListener("contextmenu", this._onContext);
+      this._onTriggerKeydown = (e) => {
+        if (e.key !== "ContextMenu" && !(e.shiftKey && e.key === "F10")) return;
+        e.preventDefault();
+        const rect = this.trigger.getBoundingClientRect();
+        this._openAt(rect.left, rect.bottom);
+      };
+      this.trigger.addEventListener("keydown", this._onTriggerKeydown);
+      this._openAt = (x, y) => {
+        this.menu.setAttribute("data-open", "");
+        this.trigger.setAttribute("aria-expanded", "true");
+        this._positionWithinViewport(x, y);
+        this._bindCloseListeners();
+        requestAnimationFrame(() => {
+          this._items()[0]?.focus();
+        });
+      };
+      this._positionWithinViewport = (x, y) => {
+        this.menu.style.left = x + "px";
+        this.menu.style.top = y + "px";
+        requestAnimationFrame(() => {
+          if (!this.menu.hasAttribute("data-open")) return;
+          const rect = this.menu.getBoundingClientRect();
+          const gap = 4;
+          const left = Math.min(x, window.innerWidth - rect.width - gap);
+          const top = Math.min(y, window.innerHeight - rect.height - gap);
+          this.menu.style.left = Math.max(gap, left) + "px";
+          this.menu.style.top = Math.max(gap, top) + "px";
+        });
+      };
+      this._bindCloseListeners = () => {
+        document.removeEventListener("pointerdown", this._close, true);
+        document.removeEventListener("mousedown", this._close, true);
+        document.removeEventListener("click", this._close, true);
+        document.removeEventListener("contextmenu", this._close, true);
+        document.addEventListener("pointerdown", this._close, true);
+        document.addEventListener("mousedown", this._close, true);
+        document.addEventListener("click", this._close, true);
+        document.addEventListener("contextmenu", this._close, true);
+      };
+      this._hide = () => {
+        this.menu.removeAttribute("data-open");
+        this.trigger.setAttribute("aria-expanded", "false");
+        document.removeEventListener("pointerdown", this._close, true);
+        document.removeEventListener("mousedown", this._close, true);
+        document.removeEventListener("click", this._close, true);
+        document.removeEventListener("contextmenu", this._close, true);
+      };
       this._onItemClick = (e) => {
         const item = e.target.closest('[data-exo="context-menu-item"]');
         if (item && !item.disabled) {
-          this.menu.removeAttribute("data-open");
-          document.removeEventListener("click", this._close);
-          document.removeEventListener("contextmenu", this._close);
+          this._hide();
         }
       };
       this.menu.addEventListener("click", this._onItemClick);
       this._onKeydown = (e) => {
         if (e.key === "Escape") {
-          this.menu.removeAttribute("data-open");
-          document.removeEventListener("click", this._close);
-          document.removeEventListener("contextmenu", this._close);
+          this._hide();
+          this.trigger.focus?.();
+          return;
         }
+        const items = this._items();
+        if (!items.length) return;
+        const idx = items.indexOf(document.activeElement);
+        let next = -1;
+        switch (e.key) {
+          case "ArrowDown":
+            next = idx < items.length - 1 ? idx + 1 : 0;
+            break;
+          case "ArrowUp":
+            next = idx > 0 ? idx - 1 : items.length - 1;
+            break;
+          case "Home":
+            next = 0;
+            break;
+          case "End":
+            next = items.length - 1;
+            break;
+          default:
+            return;
+        }
+        e.preventDefault();
+        items[next]?.focus();
       };
-      this.el.addEventListener("keydown", this._onKeydown);
+      this.menu.addEventListener("keydown", this._onKeydown);
     },
     _unbind() {
       if (this.trigger && this._onContext) this.trigger.removeEventListener("contextmenu", this._onContext);
+      if (this.trigger && this._onTriggerKeydown) this.trigger.removeEventListener("keydown", this._onTriggerKeydown);
       if (this.menu && this._onItemClick) this.menu.removeEventListener("click", this._onItemClick);
-      if (this._onKeydown) this.el.removeEventListener("keydown", this._onKeydown);
+      if (this.menu && this._onKeydown) this.menu.removeEventListener("keydown", this._onKeydown);
       if (this._close) {
-        document.removeEventListener("click", this._close);
-        document.removeEventListener("contextmenu", this._close);
+        document.removeEventListener("pointerdown", this._close, true);
+        document.removeEventListener("mousedown", this._close, true);
+        document.removeEventListener("click", this._close, true);
+        document.removeEventListener("contextmenu", this._close, true);
       }
+      if (this.el) this.el.removeAttribute("data-ready");
       this.trigger = null;
       this.menu = null;
+      this._items = null;
+      this._hide = null;
+      this._openAt = null;
+      this._bindCloseListeners = null;
+      this._positionWithinViewport = null;
       this._onContext = null;
+      this._onTriggerKeydown = null;
       this._onItemClick = null;
       this._onKeydown = null;
+      this._close = null;
+    }
+  };
+
+  // ../../assets/js/hooks/rating.js
+  var ExoRating = {
+    mounted() {
+      this._bind();
+    },
+    updated() {
+      this._bind();
+    },
+    destroyed() {
+      this._unbind();
+    },
+    _bind() {
+      this._unbind();
+      this._hidden = this.el.querySelector('[data-exo="rating-value"]');
+      this._inputs = [...this.el.querySelectorAll('[data-exo="rating-input"]')];
+      if (!this._hidden || this._inputs.length === 0) return;
+      this.el.setAttribute("data-ready", "");
+      this._onClick = (event) => {
+        const star = event.target.closest('[data-exo="rating-star"]');
+        if (!star) return;
+        const input = star.querySelector('[data-exo="rating-input"]');
+        if (!input || input.disabled) return;
+        input.checked = true;
+        this._setValue(input.value, true);
+      };
+      this._onChange = (event) => {
+        const input = event.target.closest('[data-exo="rating-input"]');
+        if (!input || !input.checked) return;
+        this._setValue(input.value, true);
+      };
+      this.el.addEventListener("click", this._onClick);
+      this.el.addEventListener("change", this._onChange);
+      this._setValue(this._hidden.value || this.el.dataset.value || "0", false);
+    },
+    _setValue(value, notify) {
+      const numericValue = parseInt(value || "0", 10) || 0;
+      this.el.dataset.value = String(numericValue);
+      this._hidden.value = String(numericValue);
+      this.el.querySelectorAll('[data-exo="rating-star"]').forEach((star, index) => {
+        star.toggleAttribute("data-active", index + 1 <= numericValue);
+      });
+      this._inputs.forEach((input) => {
+        input.checked = input.value === String(numericValue);
+      });
+      if (notify) {
+        this._hidden.dispatchEvent(new Event("input", { bubbles: true }));
+        this._hidden.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+    },
+    _unbind() {
+      if (this._onClick) this.el.removeEventListener("click", this._onClick);
+      if (this._onChange) this.el.removeEventListener("change", this._onChange);
+      if (this.el) this.el.removeAttribute("data-ready");
+      this._hidden = null;
+      this._inputs = [];
+      this._onClick = null;
+      this._onChange = null;
+    }
+  };
+
+  // ../../assets/js/hooks/menubar.js
+  var ExoMenubar = {
+    mounted() {
+      this._bind();
+    },
+    updated() {
+      this._bind();
+    },
+    destroyed() {
+      this._unbind();
+    },
+    _bind() {
+      this._unbind();
+      this.menus = Array.from(this.el.querySelectorAll('[data-exo="menubar-menu"]'));
+      this.triggers = this.menus.map((menu) => menu.querySelector('[data-exo="menubar-trigger"]'));
+      this.contents = this.menus.map((menu) => menu.querySelector('[data-exo="menubar-content"]'));
+      this.openIndex = -1;
+      this.triggers.forEach((trigger, index) => {
+        if (!trigger) return;
+        trigger.setAttribute("tabindex", index === 0 ? "0" : "-1");
+        trigger.setAttribute("aria-expanded", "false");
+        if (trigger.tagName === "BUTTON" && !trigger.hasAttribute("type")) {
+          trigger.setAttribute("type", "button");
+        }
+      });
+      this.contents.forEach((content, index) => {
+        if (!content) return;
+        content.hidden = true;
+        content.removeAttribute("data-open");
+        this._items(index).forEach((item) => {
+          if (!item.hasAttribute("role")) item.setAttribute("role", "menuitem");
+          item.setAttribute("tabindex", "-1");
+          if (item.tagName === "BUTTON" && !item.hasAttribute("type")) {
+            item.setAttribute("type", "button");
+          }
+        });
+      });
+      this._onClick = (e) => {
+        const trigger = e.target.closest('[data-exo="menubar-trigger"]');
+        if (trigger && this.el.contains(trigger)) {
+          e.preventDefault();
+          const index = this.triggers.indexOf(trigger);
+          this.openIndex === index ? this._closeAll(true) : this._open(index);
+          trigger.focus();
+          return;
+        }
+        const item = e.target.closest('[data-exo="menubar-content"] [role="menuitem"], [data-exo="menubar-content"] button, [data-exo="menubar-content"] a');
+        if (item && this.el.contains(item) && !this._isDisabled(item)) {
+          setTimeout(() => this._closeAll(true), 0);
+        }
+      };
+      this.el.addEventListener("click", this._onClick);
+      this._onPointerEnter = (e) => {
+        const trigger = e.target.closest('[data-exo="menubar-trigger"]');
+        if (!trigger || !this.el.contains(trigger) || this.openIndex < 0) return;
+        this._open(this.triggers.indexOf(trigger));
+        trigger.focus();
+      };
+      this.el.addEventListener("pointerover", this._onPointerEnter);
+      this._onKeyDown = (e) => {
+        const triggerIndex = this.triggers.indexOf(e.target);
+        if (triggerIndex >= 0) {
+          this._onTriggerKey(e, triggerIndex);
+          return;
+        }
+        const contentIndex = this.contents.findIndex((content) => content?.contains(e.target));
+        if (contentIndex >= 0) this._onMenuKey(e, contentIndex);
+      };
+      this.el.addEventListener("keydown", this._onKeyDown);
+      this._onDocumentPointerDown = (e) => {
+        if (!this.el.contains(e.target)) this._closeAll(true);
+      };
+      document.addEventListener("pointerdown", this._onDocumentPointerDown, true);
+      this._onFocusOut = () => {
+        clearTimeout(this._focusOutTimer);
+        this._focusOutTimer = setTimeout(() => {
+          if (!this.el.contains(document.activeElement)) this._closeAll(true);
+        }, 0);
+      };
+      this.el.addEventListener("focusout", this._onFocusOut);
+      this.el.dataset.ready = "true";
+    },
+    _onTriggerKey(e, index) {
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        this._focusTrigger(this._nextTrigger(index, 1));
+        return;
+      }
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        this._focusTrigger(this._nextTrigger(index, -1));
+        return;
+      }
+      if (e.key === "Home") {
+        e.preventDefault();
+        this._focusTrigger(0);
+        return;
+      }
+      if (e.key === "End") {
+        e.preventDefault();
+        this._focusTrigger(this.triggers.length - 1);
+        return;
+      }
+      if (["ArrowDown", "Enter", " "].includes(e.key)) {
+        e.preventDefault();
+        this._open(index);
+        this._focusItem(index, 0);
+        return;
+      }
+      if (e.key === "Escape") {
+        e.preventDefault();
+        this._closeAll(true);
+      }
+    },
+    _onMenuKey(e, index) {
+      const items = this._enabledItems(index);
+      const current = items.indexOf(e.target.closest('[role="menuitem"], button, a'));
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        this._focusItem(index, current + 1);
+        return;
+      }
+      if (e.key === "ArrowUp") {
+        e.preventDefault();
+        this._focusItem(index, current - 1);
+        return;
+      }
+      if (e.key === "Home") {
+        e.preventDefault();
+        this._focusItem(index, 0);
+        return;
+      }
+      if (e.key === "End") {
+        e.preventDefault();
+        this._focusItem(index, items.length - 1);
+        return;
+      }
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        const next = this._nextTrigger(index, 1);
+        this._open(next);
+        this._focusItem(next, 0);
+        return;
+      }
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        const previous = this._nextTrigger(index, -1);
+        this._open(previous);
+        this._focusItem(previous, 0);
+        return;
+      }
+      if (e.key === "Escape") {
+        e.preventDefault();
+        this._closeAll(false);
+        this._focusTrigger(index);
+      }
+    },
+    _open(index) {
+      this.contents.forEach((content, contentIndex) => {
+        const trigger = this.triggers[contentIndex];
+        const open = contentIndex === index;
+        if (!content || !trigger) return;
+        content.hidden = !open;
+        content.toggleAttribute("data-open", open);
+        trigger.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+      this.openIndex = index;
+      this.el.dataset.open = "true";
+    },
+    _closeAll(resetFocus) {
+      this.contents.forEach((content, index) => {
+        if (!content) return;
+        content.hidden = true;
+        content.removeAttribute("data-open");
+        this.triggers[index]?.setAttribute("aria-expanded", "false");
+      });
+      this.openIndex = -1;
+      delete this.el.dataset.open;
+      if (resetFocus) this._setTriggerTabIndex(0);
+    },
+    _focusTrigger(index) {
+      this._setTriggerTabIndex(index);
+      this.triggers[index]?.focus();
+      if (this.openIndex >= 0) this._open(index);
+    },
+    _setTriggerTabIndex(index) {
+      this.triggers.forEach((trigger, triggerIndex) => {
+        trigger?.setAttribute("tabindex", triggerIndex === index ? "0" : "-1");
+      });
+    },
+    _focusItem(index, itemIndex) {
+      const items = this._enabledItems(index);
+      if (!items.length) return;
+      const bounded = (itemIndex + items.length) % items.length;
+      items[bounded].focus();
+    },
+    _nextTrigger(index, delta) {
+      if (!this.triggers.length) return -1;
+      return (index + delta + this.triggers.length) % this.triggers.length;
+    },
+    _items(index) {
+      const content = this.contents[index];
+      if (!content) return [];
+      return Array.from(content.querySelectorAll('[role="menuitem"], button, a'));
+    },
+    _enabledItems(index) {
+      return this._items(index).filter((item) => !this._isDisabled(item));
+    },
+    _isDisabled(item) {
+      return item.disabled || item.getAttribute("aria-disabled") === "true" || item.dataset.disabled === "true";
+    },
+    _unbind() {
+      if (this._onClick) this.el.removeEventListener("click", this._onClick);
+      if (this._onPointerEnter) this.el.removeEventListener("pointerover", this._onPointerEnter);
+      if (this._onKeyDown) this.el.removeEventListener("keydown", this._onKeyDown);
+      if (this._onDocumentPointerDown) document.removeEventListener("pointerdown", this._onDocumentPointerDown, true);
+      if (this._onFocusOut) this.el.removeEventListener("focusout", this._onFocusOut);
+      clearTimeout(this._focusOutTimer);
+      delete this.el.dataset.ready;
+      this.menus = [];
+      this.triggers = [];
+      this.contents = [];
+      this.openIndex = -1;
+      this._onClick = null;
+      this._onPointerEnter = null;
+      this._onKeyDown = null;
+      this._onDocumentPointerDown = null;
+      this._onFocusOut = null;
+      this._focusOutTimer = null;
+    }
+  };
+
+  // ../../assets/js/hooks/overlay.js
+  var focusableSelector = [
+    "a[href]",
+    "button:not([disabled])",
+    'input:not([disabled]):not([type="hidden"])',
+    "select:not([disabled])",
+    "textarea:not([disabled])",
+    '[tabindex]:not([tabindex="-1"])',
+    '[contenteditable="true"]'
+  ].join(",");
+  var ExoOverlay = {
+    mounted() {
+      this._bind();
+    },
+    updated() {
+      this._bind();
+    },
+    destroyed() {
+      this._unbind();
+    },
+    _bind() {
+      const wasOpen = this._isOpenActive;
+      const previousFocus = this._previousFocus;
+      const pendingInvoker = this._pendingInvoker;
+      this._unbind();
+      this._isOpenActive = wasOpen || false;
+      this._previousFocus = previousFocus || null;
+      this._pendingInvoker = pendingInvoker || null;
+      this._panel = this._findPanel();
+      this._close = this._findClose();
+      if (!this._panel) return;
+      this._onKeydown = (event) => this._handleKeydown(event);
+      this._onPointerdown = (event) => this._rememberInvoker(event);
+      this._onClick = (event) => this._rememberInvoker(event);
+      this._observer = new MutationObserver(() => this._sync());
+      document.addEventListener("keydown", this._onKeydown, true);
+      document.addEventListener("pointerdown", this._onPointerdown, true);
+      document.addEventListener("click", this._onClick, true);
+      this._observer.observe(this.el, {
+        attributes: true,
+        attributeFilter: ["data-state", "class", "hidden", "inert", "aria-hidden", "style"]
+      });
+      this.el.dataset.ready = "true";
+      this._sync();
+    },
+    _findPanel() {
+      return this.el.querySelector([
+        '[data-exo="modal-content"]',
+        '[data-exo="drawer-content"]',
+        '[data-exo="sheet-content"]'
+      ].join(","));
+    },
+    _findClose() {
+      return this.el.querySelector([
+        '[data-exo="modal-close"]',
+        '[data-exo="drawer-close"]',
+        '[data-exo="sheet-close"]'
+      ].join(","));
+    },
+    _isOpen() {
+      if (this.el.dataset.state) return this.el.dataset.state === "open";
+      return this.el.classList.contains("open") && !this.el.hidden;
+    },
+    _sync() {
+      const open = this._isOpen();
+      if (open && !this._isOpenActive) {
+        this._activate();
+        return;
+      }
+      if (!open && this._isOpenActive) {
+        this._deactivate();
+      }
+    },
+    _activate() {
+      this._isOpenActive = true;
+      const active = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      const previousFocus = this._isRestoreTarget(this._pendingInvoker) ? this._pendingInvoker : active;
+      this._pendingInvoker = null;
+      this._previousFocus = this._isRestoreTarget(previousFocus) ? previousFocus : null;
+      this.el.removeAttribute("inert");
+      this.el.setAttribute("aria-hidden", "false");
+      requestAnimationFrame(() => {
+        const target = this._firstFocusable() || this._panel;
+        target?.focus?.({ preventScroll: true });
+      });
+    },
+    _deactivate() {
+      this._isOpenActive = false;
+      this.el.setAttribute("aria-hidden", "true");
+      this.el.setAttribute("inert", "true");
+      const target = this._previousFocus;
+      this._previousFocus = null;
+      requestAnimationFrame(() => {
+        if (target && target.isConnected) target.focus({ preventScroll: true });
+      });
+    },
+    _focusables() {
+      if (!this._panel) return [];
+      return Array.from(this._panel.querySelectorAll(focusableSelector)).filter((element) => {
+        if (!(element instanceof HTMLElement)) return false;
+        if (element.hidden || element.getAttribute("aria-hidden") === "true") return false;
+        if (element.closest("[hidden],[inert]")) return false;
+        return Boolean(element.offsetWidth || element.offsetHeight || element.getClientRects().length);
+      });
+    },
+    _firstFocusable() {
+      return this._focusables()[0] || null;
+    },
+    _handleKeydown(event) {
+      if (!this._isOpen()) return;
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        this._close?.click?.();
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const focusables = this._focusables();
+      if (focusables.length === 0) {
+        event.preventDefault();
+        this._panel?.focus?.({ preventScroll: true });
+        return;
+      }
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement;
+      if (event.shiftKey && (active === first || !this._panel.contains(active))) {
+        event.preventDefault();
+        last.focus({ preventScroll: true });
+        return;
+      }
+      if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus({ preventScroll: true });
+      }
+    },
+    _rememberInvoker(event) {
+      if (this._isOpen()) return;
+      const target = event.target instanceof Element ? event.target.closest(focusableSelector) : null;
+      if (this._isRestoreTarget(target)) this._pendingInvoker = target;
+    },
+    _isRestoreTarget(element) {
+      if (!(element instanceof HTMLElement)) return false;
+      if (!element.isConnected || this.el.contains(element)) return false;
+      if (element.closest("[hidden],[inert]")) return false;
+      if (element.hasAttribute("disabled") || element.getAttribute("aria-disabled") === "true") return false;
+      if (!element.matches(focusableSelector)) return false;
+      return true;
+    },
+    _unbind() {
+      if (this._observer) this._observer.disconnect();
+      if (this._onKeydown) document.removeEventListener("keydown", this._onKeydown, true);
+      if (this._onPointerdown) document.removeEventListener("pointerdown", this._onPointerdown, true);
+      if (this._onClick) document.removeEventListener("click", this._onClick, true);
+      if (this.el) delete this.el.dataset.ready;
+      this._observer = null;
+      this._onKeydown = null;
+      this._onPointerdown = null;
+      this._onClick = null;
+      this._panel = null;
       this._close = null;
     }
   };
@@ -963,7 +1790,10 @@
     ExoCombobox,
     ExoTooltip,
     ExoHoverCard,
-    ExoContextMenu
+    ExoContextMenu,
+    ExoRating,
+    ExoMenubar,
+    ExoOverlay
   };
 
   // js/storybook.js
