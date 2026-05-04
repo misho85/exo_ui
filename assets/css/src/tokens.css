@@ -3,6 +3,8 @@
   --exo-foreground: oklch(15% 0 0);
   --exo-muted: oklch(95% 0 0);
   --exo-muted-foreground: oklch(45% 0 0);
+  --exo-accent: oklch(95% 0 0);
+  --exo-accent-foreground: oklch(15% 0 0);
   --exo-card: oklch(100% 0 0);
   --exo-card-foreground: oklch(15% 0 0);
   --exo-border: oklch(90% 0 0);
@@ -23,6 +25,7 @@
   --exo-tooltip-bg: var(--exo-foreground);
   --exo-tooltip-fg: var(--exo-background);
   --exo-radius: 0.5rem;
+  --exo-radius-sm: 0.375rem;
   --exo-space-1: 0.25rem;
   --exo-space-2: 0.5rem;
   --exo-space-3: 0.75rem;
@@ -65,6 +68,8 @@
   --exo-foreground: oklch(15% 0 0);
   --exo-muted: oklch(95% 0 0);
   --exo-muted-foreground: oklch(45% 0 0);
+  --exo-accent: oklch(95% 0 0);
+  --exo-accent-foreground: oklch(15% 0 0);
   --exo-card: oklch(100% 0 0);
   --exo-card-foreground: oklch(15% 0 0);
   --exo-border: oklch(90% 0 0);

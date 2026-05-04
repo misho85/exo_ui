@@ -4,6 +4,8 @@
   --exo-foreground: oklch(90% 0 0);
   --exo-muted: oklch(20% 0 0);
   --exo-muted-foreground: oklch(60% 0 0);
+  --exo-accent: oklch(24% 0 0);
+  --exo-accent-foreground: oklch(90% 0 0);
   --exo-card: oklch(18% 0 0);
   --exo-card-foreground: oklch(90% 0 0);
   --exo-border: oklch(30% 0 0);
@@ -19,6 +21,8 @@
     --exo-foreground: oklch(90% 0 0);
     --exo-muted: oklch(20% 0 0);
     --exo-muted-foreground: oklch(60% 0 0);
+    --exo-accent: oklch(24% 0 0);
+    --exo-accent-foreground: oklch(90% 0 0);
     --exo-card: oklch(18% 0 0);
     --exo-card-foreground: oklch(90% 0 0);
     --exo-border: oklch(30% 0 0);
