@@ -74,7 +74,7 @@ info/success/warning and degrades AT behavior.
   `aria-valuenow` all wired (`feedback.ex:148-151`). `aria-valuenow` is the
   raw value, not the clamped percentage — correct per WAI-ARIA APG.
 - `flash/1` and `toast_container/1` emit a dedicated `<button
-  data-exo="…-close">` with `aria-label` (`feedback.ex:39`,
+data-exo="…-close">` with `aria-label` (`feedback.ex:39`,
   `feedback.ex:97-103`).
 - `toast_container/1` uses `phx-update="stream"` correctly
   (`feedback.ex:85`). `id="toast-container"` is fixed, which works with
@@ -148,14 +148,14 @@ info/success/warning and degrades AT behavior.
 
 ## Per-component table
 
-| Component | Status | Findings (file:line) | Recommended work |
-| --- | --- | --- | --- |
-| `flash` | 🔴 P0 | whole-flash dismiss `feedback.ex:29-32`; `role="alert"` hard-coded `feedback.ex:28`; only info/error despite CSS `flash.css:38-46`; default id collides on multiple groups `feedback.ex:18` | move `phx-click` to button; switch role to `status` for info; widen kind enum; require id |
-| `flash_group` | 🟡 P1 | hard-coded `disconnect`/`reconnect` strings English-only `feedback.ex:47-48`; no Gettext hook; no `role="region"` `feedback.ex:52` | wrap in `aria-live` region; expose translation hooks |
-| `toast_container` | 🔴 P0 | no `aria-live`, no `role="region"`, no auto-dismiss, no pause-on-hover, no action slot, fixed id `feedback.ex:83-107`; per-toast `role="alert"` for all kinds `feedback.ex:91` | add region wrapper + JS hook for dismiss/pause |
-| `alert` | 🔴 P0 | every kind `role="alert"` `feedback.ex:119`; no icon variant; no `aria-labelledby` linking title; no `dismissible` flag | branch on kind for role; add icon slot; optional close button |
-| `progress` | 🟡 P1 | no negative-value clamp `feedback.ex:137`; no indeterminate mode; no label `aria-labelledby` link to bar `feedback.ex:142-152` | `pct = max(0, min(100, ...))`; add `indeterminate` attr; wire `aria-labelledby` |
-| `radial_progress` | 🔴 P0 | NO CSS file at all (built CSS contains zero `radial-progress` rules); negative-value clamp missing `feedback.ex:169`; size attr is decorative; `<svg>` lacks `aria-hidden` despite outer `role="progressbar"` `feedback.ex:190` | ship `radial-progress.css`; clamp value; mark SVG `aria-hidden="true"` |
+| Component         | Status | Findings (file:line)                                                                                                                                                                                                            | Recommended work                                                                          |
+| ----------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `flash`           | 🔴 P0  | whole-flash dismiss `feedback.ex:29-32`; `role="alert"` hard-coded `feedback.ex:28`; only info/error despite CSS `flash.css:38-46`; default id collides on multiple groups `feedback.ex:18`                                     | move `phx-click` to button; switch role to `status` for info; widen kind enum; require id |
+| `flash_group`     | 🟡 P1  | hard-coded `disconnect`/`reconnect` strings English-only `feedback.ex:47-48`; no Gettext hook; no `role="region"` `feedback.ex:52`                                                                                              | wrap in `aria-live` region; expose translation hooks                                      |
+| `toast_container` | 🔴 P0  | no `aria-live`, no `role="region"`, no auto-dismiss, no pause-on-hover, no action slot, fixed id `feedback.ex:83-107`; per-toast `role="alert"` for all kinds `feedback.ex:91`                                                  | add region wrapper + JS hook for dismiss/pause                                            |
+| `alert`           | 🔴 P0  | every kind `role="alert"` `feedback.ex:119`; no icon variant; no `aria-labelledby` linking title; no `dismissible` flag                                                                                                         | branch on kind for role; add icon slot; optional close button                             |
+| `progress`        | 🟡 P1  | no negative-value clamp `feedback.ex:137`; no indeterminate mode; no label `aria-labelledby` link to bar `feedback.ex:142-152`                                                                                                  | `pct = max(0, min(100, ...))`; add `indeterminate` attr; wire `aria-labelledby`           |
+| `radial_progress` | 🔴 P0  | NO CSS file at all (built CSS contains zero `radial-progress` rules); negative-value clamp missing `feedback.ex:169`; size attr is decorative; `<svg>` lacks `aria-hidden` despite outer `role="progressbar"` `feedback.ex:190` | ship `radial-progress.css`; clamp value; mark SVG `aria-hidden="true"`                    |
 
 Status legend: P0 (incorrect/misleading public API), P1 (works but below
 shadcn/daisyUI bar), P2 (polish), OK (acceptable).
@@ -168,16 +168,19 @@ shadcn/daisyUI bar), P2 (polish), OK (acceptable).
 
 - **Where:** `lib/exo_ui/components/feedback.ex:29-32`
 - **What happens:**
+
   ```elixir
   phx-click={
     Phoenix.LiveView.JS.push("lv:clear-flash", value: %{key: @kind})
     |> Phoenix.LiveView.JS.hide(to: "##{@id}")
   }
   ```
+
   is attached to the outer `<div data-exo="flash">` (`feedback.ex:21-34`).
   The `<button data-exo="flash-close">` at `feedback.ex:39` carries only an
   `aria-label` — its dismiss happens by bubbling. Selecting text or
   clicking a link inside the message dismisses the flash.
+
 - **Why critical:** identical to the bug flagged in the previous audit;
   drops focus management, breaks click-to-select, and prevents adding
   inline links/actions in the future.
@@ -211,13 +214,16 @@ shadcn/daisyUI bar), P2 (polish), OK (acceptable).
 
 - **Where:** `lib/exo_ui/components/feedback.ex:137` and `:169`
 - **What happens:**
+
   ```elixir
   pct = if assigns.max == 0, do: 0, else: min(100, round(assigns.value / assigns.max * 100))
   ```
+
   No `max(0, ...)`. With `value=-25 max=100` → `pct = -25` →
   `style="width: -25%"` on the bar; on radial, `stroke-dashoffset` becomes
   `circumference + 0.25*circumference` which under-rotates. `aria-valuenow`
   is the raw negative integer.
+
 - **Why critical:** AT readers will read "negative twenty five percent";
   CSS layout breaks differently per browser.
 - **Reproduction:** `<.progress value={-10} />` and
@@ -257,7 +263,7 @@ shadcn/daisyUI bar), P2 (polish), OK (acceptable).
 - **Suggested fix:** add an `ExoToast` JS hook (mounted: start
   `setTimeout` per item, mouseenter/focusin pause, mouseleave/focusout
   resume, Escape dismisses focused). Add `role="region"
-  aria-label="Notifications"` on the container, `role="status"` (or
+aria-label="Notifications"` on the container, `role="status"` (or
   `alert` for kind error) on items, expose `:action` slot, expose a
   `duration` attr (default `5000`).
 
@@ -387,7 +393,7 @@ introspection. Point at `&ExoUI.Components.Feedback.alert/1`.
   for `[data-theme="dark"]`. Token swap in `themes/dark.css` should
   cascade — verified token names (`--exo-card`, `--exo-danger`, etc.)
   exist in `tokens.css`. `color-mix(in oklch, var(--exo-info) 10%,
-  transparent)` (`alert.css:14`) will recompute correctly.
+transparent)` (`alert.css:14`) will recompute correctly.
 - **Override surface:** all selectors use `:where()` for zero specificity
   (`flash.css:14`, `alert.css:1`, `progress.css:1, 7, 13, 20, 28`).
   Consumers can override with a single class.
@@ -488,10 +494,10 @@ introspection. Point at `&ExoUI.Components.Feedback.alert/1`.
 ## Configuration & build
 
 - **Public API exposure:** `ExoUI.Components.{flash, flash_group,
-  toast_container, alert, progress, radial_progress}` via `defdelegate`
+toast_container, alert, progress, radial_progress}` via `defdelegate`
   (`lib/exo_ui/components.ex:77-82`). `flash` and `flash_group` are
   documented (`README.md:106, 171-172`) as NOT imported by `use
-  ExoUI.Components` due to clash with Phoenix CoreComponents.
+ExoUI.Components` due to clash with Phoenix CoreComponents.
 - **Build artifacts:**
   - `priv/static/exo.css` contains flash, toast, alert, progress.
   - `priv/static/exo.css` does NOT contain radial-progress (verified by
@@ -535,7 +541,7 @@ introspection. Point at `&ExoUI.Components.Feedback.alert/1`.
   4. No `radial_progress` size scaling (daisyUI `radial-progress` has
      `--size`, `--thickness` CSS vars; shadcn uses circular Tailwind).
   5. No live region wrapping toasts (shadcn `Toaster` wraps in `<ol
-     role="region" aria-label="Notifications">`).
+role="region" aria-label="Notifications">`).
 
 ## Recommendations (priority-ordered)
 
@@ -554,7 +560,7 @@ introspection. Point at `&ExoUI.Components.Feedback.alert/1`.
    auto-dismiss (`duration` attr, default 5000), pause on
    mouseenter/focusin, resume on mouseleave/focusout, Escape dismisses
    focused toast. Wrap container in `<ol role="region"
-   aria-label={@label} aria-live="polite">`. Add `:action` slot.
+aria-label={@label} aria-live="polite">`. Add `:action` slot.
    Effort: M.
 6. **[High]** Widen `flash/1` `kind` enum to
    `[:info, :success, :warning, :error]`. Add Storybook variants for new
@@ -572,7 +578,7 @@ introspection. Point at `&ExoUI.Components.Feedback.alert/1`.
     add `aria-hidden="true"` on the radial SVG and label span; make
     `progress/1` accept `id`. Effort: S.
 11. **[Quick win]** Replace "✕" with `<.icon name="x" aria-hidden="true"
-    />` in flash and toast close buttons. Effort: S.
+/>` in flash and toast close buttons. Effort: S.
 12. **[Quick win]** Delete dead `flash.css:38-46` if not widening the
     enum, or keep them once enum widens. Effort: XS.
 13. **[Quick win]** Replace inline `style="width: ...%"` with

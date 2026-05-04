@@ -54,25 +54,25 @@ All 17 components have stories; only 4 use `function: &ExoUI.Components.x/1` (de
 
 ## Per-component table
 
-| Component | Status | Findings (file:line) | Recommended work |
-| --- | --- | --- | --- |
-| `button` | 🔴 P0 | No `type="button"` default `core.ex:18-42`; link variant ignores `disabled` (`core.ex:21-29`); double rendering branches use `:if` rather than a guard, both nodes serialised | Add `type="button"` default; add `aria-disabled`+`tabindex="-1"` for disabled link variant; collapse to single `assigns_to_attributes` path |
-| `badge` | 🟡 P1 | No size variants in `badge.css`; `:span` only — no support for icon+text composition | Add `size="sm/md/lg"`; add `data-icon` slot |
-| `separator` | OK | clean; `<div>` not `<hr>` but role is set `core.ex:64-73` | Optional: render `<hr>` for horizontal in flow |
-| `icon` | 🔴 P0 | `String.to_existing_atom` raises on unknown name `core.ex:82`; `class="size-4"` default with no shipped rule `core.ex:78`; no `aria-hidden` on SVG `lucide.ex:3324-3338`; `Code.ensure_loaded!/1` per render `core.ex:81` | Use a `Map.fetch` lookup with a graceful fallback; ship a `[data-exo="icon"]` rule with size variants; add `aria-hidden="true"` and `data-exo="icon"` |
-| `theme_toggle` | 🔴 P0 | No `aria-pressed` `core.ex:92-94`; no `<noscript>` fallback; `_apply` toggles `data-active` but not `aria-pressed` `theme_toggle.js:30-32`; emoji glyphs as button content (no actual icons) | Add `aria-pressed` + sync in JS; use `<.icon>`; add `prefers-color-scheme` media listener so `system` actually reacts |
-| `header` | 🟡 P1 | No `:title` slot — `inner_block` is forced into `<h1>` `core.ex:110`; no h-level override; no breadcrumb hook | Add `level` attr; expose `:title` slot |
-| `avatar` | 🟡 P1 | No image-fail fallback to initials `core.ex:138`; non-interactive `<span>` so cannot be a clickable link/menu trigger; `String.first("")` will raise `core.ex:130`; no `avatar-initials` CSS rule | Add `onerror` swap or `<img loading="lazy">` + JS fallback; allow `as="button"`/`as="a"`; guard empty name |
-| `skeleton` | 🟡 P1 | Inline `style="height:..."` strings `core.ex:165,167,171,172` violate the "no hardcoded values" pattern; no test file | Move sizing to CSS data attrs; add tests |
-| `empty_state` | 🟡 P1 | `@icon` is rendered as raw text inside `<div>` `core.ex:189` — cannot pass a `<.icon>` component without leaking it as text; no test file | Convert to `:icon` slot |
-| `spinner` | 🟡 P1 | SVG has no `aria-hidden` `core.ex:212`; no variant for inline-with-text vs block | Add `aria-hidden="true"` to `<svg>`; add `data-variant` |
-| `kbd` | 🟡 P1 | Uses `--exo-font` (sans) instead of `--exo-font-mono` `kbd.css:8`; no group/combo rendering for `Cmd+K` | Use mono font; add a `<.kbd_combo>` helper |
-| `scroll_area` | 🟡 P1 | No fade/shadow indicators; no JS hook so `data-scrolled` etc. are not exposed; "both" orientation works but viewport has no max-height by default `scroll-area.css:7` | Match shadcn Radix pattern (corner div, scrollbar elements) |
-| `navbar` | 🔴 P0 | **NO CSS** — `data-exo="navbar"` not in built CSS; renders unstyled flexbox-less stack | Ship `assets/css/src/components/navbar.css` |
-| `footer` | 🔴 P0 | **NO CSS** — `footer-columns`, `footer-column`, `footer-bottom` all unstyled | Ship `footer.css` with grid for columns |
-| `bottom_nav` | 🔴 P0 | **NO CSS** — fixed-bottom mobile nav renders inline, mobile UX broken; no `<ul>`/`<li>` semantics | Ship `bottom-nav.css` (fixed + safe-area-inset-bottom); render as `<ul>` |
-| `indicator` | 🔴 P0 | **NO CSS** — `data-position` does literally nothing; badge renders inline next to content | Ship `indicator.css` with `position: relative` + 6 absolute variants |
-| `swap` | 🔴 P0 | **NO CSS**; checkbox is `aria-hidden="true"` + `tabindex="-1"` `core.ex:359-360` so cannot toggle by keyboard; no JS hook; both `<:on>` and `<:off>` slots render simultaneously without CSS to hide one | Remove `tabindex="-1"`/`aria-hidden`; ship `swap.css` with `:checked` selectors; add `aria-pressed` mirror |
+| Component      | Status | Findings (file:line)                                                                                                                                                                                                      | Recommended work                                                                                                                                      |
+| -------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `button`       | 🔴 P0  | No `type="button"` default `core.ex:18-42`; link variant ignores `disabled` (`core.ex:21-29`); double rendering branches use `:if` rather than a guard, both nodes serialised                                             | Add `type="button"` default; add `aria-disabled`+`tabindex="-1"` for disabled link variant; collapse to single `assigns_to_attributes` path           |
+| `badge`        | 🟡 P1  | No size variants in `badge.css`; `:span` only — no support for icon+text composition                                                                                                                                      | Add `size="sm/md/lg"`; add `data-icon` slot                                                                                                           |
+| `separator`    | OK     | clean; `<div>` not `<hr>` but role is set `core.ex:64-73`                                                                                                                                                                 | Optional: render `<hr>` for horizontal in flow                                                                                                        |
+| `icon`         | 🔴 P0  | `String.to_existing_atom` raises on unknown name `core.ex:82`; `class="size-4"` default with no shipped rule `core.ex:78`; no `aria-hidden` on SVG `lucide.ex:3324-3338`; `Code.ensure_loaded!/1` per render `core.ex:81` | Use a `Map.fetch` lookup with a graceful fallback; ship a `[data-exo="icon"]` rule with size variants; add `aria-hidden="true"` and `data-exo="icon"` |
+| `theme_toggle` | 🔴 P0  | No `aria-pressed` `core.ex:92-94`; no `<noscript>` fallback; `_apply` toggles `data-active` but not `aria-pressed` `theme_toggle.js:30-32`; emoji glyphs as button content (no actual icons)                              | Add `aria-pressed` + sync in JS; use `<.icon>`; add `prefers-color-scheme` media listener so `system` actually reacts                                 |
+| `header`       | 🟡 P1  | No `:title` slot — `inner_block` is forced into `<h1>` `core.ex:110`; no h-level override; no breadcrumb hook                                                                                                             | Add `level` attr; expose `:title` slot                                                                                                                |
+| `avatar`       | 🟡 P1  | No image-fail fallback to initials `core.ex:138`; non-interactive `<span>` so cannot be a clickable link/menu trigger; `String.first("")` will raise `core.ex:130`; no `avatar-initials` CSS rule                         | Add `onerror` swap or `<img loading="lazy">` + JS fallback; allow `as="button"`/`as="a"`; guard empty name                                            |
+| `skeleton`     | 🟡 P1  | Inline `style="height:..."` strings `core.ex:165,167,171,172` violate the "no hardcoded values" pattern; no test file                                                                                                     | Move sizing to CSS data attrs; add tests                                                                                                              |
+| `empty_state`  | 🟡 P1  | `@icon` is rendered as raw text inside `<div>` `core.ex:189` — cannot pass a `<.icon>` component without leaking it as text; no test file                                                                                 | Convert to `:icon` slot                                                                                                                               |
+| `spinner`      | 🟡 P1  | SVG has no `aria-hidden` `core.ex:212`; no variant for inline-with-text vs block                                                                                                                                          | Add `aria-hidden="true"` to `<svg>`; add `data-variant`                                                                                               |
+| `kbd`          | 🟡 P1  | Uses `--exo-font` (sans) instead of `--exo-font-mono` `kbd.css:8`; no group/combo rendering for `Cmd+K`                                                                                                                   | Use mono font; add a `<.kbd_combo>` helper                                                                                                            |
+| `scroll_area`  | 🟡 P1  | No fade/shadow indicators; no JS hook so `data-scrolled` etc. are not exposed; "both" orientation works but viewport has no max-height by default `scroll-area.css:7`                                                     | Match shadcn Radix pattern (corner div, scrollbar elements)                                                                                           |
+| `navbar`       | 🔴 P0  | **NO CSS** — `data-exo="navbar"` not in built CSS; renders unstyled flexbox-less stack                                                                                                                                    | Ship `assets/css/src/components/navbar.css`                                                                                                           |
+| `footer`       | 🔴 P0  | **NO CSS** — `footer-columns`, `footer-column`, `footer-bottom` all unstyled                                                                                                                                              | Ship `footer.css` with grid for columns                                                                                                               |
+| `bottom_nav`   | 🔴 P0  | **NO CSS** — fixed-bottom mobile nav renders inline, mobile UX broken; no `<ul>`/`<li>` semantics                                                                                                                         | Ship `bottom-nav.css` (fixed + safe-area-inset-bottom); render as `<ul>`                                                                              |
+| `indicator`    | 🔴 P0  | **NO CSS** — `data-position` does literally nothing; badge renders inline next to content                                                                                                                                 | Ship `indicator.css` with `position: relative` + 6 absolute variants                                                                                  |
+| `swap`         | 🔴 P0  | **NO CSS**; checkbox is `aria-hidden="true"` + `tabindex="-1"` `core.ex:359-360` so cannot toggle by keyboard; no JS hook; both `<:on>` and `<:off>` slots render simultaneously without CSS to hide one                  | Remove `tabindex="-1"`/`aria-hidden`; ship `swap.css` with `:checked` selectors; add `aria-pressed` mirror                                            |
 
 ## Problems by severity
 
@@ -112,25 +112,25 @@ All 17 components have stories; only 4 use `function: &ExoUI.Components.x/1` (de
 
 ## Accessibility analysis
 
-| Component | role/label | states | keyboard | proof |
-| --- | --- | --- | --- | --- |
-| `button` | native `<button>` / `<a>` | no `aria-disabled` on link variant | OK except link-disabled | `core.ex:21-40` |
-| `badge` | none | none | n/a | `core.ex:50-56` |
-| `separator` | `role=separator`, `aria-orientation` | n/a | n/a | `core.ex:64-73` |
-| `icon` | none, no `aria-hidden` | n/a | n/a | `lucide.ex:3324` |
-| `theme_toggle` | buttons w/ `aria-label` | NO `aria-pressed` | tab+space works | `core.ex:91-95` |
-| `header` | semantic `<header>`/`<h1>` | n/a | n/a | `core.ex:108-115` |
-| `avatar` | `<img alt={name}>` | no fallback | n/a | `core.ex:138` |
-| `skeleton` | `role=status`, `aria-label="Loading..."` | n/a | n/a | `core.ex:156-157` |
-| `empty_state` | none | n/a | n/a | `core.ex:188-194` |
-| `spinner` | `role=status`, `aria-label="Loading"` | inner SVG NOT aria-hidden | n/a | `core.ex:204-220` |
-| `kbd` | native `<kbd>` | n/a | n/a | `core.ex:232` |
-| `scroll_area` | none | none | OK (native overflow) | `core.ex:244` |
-| `navbar` | semantic `<nav>` | none | OK | `core.ex:261` |
-| `footer` | semantic `<footer>` | none | n/a | `core.ex:281` |
-| `bottom_nav` | `<nav>` + `aria-current="page"` | OK | OK | `core.ex:308-316` |
-| `indicator` | none — should expose `aria-label` for count | n/a | n/a | `core.ex:337` |
-| `swap` | none — should have `aria-pressed` | broken (hidden input) | **none** | `core.ex:354-364` |
+| Component      | role/label                                  | states                             | keyboard                | proof             |
+| -------------- | ------------------------------------------- | ---------------------------------- | ----------------------- | ----------------- |
+| `button`       | native `<button>` / `<a>`                   | no `aria-disabled` on link variant | OK except link-disabled | `core.ex:21-40`   |
+| `badge`        | none                                        | none                               | n/a                     | `core.ex:50-56`   |
+| `separator`    | `role=separator`, `aria-orientation`        | n/a                                | n/a                     | `core.ex:64-73`   |
+| `icon`         | none, no `aria-hidden`                      | n/a                                | n/a                     | `lucide.ex:3324`  |
+| `theme_toggle` | buttons w/ `aria-label`                     | NO `aria-pressed`                  | tab+space works         | `core.ex:91-95`   |
+| `header`       | semantic `<header>`/`<h1>`                  | n/a                                | n/a                     | `core.ex:108-115` |
+| `avatar`       | `<img alt={name}>`                          | no fallback                        | n/a                     | `core.ex:138`     |
+| `skeleton`     | `role=status`, `aria-label="Loading..."`    | n/a                                | n/a                     | `core.ex:156-157` |
+| `empty_state`  | none                                        | n/a                                | n/a                     | `core.ex:188-194` |
+| `spinner`      | `role=status`, `aria-label="Loading"`       | inner SVG NOT aria-hidden          | n/a                     | `core.ex:204-220` |
+| `kbd`          | native `<kbd>`                              | n/a                                | n/a                     | `core.ex:232`     |
+| `scroll_area`  | none                                        | none                               | OK (native overflow)    | `core.ex:244`     |
+| `navbar`       | semantic `<nav>`                            | none                               | OK                      | `core.ex:261`     |
+| `footer`       | semantic `<footer>`                         | none                               | n/a                     | `core.ex:281`     |
+| `bottom_nav`   | `<nav>` + `aria-current="page"`             | OK                                 | OK                      | `core.ex:308-316` |
+| `indicator`    | none — should expose `aria-label` for count | n/a                                | n/a                     | `core.ex:337`     |
+| `swap`         | none — should have `aria-pressed`           | broken (hidden input)              | **none**                | `core.ex:354-364` |
 
 ## Composition & HTML correctness
 
@@ -149,24 +149,24 @@ All 17 components have stories; only 4 use `function: &ExoUI.Components.x/1` (de
 
 ## CSS surface
 
-| File | Tokens used | Hardcoded values | Notes |
-| --- | --- | --- | --- |
-| `button.css` | yes | 1 (`9999px` not used) | Clean, uses `:where()` for low specificity |
-| `badge.css` | yes | none | No size variants |
-| `avatar.css` | yes | `9999px` (radius full); `1.5rem`, `2rem`... (sizes) | OK; missing `avatar-initials` rule |
-| `empty-state.css` | yes | none | Clean |
-| `header.css` | yes | none | Clean |
-| `skeleton.css` | yes | `2.5rem`, `9999px`, percentages | Animation shared via `@keyframes exo-pulse` |
-| `kbd.css` | yes (`--exo-muted`, etc.) | `1.5rem`, `0.75rem` | **Wrong font token: should be mono** |
-| `scroll-area.css` | yes | `6px`, `3px` | Chrome+FF scrollbar |
-| `separator.css` | yes | `1px` | Clean |
-| `spinner.css` | yes | sizes | Clean |
-| `theme-toggle.css` | yes | `2rem` | Clean |
-| `navbar.css` | **MISSING** | n/a | **Component ships unstyled** |
-| `footer.css` | **MISSING** | n/a | **Component ships unstyled** |
-| `bottom-nav.css` | **MISSING** | n/a | **Component ships unstyled** |
-| `indicator.css` | **MISSING** | n/a | **Component ships unstyled** |
-| `swap.css` | **MISSING** | n/a | **Component ships unstyled + non-functional** |
+| File               | Tokens used               | Hardcoded values                                    | Notes                                         |
+| ------------------ | ------------------------- | --------------------------------------------------- | --------------------------------------------- |
+| `button.css`       | yes                       | 1 (`9999px` not used)                               | Clean, uses `:where()` for low specificity    |
+| `badge.css`        | yes                       | none                                                | No size variants                              |
+| `avatar.css`       | yes                       | `9999px` (radius full); `1.5rem`, `2rem`... (sizes) | OK; missing `avatar-initials` rule            |
+| `empty-state.css`  | yes                       | none                                                | Clean                                         |
+| `header.css`       | yes                       | none                                                | Clean                                         |
+| `skeleton.css`     | yes                       | `2.5rem`, `9999px`, percentages                     | Animation shared via `@keyframes exo-pulse`   |
+| `kbd.css`          | yes (`--exo-muted`, etc.) | `1.5rem`, `0.75rem`                                 | **Wrong font token: should be mono**          |
+| `scroll-area.css`  | yes                       | `6px`, `3px`                                        | Chrome+FF scrollbar                           |
+| `separator.css`    | yes                       | `1px`                                               | Clean                                         |
+| `spinner.css`      | yes                       | sizes                                               | Clean                                         |
+| `theme-toggle.css` | yes                       | `2rem`                                              | Clean                                         |
+| `navbar.css`       | **MISSING**               | n/a                                                 | **Component ships unstyled**                  |
+| `footer.css`       | **MISSING**               | n/a                                                 | **Component ships unstyled**                  |
+| `bottom-nav.css`   | **MISSING**               | n/a                                                 | **Component ships unstyled**                  |
+| `indicator.css`    | **MISSING**               | n/a                                                 | **Component ships unstyled**                  |
+| `swap.css`         | **MISSING**               | n/a                                                 | **Component ships unstyled + non-functional** |
 
 Token coverage: every defined `--exo-*` token in `tokens.css:1-44` appears in at least one component CSS file **except** `--exo-font-mono` (line 33), `--exo-tooltip-bg`/`--exo-tooltip-fg` (used only by `tooltip.css`), and `--exo-shadow-*` (used by overlay/feedback surfaces).
 
@@ -196,25 +196,25 @@ Token coverage: every defined `--exo-*` token in `tokens.css:1-44` appears in at
 
 ## Test coverage
 
-| Component | File | LOC | Tests | Key gaps |
-| --- | --- | --- | --- | --- |
-| button | `button_test.exs` | 26 | 3 | no link variant, no disabled, no `type` default |
-| badge | `badge_test.exs` | 20 | 2 | no rest passthrough |
-| icon | `icon_test.exs` | 28 | 3 (incl. theme_toggle) | unknown-name behaviour untested |
-| separator | `separator_test.exs` | 21 | 2 | OK |
-| spinner | `spinner_test.exs` | 20 | 2 | no aria-hidden assertion |
-| kbd | `kbd_test.exs` | 14 | 1 | minimal |
-| scroll_area | `scroll_area_test.exs` | 34 | 2 | "both" orientation untested |
-| navbar | `navbar_test.exs` | 130 | 9 | `<nav>` semantics + slots — thorough |
-| footer | `footer_test.exs` | 110 | 7 | thorough |
-| bottom_nav | `bottom_nav_test.exs` | 116 | 8 | `<.link>` href fallback untested |
-| indicator | `indicator_test.exs` | 143 | 10 | every `data-position` exercised |
-| swap | `swap_test.exs` | 125 | 8 | active state asserted but keyboard never simulated |
-| **avatar** | **MISSING** | 0 | 0 | initials, src, sizes |
-| **skeleton** | **MISSING** | 0 | 0 | type variants |
-| **empty_state** | **MISSING** | 0 | 0 | action slot |
-| **header** | **MISSING** | 0 | 0 | subtitle slot |
-| **theme_toggle** | covered indirectly in icon_test | — | — | no JS-side test |
+| Component        | File                            | LOC | Tests                  | Key gaps                                           |
+| ---------------- | ------------------------------- | --- | ---------------------- | -------------------------------------------------- |
+| button           | `button_test.exs`               | 26  | 3                      | no link variant, no disabled, no `type` default    |
+| badge            | `badge_test.exs`                | 20  | 2                      | no rest passthrough                                |
+| icon             | `icon_test.exs`                 | 28  | 3 (incl. theme_toggle) | unknown-name behaviour untested                    |
+| separator        | `separator_test.exs`            | 21  | 2                      | OK                                                 |
+| spinner          | `spinner_test.exs`              | 20  | 2                      | no aria-hidden assertion                           |
+| kbd              | `kbd_test.exs`                  | 14  | 1                      | minimal                                            |
+| scroll_area      | `scroll_area_test.exs`          | 34  | 2                      | "both" orientation untested                        |
+| navbar           | `navbar_test.exs`               | 130 | 9                      | `<nav>` semantics + slots — thorough               |
+| footer           | `footer_test.exs`               | 110 | 7                      | thorough                                           |
+| bottom_nav       | `bottom_nav_test.exs`           | 116 | 8                      | `<.link>` href fallback untested                   |
+| indicator        | `indicator_test.exs`            | 143 | 10                     | every `data-position` exercised                    |
+| swap             | `swap_test.exs`                 | 125 | 8                      | active state asserted but keyboard never simulated |
+| **avatar**       | **MISSING**                     | 0   | 0                      | initials, src, sizes                               |
+| **skeleton**     | **MISSING**                     | 0   | 0                      | type variants                                      |
+| **empty_state**  | **MISSING**                     | 0   | 0                      | action slot                                        |
+| **header**       | **MISSING**                     | 0   | 0                      | subtitle slot                                      |
+| **theme_toggle** | covered indirectly in icon_test | —   | —                      | no JS-side test                                    |
 
 ## Tech debt
 
@@ -239,20 +239,20 @@ Token coverage: every defined `--exo-*` token in `tokens.css:1-44` appears in at
 
 ## Comparison vs shadcn/daisyUI
 
-| Capability | shadcn | daisyUI | ExoUI core |
-| --- | --- | --- | --- |
-| Button: link/disabled/loading variants | yes | yes | partial — link OK, disabled-link broken, no loading |
-| Button: `asChild` / polymorphic root | yes (`asChild`) | n/a | partial via href detection |
-| Badge: size variants | no (single size) | yes | no |
-| Avatar: image fallback to initials | yes (Radix Avatar.Fallback) | yes | NO |
-| Avatar: as link/button | yes | yes | NO |
-| Theme toggle: a11y `aria-pressed` | yes | yes | NO |
-| Theme toggle: `prefers-color-scheme` reactive | yes | yes | NO |
-| Indicator/badge overlay: positioned via CSS | n/a | yes | data attr emitted, no CSS |
-| Swap: keyboard accessible | yes (`role="switch"` + space toggles) | yes | NO |
-| Bottom nav: fixed mobile + safe-area | n/a | yes (`btm-nav`) | NO CSS |
-| Scroll area: shadow indicators | yes | no | no |
-| Icon: graceful fallback | yes (returns null) | n/a | raises |
+| Capability                                    | shadcn                                | daisyUI         | ExoUI core                                          |
+| --------------------------------------------- | ------------------------------------- | --------------- | --------------------------------------------------- |
+| Button: link/disabled/loading variants        | yes                                   | yes             | partial — link OK, disabled-link broken, no loading |
+| Button: `asChild` / polymorphic root          | yes (`asChild`)                       | n/a             | partial via href detection                          |
+| Badge: size variants                          | no (single size)                      | yes             | no                                                  |
+| Avatar: image fallback to initials            | yes (Radix Avatar.Fallback)           | yes             | NO                                                  |
+| Avatar: as link/button                        | yes                                   | yes             | NO                                                  |
+| Theme toggle: a11y `aria-pressed`             | yes                                   | yes             | NO                                                  |
+| Theme toggle: `prefers-color-scheme` reactive | yes                                   | yes             | NO                                                  |
+| Indicator/badge overlay: positioned via CSS   | n/a                                   | yes             | data attr emitted, no CSS                           |
+| Swap: keyboard accessible                     | yes (`role="switch"` + space toggles) | yes             | NO                                                  |
+| Bottom nav: fixed mobile + safe-area          | n/a                                   | yes (`btm-nav`) | NO CSS                                              |
+| Scroll area: shadow indicators                | yes                                   | no              | no                                                  |
+| Icon: graceful fallback                       | yes (returns null)                    | n/a             | raises                                              |
 
 ExoUI core sits below daisyUI's bar on 8 of 11 axes and below shadcn on 6. Five components ship without any CSS — that alone disqualifies the surface from a "minimum shadcn/daisyUI" claim until fixed.
 

@@ -91,23 +91,23 @@ The whole category is one large module (`lib/exo_ui/components/data_display.ex:1
 
 ## Per-component table
 
-| Component | Status | Findings (file:line) | Recommended work |
-| --- | --- | --- | --- |
-| `table` | 🟡 P1 | `row_click` on every `<td>` (`data_display.ex:54`); no sortable headers; no empty/loading/error slots; no responsive collapse pattern | Move click to `<tr>`; add `:empty` and `:loading` slots; document mobile pattern |
-| `list` | 🟡 P1 | Pretends to be DL but emits `<ul>` (`data_display.ex:79-87`); no test file | Switch to `<dl>/<dt>/<dd>` or rename to `definition_list`; add tests |
-| `content_card` | 🟡 P1 | No Header/Footer/Description slot decomposition unlike shadcn `Card.Header`/`.Title`/`.Description`/`.Content`/`.Footer`; just `title+action+body` (`data_display.ex:96-106`) | Add `<:header>/<:footer>/<:description>` slots; deprecate flat `title` attr |
-| `stat_card` | 🟡 P2 | All-attribute API (no slot for value), forces stringy values (`:108-136`); icon is plain string, no Lucide integration | Allow value as slot; accept icon component |
-| `metric_card` | 🟡 P2 | Near-duplicate of `stat_card` minus icon and trend (`data_display.ex:138-159`); unclear when to pick which | Merge into one `kpi_card` with optional `:trend` and `:trailing` slots |
-| `wizard_sidebar` | 🔴 P0 | No `aria-current="step"` (`:171-203`); future steps are `<div>` not focusable; status atom keys leak from server | Add `aria-current`; disabled `<button>` for future; document `:current/:completed/:pending` enum |
-| `breadcrumb` | 🟡 P1 | Any unlinked item gets `aria-current="page"`, not just last (`:227`); no `<:separator>` slot for custom separator | Compute `idx == last` and only mark last; expose separator slot |
-| `tabs` | 🔴 P0 | Not a real ARIA tabs widget (`:250-279`); no panels, no `aria-controls`, no roving tabindex, no arrow keys, no JS hook | Add `<:panel>` slot, controlled-active state, `ExoTabs` hook with arrow-key roving |
-| `pagination` | 🔴 P0 | Disabled prev/next are `<span>` not `<button disabled>` (`:320-322,348-350`); no SR announcement of "Page X of Y"; uses only `patch_fn` (no `navigate`/`href` form) | Render disabled `<button>` (or `<a aria-disabled>`); add live-region count; allow `navigate`/`click` events |
-| `steps` | 🟡 P1 | Indicator number never displayed in `current`/`upcoming` (CSS counter exists but no `content: counter(step)` in `steps.css`); `:374-376` empty span | Render number for non-complete states; add ARIA list semantics |
-| `timeline` | 🟡 P2 | Direct `event.inner_block` access (`:402`) bypasses slot API; no `<ol>` semantics for ordered events | Use `if Phoenix.Component.assigns_to_attributes`; switch to `<ol>` |
-| `carousel` | 🔴 P0 | Buttons never disabled at start/end (`carousel.js:1-53`); no slide-index, no autoplay/pause, no `prefers-reduced-motion`; hardcoded label (`data_display.ex:428`) | Sync `aria-disabled` on prev/next; expose `aria_label` attr; honor reduced-motion; add live-region for slide announce |
-| `accordion` | 🟡 P1 | Hidden checkbox + button duplicate state (`:483-502`); checkbox is in DOM if accordion is inside `<form>` | Drop checkbox; drive CSS via `[aria-expanded="true"]` and `data-state` |
-| `hero` | 🔴 P0 | No CSS — not in `assets/css/exo.css:1-53`, not in `priv/static/exo.css` (0 bytes); not a primitive — belongs in app templates | Either add CSS + dark-mode tokens, or remove from public API |
-| `chat_bubble` | 🟡 P1 | No CSS (same as hero); `side="end"` requires bidi but no `dir` handling | Add `chat-bubble.css` with `data-side` styling and RTL support |
+| Component        | Status | Findings (file:line)                                                                                                                                                          | Recommended work                                                                                                      |
+| ---------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `table`          | 🟡 P1  | `row_click` on every `<td>` (`data_display.ex:54`); no sortable headers; no empty/loading/error slots; no responsive collapse pattern                                         | Move click to `<tr>`; add `:empty` and `:loading` slots; document mobile pattern                                      |
+| `list`           | 🟡 P1  | Pretends to be DL but emits `<ul>` (`data_display.ex:79-87`); no test file                                                                                                    | Switch to `<dl>/<dt>/<dd>` or rename to `definition_list`; add tests                                                  |
+| `content_card`   | 🟡 P1  | No Header/Footer/Description slot decomposition unlike shadcn `Card.Header`/`.Title`/`.Description`/`.Content`/`.Footer`; just `title+action+body` (`data_display.ex:96-106`) | Add `<:header>/<:footer>/<:description>` slots; deprecate flat `title` attr                                           |
+| `stat_card`      | 🟡 P2  | All-attribute API (no slot for value), forces stringy values (`:108-136`); icon is plain string, no Lucide integration                                                        | Allow value as slot; accept icon component                                                                            |
+| `metric_card`    | 🟡 P2  | Near-duplicate of `stat_card` minus icon and trend (`data_display.ex:138-159`); unclear when to pick which                                                                    | Merge into one `kpi_card` with optional `:trend` and `:trailing` slots                                                |
+| `wizard_sidebar` | 🔴 P0  | No `aria-current="step"` (`:171-203`); future steps are `<div>` not focusable; status atom keys leak from server                                                              | Add `aria-current`; disabled `<button>` for future; document `:current/:completed/:pending` enum                      |
+| `breadcrumb`     | 🟡 P1  | Any unlinked item gets `aria-current="page"`, not just last (`:227`); no `<:separator>` slot for custom separator                                                             | Compute `idx == last` and only mark last; expose separator slot                                                       |
+| `tabs`           | 🔴 P0  | Not a real ARIA tabs widget (`:250-279`); no panels, no `aria-controls`, no roving tabindex, no arrow keys, no JS hook                                                        | Add `<:panel>` slot, controlled-active state, `ExoTabs` hook with arrow-key roving                                    |
+| `pagination`     | 🔴 P0  | Disabled prev/next are `<span>` not `<button disabled>` (`:320-322,348-350`); no SR announcement of "Page X of Y"; uses only `patch_fn` (no `navigate`/`href` form)           | Render disabled `<button>` (or `<a aria-disabled>`); add live-region count; allow `navigate`/`click` events           |
+| `steps`          | 🟡 P1  | Indicator number never displayed in `current`/`upcoming` (CSS counter exists but no `content: counter(step)` in `steps.css`); `:374-376` empty span                           | Render number for non-complete states; add ARIA list semantics                                                        |
+| `timeline`       | 🟡 P2  | Direct `event.inner_block` access (`:402`) bypasses slot API; no `<ol>` semantics for ordered events                                                                          | Use `if Phoenix.Component.assigns_to_attributes`; switch to `<ol>`                                                    |
+| `carousel`       | 🔴 P0  | Buttons never disabled at start/end (`carousel.js:1-53`); no slide-index, no autoplay/pause, no `prefers-reduced-motion`; hardcoded label (`data_display.ex:428`)             | Sync `aria-disabled` on prev/next; expose `aria_label` attr; honor reduced-motion; add live-region for slide announce |
+| `accordion`      | 🟡 P1  | Hidden checkbox + button duplicate state (`:483-502`); checkbox is in DOM if accordion is inside `<form>`                                                                     | Drop checkbox; drive CSS via `[aria-expanded="true"]` and `data-state`                                                |
+| `hero`           | 🔴 P0  | No CSS — not in `assets/css/exo.css:1-53`, not in `priv/static/exo.css` (0 bytes); not a primitive — belongs in app templates                                                 | Either add CSS + dark-mode tokens, or remove from public API                                                          |
+| `chat_bubble`    | 🟡 P1  | No CSS (same as hero); `side="end"` requires bidi but no `dir` handling                                                                                                       | Add `chat-bubble.css` with `data-side` styling and RTL support                                                        |
 
 ## Problems by severity
 
@@ -124,11 +124,13 @@ The whole category is one large module (`lib/exo_ui/components/data_display.ex:1
 #### 2. Pagination "disabled" buttons render as `<span>`
 
 - **Where:** `data_display.ex:320-322` and `:348-350`
+
   ```
   <span :if={@page <= 1} data-exo="pagination-btn" data-disabled aria-disabled="true">
     ‹
   </span>
   ```
+
 - **Why critical:** A `<span>` is not focusable, breaks tab order between page-number links, hides keyboard users from the affordance. Real disabled `<button>` (or `<a aria-disabled="true" tabindex="0">`) keeps source-order parity. ARIA APG explicitly recommends keeping a focusable disabled control.
 - **Suggested fix:** Render `<button type="button" disabled>` for both states (links and disabled), or use a single `<a role="button">` with `aria-disabled` and `tabindex="0"` and intercept click. Consistency between active and disabled control matters more than the current `<a>`/`<span>` hybrid.
 

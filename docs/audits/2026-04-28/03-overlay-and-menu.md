@@ -92,6 +92,7 @@ The overlay/menu surface is the most ambitious area of ExoUI and several pieces 
 - **`context_menu` separator path renders empty buttons.** `overlay.ex:578-588` runs the `:if={!item[:separator]}` branch for every entry, including separator entries — but the separator branch is a sibling, not an alternative, so a separator entry produces both a `<div role="separator">` AND a `<button data-exo="context-menu-item">` with an empty label. The render test passes only because `length(items) == 2` for `[Copy, sep, Delete]` and `length(separator) == 1`, but the test `context_menu_test.exs:38-43` is wrong on the math: with a separator entry, `<:item label="" separator />` adds a button with empty label. Visual: every separator becomes a clickable empty row.
 
   Re-reading: `<:item label="" separator />` will render the separator (`:if={item[:separator]}` is truthy) and ALSO render the button (`:if={!item[:separator]}` evaluates the truthiness of `separator` which is `true` → button is skipped). OK, the `!item[:separator]` does filter. **Retraction:** this is fine. (Marking corrected note to keep.)
+
 - **`tooltip` lacks a true accessible-name path for non-text triggers.** `tooltip-anchor` is a `<span tabindex="0">` (`overlay.ex:312-318`). When a consumer wraps a button (`storybook/tooltip.story.exs:11-13`), there are now TWO tab stops (anchor span + the inner button) — a keyboard user has to Tab through both.
 - **`menubar` Cmd+K conflict.** `command_palette.js:74-79` registers a global `Ctrl+K`/`Cmd+K`. If a consumer renders both a menubar and a command palette on the same page, no precedence is documented.
 - **No reduced-motion handling.** None of the CSS files (`popover.css`, `tooltip.css`, `hover-card.css`, `context-menu.css`, `command-palette.css`, `menubar.css`, `sheet.css`, `drawer.css`, `collapsible.css`) wrap their `transition`/`animation` rules in `@media (prefers-reduced-motion: reduce)`. `sheet.css:115-145` has 300ms slide-in animations that play unconditionally.
@@ -100,40 +101,40 @@ The overlay/menu surface is the most ambitious area of ExoUI and several pieces 
 
 ## Per-component table
 
-| Component | Status | Findings (file:line) | Recommended work |
-| --- | --- | --- | --- |
-| `modal` | 🔴 P0 | `show_modal`/`hide_modal` private at `overlay.ex:89,98`; outside content not `inert`; `aria-labelledby` skipped when title omitted (`overlay.ex:40`) | Promote to `def`, expose via `components.ex`, document title as required, add outside-`inert` |
-| `confirm_modal` | 🟡 P1 | Inherits modal issues; `phx-click` on `<.button>` is OK but cancel/confirm handlers cannot be customized to *not* close (`overlay.ex:80-83`) | Add `keep_open` option; expose `show_confirm/1` |
-| `popover` | 🟢 OK | Span wrapper + `_findControl` avoids nested-button (`overlay.ex:122`, `popover.js:43-57`); fallback CSS at `popover.css:89-109` | None |
-| `dropdown_menu` | 🟢 OK | Roving via `dropdown_menu.js:9-23`; missing typeahead and Tab-out-closes | Add typeahead (chars within 500ms) |
-| `dropdown` (deprecated) | 🟡 P2 | `@doc deprecated` set in `components.ex:58`; underlying impl at `overlay.ex:269-293` not marked at module level; CSS at `dropdown.css` still ships | Remove in next major; or move CSS into `dropdown_menu.css` |
-| `tooltip` | 🟡 P1 | Double tab-stop: span anchor wraps button content (`overlay.ex:312-318`); CSS-only fallback path may flicker on Safari before hook upgrades to popover (`tooltip.css:48-52`) | Strip wrapper or set `tabindex="-1"` when inner control is focusable |
-| `collapsible` | 🟡 P1 | Hidden checkbox driving CSS state means Phoenix patches that rerender the section reset `checked` (`overlay.ex:348-355`); no `phx-update="ignore"`; only one body region — no support for accordion-style group | Use `aria-expanded`-driven CSS, drop checkbox; or annotate with `phx-update="ignore"` |
-| `drawer` | 🟡 P1 | No `phx-mounted={@show && show_drawer(@id)}` (compare `overlay.ex:383-395` to modal at `:30`); opening with `show={true}` doesn't focus first focusable on initial render | Add `phx-mounted` like modal/sheet |
-| `sheet` | 🟡 P1 | `class={[@show && "open", @class]}` overwrites consumer string with array (`overlay.ex:464`); two state sources (`open` class + `data-state`); `<:title>` optional but `aria-labelledby` only added when present (`overlay.ex:472`) | Use `data-state` only; require title |
-| `hover_card` | 🟡 P1 | `role="tooltip"` on a rich card (`overlay.ex:549`); `aria-describedby` forces SR to read the whole card as the trigger's description (`overlay.ex:541`); no Cmd+arrow keyboard open path | Drop `role`, switch to `aria-haspopup="dialog"` + `aria-expanded`, expose `aria-labelledby` |
-| `context_menu` | 🟡 P1 | Tabindex/role applied JS-side (`context_menu.js:13-16`) — server-rendered HTML missing them = flash of inaccessible state on first paint; document-level capture-phase listeners on every menu instance (`context_menu.js:74-77`); no submenu support | Render `tabindex`/`role` server-side |
-| `command_palette` | 🟡 P1 | Global Cmd+K listener (`command_palette.js:80`) collides with browser/sibling apps; legacy `inner_block` slot mixed with new `:item` slot (`overlay.ex:601,673-675`); `show_command_palette` not in `components.ex` | Make Cmd+K opt-in via attr; deprecate inner_block |
-| `menubar` | 🟢 OK | Tight WAI-ARIA implementation; one hole — pointerover only re-opens if `openIndex >= 0` (`menubar.js:54`), so hover never auto-opens; matches Radix |  Keep |
+| Component               | Status | Findings (file:line)                                                                                                                                                                                                                                  | Recommended work                                                                              |
+| ----------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `modal`                 | 🔴 P0  | `show_modal`/`hide_modal` private at `overlay.ex:89,98`; outside content not `inert`; `aria-labelledby` skipped when title omitted (`overlay.ex:40`)                                                                                                  | Promote to `def`, expose via `components.ex`, document title as required, add outside-`inert` |
+| `confirm_modal`         | 🟡 P1  | Inherits modal issues; `phx-click` on `<.button>` is OK but cancel/confirm handlers cannot be customized to _not_ close (`overlay.ex:80-83`)                                                                                                          | Add `keep_open` option; expose `show_confirm/1`                                               |
+| `popover`               | 🟢 OK  | Span wrapper + `_findControl` avoids nested-button (`overlay.ex:122`, `popover.js:43-57`); fallback CSS at `popover.css:89-109`                                                                                                                       | None                                                                                          |
+| `dropdown_menu`         | 🟢 OK  | Roving via `dropdown_menu.js:9-23`; missing typeahead and Tab-out-closes                                                                                                                                                                              | Add typeahead (chars within 500ms)                                                            |
+| `dropdown` (deprecated) | 🟡 P2  | `@doc deprecated` set in `components.ex:58`; underlying impl at `overlay.ex:269-293` not marked at module level; CSS at `dropdown.css` still ships                                                                                                    | Remove in next major; or move CSS into `dropdown_menu.css`                                    |
+| `tooltip`               | 🟡 P1  | Double tab-stop: span anchor wraps button content (`overlay.ex:312-318`); CSS-only fallback path may flicker on Safari before hook upgrades to popover (`tooltip.css:48-52`)                                                                          | Strip wrapper or set `tabindex="-1"` when inner control is focusable                          |
+| `collapsible`           | 🟡 P1  | Hidden checkbox driving CSS state means Phoenix patches that rerender the section reset `checked` (`overlay.ex:348-355`); no `phx-update="ignore"`; only one body region — no support for accordion-style group                                       | Use `aria-expanded`-driven CSS, drop checkbox; or annotate with `phx-update="ignore"`         |
+| `drawer`                | 🟡 P1  | No `phx-mounted={@show && show_drawer(@id)}` (compare `overlay.ex:383-395` to modal at `:30`); opening with `show={true}` doesn't focus first focusable on initial render                                                                             | Add `phx-mounted` like modal/sheet                                                            |
+| `sheet`                 | 🟡 P1  | `class={[@show && "open", @class]}` overwrites consumer string with array (`overlay.ex:464`); two state sources (`open` class + `data-state`); `<:title>` optional but `aria-labelledby` only added when present (`overlay.ex:472`)                   | Use `data-state` only; require title                                                          |
+| `hover_card`            | 🟡 P1  | `role="tooltip"` on a rich card (`overlay.ex:549`); `aria-describedby` forces SR to read the whole card as the trigger's description (`overlay.ex:541`); no Cmd+arrow keyboard open path                                                              | Drop `role`, switch to `aria-haspopup="dialog"` + `aria-expanded`, expose `aria-labelledby`   |
+| `context_menu`          | 🟡 P1  | Tabindex/role applied JS-side (`context_menu.js:13-16`) — server-rendered HTML missing them = flash of inaccessible state on first paint; document-level capture-phase listeners on every menu instance (`context_menu.js:74-77`); no submenu support | Render `tabindex`/`role` server-side                                                          |
+| `command_palette`       | 🟡 P1  | Global Cmd+K listener (`command_palette.js:80`) collides with browser/sibling apps; legacy `inner_block` slot mixed with new `:item` slot (`overlay.ex:601,673-675`); `show_command_palette` not in `components.ex`                                   | Make Cmd+K opt-in via attr; deprecate inner_block                                             |
+| `menubar`               | 🟢 OK  | Tight WAI-ARIA implementation; one hole — pointerover only re-opens if `openIndex >= 0` (`menubar.js:54`), so hover never auto-opens; matches Radix                                                                                                   | Keep                                                                                          |
 
 Status legend: P0 (incorrect/misleading public API), P1 (works but below shadcn bar), P2 (polish), OK (acceptable).
 
 ## Dialog contract scorecard
 
-| Requirement | `modal` | `confirm_modal` | `sheet` | `drawer` | `command_palette` |
-| --- | --- | --- | --- | --- | --- |
-| `role="dialog"` (or `alertdialog`) | 🟢 `overlay.ex:38` | 🟢 `overlay.ex:76` (alertdialog) | 🟢 `overlay.ex:470` | 🟢 `overlay.ex:399` | 🟢 `overlay.ex:626` |
-| `aria-modal="true"` | 🟢 `overlay.ex:39` | 🟢 inherited | 🟢 `overlay.ex:471` | 🟢 `overlay.ex:400` | 🟢 `overlay.ex:626` |
-| `aria-labelledby` always linked | 🔴 only when slot present (`overlay.ex:40`) | 🟡 same | 🔴 `overlay.ex:472` | 🔴 `overlay.ex:401` | 🔴 uses `aria-label` only (`overlay.ex:626`) |
-| `aria-describedby` body | 🟢 `overlay.ex:41-52` | 🟢 inherits | 🔴 not set | 🔴 not set | 🔴 not set |
-| Focus trap | 🟡 JS-only (`overlay.js:139-162`) | 🟡 inherits | 🟡 same | 🟡 same | 🔴 NO trap (uses different hook) |
-| Escape closes | 🟢 `overlay.js:132-137` | 🟢 inherits | 🟢 same | 🟢 same | 🟢 `command_palette.js:83` |
-| Focus restore on close | 🟢 `overlay.js:101-112` | 🟢 inherits | 🟢 same | 🟢 same | 🔴 not implemented |
-| Initial focus to dialog | 🟢 RAF + focus (`overlay.js:95-98`) | 🟢 inherits | 🟢 same | 🟡 missing `phx-mounted` (`overlay.ex:383-395`) | 🟢 `command_palette.js:50-52` |
-| Outside content `inert` | 🔴 not done (only the dialog itself toggles inert) | 🔴 same | 🔴 same | 🔴 same | 🔴 same |
-| Body scroll lock | 🟢 `body:has(...)` (`modal.css:78`, `sheet.css:147`, `drawer.css:100`) | 🟢 inherits | 🟢 same | 🟢 same | 🔴 missing in `command-palette.css` |
-| Public open helper | 🔴 private | 🔴 private | 🟡 only on Overlay module | 🟢 `components.ex:68` | 🟡 only on Overlay module |
-| Required title enforcement | 🔴 optional | 🟢 attr `default: "Confirm"` | 🔴 optional | 🔴 optional | 🔴 attr `aria-label` only |
+| Requirement                        | `modal`                                                                | `confirm_modal`                  | `sheet`                   | `drawer`                                        | `command_palette`                            |
+| ---------------------------------- | ---------------------------------------------------------------------- | -------------------------------- | ------------------------- | ----------------------------------------------- | -------------------------------------------- |
+| `role="dialog"` (or `alertdialog`) | 🟢 `overlay.ex:38`                                                     | 🟢 `overlay.ex:76` (alertdialog) | 🟢 `overlay.ex:470`       | 🟢 `overlay.ex:399`                             | 🟢 `overlay.ex:626`                          |
+| `aria-modal="true"`                | 🟢 `overlay.ex:39`                                                     | 🟢 inherited                     | 🟢 `overlay.ex:471`       | 🟢 `overlay.ex:400`                             | 🟢 `overlay.ex:626`                          |
+| `aria-labelledby` always linked    | 🔴 only when slot present (`overlay.ex:40`)                            | 🟡 same                          | 🔴 `overlay.ex:472`       | 🔴 `overlay.ex:401`                             | 🔴 uses `aria-label` only (`overlay.ex:626`) |
+| `aria-describedby` body            | 🟢 `overlay.ex:41-52`                                                  | 🟢 inherits                      | 🔴 not set                | 🔴 not set                                      | 🔴 not set                                   |
+| Focus trap                         | 🟡 JS-only (`overlay.js:139-162`)                                      | 🟡 inherits                      | 🟡 same                   | 🟡 same                                         | 🔴 NO trap (uses different hook)             |
+| Escape closes                      | 🟢 `overlay.js:132-137`                                                | 🟢 inherits                      | 🟢 same                   | 🟢 same                                         | 🟢 `command_palette.js:83`                   |
+| Focus restore on close             | 🟢 `overlay.js:101-112`                                                | 🟢 inherits                      | 🟢 same                   | 🟢 same                                         | 🔴 not implemented                           |
+| Initial focus to dialog            | 🟢 RAF + focus (`overlay.js:95-98`)                                    | 🟢 inherits                      | 🟢 same                   | 🟡 missing `phx-mounted` (`overlay.ex:383-395`) | 🟢 `command_palette.js:50-52`                |
+| Outside content `inert`            | 🔴 not done (only the dialog itself toggles inert)                     | 🔴 same                          | 🔴 same                   | 🔴 same                                         | 🔴 same                                      |
+| Body scroll lock                   | 🟢 `body:has(...)` (`modal.css:78`, `sheet.css:147`, `drawer.css:100`) | 🟢 inherits                      | 🟢 same                   | 🟢 same                                         | 🔴 missing in `command-palette.css`          |
+| Public open helper                 | 🔴 private                                                             | 🔴 private                       | 🟡 only on Overlay module | 🟢 `components.ex:68`                           | 🟡 only on Overlay module                    |
+| Required title enforcement         | 🔴 optional                                                            | 🟢 attr `default: "Confirm"`     | 🔴 optional               | 🔴 optional                                     | 🔴 attr `aria-label` only                    |
 
 ## Problems by severity
 
@@ -263,23 +264,24 @@ Status legend: P0 (incorrect/misleading public API), P1 (works but below shadcn 
 
 ## Browser & visual coverage
 
-| Component | Browser spec | Coverage |
-| --- | --- | --- |
-| modal | `overlay.spec.js:6-20` | Escape close, state attrs |
-| confirm_modal | NONE | Untested |
-| popover | `popover.spec.js:6-44` | open, close, aria, close button |
-| dropdown_menu | `dropdown_menu.spec.js:6-22` | nested-button regression only |
-| dropdown (deprecated) | NONE | — |
-| tooltip | `tooltip.spec.js:11-50` | hover open, focus open, Escape |
-| collapsible | NONE | Untested |
-| drawer | `overlay.spec.js:42-60` | Escape + focus restore |
-| sheet | `overlay.spec.js:22-40` | Escape + focus restore |
-| hover_card | `hover_card.spec.js:6-25` | hover open/close |
-| context_menu | `context_menu.spec.js:6-26` | right-click open, outside close |
-| command_palette | `command_palette.spec.js:6-92` | Cmd+K, backdrop, filter+Enter, empty |
-| menubar | `menubar.spec.js:6-66` | pointer + keyboard |
+| Component             | Browser spec                   | Coverage                             |
+| --------------------- | ------------------------------ | ------------------------------------ |
+| modal                 | `overlay.spec.js:6-20`         | Escape close, state attrs            |
+| confirm_modal         | NONE                           | Untested                             |
+| popover               | `popover.spec.js:6-44`         | open, close, aria, close button      |
+| dropdown_menu         | `dropdown_menu.spec.js:6-22`   | nested-button regression only        |
+| dropdown (deprecated) | NONE                           | —                                    |
+| tooltip               | `tooltip.spec.js:11-50`        | hover open, focus open, Escape       |
+| collapsible           | NONE                           | Untested                             |
+| drawer                | `overlay.spec.js:42-60`        | Escape + focus restore               |
+| sheet                 | `overlay.spec.js:22-40`        | Escape + focus restore               |
+| hover_card            | `hover_card.spec.js:6-25`      | hover open/close                     |
+| context_menu          | `context_menu.spec.js:6-26`    | right-click open, outside close      |
+| command_palette       | `command_palette.spec.js:6-92` | Cmd+K, backdrop, filter+Enter, empty |
+| menubar               | `menubar.spec.js:6-66`         | pointer + keyboard                   |
 
 **Untested paths:**
+
 - Dialog focus trap loop (Tab from last → first; Shift+Tab from first → last) is NOT tested.
 - Modal opening via JS command (because `show_modal` is private).
 - `confirm_modal` rendering and click flow.
@@ -301,17 +303,17 @@ Status legend: P0 (incorrect/misleading public API), P1 (works but below shadcn 
 
 ## JS hook quality
 
-| Hook | Lifecycle | Listener cleanup | Concerns |
-| --- | --- | --- | --- |
+| Hook                        | Lifecycle                                                 | Listener cleanup                                               | Concerns                                                                                                                             |
+| --------------------------- | --------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | `ExoOverlay` (`overlay.js`) | mounted/updated/destroyed all call `_bind` then `_unbind` | ✓ MutationObserver disconnect, capture-phase listeners removed | Captures invoker via document-level `pointerdown`/`click` (`:36-37`) — fires on ALL clicks, even unrelated overlays; cheap but noisy |
-| `ExoPopover` | symmetric | ✓ | `_findControl` mutates inner element role/tabindex (`:65-68`); on `updated()` re-runs without checking idempotency |
-| `ExoDropdownMenu` | symmetric | ✓ | No Escape handler — depends on popover dismiss |
-| `ExoTooltip` | symmetric | ✓ | Module-level `lastHideTime` (`tooltip.js:1`) is global — multiple tooltips share skip-delay (acceptable) |
-| `ExoHoverCard` | symmetric | ✓ | Pointer + focus listeners on `el`, `trigger`, AND `content` — cleaned up |
-| `ExoContextMenu` | symmetric | ✓ | Document-level capture listeners reattached every `_bind()` (`:68-78`) — re-bind is symmetric but expensive |
-| `ExoCommandPalette` | symmetric | ✓ | Global document keydown for Cmd+K (`:80`) — collides if multiple instances |
-| `ExoMenubar` | symmetric | ✓ | Document-level `pointerdown` (`:75`) — cleaned up |
-| `ExoCollapsible` | mounted/updated/destroyed | ✓ | Only one click listener; minimal |
+| `ExoPopover`                | symmetric                                                 | ✓                                                              | `_findControl` mutates inner element role/tabindex (`:65-68`); on `updated()` re-runs without checking idempotency                   |
+| `ExoDropdownMenu`           | symmetric                                                 | ✓                                                              | No Escape handler — depends on popover dismiss                                                                                       |
+| `ExoTooltip`                | symmetric                                                 | ✓                                                              | Module-level `lastHideTime` (`tooltip.js:1`) is global — multiple tooltips share skip-delay (acceptable)                             |
+| `ExoHoverCard`              | symmetric                                                 | ✓                                                              | Pointer + focus listeners on `el`, `trigger`, AND `content` — cleaned up                                                             |
+| `ExoContextMenu`            | symmetric                                                 | ✓                                                              | Document-level capture listeners reattached every `_bind()` (`:68-78`) — re-bind is symmetric but expensive                          |
+| `ExoCommandPalette`         | symmetric                                                 | ✓                                                              | Global document keydown for Cmd+K (`:80`) — collides if multiple instances                                                           |
+| `ExoMenubar`                | symmetric                                                 | ✓                                                              | Document-level `pointerdown` (`:75`) — cleaned up                                                                                    |
+| `ExoCollapsible`            | mounted/updated/destroyed                                 | ✓                                                              | Only one click listener; minimal                                                                                                     |
 
 - **`phx-update="ignore"`:** NOT used anywhere in overlay components. Means a server re-render of the surrounding template can reset hidden checkbox state (`collapsible`) and overwrite menu `data-open` attributes set by hooks. The hooks call `_bind()` on `updated()` to recover, but state set by JS is lost.
 - **Server↔client contract:** The hooks are mostly self-contained — no `pushEventTo`. Open/close is purely DOM-side, except modal/drawer/sheet which read `data-state` set by `Phoenix.LiveView.JS` (`overlay.js:64`).
@@ -381,6 +383,7 @@ Status legend: P0 (incorrect/misleading public API), P1 (works but below shadcn 
 ## Comparison vs shadcn/Radix
 
 **Where ExoUI matches:**
+
 - Trigger composition pattern via wrapping span + JS finder (mirrors Radix `Trigger asChild`)
 - Native Popover API + CSS anchor positioning (more modern than Radix v1's portal+Popper.js)
 - Menubar keyboard pattern is at parity with Radix Menubar
@@ -388,6 +391,7 @@ Status legend: P0 (incorrect/misleading public API), P1 (works but below shadcn 
 - Token-based theming with `:where()` overrides
 
 **Where ExoUI lags:**
+
 1. **No `as_child` escape hatch.** Radix `Trigger`/`Item` accept `asChild` and merge into the user element. ExoUI uses a wrapper span, which works for popover/dropdown but adds a tab stop in tooltip and produces invalid HTML when the user nests another span with role.
 2. **Modal cannot be opened from JS commands.** Radix and shadcn use a controlled `Dialog.Trigger` that opens client-side. ExoUI requires a server roundtrip.
 3. **No outside-`inert` enforcement** — Radix v1 added this in 2023. ExoUI relies on JS Tab handler only.

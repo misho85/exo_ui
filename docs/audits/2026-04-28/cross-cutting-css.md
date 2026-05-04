@@ -14,11 +14,11 @@
 
 ## Build output verification
 
-| Artifact | Path | Size | Lines | Status |
-|---|---|---|---|---|
-| Bundled CSS | `priv/static/exo.css` | 79141 B | 1 (minified) | 🟢 fresh, 602 rules, 260 unique `data-exo` selectors |
-| Token shim | `priv/static/exo.tokens.css` | 1867 B | 1 (minified) | 🟢 fresh |
-| Source root | `assets/css/exo.css` | — | 53 | 🟢 imports tokens + dark + 49 component files + 1 layout |
+| Artifact    | Path                         | Size    | Lines        | Status                                                   |
+| ----------- | ---------------------------- | ------- | ------------ | -------------------------------------------------------- |
+| Bundled CSS | `priv/static/exo.css`        | 79141 B | 1 (minified) | 🟢 fresh, 602 rules, 260 unique `data-exo` selectors     |
+| Token shim  | `priv/static/exo.tokens.css` | 1867 B  | 1 (minified) | 🟢 fresh                                                 |
+| Source root | `assets/css/exo.css`         | —       | 53           | 🟢 imports tokens + dark + 49 component files + 1 layout |
 
 Per-category audits (`01-core`, `02-form`, etc.) repeatedly claim `exo.css` is `0 bytes`. **That is wrong.** `wc -l` reports `0` because the bundle is single-line minified; `wc -c` and `stat` confirm 79141 bytes. Every category report containing the "0 bytes" claim should be corrected.
 
@@ -37,16 +37,16 @@ Per-category audits (`01-core`, `02-form`, etc.) repeatedly claim `exo.css` is `
 
 49 CSS source files for 57 component modules in `lib/exo_ui/components/`. The following modules emit `data-exo` attributes but have **no matching CSS source file**:
 
-| Module | data-exo emitted | CSS source | Selector in build? |
-|---|---|---|---|
-| `navigation.ex` `navbar*` | `navbar`, `navbar-brand`, `navbar-menu`, `navbar-link` | none | 🔴 no |
-| `navigation.ex` `footer*` | `footer`, `footer-section`, `footer-heading`, `footer-link`, `footer-bottom` | none | 🔴 no |
-| `navigation.ex` `bottom-nav*` | `bottom-nav`, `bottom-nav-item`, `bottom-nav-icon`, `bottom-nav-label` | none | 🔴 no |
-| `feedback.ex` `indicator*` | `indicator`, `indicator-item` | none | 🔴 no |
-| `interactive.ex` `swap*` | `swap`, `swap-input`, `swap-on`, `swap-off` | none | 🔴 no |
-| `layout.ex` `hero*` | `hero`, `hero-content`, `hero-title`, `hero-subtitle`, `hero-cta` | none | 🔴 no |
-| `chat.ex` `chat-bubble*` | `chat-bubble`, `chat-bubble-avatar`, `chat-bubble-header`, `chat-bubble-message`, `chat-bubble-footer`, `chat-bubble-time` | none | 🔴 no |
-| `feedback.ex` `radial-progress*` | `radial-progress`, `radial-progress-track`, `radial-progress-fill`, `radial-progress-value` | none | 🔴 no |
+| Module                           | data-exo emitted                                                                                                           | CSS source | Selector in build? |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------- | ------------------ |
+| `navigation.ex` `navbar*`        | `navbar`, `navbar-brand`, `navbar-menu`, `navbar-link`                                                                     | none       | 🔴 no              |
+| `navigation.ex` `footer*`        | `footer`, `footer-section`, `footer-heading`, `footer-link`, `footer-bottom`                                               | none       | 🔴 no              |
+| `navigation.ex` `bottom-nav*`    | `bottom-nav`, `bottom-nav-item`, `bottom-nav-icon`, `bottom-nav-label`                                                     | none       | 🔴 no              |
+| `feedback.ex` `indicator*`       | `indicator`, `indicator-item`                                                                                              | none       | 🔴 no              |
+| `interactive.ex` `swap*`         | `swap`, `swap-input`, `swap-on`, `swap-off`                                                                                | none       | 🔴 no              |
+| `layout.ex` `hero*`              | `hero`, `hero-content`, `hero-title`, `hero-subtitle`, `hero-cta`                                                          | none       | 🔴 no              |
+| `chat.ex` `chat-bubble*`         | `chat-bubble`, `chat-bubble-avatar`, `chat-bubble-header`, `chat-bubble-message`, `chat-bubble-footer`, `chat-bubble-time` | none       | 🔴 no              |
+| `feedback.ex` `radial-progress*` | `radial-progress`, `radial-progress-track`, `radial-progress-fill`, `radial-progress-value`                                | none       | 🔴 no              |
 
 These render with **no exo styling whatsoever** — they rely on whatever Tailwind utility classes the consumer applies, contradicting the library's promise of unstyled-but-themed primitives.
 
@@ -69,16 +69,16 @@ Modules with partial CSS coverage emit child attributes that the bundle never se
 
 ### Selector mismatches (CSS source vs Elixir output)
 
-| Elixir emits | CSS source selects | Result |
-|---|---|---|
+| Elixir emits                                  | CSS source selects                                    | Result                      |
+| --------------------------------------------- | ----------------------------------------------------- | --------------------------- |
 | `data-exo="h-bar-chart"` (`cartesian.ex:162`) | `[data-exo="horizontal-bar-chart"]` (`charts.css:73`) | 🔴 dead selector, dead emit |
 
 Single confirmed mismatch — but it kills horizontal bar chart styling entirely.
 
 ### Selector collisions
 
-| Selector | Emitter A | Emitter B | CSS A | CSS B |
-|---|---|---|---|---|
+| Selector                  | Emitter A                         | Emitter B                               | CSS A          | CSS B        |
+| ------------------------- | --------------------------------- | --------------------------------------- | -------------- | ------------ |
 | `data-exo="progress-bar"` | `feedback.ex:153` (progress fill) | `charts/primitives.ex:134` (chart root) | `progress.css` | `charts.css` |
 
 Same attribute, two different semantic roles, two CSS files write conflicting rules. Whichever loads later wins. Lightningcss alphabetises imports, so `charts.css` < `progress.css` — progress bar styling overrides chart progress bar. Either rename one (`progress-fill`, `chart-progress`) or scope under a parent attribute.
@@ -99,32 +99,32 @@ Same attribute, two different semantic roles, two CSS files write conflicting ru
 
 ### Missing token namespaces
 
-| Namespace | Used in | Status |
-|---|---|---|
-| `--exo-chart-1..5` | charts (currently hardcode HSL in stories) | 🔴 absent |
-| `--exo-overlay-backdrop` | modal, drawer, sheet, command-palette, sidebar mobile | 🔴 absent |
-| `--exo-overlay-shadow` | hover-card, context-menu, menubar, popover, command-palette, sheet | 🔴 absent |
-| `--exo-topbar-height` | sidebar layout (hardcodes `4rem` at lines 28, 100) | 🔴 absent |
-| `--exo-rating-active` | rating component (hardcodes `#f59e0b`) | 🔴 absent |
-| `--exo-accent` | referenced in `carousel.css:46` | 🔴 broken — never defined |
+| Namespace                | Used in                                                            | Status                    |
+| ------------------------ | ------------------------------------------------------------------ | ------------------------- |
+| `--exo-chart-1..5`       | charts (currently hardcode HSL in stories)                         | 🔴 absent                 |
+| `--exo-overlay-backdrop` | modal, drawer, sheet, command-palette, sidebar mobile              | 🔴 absent                 |
+| `--exo-overlay-shadow`   | hover-card, context-menu, menubar, popover, command-palette, sheet | 🔴 absent                 |
+| `--exo-topbar-height`    | sidebar layout (hardcodes `4rem` at lines 28, 100)                 | 🔴 absent                 |
+| `--exo-rating-active`    | rating component (hardcodes `#f59e0b`)                             | 🔴 absent                 |
+| `--exo-accent`           | referenced in `carousel.css:46`                                    | 🔴 broken — never defined |
 
 ### Hardcoded colors (file:line)
 
-| File | Line | Value | Context |
-|---|---|---|---|
-| `command-palette.css` | 15 | `rgb(0 0 0 / 0.5)` | backdrop |
-| `command-palette.css` | 28 | `rgb(0 0 0 / 0.25)` | shadow |
-| `sheet.css` | 16 | `rgb(0 0 0 / 0.5)` | backdrop |
-| `sheet.css` | 25 | `rgb(0 0 0 / 0.25)` | shadow |
-| `hover-card.css` | 20 | `rgb(0 0 0 / 0.1)` | shadow |
-| `context-menu.css` | 14 | `rgb(0 0 0 / 0.1)` | shadow |
-| `carousel.css` | 37 | `rgb(0 0 0 / 0.1)` | shadow |
-| `menubar.css` | 47 | `rgb(0 0 0 / 0.1)` | shadow |
-| `rating.css` | 25 | `#f59e0b` | active star color |
-| `rating.css` | 33 | `#f59e0b` | hover star color |
-| `drawer.css` | 15 | `oklch(0% 0 0 / 0.5)` | backdrop |
-| `modal.css` | 17 | `oklch(0% 0 0 / 0.4)` | backdrop |
-| `layouts/sidebar.css` | 177 | `oklch(0% 0 0 / 0.4)` | mobile scrim |
+| File                  | Line | Value                 | Context           |
+| --------------------- | ---- | --------------------- | ----------------- |
+| `command-palette.css` | 15   | `rgb(0 0 0 / 0.5)`    | backdrop          |
+| `command-palette.css` | 28   | `rgb(0 0 0 / 0.25)`   | shadow            |
+| `sheet.css`           | 16   | `rgb(0 0 0 / 0.5)`    | backdrop          |
+| `sheet.css`           | 25   | `rgb(0 0 0 / 0.25)`   | shadow            |
+| `hover-card.css`      | 20   | `rgb(0 0 0 / 0.1)`    | shadow            |
+| `context-menu.css`    | 14   | `rgb(0 0 0 / 0.1)`    | shadow            |
+| `carousel.css`        | 37   | `rgb(0 0 0 / 0.1)`    | shadow            |
+| `menubar.css`         | 47   | `rgb(0 0 0 / 0.1)`    | shadow            |
+| `rating.css`          | 25   | `#f59e0b`             | active star color |
+| `rating.css`          | 33   | `#f59e0b`             | hover star color  |
+| `drawer.css`          | 15   | `oklch(0% 0 0 / 0.5)` | backdrop          |
+| `modal.css`           | 17   | `oklch(0% 0 0 / 0.4)` | backdrop          |
+| `layouts/sidebar.css` | 177  | `oklch(0% 0 0 / 0.4)` | mobile scrim      |
 
 Three different syntaxes for "translucent black backdrop" across overlays. Pick one (`--exo-overlay-backdrop`), define it in tokens, swap dark variant in `themes/dark.css`.
 
@@ -132,7 +132,7 @@ Three different syntaxes for "translucent black backdrop" across overlays. Pick 
 
 `assets/css/src/themes/dark.css` (31 lines) overrides ~10 root tokens via `[data-theme="dark"]`. **Zero per-component dark rules anywhere.** Components rely entirely on the token cascade.
 
-This is *fine in principle* but breaks for every hardcoded color above: backdrops at `rgb(0 0 0 / 0.5)` look correct on light but lack a dark-specific opacity bump; shadows at `rgb(0 0 0 / 0.1)` are nearly invisible on dark cards. No component re-declares for `[data-theme="dark"]` to compensate.
+This is _fine in principle_ but breaks for every hardcoded color above: backdrops at `rgb(0 0 0 / 0.5)` look correct on light but lack a dark-specific opacity bump; shadows at `rgb(0 0 0 / 0.1)` are nearly invisible on dark cards. No component re-declares for `[data-theme="dark"]` to compensate.
 
 Also untested: there is **no automated visual diff** ensuring dark theme renders. The only validation is "tokens swap, hope for the best".
 
@@ -141,6 +141,7 @@ Also untested: there is **no automated visual diff** ensuring dark theme renders
 `grep -r "prefers-reduced-motion" assets/css/` → **0 matches.**
 
 Components with transitions/animations:
+
 - `accordion.css` (height transition)
 - `collapsible.css`, `drawer.css`, `sheet.css`, `modal.css`, `command-palette.css`, `popover.css`, `hover-card.css`, `context-menu.css`, `dropdown.css`, `menubar.css`, `tooltip.css` (overlay open/close)
 - `skeleton.css` (pulse animation)
@@ -167,10 +168,10 @@ Layouts are an exception: `layouts/sidebar.css` uses bare `[data-exo="..."]` (sp
 
 CSS source rules whose selector never matches any Elixir-emitted attribute:
 
-| Selector | File:line | Reason |
-|---|---|---|
-| `[data-exo="horizontal-bar-chart"]` | `charts.css:73` | mismatch with `h-bar-chart` |
-| `[data-exo="theme-toggle-icon"]` | `theme-toggle.css` | not emitted (verify) |
+| Selector                            | File:line          | Reason                      |
+| ----------------------------------- | ------------------ | --------------------------- |
+| `[data-exo="horizontal-bar-chart"]` | `charts.css:73`    | mismatch with `h-bar-chart` |
+| `[data-exo="theme-toggle-icon"]`    | `theme-toggle.css` | not emitted (verify)        |
 
 Sweep with `comm -23 <(css_selectors) <(elixir_emits)` after the `h-bar-chart` rename to find more.
 
