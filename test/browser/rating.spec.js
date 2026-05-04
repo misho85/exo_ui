@@ -11,11 +11,22 @@ test.describe("rating", () => {
     const hidden = rating.locator('[data-exo="rating-value"]');
 
     await expect(rating).toHaveAttribute("data-ready", "");
+    await expect(rating).toHaveAttribute("role", "radiogroup");
+    await expect(rating).toHaveAttribute("aria-labelledby", "rating-basic-label");
+    await expect(rating).toHaveAttribute("aria-describedby", "rating-basic-description");
     await expect(hidden).toHaveValue("3");
 
     await rating.locator('[data-exo="rating-star"]').nth(4).click();
 
     await expect(hidden).toHaveValue("5");
     await expect(rating.locator('[data-exo="rating-star"][data-active]')).toHaveCount(5);
+
+    const errorRating = canvas.locator("#rating-error");
+    await expect(errorRating).toHaveAttribute("aria-invalid", "true");
+    await expect(errorRating).toHaveAttribute(
+      "aria-describedby",
+      "rating-error-description rating-error-error"
+    );
+    await expect(canvas.locator("#rating-error-error")).toHaveAttribute("role", "alert");
   });
 });

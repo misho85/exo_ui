@@ -356,6 +356,7 @@ defmodule ExoUI.Components.Form do
           aria-describedby={@describedby}
           aria-haspopup="listbox"
           aria-expanded="false"
+          aria-controls={"#{@id}-listbox"}
           aria-labelledby={if @label_id, do: @label_id}
           style={"anchor-name: --select-#{@id}"}
           disabled={@disabled}
@@ -383,7 +384,12 @@ defmodule ExoUI.Components.Form do
           data-align={@align}
           style={"position-anchor: --select-#{@id}"}
         >
-          <div data-exo="select-menu" role="listbox" aria-labelledby={if @label_id, do: @label_id}>
+          <div
+            id={"#{@id}-listbox"}
+            data-exo="select-menu"
+            role="listbox"
+            aria-labelledby={if @label_id, do: @label_id}
+          >
             <.choice_option_groups kind="select" grouped={@grouped} value={@value} />
           </div>
         </div>
@@ -466,6 +472,7 @@ defmodule ExoUI.Components.Form do
           aria-haspopup="listbox"
           aria-expanded="false"
           aria-controls={"#{@id}-listbox"}
+          aria-labelledby={if @label_id, do: @label_id}
           style={"anchor-name: --combobox-#{@id}"}
           disabled={@disabled}
         />
@@ -524,6 +531,7 @@ defmodule ExoUI.Components.Form do
             aria-describedby={@describedby}
             aria-haspopup="listbox"
             aria-expanded="false"
+            aria-controls={"#{@id}-listbox"}
             aria-labelledby={if @label_id, do: @label_id}
             style={"anchor-name: --combobox-#{@id}"}
             disabled={@disabled}
@@ -626,6 +634,7 @@ defmodule ExoUI.Components.Form do
       data-selected={option_selected?(opt[:value], @value) && ""}
       data-disabled={opt[:disabled] && ""}
       aria-selected={to_string(option_selected?(opt[:value], @value))}
+      aria-disabled={to_string(opt[:disabled] == true)}
       tabindex="-1"
     >
       <span :if={opt[:icon]} data-exo={@kind <> "-option-icon"}>
@@ -831,9 +840,10 @@ defmodule ExoUI.Components.Form do
   end
 
   @doc "Renders a range slider input."
+  attr :field, Phoenix.HTML.FormField, default: nil, doc: "a form field struct"
   attr :id, :string, default: nil
-  attr :name, :string, required: true
-  attr :value, :any, default: 50
+  attr :name, :string, default: nil
+  attr :value, :any, default: nil
   attr :min, :integer, default: 0
   attr :max, :integer, default: 100
   attr :step, :integer, default: 1
@@ -843,8 +853,22 @@ defmodule ExoUI.Components.Form do
   attr :class, :any, default: nil
   attr :rest, :global, include: ~w(disabled)
 
+  def slider(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
+    errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
+
+    assigns
+    |> assign(field: nil, id: assigns[:id] || field.id)
+    |> assign(:errors, Enum.map(errors, &translate_error(&1)))
+    |> assign(:name, if(is_nil(assigns[:name]), do: field.name, else: assigns[:name]))
+    |> assign(:value, if(is_nil(assigns[:value]), do: field.value, else: assigns[:value]))
+    |> slider()
+  end
+
   def slider(assigns) do
-    assigns = prepare_basic_field(assigns)
+    assigns =
+      assigns
+      |> assign(:value, if(is_nil(assigns[:value]), do: 50, else: assigns[:value]))
+      |> prepare_basic_field()
 
     ~H"""
     <div data-exo="slider-field" class={@class}>
@@ -870,7 +894,8 @@ defmodule ExoUI.Components.Form do
   end
 
   @doc "Renders a calendar date picker with month navigation and date selection."
-  attr :id, :string, required: true
+  attr :field, Phoenix.HTML.FormField, default: nil, doc: "a form field struct"
+  attr :id, :string, default: nil
   attr :selected, :any, default: nil
   attr :current_month, :any, default: nil
   attr :min, :any, default: nil
@@ -886,6 +911,20 @@ defmodule ExoUI.Components.Form do
   attr :class, :any, default: nil
   attr :disabled, :boolean, default: false
   attr :rest, :global
+
+  def date_picker(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
+    errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
+
+    assigns
+    |> assign(field: nil, id: assigns[:id] || field.id)
+    |> assign(:errors, Enum.map(errors, &translate_error(&1)))
+    |> assign(:name, if(is_nil(assigns[:name]), do: field.name, else: assigns[:name]))
+    |> assign(
+      :selected,
+      if(is_nil(assigns[:selected]), do: field.value, else: assigns[:selected])
+    )
+    |> date_picker()
+  end
 
   def date_picker(assigns) do
     assigns = prepare_basic_field(assigns)
@@ -1088,49 +1127,190 @@ defmodule ExoUI.Components.Form do
   defp normalize_date(_value), do: nil
 
   @doc "Renders a star rating input."
-  attr :name, :string, required: true
-  attr :value, :integer, default: 0
+  attr :field, Phoenix.HTML.FormField, default: nil, doc: "a form field struct"
+  attr :id, :string, default: nil
+  attr :name, :string, default: nil
+  attr :value, :any, default: nil
   attr :max, :integer, default: 5
   attr :readonly, :boolean, default: false
+  attr :disabled, :boolean, default: false
   attr :size, :string, values: ~w(sm md lg), default: "md"
+  attr :label, :string, default: nil
+  attr :description, :string, default: nil
+  attr :errors, :list, default: []
   attr :class, :any, default: nil
   attr :rest, :global
 
+  def rating(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
+    errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
+
+    assigns
+    |> assign(field: nil, id: assigns[:id] || field.id)
+    |> assign(:errors, Enum.map(errors, &translate_error(&1)))
+    |> assign(:name, if(is_nil(assigns[:name]), do: field.name, else: assigns[:name]))
+    |> assign(:value, if(is_nil(assigns[:value]), do: field.value, else: assigns[:value]))
+    |> rating()
+  end
+
   def rating(assigns) do
-    assigns = assign(assigns, :stars, Enum.to_list(1..assigns.max))
+    assigns =
+      assigns
+      |> assign(:value, rating_value(assigns[:value], assigns.max))
+      |> assign(:stars, rating_stars(assigns.max))
+      |> prepare_basic_field()
+      |> assign(:wrap, assigns.label != nil or assigns.description != nil or assigns.errors != [])
 
     ~H"""
+    <div :if={@wrap} data-exo="field">
+      <label :if={@label} id={@label_id} data-exo="label" for={@id}>{@label}</label>
+      <.rating_control
+        id={@id}
+        name={@name}
+        value={@value}
+        max={@max}
+        readonly={@readonly}
+        disabled={@disabled}
+        size={@size}
+        class={@class}
+        stars={@stars}
+        label_id={@label_id}
+        describedby={@describedby}
+        errors={@errors}
+        rest={@rest}
+      />
+      <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
+      <.field_errors id={@error_id} errors={@errors} />
+    </div>
+    <.rating_control
+      :if={!@wrap}
+      id={@id}
+      name={@name}
+      value={@value}
+      max={@max}
+      readonly={@readonly}
+      disabled={@disabled}
+      size={@size}
+      class={@class}
+      stars={@stars}
+      label_id={@label_id}
+      describedby={@describedby}
+      errors={@errors}
+      rest={@rest}
+    />
+    """
+  end
+
+  attr :id, :string, default: nil
+  attr :name, :string, default: nil
+  attr :value, :integer, required: true
+  attr :max, :integer, required: true
+  attr :readonly, :boolean, required: true
+  attr :disabled, :boolean, required: true
+  attr :size, :string, required: true
+  attr :class, :any, default: nil
+  attr :stars, :list, required: true
+  attr :label_id, :string, default: nil
+  attr :describedby, :string, default: nil
+  attr :errors, :list, default: []
+  attr :rest, :map, default: %{}
+
+  defp rating_control(assigns) do
+    ~H"""
     <div
+      id={@id}
       data-exo="rating"
-      phx-hook={if !@readonly, do: "ExoRating"}
+      phx-hook={if !@readonly && !@disabled, do: "ExoRating"}
       data-size={@size}
       data-readonly={@readonly || nil}
+      data-disabled={@disabled || nil}
       data-value={@value}
+      data-invalid={@errors != [] && ""}
+      role={if @readonly, do: "img", else: "radiogroup"}
+      aria-label={unless @label_id, do: rating_aria_label(@value, @max)}
+      aria-labelledby={@label_id}
+      aria-describedby={@describedby}
+      aria-invalid={if @errors != [], do: "true"}
+      aria-readonly={if @readonly, do: "true"}
+      aria-disabled={if @disabled, do: "true"}
       class={@class}
       {@rest}
     >
-      <input type="hidden" name={@name} value={@value} data-exo="rating-value" />
-      <label :for={star <- @stars} data-exo="rating-star" data-active={star <= @value || nil}>
-        <input
+      <input
+        :if={@name}
+        type="hidden"
+        name={@name}
+        value={@value}
+        data-exo="rating-value"
+        disabled={@disabled}
+      />
+      <%= for star <- @stars do %>
+        <label
           :if={!@readonly}
-          type="radio"
-          name={"#{@name}-star"}
-          value={star}
-          checked={star == @value}
-          data-exo="rating-input"
-        />
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linejoin="round"
+          data-exo="rating-star"
+          data-active={star <= @value || nil}
+          data-disabled={@disabled || nil}
+        >
+          <input
+            type="radio"
+            name={"#{@name || @id || "rating"}-star"}
+            value={star}
+            checked={star == @value}
+            data-exo="rating-input"
+            aria-label={rating_star_aria_label(star, @max)}
+            disabled={@disabled}
           />
-        </svg>
-      </label>
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </label>
+        <span
+          :if={@readonly}
+          data-exo="rating-star"
+          data-active={star <= @value || nil}
+          aria-hidden="true"
+        >
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </span>
+      <% end %>
     </div>
     """
   end
+
+  defp rating_value(value, max) do
+    value
+    |> parse_integer(0)
+    |> min(max)
+    |> max(0)
+  end
+
+  defp rating_stars(max) when max > 0, do: Enum.to_list(1..max)
+  defp rating_stars(_max), do: []
+
+  defp rating_aria_label(value, max), do: "#{value} out of #{max}"
+  defp rating_star_aria_label(star, max), do: "#{star} out of #{max}"
+
+  defp parse_integer(value, _default) when is_integer(value), do: value
+
+  defp parse_integer(value, default) when is_binary(value) do
+    case Integer.parse(value) do
+      {number, _rest} -> number
+      :error -> default
+    end
+  end
+
+  defp parse_integer(_value, default), do: default
 
   @doc "Renders a fieldset for grouping related form elements."
   attr :id, :string, default: nil
@@ -1168,7 +1348,8 @@ defmodule ExoUI.Components.Form do
   end
 
   @doc "Renders a styled file upload input."
-  attr :name, :string, required: true
+  attr :field, Phoenix.HTML.FormField, default: nil, doc: "a form field struct"
+  attr :name, :string, default: nil
   attr :id, :string, default: nil
   attr :label, :string, default: nil
   attr :description, :string, default: nil
@@ -1177,6 +1358,16 @@ defmodule ExoUI.Components.Form do
   attr :multiple, :boolean, default: false
   attr :class, :any, default: nil
   attr :rest, :global, include: ~w(disabled required)
+
+  def file_input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
+    errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
+
+    assigns
+    |> assign(field: nil, id: assigns[:id] || field.id)
+    |> assign(:errors, Enum.map(errors, &translate_error(&1)))
+    |> assign(:name, if(is_nil(assigns[:name]), do: field.name, else: assigns[:name]))
+    |> file_input()
+  end
 
   def file_input(assigns) do
     assigns = prepare_basic_field(assigns)

@@ -38,6 +38,12 @@
   pointer-events: none;
 }
 
+:where([data-exo="rating"][data-disabled] [data-exo="rating-star"]) {
+  cursor: not-allowed;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
 :where([data-exo="rating"][data-size="sm"] [data-exo="rating-star"] svg) { width: 1rem; height: 1rem; }
 :where([data-exo="rating"][data-size="md"] [data-exo="rating-star"] svg) { width: 1.25rem; height: 1.25rem; }
 :where([data-exo="rating"][data-size="lg"] [data-exo="rating-star"] svg) { width: 1.5rem; height: 1.5rem; }

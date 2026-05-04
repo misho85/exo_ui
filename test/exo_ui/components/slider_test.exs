@@ -91,4 +91,14 @@ defmodule ExoUI.Components.SliderTest do
     assert html =~ ~s(aria-invalid="true")
     assert html =~ ~s(data-invalid)
   end
+
+  test "renders slider with field struct" do
+    assigns = %{form: Phoenix.Component.to_form(%{"volume" => "35"})}
+
+    html = rendered_to_string(~H|<.slider field={@form[:volume]} />|)
+
+    assert html =~ ~s(id="volume")
+    assert html =~ ~s(name="volume")
+    assert html =~ ~s(value="35")
+  end
 end

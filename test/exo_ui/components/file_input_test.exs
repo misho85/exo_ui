@@ -43,4 +43,14 @@ defmodule ExoUI.Components.FileInputTest do
     assert html =~ ~s(data-invalid)
     assert html =~ ~s(role="alert")
   end
+
+  test "renders file input with field struct" do
+    assigns = %{form: Phoenix.Component.to_form(%{"avatar" => ""})}
+
+    html = rendered_to_string(~H|<.file_input field={@form[:avatar]} />|)
+
+    assert html =~ ~s(id="avatar")
+    assert html =~ ~s(name="avatar")
+    assert html =~ ~s(type="file")
+  end
 end

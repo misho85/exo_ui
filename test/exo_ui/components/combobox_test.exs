@@ -56,6 +56,7 @@ defmodule ExoUI.Components.ComboboxTest do
     assert html =~ ~s(data-exo-combobox="input-trigger")
     assert html =~ ~s(role="combobox")
     assert html =~ ~s(aria-expanded="false")
+    assert html =~ ~s(aria-controls="c3-listbox")
     refute html =~ ~s(popovertarget)
   end
 
@@ -207,6 +208,7 @@ defmodule ExoUI.Components.ComboboxTest do
       """)
 
     assert html =~ ~s(aria-expanded="false")
+    assert html =~ ~s(aria-controls="c13-collapsed-listbox")
   end
 
   test "renders grouped options" do
@@ -226,6 +228,20 @@ defmodule ExoUI.Components.ComboboxTest do
     assert html =~ "User"
   end
 
+  test "renders disabled option with aria-disabled" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.combobox id="c-disabled-option" name="x">
+        <:option value="a" disabled>A</:option>
+      </.combobox>
+      """)
+
+    assert html =~ ~s(data-disabled)
+    assert html =~ ~s(aria-disabled="true")
+  end
+
   test "renders label" do
     assigns = %{}
 
@@ -238,6 +254,20 @@ defmodule ExoUI.Components.ComboboxTest do
 
     assert html =~ ~s(data-exo="label")
     assert html =~ "Country"
+  end
+
+  test "input trigger references the field label" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.combobox id="c-input-label" name="x" trigger="input" label="Country">
+        <:option value="a">A</:option>
+      </.combobox>
+      """)
+
+    assert html =~ ~s(id="c-input-label-label")
+    assert html =~ ~s(aria-labelledby="c-input-label-label")
   end
 
   test "renders errors" do

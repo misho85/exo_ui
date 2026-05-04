@@ -110,4 +110,16 @@ defmodule ExoUI.Components.DatePickerTest do
     assert html =~ ~s(data-selected)
     assert html =~ ~s(data-available)
   end
+
+  test "renders date picker with field struct" do
+    assigns = %{form: Phoenix.Component.to_form(%{"departure" => "2026-03-15"})}
+
+    html = rendered_to_string(~H|<.date_picker field={@form[:departure]} />|)
+
+    assert html =~ ~s(id="departure")
+    assert html =~ ~s(name="departure")
+    assert html =~ ~s(value="2026-03-15")
+    assert html =~ "March 2026"
+    assert html =~ ~s(data-selected)
+  end
 end

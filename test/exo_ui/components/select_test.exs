@@ -106,6 +106,7 @@ defmodule ExoUI.Components.SelectTest do
       """)
 
     assert html =~ ~s(data-disabled)
+    assert html =~ ~s(aria-disabled="true")
   end
 
   test "renders grouped options" do
@@ -197,6 +198,8 @@ defmodule ExoUI.Components.SelectTest do
 
     assert html =~ ~s(aria-haspopup="listbox")
     assert html =~ ~s(aria-expanded="false")
+    assert html =~ ~s(aria-controls="s12-listbox")
+    assert html =~ ~s(id="s12-listbox")
   end
 
   test "shows selected option label in trigger" do
