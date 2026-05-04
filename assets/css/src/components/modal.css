@@ -14,7 +14,7 @@
 :where([data-exo="modal-backdrop"]) {
   position: fixed;
   inset: 0;
-  background: oklch(0% 0 0 / 0.4);
+  background: var(--exo-backdrop-muted);
 }
 
 :where([data-exo="modal-content"]) {

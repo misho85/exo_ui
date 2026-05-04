@@ -54,4 +54,31 @@ test.describe("design tokens", () => {
 
     expect(css).not.toContain(":where(){");
   });
+
+  test("component elevation and backdrop styles use semantic tokens", () => {
+    const checkedRoots = [
+      path.join(cssRoot, "components"),
+      path.join(cssRoot, "layouts")
+    ];
+    const hardcoded = [];
+    const forbidden = [
+      /rgb\(0 0 0\s*\/\s*[\d.]+\)/g,
+      /oklch\(0% 0 0\s*\/\s*[\d.]+\)/g,
+      /#[0-9a-f]{8}/gi
+    ];
+
+    for (const rootDir of checkedRoots) {
+      for (const file of cssFiles(rootDir)) {
+        const css = fs.readFileSync(file, "utf8");
+
+        for (const pattern of forbidden) {
+          for (const match of css.matchAll(pattern)) {
+            hardcoded.push(`${match[0]} in ${path.relative(root, file)}`);
+          }
+        }
+      }
+    }
+
+    expect(hardcoded).toEqual([]);
+  });
 });

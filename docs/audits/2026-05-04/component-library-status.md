@@ -14,8 +14,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Missing Storybook stories | 0 public components missing a story |
 | Playwright component capture | 84 Storybook routes captured |
 | Capture artifacts | 84 screenshots, 84 WebM videos, 84 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-04T21-32-01-450Z/viewer.html` |
-| Browser suite | 59 Playwright tests passing |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-04T21-58-16-722Z/viewer.html` |
+| Browser suite | 60 Playwright tests passing |
 | ExUnit suite | 496 tests passing after combobox server-filter changes |
 | Visual regression | 84 committed screenshot baselines with pixel-diff checking |
 
@@ -34,13 +34,14 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - Rating no longer hardcodes amber in component CSS; it uses `--exo-rating-active`, and the browser test verifies keyboard selection and visible focus styling.
 - Date picker now has roving keyboard grid navigation for Arrow keys, Home, End, PageUp, and PageDown, plus browser coverage against a fixed-date Storybook example.
 - The capture workflow now produces a real manifest, writes a latest-run pointer, validates local screenshot/video files for every captured component route, and supports committed screenshot baselines with pixel-diff checking.
+- Overlay, sidebar, command palette, menu, hover card, and carousel elevation/backdrop styles now use semantic `--exo-*` tokens instead of hardcoded black shadow or backdrop values, with browser coverage preventing those values from creeping back into component CSS.
 
 ## Comparison vs shadcn/daisyUI
 
 | Capability | ExoUI now | Gap vs shadcn/daisyUI |
 | --- | --- | --- |
 | Component stories | Broad Storybook route coverage exists | Many stories are still page-style examples rather than introspectable component stories/playgrounds |
-| Theming | Token-driven CSS with light/dark support and reduced-motion guard | Needs more component-specific semantic tokens and fewer hardcoded overlay/shadow colors |
+| Theming | Token-driven CSS with light/dark support, reduced-motion guard, semantic elevation/backdrop tokens, and browser checks against hardcoded component backdrops | Needs docs for token customization patterns and more component-specific state tokens |
 | Forms | Phoenix FormField integration is now strong across most controls, select/combobox expose active-descendant keyboard state, and combobox empty/loading states announce changes politely, including an async LiveComponent server-filter story | Component-mode controls should expose more attrs/slots directly in PhoenixStorybook playgrounds |
 | Overlays/menus | Browser-tested popover, dropdown, context menu, menubar, modal/sheet/drawer focus traps, topmost Escape/backdrop handling, outside inerting, scroll lock, stacking order, and focus restore | Richer nested overlay content examples still need deeper Radix/shadcn parity checks |
 | Keyboard support | Covered for major actions, menus, select/combobox, rating, tabs, and date picker grid movement | Date picker month changes still depend on the parent LiveView handling prev/next events |
@@ -51,16 +52,15 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 
 1. Convert more page-mode Storybook examples to component-mode stories where PhoenixStorybook can expose attrs, slots, playground controls, and source examples.
 2. Continue overlay parity work with richer nested overlay content examples and cross-type modal/sheet/drawer stacking.
-3. Replace remaining hardcoded overlay/shadow colors with semantic tokens where the component owns the visual state.
-4. Add docs that show copy-paste Phoenix usage for every component: basic, disabled, error, long content, dark mode, and keyboard/a11y notes.
-5. Tune visual diff thresholds after the first few CI runs if Linux font rendering causes expected drift.
+3. Add docs that show copy-paste Phoenix usage for every component: basic, disabled, error, long content, dark mode, and keyboard/a11y notes.
+4. Tune visual diff thresholds after the first few CI runs if Linux font rendering causes expected drift.
 
 ## Verification used
 
 - `mix test` -> 496 tests, 0 failures.
 - `bun run build:all`.
 - `mix compile --warnings-as-errors` in `storybook`.
-- `bun run test:browser` -> 59 tests, 0 failures.
-- `bun run capture:components` -> 84 entries, 0 failed, 84 MP4 conversions in `output/playwright/exo-ui-components/2026-05-04T21-32-01-450Z`.
+- `bun run test:browser` -> 60 tests, 0 failures.
+- `bun run capture:components` -> 84 entries, 0 failed, 84 MP4 conversions in `output/playwright/exo-ui-components/2026-05-04T21-58-16-722Z`.
 - `bun run capture:validate` -> 84 entries with non-empty screenshot, WebM, and MP4 files.
 - `bun run visual:check` -> 84 current screenshots matched the committed baseline.

@@ -17,7 +17,7 @@
   background: var(--exo-background);
   border: 1px solid var(--exo-border);
   border-radius: var(--exo-radius);
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  box-shadow: var(--exo-shadow-lg);
   font-family: var(--exo-font);
   font-size: var(--exo-text-sm);
   color: var(--exo-foreground);

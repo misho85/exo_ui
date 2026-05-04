@@ -12,7 +12,7 @@
 :where([data-exo="command-palette-backdrop"]) {
   position: fixed;
   inset: 0;
-  background: rgb(0 0 0 / 0.5);
+  background: var(--exo-backdrop);
   animation: exo-cmd-fade-in 150ms var(--exo-easing);
 }
 
@@ -25,7 +25,7 @@
   background: var(--exo-background);
   border: 1px solid var(--exo-border);
   border-radius: var(--exo-radius);
-  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  box-shadow: var(--exo-shadow-xl);
   overflow: hidden;
   animation: exo-cmd-scale-in 150ms var(--exo-easing);
 }

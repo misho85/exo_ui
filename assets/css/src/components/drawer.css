@@ -12,7 +12,7 @@
 :where([data-exo="drawer-backdrop"]) {
   position: fixed;
   inset: 0;
-  background: oklch(0% 0 0 / 0.5);
+  background: var(--exo-backdrop);
   opacity: 0;
   transition: opacity var(--exo-duration) var(--exo-easing);
 }
