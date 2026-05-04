@@ -1,0 +1,65 @@
+:where([data-exo="bottom-nav"]) {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  align-items: stretch;
+  gap: var(--exo-space-1);
+  padding: var(--exo-space-1);
+  background: var(--exo-card);
+  color: var(--exo-card-foreground);
+  border: 1px solid var(--exo-border);
+  border-radius: var(--exo-radius);
+  box-shadow: var(--exo-shadow-sm);
+  font-family: var(--exo-font);
+}
+
+:where([data-exo="bottom-nav-item"]) {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.125rem;
+  min-width: 0;
+  min-height: 3.25rem;
+  padding: var(--exo-space-2);
+  color: var(--exo-muted-foreground);
+  border-radius: calc(var(--exo-radius) - 2px);
+  font-size: var(--exo-text-xs);
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  transition:
+    background var(--exo-duration) var(--exo-easing),
+    color var(--exo-duration) var(--exo-easing);
+}
+
+:where([data-exo="bottom-nav-item"]):hover,
+:where([data-exo="bottom-nav-item"]):focus-visible {
+  background: var(--exo-muted);
+  color: var(--exo-foreground);
+  outline: none;
+}
+
+:where([data-exo="bottom-nav-item"][data-active]),
+:where([data-exo="bottom-nav-item"][aria-current="page"]) {
+  background: color-mix(in oklch, var(--exo-primary) 12%, transparent);
+  color: var(--exo-primary);
+}
+
+:where([data-exo="bottom-nav-icon"]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:where([data-exo="bottom-nav-icon"] svg) {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+:where([data-exo="bottom-nav-label"]) {
+  overflow: hidden;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

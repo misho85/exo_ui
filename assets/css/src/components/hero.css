@@ -1,0 +1,52 @@
+:where([data-exo="hero"]) {
+  display: grid;
+  gap: var(--exo-space-6);
+  padding: clamp(var(--exo-space-6), 7vw, 5rem);
+  background:
+    linear-gradient(135deg, color-mix(in oklch, var(--exo-primary) 12%, transparent), transparent 52%),
+    var(--exo-card);
+  color: var(--exo-card-foreground);
+  border: 1px solid var(--exo-border);
+  border-radius: var(--exo-radius);
+  font-family: var(--exo-font);
+  overflow: hidden;
+}
+
+:where([data-exo="hero-content"]) {
+  display: grid;
+  gap: var(--exo-space-4);
+  max-width: 48rem;
+}
+
+:where([data-exo="hero-title"]) {
+  margin: 0;
+  color: var(--exo-foreground);
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 800;
+  line-height: 1.05;
+}
+
+:where([data-exo="hero-subtitle"]) {
+  margin: 0;
+  max-width: 42rem;
+  color: var(--exo-muted-foreground);
+  font-size: var(--exo-text-lg);
+  line-height: 1.65;
+}
+
+:where([data-exo="hero-actions"]) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--exo-space-3);
+  align-items: center;
+}
+
+@media (max-width: 640px) {
+  :where([data-exo="hero"]) {
+    padding: var(--exo-space-6) var(--exo-space-4);
+  }
+
+  :where([data-exo="hero-title"]) {
+    font-size: 2rem;
+  }
+}

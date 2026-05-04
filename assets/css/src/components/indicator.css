@@ -1,0 +1,76 @@
+:where([data-exo="indicator"]) {
+  position: relative;
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+:where([data-exo="indicator-badge"]),
+:where([data-exo="indicator"]:not(:has([data-exo="indicator-badge"]))::after) {
+  position: absolute;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.125rem;
+  height: 1.125rem;
+  padding: 0 0.3125rem;
+  background: var(--exo-danger);
+  color: var(--exo-danger-foreground);
+  border: 2px solid var(--exo-background);
+  border-radius: 9999px;
+  font-family: var(--exo-font);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: var(--exo-shadow-sm);
+}
+
+:where([data-exo="indicator"]:not(:has([data-exo="indicator-badge"]))::after) {
+  content: "";
+  min-width: 0;
+  width: 0.75rem;
+  height: 0.75rem;
+  padding: 0;
+}
+
+:where([data-exo="indicator"][data-position="top-right"] [data-exo="indicator-badge"]),
+:where([data-exo="indicator"][data-position="top-right"]:not(:has([data-exo="indicator-badge"]))::after) {
+  top: 0;
+  right: 0;
+  transform: translate(45%, -45%);
+}
+
+:where([data-exo="indicator"][data-position="top-left"] [data-exo="indicator-badge"]),
+:where([data-exo="indicator"][data-position="top-left"]:not(:has([data-exo="indicator-badge"]))::after) {
+  top: 0;
+  left: 0;
+  transform: translate(-45%, -45%);
+}
+
+:where([data-exo="indicator"][data-position="bottom-right"] [data-exo="indicator-badge"]),
+:where([data-exo="indicator"][data-position="bottom-right"]:not(:has([data-exo="indicator-badge"]))::after) {
+  right: 0;
+  bottom: 0;
+  transform: translate(45%, 45%);
+}
+
+:where([data-exo="indicator"][data-position="bottom-left"] [data-exo="indicator-badge"]),
+:where([data-exo="indicator"][data-position="bottom-left"]:not(:has([data-exo="indicator-badge"]))::after) {
+  bottom: 0;
+  left: 0;
+  transform: translate(-45%, 45%);
+}
+
+:where([data-exo="indicator"][data-position="top-center"] [data-exo="indicator-badge"]),
+:where([data-exo="indicator"][data-position="top-center"]:not(:has([data-exo="indicator-badge"]))::after) {
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -45%);
+}
+
+:where([data-exo="indicator"][data-position="bottom-center"] [data-exo="indicator-badge"]),
+:where([data-exo="indicator"][data-position="bottom-center"]:not(:has([data-exo="indicator-badge"]))::after) {
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 45%);
+}

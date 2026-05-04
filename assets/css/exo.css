@@ -15,9 +15,15 @@
 @import "./src/components/wizard.css";
 @import "./src/layouts/sidebar.css";
 @import "./src/components/header.css";
+@import "./src/components/navbar.css";
+@import "./src/components/footer.css";
+@import "./src/components/bottom-nav.css";
 @import "./src/components/list.css";
 @import "./src/components/card.css";
 @import "./src/components/avatar.css";
+@import "./src/components/indicator.css";
+@import "./src/components/hero.css";
+@import "./src/components/chat-bubble.css";
 @import "./src/components/skeleton.css";
 @import "./src/components/empty-state.css";
 @import "./src/components/alert.css";
@@ -37,6 +43,7 @@
 @import "./src/components/drawer.css";
 @import "./src/components/slider.css";
 @import "./src/components/progress.css";
+@import "./src/components/radial-progress.css";
 @import "./src/components/spinner.css";
 @import "./src/components/kbd.css";
 @import "./src/components/fieldset.css";

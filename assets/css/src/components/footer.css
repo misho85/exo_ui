@@ -1,0 +1,71 @@
+:where([data-exo="footer"]) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--exo-space-6);
+  padding: var(--exo-space-6);
+  background: var(--exo-card);
+  color: var(--exo-card-foreground);
+  border: 1px solid var(--exo-border);
+  border-radius: var(--exo-radius);
+  font-family: var(--exo-font);
+}
+
+:where([data-exo="footer-columns"]) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: var(--exo-space-6);
+}
+
+:where([data-exo="footer-column"]) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--exo-space-2);
+  min-width: 0;
+}
+
+:where([data-exo="footer-column-title"]) {
+  margin: 0 0 var(--exo-space-1);
+  color: var(--exo-foreground);
+  font-size: var(--exo-text-sm);
+  font-weight: 700;
+}
+
+:where([data-exo="footer"] a) {
+  color: var(--exo-muted-foreground);
+  font-size: var(--exo-text-sm);
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+:where([data-exo="footer"] a):hover,
+:where([data-exo="footer"] a):focus-visible {
+  color: var(--exo-foreground);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+:where([data-exo="footer-bottom"]) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--exo-space-3);
+  padding-top: var(--exo-space-4);
+  border-top: 1px solid var(--exo-border);
+  color: var(--exo-muted-foreground);
+  font-size: var(--exo-text-sm);
+}
+
+:where([data-exo="footer-bottom"] p) {
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  :where([data-exo="footer"]) {
+    padding: var(--exo-space-4);
+  }
+
+  :where([data-exo="footer-bottom"]) {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
