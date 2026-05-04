@@ -14,7 +14,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Missing Storybook stories | 0 public components missing a story |
 | Playwright component capture | 83 Storybook routes captured |
 | Capture artifacts | 83 screenshots, 83 WebM videos, 83 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-04T18-21-53-409Z/viewer.html` |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-04T19-09-20-401Z/viewer.html` |
 | Browser suite | 58 Playwright tests passing |
 | ExUnit suite | 495 tests passing after disclosure changes |
 
@@ -26,6 +26,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - Accordion and collapsible now hide closed content from assistive tech and focus with `aria-hidden` plus `inert`, and their hooks keep those states synced after interaction.
 - Modal, sheet, and drawer now share stronger overlay focus isolation: open overlays inert outside page siblings, lock page scroll, trap Tab/Shift+Tab inside the dialog, keep Escape and backdrop interaction scoped to the active/topmost overlay, and restore focus to the trigger after close.
 - Select and combobox now assign stable option IDs and sync `aria-activedescendant`; combobox keyboard selection keeps focus on the search input while Enter commits the active option.
+- Combobox empty/loading states now update a polite live region, expose `aria-busy` on the listbox while loading, and document the keyboard model in Storybook.
 - Storybook browser tests now wait for LiveView `phx-connected` with configurable browser/server timeouts, avoiding false negatives caused by clicking server-rendered markup before hooks mount or by slow cold Storybook starts.
 - Rating no longer hardcodes amber in component CSS; it uses `--exo-rating-active`, and the browser test verifies keyboard selection and visible focus styling.
 - Date picker now has roving keyboard grid navigation for Arrow keys, Home, End, PageUp, and PageDown, plus browser coverage against a fixed-date Storybook example.
@@ -37,7 +38,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | --- | --- | --- |
 | Component stories | Broad Storybook route coverage exists | Many stories are still page-style examples rather than introspectable component stories/playgrounds |
 | Theming | Token-driven CSS with light/dark support and reduced-motion guard | Needs more component-specific semantic tokens and fewer hardcoded overlay/shadow colors |
-| Forms | Phoenix FormField integration is now strong across most controls, and select/combobox expose active-descendant keyboard state | Combobox loading/empty states can still add live-region polish |
+| Forms | Phoenix FormField integration is now strong across most controls, select/combobox expose active-descendant keyboard state, and combobox empty/loading states announce changes politely | More async server-filter examples should document real LiveView loading transitions |
 | Overlays/menus | Browser-tested popover, dropdown, context menu, menubar, modal/sheet/drawer focus traps, topmost Escape/backdrop handling, outside inerting, scroll lock, stacking order, and focus restore | Richer nested overlay content examples still need deeper Radix/shadcn parity checks |
 | Keyboard support | Covered for major actions, menus, select/combobox, rating, tabs, and date picker grid movement | Date picker month changes still depend on the parent LiveView handling prev/next events |
 | Visual proof | Automated screenshots and videos for 83 routes | Not yet turned into CI visual regression baselines |
@@ -47,7 +48,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 
 1. Convert more page-mode Storybook examples to component-mode stories where PhoenixStorybook can expose attrs, slots, playground controls, and source examples.
 2. Continue overlay parity work with richer nested overlay content examples and cross-type modal/sheet/drawer stacking.
-3. Improve combobox loading/empty live-region announcements and document the keyboard interaction model.
+3. Add a richer async server-filter combobox story that exercises LiveView loading transitions end to end.
 4. Add CI-friendly visual regression from the existing capture output instead of using screenshots/videos only as manual proof.
 5. Replace remaining hardcoded overlay/shadow colors with semantic tokens where the component owns the visual state.
 6. Add docs that show copy-paste Phoenix usage for every component: basic, disabled, error, long content, dark mode, and keyboard/a11y notes.
@@ -57,5 +58,5 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `mix test` -> 495 tests, 0 failures.
 - `mix compile --warnings-as-errors` in `storybook`.
 - `bun run test:browser` -> 58 tests, 0 failures.
-- `bun run capture:components` -> 83 entries, 0 failed, 83 MP4 conversions in `output/playwright/exo-ui-components/2026-05-04T18-21-53-409Z`.
+- `bun run capture:components` -> 83 entries, 0 failed, 83 MP4 conversions in `output/playwright/exo-ui-components/2026-05-04T19-09-20-401Z`.
 - Manifest validation checked that every manifest entry has non-empty screenshot, WebM, and MP4 files.

@@ -996,9 +996,12 @@
       this._listbox = this.el.querySelector('[role="listbox"]');
       this._empty = this.el.querySelector('[data-exo="combobox-empty"]');
       this._create = this.el.querySelector('[data-exo="combobox-create"]');
+      this._loading = this.el.querySelector('[data-exo="combobox-loading"]');
+      this._status = this.el.querySelector('[data-exo="combobox-status"]');
       this._clear = this.el.querySelector('[data-exo="combobox-clear"]');
       if (!this._popover) return;
       if (this._listbox) this._syncOptions();
+      this._syncStatusFromState();
       const syncExpanded = () => {
         const open = this._popover.matches(":popover-open");
         if (triggerBtn) triggerBtn.setAttribute("aria-expanded", String(open));
@@ -1035,6 +1038,7 @@
             });
           }
           this._clearActiveOption();
+          this._announceStatus("Selection cleared");
         };
         this._clear.addEventListener("click", this._onClear);
       }
@@ -1048,8 +1052,10 @@
             focusSearch();
           }
           this._setInitialActiveOption();
+          this._syncStatusFromState();
         } else if (!open) {
           this._clearActiveOption();
+          this._syncStatusFromState();
         }
       };
       this._popover.addEventListener("toggle", this._onToggle);
@@ -1080,18 +1086,20 @@
           const query = this._search.value;
           if (filter === "client") {
             this._clientFilter(query);
+            this._syncActiveAfterFilter();
+            this._syncStatusFromState();
           } else {
             clearTimeout(this._debounceTimer);
             this._debounceTimer = setTimeout(() => {
               if (onFilter) this.pushEvent(onFilter, { query });
             }, debounce);
+            this._announceStatus(query ? "Searching results" : "");
           }
           if (this._create) {
             const span = this._create.querySelector('[data-exo="combobox-create-query"]');
             if (span) span.textContent = query;
             this._create.hidden = !query;
           }
-          this._syncActiveAfterFilter();
         };
         this._search.addEventListener("input", this._onInput);
       }
@@ -1184,6 +1192,37 @@
         this._setActiveOption(visible[0]);
       }
     },
+    _isOpen() {
+      return this._popover?.matches(":popover-open") === true;
+    },
+    _isLoading() {
+      return this._loading && !this._loading.hidden && this._loading.style.display !== "none";
+    },
+    _syncBusyState() {
+      this._listbox?.setAttribute("aria-busy", String(this._isLoading()));
+    },
+    _syncStatusFromState() {
+      this._syncBusyState();
+      if (this._isLoading()) {
+        this._announceStatus("Loading results");
+        return;
+      }
+      if (!this._isOpen() || this.el.dataset.filter !== "client") {
+        this._announceStatus("");
+        return;
+      }
+      const visible = this._visibleOptions();
+      if (!visible.length) {
+        const emptyText = this._empty?.textContent.trim();
+        this._announceStatus(emptyText || "No results found");
+        return;
+      }
+      this._announceStatus(`${visible.length} ${visible.length === 1 ? "result" : "results"} available`);
+    },
+    _announceStatus(message) {
+      if (!this._status) return;
+      this._status.textContent = message;
+    },
     _clientFilter(query) {
       if (!this._listbox) return;
       const q = query.toLowerCase();
@@ -1209,6 +1248,7 @@
         });
       }
       this._setActiveOption(opt);
+      this._announceStatus(`Selected ${opt.textContent.trim()}`);
       const valSpan = this.el.querySelector('[data-exo="combobox-value"]');
       if (valSpan) {
         valSpan.textContent = opt.textContent.trim();
@@ -1240,6 +1280,8 @@
       this._clear = null;
       this._empty = null;
       this._create = null;
+      this._loading = null;
+      this._status = null;
       this._hidden = null;
       this._activeOption = null;
     }

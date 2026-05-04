@@ -73,6 +73,9 @@ defmodule ExoUI.Components.ComboboxTest do
 
     assert html =~ ~s(data-exo="combobox-empty")
     assert html =~ "No results"
+    assert html =~ ~s(data-exo="combobox-status")
+    assert html =~ ~s(role="status")
+    assert html =~ ~s(aria-live="polite")
   end
 
   test "renders with client filter data attr" do
@@ -113,6 +116,8 @@ defmodule ExoUI.Components.ComboboxTest do
       """)
 
     assert html =~ ~s(data-exo="combobox-loading")
+    assert html =~ ~s(aria-busy="true")
+    assert html =~ "Loading results"
   end
 
   test "renders clearable button" do

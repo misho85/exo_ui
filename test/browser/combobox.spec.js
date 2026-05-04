@@ -19,6 +19,7 @@ test.describe("combobox", () => {
     const popover = canvas.locator("#cb-client");
     const search = canvas.locator("#cb-client [data-exo=\"combobox-search\"]");
     const listbox = canvas.locator("#cb-client-listbox");
+    const status = canvas.locator("#cb-client-status");
     const croatia = canvas.locator("#cb-client [data-exo=\"combobox-option\"][data-value=\"hr\"]");
     const serbia = canvas.locator("#cb-client [data-exo=\"combobox-option\"][data-value=\"rs\"]");
     const value = canvas.locator("input[name=\"country\"]");
@@ -36,6 +37,8 @@ test.describe("combobox", () => {
     await expectFocused(search);
     await expect(search).toHaveAttribute("aria-activedescendant", await croatia.getAttribute("id"));
     await expect(listbox).toHaveAttribute("aria-activedescendant", await croatia.getAttribute("id"));
+    await expect(croatia).toHaveAttribute("data-active", "");
+    await expect(status).toHaveText("1 result available");
 
     await page.keyboard.press("Enter");
 
@@ -54,6 +57,7 @@ test.describe("combobox", () => {
     const popover = canvas.locator("#cb-empty");
     const search = canvas.locator("#cb-empty [data-exo=\"combobox-search\"]");
     const empty = canvas.locator("#cb-empty [data-exo=\"combobox-empty\"]");
+    const status = canvas.locator("#cb-empty-status");
 
     await expectAttribute(root, "data-ready", "");
     await expectAttribute(search, "aria-expanded", "false");
@@ -66,6 +70,10 @@ test.describe("combobox", () => {
 
     await expect(empty).toBeVisible();
     await expect(search).toHaveValue("zzz");
+    await expect(search).not.toHaveAttribute("aria-activedescendant", /.+/);
+    await expect(status).toHaveAttribute("role", "status");
+    await expect(status).toHaveAttribute("aria-live", "polite");
+    await expect(status).toHaveText("No results found");
   });
 
   test("documents grouped, creatable, loading, clearable, and disabled states", async ({ page }) => {
@@ -106,6 +114,8 @@ test.describe("combobox", () => {
     await loadingTrigger.click();
     await expectPopoverState(loadingPopover, true);
     await expect(canvas.locator("#cb-loading [data-exo=\"combobox-loading\"]")).toBeVisible();
+    await expect(canvas.locator("#cb-loading-listbox")).toHaveAttribute("aria-busy", "true");
+    await expect(canvas.locator("#cb-loading-status")).toHaveText("Loading results");
 
     const disabledTrigger = canvas.locator("#cb-disabled-combobox [data-exo-combobox=\"trigger\"]");
     await expect(disabledTrigger).toBeDisabled();

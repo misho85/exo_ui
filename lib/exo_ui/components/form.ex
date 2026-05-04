@@ -498,6 +498,7 @@ defmodule ExoUI.Components.Form do
             id={"#{@id}-listbox"}
             data-exo="combobox-list"
             role="listbox"
+            aria-busy={to_string(@loading)}
             aria-labelledby={if @label_id, do: @label_id}
           >
             <.choice_option_groups kind="combobox" grouped={@grouped} value={@value} />
@@ -507,6 +508,15 @@ defmodule ExoUI.Components.Form do
             <span data-exo="combobox-spinner">Loading...</span>
           </div>
         </div>
+        <span
+          id={"#{@id}-status"}
+          data-exo="combobox-status"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {if @loading, do: "Loading results", else: ""}
+        </span>
       </div>
       <.choice_hidden_input name={@name} value={@value} />
       <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
@@ -591,6 +601,7 @@ defmodule ExoUI.Components.Form do
             id={"#{@id}-listbox"}
             data-exo="combobox-list"
             role="listbox"
+            aria-busy={to_string(@loading)}
             aria-labelledby={if @label_id, do: @label_id}
           >
             <.choice_option_groups kind="combobox" grouped={@grouped} value={@value} />
@@ -603,6 +614,15 @@ defmodule ExoUI.Components.Form do
             Create "<span data-exo="combobox-create-query"></span>"
           </div>
         </div>
+        <span
+          id={"#{@id}-status"}
+          data-exo="combobox-status"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {if @loading, do: "Loading results", else: ""}
+        </span>
       </div>
       <.choice_hidden_input name={@name} value={@value} />
       <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>

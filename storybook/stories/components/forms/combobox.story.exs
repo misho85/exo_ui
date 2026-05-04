@@ -1,7 +1,13 @@
 defmodule Storybook.Components.Combobox do
   use PhoenixStorybook.Story, :page
 
-  def doc, do: "Searchable select with client or server-side filtering."
+  def doc do
+    """
+    Searchable select with client or server-side filtering.
+
+    Keyboard model: open the button trigger with pointer or keyboard, type in the search input to filter client-side options, use ArrowUp/ArrowDown/Home/End to move the active option while focus remains on the input, press Enter to commit the active option, and press Escape to close. Empty and loading states are announced through a polite live region.
+    """
+  end
 
   def render(assigns) do
     ~H"""
