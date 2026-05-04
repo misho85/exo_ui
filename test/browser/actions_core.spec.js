@@ -16,6 +16,20 @@ test.describe("core action components", () => {
     await expect(disabledLink).not.toHaveAttribute("href", /.+/);
   });
 
+  test("reduced motion media query shortens component transitions", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await gotoStory(page, "/components/actions/button");
+
+    const defaultButton = story(page).locator('button[data-exo="btn"]').first();
+    const durations = await defaultButton.evaluate((node) =>
+      getComputedStyle(node)
+        .transitionDuration.split(",")
+        .map((duration) => duration.trim())
+    );
+
+    expect(durations.every((duration) => duration === "0.001s" || duration === "0s")).toBe(true);
+  });
+
   test("theme toggle syncs active state and aria-pressed", async ({ page }) => {
     await gotoStory(page, "/components/actions/theme_toggle");
 
