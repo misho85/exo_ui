@@ -1,7 +1,7 @@
-defmodule Storybook.Components.BarChart do
+defmodule Storybook.Components.Charts.LineChart do
   use PhoenixStorybook.Story, :page
 
-  def doc, do: "Vertical bar chart for a single numeric series."
+  def doc, do: "Line chart for a single numeric series."
 
   def render(assigns) do
     assigns =
@@ -18,13 +18,13 @@ defmodule Storybook.Components.BarChart do
     <div style="padding: 1rem; max-width: 620px;">
       <div data-exo="card">
         <div data-exo="card-header">
-          <h3 data-exo="card-title">Bar chart</h3>
+          <h3 data-exo="card-title">Line chart</h3>
           <p style="margin: 0; color: var(--exo-muted-foreground); font-size: 0.875rem;">
-            Visitors by month
+            Visitors trend
           </p>
         </div>
         <div data-exo="card-body">
-          <ExoUI.Charts.bar_chart data={@data} height={260} />
+          <ExoUI.Charts.line_chart data={@data} height={260} />
         </div>
       </div>
     </div>

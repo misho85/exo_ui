@@ -1,29 +1,30 @@
-defmodule Storybook.Components.HorizontalBarChart do
+defmodule Storybook.Components.Charts.BarChart do
   use PhoenixStorybook.Story, :page
 
-  def doc, do: "Horizontal bar chart for category comparison."
+  def doc, do: "Vertical bar chart for a single numeric series."
 
   def render(assigns) do
     assigns =
       assign(assigns, :data, [
-        {"Chrome", 275},
-        {"Safari", 200},
-        {"Firefox", 187},
-        {"Edge", 173},
-        {"Other", 90}
+        {"January", 4200},
+        {"February", 5800},
+        {"March", 5100},
+        {"April", 7300},
+        {"May", 6700},
+        {"June", 8900}
       ])
 
     ~H"""
     <div style="padding: 1rem; max-width: 620px;">
       <div data-exo="card">
         <div data-exo="card-header">
-          <h3 data-exo="card-title">Horizontal bar chart</h3>
+          <h3 data-exo="card-title">Bar chart</h3>
           <p style="margin: 0; color: var(--exo-muted-foreground); font-size: 0.875rem;">
-            Browser share
+            Visitors by month
           </p>
         </div>
         <div data-exo="card-body">
-          <ExoUI.Charts.horizontal_bar_chart data={@data} height={260} />
+          <ExoUI.Charts.bar_chart data={@data} height={260} />
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
-defmodule Storybook.Components.DonutChartText do
+defmodule Storybook.Components.Charts.DonutChart do
   use PhoenixStorybook.Story, :page
 
-  def doc, do: "Donut chart with center value and label."
+  def doc, do: "Donut chart with configurable inner radius."
 
   def render(assigns) do
     assigns =
@@ -17,19 +17,13 @@ defmodule Storybook.Components.DonutChartText do
     <div style="padding: 1rem; max-width: 520px;">
       <div data-exo="card">
         <div data-exo="card-header">
-          <h3 data-exo="card-title">Donut chart text</h3>
+          <h3 data-exo="card-title">Donut chart</h3>
           <p style="margin: 0; color: var(--exo-muted-foreground); font-size: 0.875rem;">
-            Total visitors by browser
+            Browser share
           </p>
         </div>
         <div data-exo="card-body" style="display: flex; justify-content: center;">
-          <ExoUI.Charts.donut_chart_text
-            data={@data}
-            size={260}
-            inner_radius={78}
-            center_value="925"
-            center_label="Visitors"
-          />
+          <ExoUI.Charts.donut_chart data={@data} size={260} inner_radius={78} />
         </div>
       </div>
     </div>

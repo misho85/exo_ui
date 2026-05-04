@@ -1,4 +1,4 @@
-defmodule Storybook.Components.LineChartMultiple do
+defmodule Storybook.Components.Charts.LineChartMultiple do
   use PhoenixStorybook.Story, :page
 
   def doc, do: "Line chart for two numeric series."

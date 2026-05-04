@@ -1,4 +1,4 @@
-defmodule Storybook.Components.TrendBadge do
+defmodule Storybook.Components.Charts.TrendBadge do
   use PhoenixStorybook.Story, :page
 
   def doc, do: "Trend badge for positive, negative, and flat metric deltas."

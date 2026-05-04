@@ -1,4 +1,4 @@
-defmodule Storybook.Components.PieChart do
+defmodule Storybook.Components.Charts.PieChart do
   use PhoenixStorybook.Story, :page
 
   def doc, do: "Pie chart for proportional category data."

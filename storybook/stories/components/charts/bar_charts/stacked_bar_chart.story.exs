@@ -1,4 +1,4 @@
-defmodule Storybook.Components.StackedBarChart do
+defmodule Storybook.Components.Charts.StackedBarChart do
   use PhoenixStorybook.Story, :page
 
   def doc, do: "Stacked bar chart with legend keys and custom series colors."

@@ -1,4 +1,4 @@
-defmodule Storybook.Components.RadarChart do
+defmodule Storybook.Components.Charts.RadarChart do
   use PhoenixStorybook.Story, :page
 
   def doc, do: "Radar chart for cyclical category comparison."

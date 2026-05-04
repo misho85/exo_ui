@@ -1,4 +1,4 @@
-defmodule Storybook.Components.ProgressBar do
+defmodule Storybook.Components.Charts.ProgressBar do
   use PhoenixStorybook.Story, :page
 
   def doc, do: "Chart-style labeled horizontal progress bars."

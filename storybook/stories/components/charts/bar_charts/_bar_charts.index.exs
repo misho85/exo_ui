@@ -1,8 +1,9 @@
-defmodule Storybook.Components.BarCharts do
+defmodule Storybook.Components.Charts.BarCharts do
   use PhoenixStorybook.Index
 
   def folder_name, do: "Bar Charts"
   def folder_open?, do: false
+  def folder_index, do: 10
 
   def entry("bar_chart"), do: [name: "Vertical", index: 0]
   def entry("horizontal_bar_chart"), do: [name: "Horizontal", index: 1]

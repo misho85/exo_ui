@@ -1,4 +1,4 @@
-defmodule Storybook.Components.Sparkline do
+defmodule Storybook.Components.Charts.Sparkline do
   use PhoenixStorybook.Story, :page
 
   def doc, do: "Compact inline sparkline SVG chart."
