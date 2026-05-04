@@ -16,6 +16,16 @@ async function expectHtmlOverflow(page, expected) {
     .toBe(expected);
 }
 
+async function openSheetFromDom(sheet) {
+  await sheet.evaluate((node) => {
+    node.dataset.state = "open";
+    node.setAttribute("aria-hidden", "false");
+    node.removeAttribute("inert");
+    node.style.display = "block";
+    node.classList.add("open");
+  });
+}
+
 test.describe("overlay dialogs", () => {
   test("modal traps keyboard focus and closes with Escape", async ({ page }) => {
     await gotoStory(page, "/components/overlays/modal");
@@ -117,13 +127,7 @@ test.describe("overlay dialogs", () => {
     await trigger.click();
     await expectAttribute(rightSheet, "data-state", "open");
 
-    await leftSheet.evaluate((node) => {
-      node.dataset.state = "open";
-      node.setAttribute("aria-hidden", "false");
-      node.removeAttribute("inert");
-      node.style.display = "block";
-      node.classList.add("open");
-    });
+    await openSheetFromDom(leftSheet);
 
     await expectAttribute(leftSheet, "data-state", "open");
     await expect(leftSheet).toHaveAttribute("aria-hidden", "false");
@@ -140,6 +144,44 @@ test.describe("overlay dialogs", () => {
     await expectAttribute(rightSheet, "data-state", "closed");
     await expectHtmlOverflow(page, originalHtmlOverflow);
     await expectFocused(trigger);
+  });
+
+  test("sheet backdrop click closes the topmost overlay by open order", async ({ page }) => {
+    await gotoStory(page, "/components/overlays/sheet");
+
+    const canvas = story(page);
+    const leftTrigger = canvas.locator("button", { hasText: "Open left sheet" }).first();
+    const leftSheet = canvas.locator("#sheet-left");
+    const rightSheet = canvas.locator("#sheet-right");
+    const originalHtmlOverflow = await page.evaluate(() => document.documentElement.style.overflow);
+
+    await leftTrigger.click();
+    await expectAttribute(leftSheet, "data-state", "open");
+
+    await openSheetFromDom(rightSheet);
+
+    await expectAttribute(rightSheet, "data-state", "open");
+    await expectFocused(rightSheet.getByRole("button", { name: "Cancel" }));
+    await expect
+      .poll(async () =>
+        rightSheet.evaluate((right) => {
+          const left = document.querySelector("#sheet-left");
+          return Number(right.style.zIndex) > Number(left?.style.zIndex || 0);
+        })
+      )
+      .toBe(true);
+
+    await page.mouse.click(640, 360);
+
+    await expectAttribute(rightSheet, "data-state", "closed");
+    await expectAttribute(leftSheet, "data-state", "open");
+    await expectHtmlOverflow(page, "hidden");
+
+    await page.mouse.click(640, 360);
+
+    await expectAttribute(leftSheet, "data-state", "closed");
+    await expectHtmlOverflow(page, originalHtmlOverflow);
+    await expectFocused(leftTrigger);
   });
 
   test("drawer traps focus, closes with Escape, and restores focus to its trigger", async ({ page }) => {

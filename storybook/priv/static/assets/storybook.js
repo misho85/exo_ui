@@ -1961,6 +1961,8 @@
     inertElements: /* @__PURE__ */ new Set(),
     originalState: /* @__PURE__ */ new WeakMap(),
     scrollLock: null,
+    stackedRoots: /* @__PURE__ */ new Set(),
+    rootStyleState: /* @__PURE__ */ new WeakMap(),
     register(hook) {
       if (!hook?.el?.isConnected) return;
       this.active.add(hook);
@@ -1980,6 +1982,7 @@
     syncOutsideInert() {
       const next = /* @__PURE__ */ new Set();
       const roots = this.hooks().map((hook) => hook.el);
+      this._syncStacking(roots);
       this._syncScrollLock(roots.length > 0);
       if (roots.length > 0) {
         for (const element of this._outsideElements(roots)) {
@@ -2052,6 +2055,28 @@
     },
     _release(element) {
       this.originalState.delete(element);
+    },
+    _syncStacking(roots) {
+      const next = new Set(roots);
+      roots.forEach((root, index) => {
+        if (!this.rootStyleState.has(root)) {
+          this.rootStyleState.set(root, { zIndex: root.style.zIndex });
+        }
+        root.style.zIndex = String(1e3 + index);
+        root.dataset.overlayStackIndex = String(index + 1);
+      });
+      for (const root of this.stackedRoots) {
+        if (next.has(root)) continue;
+        this._restoreStacking(root);
+      }
+      this.stackedRoots = next;
+    },
+    _restoreStacking(root) {
+      const original = this.rootStyleState.get(root);
+      if (!original) return;
+      root.style.zIndex = original.zIndex;
+      delete root.dataset.overlayStackIndex;
+      this.rootStyleState.delete(root);
     },
     _syncScrollLock(locked) {
       if (locked) {

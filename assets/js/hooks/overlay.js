@@ -15,6 +15,8 @@ const overlayRegistry = {
   inertElements: new Set(),
   originalState: new WeakMap(),
   scrollLock: null,
+  stackedRoots: new Set(),
+  rootStyleState: new WeakMap(),
 
   register(hook) {
     if (!hook?.el?.isConnected) return
@@ -43,6 +45,7 @@ const overlayRegistry = {
     const next = new Set()
     const roots = this.hooks().map((hook) => hook.el)
 
+    this._syncStacking(roots)
     this._syncScrollLock(roots.length > 0)
 
     if (roots.length > 0) {
@@ -134,6 +137,35 @@ const overlayRegistry = {
 
   _release(element) {
     this.originalState.delete(element)
+  },
+
+  _syncStacking(roots) {
+    const next = new Set(roots)
+
+    roots.forEach((root, index) => {
+      if (!this.rootStyleState.has(root)) {
+        this.rootStyleState.set(root, { zIndex: root.style.zIndex })
+      }
+
+      root.style.zIndex = String(1000 + index)
+      root.dataset.overlayStackIndex = String(index + 1)
+    })
+
+    for (const root of this.stackedRoots) {
+      if (next.has(root)) continue
+      this._restoreStacking(root)
+    }
+
+    this.stackedRoots = next
+  },
+
+  _restoreStacking(root) {
+    const original = this.rootStyleState.get(root)
+    if (!original) return
+
+    root.style.zIndex = original.zIndex
+    delete root.dataset.overlayStackIndex
+    this.rootStyleState.delete(root)
   },
 
   _syncScrollLock(locked) {
