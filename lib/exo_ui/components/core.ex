@@ -16,9 +16,17 @@ defmodule ExoUI.Components.Core do
   slot :inner_block, required: true
 
   def button(assigns) do
+    rest = assigns.rest
+
+    assigns =
+      assigns
+      |> assign(:link?, button_link?(rest))
+      |> assign(:disabled?, button_disabled?(rest[:disabled]))
+      |> assign(:button_rest, Map.put_new(rest, :type, "button"))
+
     ~H"""
     <.link
-      :if={@rest[:href] || @rest[:navigate] || @rest[:patch]}
+      :if={@link? && !@disabled?}
       data-exo="btn"
       data-variant={@variant}
       data-size={@size}
@@ -27,19 +35,35 @@ defmodule ExoUI.Components.Core do
     >
       {render_slot(@inner_block)}
     </.link>
-    <button
-      :if={!(@rest[:href] || @rest[:navigate] || @rest[:patch])}
+    <span
+      :if={@link? && @disabled?}
       data-exo="btn"
       data-variant={@variant}
       data-size={@size}
-      data-disabled={@rest[:disabled] && ""}
+      data-disabled=""
+      role="link"
+      aria-disabled="true"
+      tabindex="-1"
       class={@class}
-      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </span>
+    <button
+      :if={!@link?}
+      data-exo="btn"
+      data-variant={@variant}
+      data-size={@size}
+      data-disabled={@disabled? && ""}
+      class={@class}
+      {@button_rest}
     >
       {render_slot(@inner_block)}
     </button>
     """
   end
+
+  defp button_link?(rest), do: rest[:href] || rest[:navigate] || rest[:patch]
+  defp button_disabled?(value), do: value in [true, "true", "disabled", ""]
 
   @doc "Renders an inline badge/tag."
   attr :variant, :string, default: "primary"
@@ -85,13 +109,44 @@ defmodule ExoUI.Components.Core do
 
   @doc "Renders light/dark/system theme toggle buttons."
   attr :id, :string, default: "theme-toggle"
+  attr :aria_label, :string, default: "Theme"
 
   def theme_toggle(assigns) do
     ~H"""
-    <div data-exo="theme-toggle" phx-hook="ExoThemeToggle" id={@id}>
-      <button data-exo="theme-btn" data-theme-value="light" aria-label="Light theme">☀</button>
-      <button data-exo="theme-btn" data-theme-value="dark" aria-label="Dark theme">☾</button>
-      <button data-exo="theme-btn" data-theme-value="system" aria-label="System theme">⚙</button>
+    <div
+      data-exo="theme-toggle"
+      phx-hook="ExoThemeToggle"
+      id={@id}
+      role="group"
+      aria-label={@aria_label}
+    >
+      <button
+        type="button"
+        data-exo="theme-btn"
+        data-theme-value="light"
+        aria-label="Light theme"
+        aria-pressed="false"
+      >
+        ☀
+      </button>
+      <button
+        type="button"
+        data-exo="theme-btn"
+        data-theme-value="dark"
+        aria-label="Dark theme"
+        aria-pressed="false"
+      >
+        ☾
+      </button>
+      <button
+        type="button"
+        data-exo="theme-btn"
+        data-theme-value="system"
+        aria-label="System theme"
+        aria-pressed="false"
+      >
+        ⚙
+      </button>
     </div>
     """
   end
@@ -339,7 +394,9 @@ defmodule ExoUI.Components.Core do
         patch={item[:patch]}
         aria-current={item[:active] && "page"}
       >
-        <span :if={item[:icon]} data-exo="bottom-nav-icon">{item.icon}</span>
+        <span :if={item[:icon]} data-exo="bottom-nav-icon" aria-hidden="true">
+          <.icon name={item.icon} class="size-5" />
+        </span>
         <span data-exo="bottom-nav-label">{item.label}</span>
       </.link>
     </nav>

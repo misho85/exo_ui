@@ -21,6 +21,10 @@ defmodule ExoUI.Components.IconTest do
     assigns = %{}
     html = rendered_to_string(~H"<.theme_toggle />")
     assert html =~ ~s(data-exo="theme-toggle")
+    assert html =~ ~s(role="group")
+    assert html =~ ~s(aria-label="Theme")
+    assert html =~ ~s(type="button")
+    assert html =~ ~s(aria-pressed="false")
     assert html =~ ~s(data-theme-value="light")
     assert html =~ ~s(data-theme-value="dark")
     assert html =~ ~s(data-theme-value="system")

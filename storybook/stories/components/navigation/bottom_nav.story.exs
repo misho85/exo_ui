@@ -18,10 +18,10 @@ defmodule Storybook.Components.BottomNav do
       <section>
         <h3 style="margin-bottom: 0.75rem; font-weight: 600;">With icons</h3>
         <ExoUI.Components.bottom_nav>
-          <:item label="Home" icon="H" href="#" active={true}>Home</:item>
-          <:item label="Explore" icon="E" href="#">Explore</:item>
-          <:item label="Inbox" icon="I" href="#">Inbox</:item>
-          <:item label="Account" icon="A" href="#">Account</:item>
+          <:item label="Home" icon="house" href="#" active={true}>Home</:item>
+          <:item label="Explore" icon="search" href="#">Explore</:item>
+          <:item label="Inbox" icon="inbox" href="#">Inbox</:item>
+          <:item label="Account" icon="user" href="#">Account</:item>
         </ExoUI.Components.bottom_nav>
       </section>
     </div>

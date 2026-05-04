@@ -9,6 +9,11 @@ defmodule Storybook.Components.Button do
         id: :default,
         slots: ["Button"]
       },
+      %Variation{
+        id: :disabled_link,
+        attributes: %{href: "/billing", disabled: true},
+        slots: ["Disabled link"]
+      },
       %VariationGroup{
         id: :variants,
         variations:

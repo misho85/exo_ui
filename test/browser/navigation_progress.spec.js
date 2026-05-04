@@ -59,6 +59,17 @@ test.describe("navigation and progress components", () => {
     );
   });
 
+  test("bottom navigation exposes active page and real icon markup", async ({ page }) => {
+    await gotoStory(page, "/components/navigation/bottom_nav");
+
+    const canvas = story(page);
+    const iconNav = canvas.locator('[data-exo="bottom-nav"]').nth(1);
+    const activeItem = iconNav.locator('[data-exo="bottom-nav-item"][aria-current="page"]');
+
+    await expect(activeItem).toContainText("Home");
+    await expect(activeItem.locator('[data-exo="bottom-nav-icon"] svg')).toHaveCount(1);
+  });
+
   test("steps and wizard mark the current step for assistive tech", async ({ page }) => {
     await gotoStory(page, "/components/navigation/steps");
 

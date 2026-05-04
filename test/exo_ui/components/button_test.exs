@@ -9,6 +9,7 @@ defmodule ExoUI.Components.ButtonTest do
     assigns = %{}
     html = rendered_to_string(~H"<.button>Click</.button>")
     assert html =~ ~s(data-exo="btn")
+    assert html =~ ~s(type="button")
     assert html =~ "Click"
   end
 
@@ -22,5 +23,22 @@ defmodule ExoUI.Components.ButtonTest do
     assigns = %{}
     html = rendered_to_string(~H|<.button size="sm">Click</.button>|)
     assert html =~ ~s(data-size="sm")
+  end
+
+  test "preserves explicit button type" do
+    assigns = %{}
+    html = rendered_to_string(~H|<.button type="submit">Submit</.button>|)
+    assert html =~ ~s(type="submit")
+  end
+
+  test "renders disabled links without href navigation" do
+    assigns = %{}
+    html = rendered_to_string(~H|<.button href="/billing" disabled>Billing</.button>|)
+
+    assert html =~ ~s(role="link")
+    assert html =~ ~s(aria-disabled="true")
+    assert html =~ ~s(tabindex="-1")
+    assert html =~ ~s(data-disabled)
+    refute html =~ ~s(href="/billing")
   end
 end

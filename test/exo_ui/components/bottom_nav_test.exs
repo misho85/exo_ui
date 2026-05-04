@@ -58,11 +58,12 @@ defmodule ExoUI.Components.BottomNavTest do
 
     ~H"""
     <.bottom_nav>
-      <:item label="Home" icon="H" href="/">Home</:item>
+      <:item label="Home" icon="house" href="/">Home</:item>
     </.bottom_nav>
     """
     |> parse_component()
     |> assert_component("[data-exo='bottom-nav-icon']")
+    |> assert_component("[data-exo='bottom-nav-icon'] svg")
   end
 
   test "renders active item with data-active attribute" do
