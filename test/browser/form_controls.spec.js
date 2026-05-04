@@ -30,14 +30,24 @@ test.describe("form controls", () => {
     await expectAttribute(group, "aria-invalid", "true");
     await expectAttribute(group, "aria-describedby", "frequency-description frequency-error");
     await expect(canvas.locator("#frequency-error")).toHaveAttribute("role", "alert");
+    await expect(canvas.locator("#delivery-pickup")).toBeDisabled();
+    await expect(canvas.locator("#locked_plan")).toHaveAttribute("disabled", "");
+
+    await gotoStory(page, "/components/forms/fieldset");
+
+    const fieldset = story(page).locator("[data-exo=\"fieldset\"][aria-invalid=\"true\"]");
+    await expect(fieldset).toHaveAttribute("aria-describedby", /description.*error/);
+    await expect(fieldset.locator("[data-exo=\"field-error\"]")).toHaveAttribute("role", "alert");
 
     await gotoStory(page, "/components/forms/slider");
 
     const slider = story(page).locator("[data-exo=\"slider\"][name=\"threshold\"][aria-invalid=\"true\"]");
     const sliderId = await slider.getAttribute("id");
+    const disabledSlider = story(page).locator("[data-exo=\"slider\"][name=\"locked_quota\"]");
 
     await expectAttribute(slider, "aria-invalid", "true");
     await expectAttribute(slider, "aria-describedby", `${sliderId}-description ${sliderId}-error`);
+    await expect(disabledSlider).toBeDisabled();
 
     await gotoStory(page, "/components/forms/file_input");
 

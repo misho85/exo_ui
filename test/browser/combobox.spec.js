@@ -59,4 +59,43 @@ test.describe("combobox", () => {
     await expect(empty).toBeVisible();
     await expect(search).toHaveValue("zzz");
   });
+
+  test("documents grouped, creatable, loading, clearable, and disabled states", async ({ page }) => {
+    await gotoStory(page, "/components/forms/combobox");
+
+    const canvas = story(page);
+    const grouped = canvas.locator("#cb-grouped-combobox");
+    const clear = grouped.locator("[data-exo=\"combobox-clear\"]");
+    const groupedValue = canvas.locator("input[name=\"assignee\"]");
+    const selected = canvas.locator("#cb-grouped [data-exo=\"combobox-option\"][data-value=\"maria\"]");
+    const disabledOption = canvas.locator("#cb-grouped [data-exo=\"combobox-option\"][data-value=\"stefan\"]");
+
+    await expect(selected).toHaveAttribute("aria-selected", "true");
+    await expect(disabledOption).toHaveAttribute("data-disabled", "");
+    await clear.click();
+    await expect(groupedValue).toHaveValue("");
+
+    const creatableTrigger = canvas.locator("#cb-creatable-combobox [data-exo-combobox=\"trigger\"]");
+    const creatablePopover = canvas.locator("#cb-creatable");
+    const creatableSearch = canvas.locator("#cb-creatable [data-exo=\"combobox-search\"]");
+    const createRow = canvas.locator("#cb-creatable [data-exo=\"combobox-create\"]");
+
+    await creatableTrigger.click();
+    await expectPopoverState(creatablePopover, true);
+    await creatableSearch.fill("urgent");
+    await expect(createRow).toBeVisible();
+    await expect(createRow).toContainText("urgent");
+
+    await page.keyboard.press("Escape");
+
+    const loadingTrigger = canvas.locator("#cb-loading-combobox [data-exo-combobox=\"trigger\"]");
+    const loadingPopover = canvas.locator("#cb-loading");
+    await loadingTrigger.click();
+    await expectPopoverState(loadingPopover, true);
+    await expect(canvas.locator("#cb-loading [data-exo=\"combobox-loading\"]")).toBeVisible();
+
+    const disabledTrigger = canvas.locator("#cb-disabled-combobox [data-exo-combobox=\"trigger\"]");
+    await expect(disabledTrigger).toBeDisabled();
+    await expect(canvas.locator("input[name=\"locked_owner\"]")).toHaveValue("ops");
+  });
 });

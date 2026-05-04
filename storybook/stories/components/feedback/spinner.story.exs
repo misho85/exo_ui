@@ -5,7 +5,7 @@ defmodule Storybook.Components.Spinner do
 
   def render(assigns) do
     ~H"""
-    <div style="display: flex; gap: 2rem; align-items: center; padding: 1rem;">
+    <div style="display: flex; gap: 2rem; align-items: center; padding: 1rem; flex-wrap: wrap;">
       <div>
         <p style="margin-bottom: 0.5rem; font-weight: 600; font-size: 0.875rem;">Small</p>
         <ExoUI.Components.spinner size="sm" />
@@ -17,6 +17,10 @@ defmodule Storybook.Components.Spinner do
       <div>
         <p style="margin-bottom: 0.5rem; font-weight: 600; font-size: 0.875rem;">Large</p>
         <ExoUI.Components.spinner size="lg" />
+      </div>
+      <div>
+        <p style="margin-bottom: 0.5rem; font-weight: 600; font-size: 0.875rem;">Custom label</p>
+        <ExoUI.Components.spinner size="md" label="Loading invoices" />
       </div>
     </div>
     """

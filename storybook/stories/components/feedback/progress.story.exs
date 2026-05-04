@@ -26,6 +26,14 @@ defmodule Storybook.Components.Progress do
         attributes: %{value: 100, label: "Upload complete", aria_label: "Upload complete"}
       },
       %Variation{
+        id: :custom_max,
+        attributes: %{value: 3, max: 5, label: "Import steps", aria_label: "Import steps"}
+      },
+      %Variation{
+        id: :clamped,
+        attributes: %{value: 150, max: 100, label: "Over quota", aria_label: "Over quota"}
+      },
+      %Variation{
         id: :no_label,
         attributes: %{value: 42, aria_label: "Background task progress"}
       }

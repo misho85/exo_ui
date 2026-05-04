@@ -101,6 +101,14 @@ test.describe("navigation and progress components", () => {
     await expect(progress).toHaveAttribute("aria-valuenow", "65");
     await expect(progress).toHaveAttribute("aria-valuetext", "65%");
 
+    const customMax = story(page).locator('[data-exo="progress"][aria-label="Import steps"]');
+    const clamped = story(page).locator('[data-exo="progress"][aria-label="Over quota"]');
+    await expect(customMax).toHaveAttribute("aria-valuenow", "3");
+    await expect(customMax).toHaveAttribute("aria-valuemax", "5");
+    await expect(customMax).toHaveAttribute("aria-valuetext", "60%");
+    await expect(clamped).toHaveAttribute("aria-valuenow", "100");
+    await expect(clamped).toHaveAttribute("aria-valuetext", "100%");
+
     await gotoStory(page, "/components/feedback/radial_progress");
 
     const radial = story(page).locator('[data-exo="radial-progress"]').first();

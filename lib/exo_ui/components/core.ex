@@ -251,6 +251,7 @@ defmodule ExoUI.Components.Core do
 
   @doc "Renders a loading spinner."
   attr :size, :string, values: ~w(sm md lg), default: "md"
+  attr :label, :string, default: "Loading"
   attr :class, :any, default: nil
   attr :rest, :global
 
@@ -260,7 +261,7 @@ defmodule ExoUI.Components.Core do
       data-exo="spinner"
       data-size={@size}
       role="status"
-      aria-label="Loading"
+      aria-label={@label}
       class={@class}
       {@rest}
     >

@@ -28,6 +28,24 @@ defmodule Storybook.Components.RadioGroup do
         errors={["choose a billing frequency"]}
         options={[{"Monthly", "monthly"}, {"Yearly", "yearly"}]}
       />
+
+      <ExoUI.Components.radio_group
+        name="delivery"
+        label="Delivery method"
+        value="standard"
+      >
+        <:item value="standard">Standard delivery</:item>
+        <:item value="express">Express delivery</:item>
+        <:item value="pickup" disabled>Pickup unavailable</:item>
+      </ExoUI.Components.radio_group>
+
+      <ExoUI.Components.radio_group
+        name="locked_plan"
+        label="Locked selection"
+        value="enterprise"
+        disabled
+        options={[{"Team", "team"}, {"Enterprise", "enterprise"}]}
+      />
     </div>
     """
   end

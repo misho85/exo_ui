@@ -43,6 +43,18 @@ defmodule Storybook.Components.Slider do
         }
       },
       %Variation{
+        id: :disabled,
+        attributes: %{
+          name: "locked_quota",
+          value: 40,
+          min: 0,
+          max: 100,
+          label: "Locked quota",
+          description: "Disabled sliders keep their current value visible.",
+          disabled: true
+        }
+      },
+      %Variation{
         id: :no_label,
         attributes: %{name: "opacity", value: 80}
       }

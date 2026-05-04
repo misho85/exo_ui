@@ -58,6 +58,23 @@ defmodule Storybook.Components.Combobox do
       </div>
 
       <div>
+        <h3>Grouped options</h3>
+        <ExoUI.Components.combobox
+          id="cb-grouped"
+          name="assignee"
+          label="Assignee"
+          value="maria"
+          filter="client"
+          prompt="Find a person..."
+        >
+          <:option value="ana" group="Design">Ana Markovic</:option>
+          <:option value="maria" group="Design">Maria Ilic</:option>
+          <:option value="nikola" group="Engineering">Nikola Petrovic</:option>
+          <:option value="stefan" group="Engineering" disabled>Stefan unavailable</:option>
+        </ExoUI.Components.combobox>
+      </div>
+
+      <div>
         <h3>With empty state</h3>
         <ExoUI.Components.combobox
           id="cb-empty"
@@ -70,6 +87,50 @@ defmodule Storybook.Components.Combobox do
           <:option value="a">Alpha</:option>
           <:option value="b">Beta</:option>
           <:empty>No results found</:empty>
+        </ExoUI.Components.combobox>
+      </div>
+
+      <div>
+        <h3>Creatable result</h3>
+        <ExoUI.Components.combobox
+          id="cb-creatable"
+          name="tag"
+          label="Tag"
+          filter="client"
+          creatable
+          prompt="Search or create tag..."
+        >
+          <:option value="bug">Bug</:option>
+          <:option value="feature">Feature</:option>
+          <:option value="docs">Docs</:option>
+        </ExoUI.Components.combobox>
+      </div>
+
+      <div>
+        <h3>Loading</h3>
+        <ExoUI.Components.combobox
+          id="cb-loading"
+          name="remote_user"
+          label="Remote user"
+          loading
+          prompt="Search directory..."
+        >
+          <:empty>Type to search users</:empty>
+        </ExoUI.Components.combobox>
+      </div>
+
+      <div>
+        <h3>Disabled</h3>
+        <ExoUI.Components.combobox
+          id="cb-disabled"
+          name="locked_owner"
+          value="ops"
+          label="Locked owner"
+          disabled
+          prompt="Owner cannot be changed"
+        >
+          <:option value="ops">Operations</:option>
+          <:option value="support">Support</:option>
         </ExoUI.Components.combobox>
       </div>
 

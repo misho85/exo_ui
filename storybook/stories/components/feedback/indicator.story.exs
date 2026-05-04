@@ -43,6 +43,16 @@ defmodule Storybook.Components.Indicator do
             <:badge>BL</:badge>
             <ExoUI.Components.badge>Item</ExoUI.Components.badge>
           </ExoUI.Components.indicator>
+
+          <ExoUI.Components.indicator position="top-center">
+            <:badge>TC</:badge>
+            <ExoUI.Components.badge>Item</ExoUI.Components.badge>
+          </ExoUI.Components.indicator>
+
+          <ExoUI.Components.indicator position="bottom-center">
+            <:badge>BC</:badge>
+            <ExoUI.Components.badge>Item</ExoUI.Components.badge>
+          </ExoUI.Components.indicator>
         </div>
       </section>
 

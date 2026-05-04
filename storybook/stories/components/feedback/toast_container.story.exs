@@ -14,8 +14,29 @@ defmodule Storybook.Components.ToastContainer do
       ])
 
     ~H"""
-    <div style="padding: 1rem; min-height: 260px;">
-      <ExoUI.Components.toast_container toasts={@toasts} placement="bottom-right" />
+    <div style="padding: 1rem; min-height: 520px; display: grid; gap: 1.5rem;">
+      <section>
+        <p style="margin-bottom: 0.5rem; font-size: 0.875rem; color: var(--exo-muted-foreground);">
+          Bottom right
+        </p>
+        <ExoUI.Components.toast_container toasts={@toasts} placement="bottom-right" />
+      </section>
+
+      <section>
+        <p style="margin-bottom: 0.5rem; font-size: 0.875rem; color: var(--exo-muted-foreground);">
+          Top left
+        </p>
+        <ExoUI.Components.toast_container
+          id="toast-container-top-left"
+          toasts={[
+            {"toast-4",
+             %{kind: :warning, title: "Connection slow", message: "Updates may arrive late."}},
+            {"toast-5", %{kind: :info, message: "Draft autosaved."}}
+          ]}
+          placement="top-left"
+          close_label="Dismiss toast"
+        />
+      </section>
     </div>
     """
   end
