@@ -1,7 +1,7 @@
 defmodule Storybook.Components.Progress do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &ExoUI.Components.progress/1
+  def function, do: &ExoUI.Components.Feedback.progress/1
 
   def template do
     """

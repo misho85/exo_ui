@@ -1,7 +1,7 @@
 defmodule Storybook.Components.Toggle do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &ExoUI.Components.toggle/1
+  def function, do: &ExoUI.Components.Form.toggle/1
 
   def variations do
     [

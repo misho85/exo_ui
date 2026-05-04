@@ -1,7 +1,7 @@
 defmodule Storybook.Components.Slider do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &ExoUI.Components.slider/1
+  def function, do: &ExoUI.Components.Form.slider/1
 
   def template do
     """

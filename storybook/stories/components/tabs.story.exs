@@ -1,7 +1,7 @@
 defmodule Storybook.Components.Tabs do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &ExoUI.Components.tabs/1
+  def function, do: &ExoUI.Components.DataDisplay.tabs/1
 
   def variations do
     [

@@ -1,7 +1,7 @@
 defmodule Storybook.Components.Separator do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &ExoUI.Components.separator/1
+  def function, do: &ExoUI.Components.Core.separator/1
 
   def variations do
     [

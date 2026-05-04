@@ -1,7 +1,7 @@
 defmodule Storybook.Components.Skeleton do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &ExoUI.Components.skeleton/1
+  def function, do: &ExoUI.Components.Core.skeleton/1
 
   def template do
     """

@@ -1,7 +1,7 @@
 defmodule Storybook.Components.Modal do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &ExoUI.Components.modal/1
+  def function, do: &ExoUI.Components.Overlay.modal/1
 
   def variations do
     [

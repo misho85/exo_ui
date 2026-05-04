@@ -1,7 +1,7 @@
 defmodule Storybook.Components.Input do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &ExoUI.Components.input/1
+  def function, do: &ExoUI.Components.Form.input/1
 
   def template do
     """

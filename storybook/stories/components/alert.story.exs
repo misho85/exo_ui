@@ -1,7 +1,7 @@
 defmodule Storybook.Components.Alert do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &ExoUI.Components.alert/1
+  def function, do: &ExoUI.Components.Feedback.alert/1
 
   def template do
     """
