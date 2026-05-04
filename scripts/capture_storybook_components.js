@@ -13,11 +13,27 @@ function timestamp() {
 }
 
 function listComponents() {
-  return fs
-    .readdirSync(STORIES_DIR)
-    .filter((file) => file.endsWith(".story.exs"))
-    .map((file) => file.replace(/\.story\.exs$/, ""))
-    .sort();
+  const components = [];
+
+  function walk(dir, prefix = "") {
+    for (const entry of fs.readdirSync(dir).sort()) {
+      const entryPath = path.join(dir, entry);
+      const stat = fs.statSync(entryPath);
+
+      if (stat.isDirectory()) {
+        walk(entryPath, `${prefix}${entry}/`);
+      } else if (entry.endsWith(".story.exs")) {
+        components.push(`${prefix}${entry.replace(/\.story\.exs$/, "")}`);
+      }
+    }
+  }
+
+  walk(STORIES_DIR);
+  return components.sort();
+}
+
+function artifactName(name) {
+  return name.replace(/[\\/]/g, "__");
 }
 
 function escapeHtml(value) {
@@ -59,9 +75,11 @@ async function focusFirst(page, selector) {
 }
 
 async function componentDemo(page, name) {
+  const demoName = name.split("/").pop();
+
   await page.waitForTimeout(250);
 
-  switch (name) {
+  switch (demoName) {
     case "accordion":
       await clickFirst(page, '#story-live [data-exo="accordion-trigger"]');
       await page.waitForTimeout(300);
@@ -176,6 +194,7 @@ async function componentDemo(page, name) {
 }
 
 async function captureComponent(browser, runDir, name) {
+  const artifact = artifactName(name);
   const rawVideoDir = path.join(runDir, "videos-raw");
   const screenshotsDir = path.join(runDir, "screenshots");
   const videosDir = path.join(runDir, "videos");
@@ -200,8 +219,8 @@ async function captureComponent(browser, runDir, name) {
 
   const route = `/components/${name}`;
   const url = `${BASE_URL}${route}`;
-  const screenshotPath = path.join(screenshotsDir, `${name}.png`);
-  const videoPath = path.join(videosDir, `${name}.webm`);
+  const screenshotPath = path.join(screenshotsDir, `${artifact}.png`);
+  const videoPath = path.join(videosDir, `${artifact}.webm`);
 
   let ok = false;
   let dataExoCount = 0;
@@ -287,7 +306,7 @@ function convertVideos(runDir, results) {
     if (!result.video) continue;
 
     const source = path.join(runDir, result.video);
-    const target = path.join(outDir, `${result.name}.mp4`);
+    const target = path.join(outDir, `${artifactName(result.name)}.mp4`);
     const ffmpeg = spawnSync(
       "ffmpeg",
       [

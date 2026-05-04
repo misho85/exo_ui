@@ -3,7 +3,7 @@ const { gotoStory, story } = require("./helpers/storybook");
 
 test.describe("chart components", () => {
   test("cartesian charts expose accessible SVG semantics", async ({ page }) => {
-    await gotoStory(page, "/components/bar_chart");
+    await gotoStory(page, "/components/bar_charts/bar_chart");
 
     const chart = story(page).locator('[data-exo="bar-chart"]');
     await expect(chart).toHaveAttribute("role", "img");
