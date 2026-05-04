@@ -41,6 +41,7 @@ defmodule Storybook.Components.Dropdown do
           </:trigger>
           <:entry navigate="/" icon="house">Home</:entry>
           <:entry navigate="/settings" icon="settings">Settings</:entry>
+          <:entry navigate="/billing" disabled icon="lock">Billing</:entry>
         </ExoUI.Components.dropdown_menu>
       </div>
     </div>

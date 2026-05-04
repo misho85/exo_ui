@@ -18,6 +18,8 @@ defmodule ExoUI.Components.ContextMenuTest do
 
     assert html =~ ~s(data-exo="context-menu")
     assert html =~ ~s(phx-hook="ExoContextMenu")
+    assert html =~ ~s(id="ctx-content")
+    assert html =~ ~s(aria-label="Context menu")
     assert html =~ "Copy"
     assert html =~ "Paste"
   end
@@ -41,5 +43,25 @@ defmodule ExoUI.Components.ContextMenuTest do
     assert length(Floki.find(tree, ~s([data-exo="context-menu-item"]))) == 2
     assert length(Floki.find(tree, ~s([data-exo="context-menu-separator"]))) == 1
     assert Floki.find(tree, ~s([data-exo="context-menu-item"][disabled])) != []
+    assert Floki.find(tree, ~s([data-exo="context-menu-item"][type="button"])) != []
+
+    assert Floki.find(
+             tree,
+             ~s([data-exo="context-menu-item"][aria-disabled="true"][tabindex="-1"])
+           ) != []
+  end
+
+  test "accepts an accessible menu label" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.context_menu id="ctx" label="Editor actions">
+        <:trigger>Right-click here</:trigger>
+        <:item label="Copy" />
+      </.context_menu>
+      """)
+
+    assert html =~ ~s(aria-label="Editor actions")
   end
 end

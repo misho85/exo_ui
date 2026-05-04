@@ -133,6 +133,9 @@ defmodule ExoUI.Components.DropdownMenuTest do
       """)
 
     assert html =~ ~s(popovertarget="sub-menu")
+    assert html =~ ~s(aria-haspopup="menu")
+    assert html =~ ~s(aria-expanded="false")
+    assert html =~ ~s(aria-controls="sub-menu")
     refute html =~ ~s(popovertargetaction="hide")
   end
 
@@ -193,6 +196,28 @@ defmodule ExoUI.Components.DropdownMenuTest do
       """)
 
     assert html =~ ~s(disabled)
+    assert html =~ ~s(aria-disabled="true")
+    assert html =~ ~s(data-disabled)
+    assert html =~ ~s(tabindex="-1")
+  end
+
+  test "renders disabled link item as removed from keyboard navigation" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.dropdown_menu id="dd-disabled-link">
+        <:trigger>Menu</:trigger>
+        <:entry href="/billing" disabled>Billing</:entry>
+      </.dropdown_menu>
+      """)
+
+    {:ok, tree} = Floki.parse_fragment(html)
+
+    assert Floki.find(
+             tree,
+             ~s(a[data-exo="dropdown-item"][href="/billing"][aria-disabled="true"][tabindex="-1"])
+           ) != []
   end
 
   test "renders item with href as link" do

@@ -13,10 +13,23 @@ const ExoContextMenu = {
     this.trigger.setAttribute("tabindex", this.trigger.getAttribute("tabindex") || "0")
     this.trigger.setAttribute("role", this.trigger.getAttribute("role") || "button")
     this.trigger.setAttribute("aria-haspopup", "menu")
+    if (this.menu.id) this.trigger.setAttribute("aria-controls", this.menu.id)
     this.trigger.setAttribute("aria-expanded", String(this.menu.hasAttribute("data-open")))
 
     this._items = () =>
-      [...this.menu.querySelectorAll('[data-exo="context-menu-item"]:not([disabled])')]
+      [...this.menu.querySelectorAll('[data-exo="context-menu-item"]')]
+        .filter((item) => !this._isDisabled(item))
+
+    this.menu.querySelectorAll('[data-exo="context-menu-item"]').forEach((item) => {
+      item.setAttribute("tabindex", "-1")
+      if (item.tagName === "BUTTON" && !item.getAttribute("type")) {
+        item.setAttribute("type", "button")
+      }
+      if (this._isDisabled(item)) {
+        item.setAttribute("aria-disabled", "true")
+        item.dataset.disabled = "true"
+      }
+    })
 
     this._close = (e) => {
       if (this.trigger?.contains(e.target)) return
@@ -88,9 +101,12 @@ const ExoContextMenu = {
 
     this._onItemClick = (e) => {
       const item = e.target.closest('[data-exo="context-menu-item"]')
-      if (item && !item.disabled) {
-        this._hide()
+      if (!item) return
+      if (this._isDisabled(item)) {
+        e.preventDefault()
+        return
       }
+      this._hide()
     }
     this.menu.addEventListener("click", this._onItemClick)
 
@@ -118,6 +134,13 @@ const ExoContextMenu = {
       items[next]?.focus()
     }
     this.menu.addEventListener("keydown", this._onKeydown)
+  },
+
+  _isDisabled(item) {
+    return item.disabled ||
+      item.dataset.disabled === "true" ||
+      item.hasAttribute("data-disabled") ||
+      item.getAttribute("aria-disabled") === "true"
   },
 
   _unbind() {

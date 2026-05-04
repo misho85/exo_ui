@@ -201,9 +201,16 @@ defmodule ExoUI.Components.Overlay do
               <button
                 type="button"
                 data-exo="dropdown-item"
+                data-sub-trigger=""
+                data-disabled={entry[:disabled] && ""}
                 role="menuitem"
+                aria-disabled={to_string(entry[:disabled] || false)}
+                aria-haspopup="menu"
+                aria-expanded="false"
+                aria-controls={entry[:target]}
                 popovertarget={entry[:target]}
                 disabled={entry[:disabled]}
+                tabindex={if entry[:disabled], do: "-1"}
               >
                 <span :if={entry[:icon]} data-exo="dropdown-item-icon">
                   <.icon name={entry.icon} class="size-4" />
@@ -247,11 +254,14 @@ defmodule ExoUI.Components.Overlay do
                 type="button"
                 data-exo="dropdown-item"
                 data-variant={entry[:variant]}
+                data-disabled={entry[:disabled] && ""}
                 role="menuitem"
+                aria-disabled={to_string(entry[:disabled] || false)}
                 popovertarget={@id}
                 popovertargetaction="hide"
                 phx-click={entry[:click]}
                 disabled={entry[:disabled]}
+                tabindex={if entry[:disabled], do: "-1"}
               >
                 <span :if={entry[:icon]} data-exo="dropdown-item-icon">
                   <.icon name={entry.icon} class="size-4" />
@@ -573,6 +583,7 @@ defmodule ExoUI.Components.Overlay do
 
   @doc "Renders a right-click context menu."
   attr :id, :string, required: true
+  attr :label, :string, default: "Context menu"
   attr :class, :any, default: nil
   attr :rest, :global
   slot :trigger, required: true
@@ -589,15 +600,18 @@ defmodule ExoUI.Components.Overlay do
       <div data-exo="context-menu-trigger">
         {render_slot(@trigger)}
       </div>
-      <div data-exo="context-menu-content" role="menu">
+      <div id={"#{@id}-content"} data-exo="context-menu-content" role="menu" aria-label={@label}>
         <%= for item <- @item do %>
           <div :if={item[:separator]} data-exo="context-menu-separator" role="separator" />
           <button
             :if={!item[:separator]}
+            type="button"
             data-exo="context-menu-item"
             role="menuitem"
             disabled={item[:disabled]}
             data-disabled={item[:disabled] || nil}
+            aria-disabled={to_string(item[:disabled] || false)}
+            tabindex={if item[:disabled], do: "-1"}
           >
             {item.label}
           </button>
