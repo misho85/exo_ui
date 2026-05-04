@@ -21,6 +21,18 @@ test.describe("rating", () => {
     await expect(hidden).toHaveValue("5");
     await expect(rating.locator('[data-exo="rating-star"][data-active]')).toHaveCount(5);
 
+    const fourthInput = rating.locator('[data-exo="rating-input"]').nth(3);
+    await fourthInput.focus();
+    await page.keyboard.press("Space");
+
+    await expect(hidden).toHaveValue("4");
+    await expect(rating.locator('[data-exo="rating-star"][data-active]')).toHaveCount(4);
+    await expect
+      .poll(async () =>
+        fourthInput.evaluate((node) => getComputedStyle(node.nextElementSibling).outlineStyle)
+      )
+      .toBe("solid");
+
     const errorRating = canvas.locator("#rating-error");
     await expect(errorRating).toHaveAttribute("aria-invalid", "true");
     await expect(errorRating).toHaveAttribute(

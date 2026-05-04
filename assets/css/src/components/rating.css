@@ -22,7 +22,7 @@
 }
 
 :where([data-exo="rating-star"][data-active]) {
-  color: #f59e0b;
+  color: var(--exo-rating-active);
 }
 
 :where([data-exo="rating-star"][data-active] svg) {
@@ -30,7 +30,13 @@
 }
 
 :where([data-exo="rating-star"]:hover) {
-  color: #f59e0b;
+  color: var(--exo-rating-active);
+}
+
+:where([data-exo="rating-input"]:focus-visible + svg) {
+  outline: 2px solid var(--exo-ring);
+  outline-offset: 2px;
+  border-radius: var(--exo-radius-sm);
 }
 
 :where([data-exo="rating"][data-readonly] [data-exo="rating-star"]) {

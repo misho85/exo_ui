@@ -18,6 +18,7 @@
   --exo-danger-foreground: oklch(100% 0 0);
   --exo-warning: oklch(75% 0.18 85);
   --exo-warning-foreground: oklch(20% 0 0);
+  --exo-rating-active: var(--exo-warning);
   --exo-success: oklch(62% 0.19 155);
   --exo-success-foreground: oklch(100% 0 0);
   --exo-info: oklch(60% 0.18 250);
