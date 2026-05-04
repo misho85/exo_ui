@@ -374,12 +374,20 @@ defmodule ExoUI.Components.Overlay do
       <button
         type="button"
         data-exo="collapsible-trigger"
+        id={"#{@id}-trigger"}
         aria-expanded={to_string(@open)}
         aria-controls={"#{@id}-content"}
       >
         {render_slot(@trigger)}
       </button>
-      <div id={"#{@id}-content"} data-exo="collapsible-content" role="region">
+      <div
+        id={"#{@id}-content"}
+        data-exo="collapsible-content"
+        role="region"
+        aria-labelledby={"#{@id}-trigger"}
+        aria-hidden={to_string(!@open)}
+        inert={!@open}
+      >
         <div data-exo="collapsible-body">
           {render_slot(@inner_block)}
         </div>

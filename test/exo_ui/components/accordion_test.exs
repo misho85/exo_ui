@@ -184,8 +184,23 @@ defmodule ExoUI.Components.AccordionTest do
     assert html =~ ~s(aria-controls="faq-content-0")
     assert html =~ ~s(role="region")
     assert html =~ ~s(aria-labelledby="faq-trigger-0")
+    assert html =~ ~s(aria-hidden="false")
     assert html =~ ~s(id="faq-trigger-0")
     assert html =~ ~s(id="faq-content-0")
+  end
+
+  test "closed content is hidden from assistive tech and focus" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.accordion id="faq">
+        <:item title="Closed">A</:item>
+      </.accordion>
+      """)
+
+    assert html =~ ~s(aria-hidden="true")
+    assert html =~ ~s(inert)
   end
 
   test "renders aria-expanded=false when closed" do

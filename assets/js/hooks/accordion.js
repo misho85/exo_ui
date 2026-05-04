@@ -24,7 +24,7 @@ const ExoAccordion = {
 
     // Keyboard navigation
     this.el.addEventListener("keydown", this._onKeydown = (e) => {
-      const trigger = e.target.closest('[data-exo="accordion-trigger"]')
+      const trigger = this._closestTrigger(e)
       if (!trigger) return
 
       const triggers = this._triggers()
@@ -58,7 +58,7 @@ const ExoAccordion = {
 
     // Click handling for single mode + collapsible + aria-expanded sync
     this.el.addEventListener("click", this._onClick = (e) => {
-      const trigger = e.target.closest('[data-exo="accordion-trigger"]')
+      const trigger = this._closestTrigger(e)
       if (!trigger || trigger.disabled) return
 
       const item = trigger.closest('[data-exo="accordion-item"]')
@@ -97,6 +97,7 @@ const ExoAccordion = {
 
     // Sync initial aria states
     this._syncAllAria()
+    this.el.setAttribute("data-ready", "")
   },
 
   updated() {
@@ -106,10 +107,24 @@ const ExoAccordion = {
   destroyed() {
     if (this._onKeydown) this.el.removeEventListener("keydown", this._onKeydown)
     if (this._onClick) this.el.removeEventListener("click", this._onClick)
+    if (this.el) this.el.removeAttribute("data-ready")
   },
 
   _syncAria(trigger, expanded) {
     trigger.setAttribute("aria-expanded", String(expanded))
+
+    const contentId = trigger.getAttribute("aria-controls")
+    const content = contentId ? document.getElementById(contentId) : null
+
+    if (content && this.el.contains(content)) {
+      content.setAttribute("aria-hidden", String(!expanded))
+      content.inert = !expanded
+    }
+  },
+
+  _closestTrigger(event) {
+    const target = event.target instanceof Element ? event.target : event.target?.parentElement
+    return target?.closest?.('[data-exo="accordion-trigger"]')
   },
 
   _syncAllAria() {

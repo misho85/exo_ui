@@ -92,7 +92,39 @@ defmodule ExoUI.Components.CollapsibleTest do
       """)
 
     assert html =~ ~s(aria-controls="my-section-content")
+    assert html =~ ~s(id="my-section-trigger")
+    assert html =~ ~s(aria-labelledby="my-section-trigger")
     assert html =~ ~s(id="my-section-content")
+  end
+
+  test "closed content is hidden from assistive tech and focus" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.collapsible id="c1">
+        <:trigger>Toggle</:trigger>
+        Content
+      </.collapsible>
+      """)
+
+    assert html =~ ~s(aria-hidden="true")
+    assert html =~ ~s(inert)
+  end
+
+  test "open content is exposed to assistive tech" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.collapsible id="c1" open>
+        <:trigger>Toggle</:trigger>
+        Content
+      </.collapsible>
+      """)
+
+    assert html =~ ~s(aria-hidden="false")
+    refute html =~ ~s(inert)
   end
 
   test "renders collapsible with class" do

@@ -808,6 +808,8 @@ defmodule ExoUI.Components.DataDisplay do
           id={"#{@id}-content-#{idx}"}
           role="region"
           aria-labelledby={"#{@id}-trigger-#{idx}"}
+          aria-hidden={to_string(item[:open] != true)}
+          inert={item[:open] != true}
         >
           <div data-exo="accordion-body">
             {render_slot(item)}

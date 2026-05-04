@@ -25,8 +25,34 @@
 /* --- Trigger --- */
 
 :where([data-exo="collapsible-trigger"]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--exo-space-2);
+  width: fit-content;
+  padding: var(--exo-space-1) var(--exo-space-3);
+  background: transparent;
+  color: var(--exo-foreground);
+  border: 1px solid var(--exo-border);
+  border-radius: var(--exo-radius);
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  font-weight: 600;
   cursor: pointer;
   user-select: none;
+  transition:
+    background var(--exo-duration) var(--exo-easing),
+    color var(--exo-duration) var(--exo-easing),
+    border-color var(--exo-duration) var(--exo-easing);
+}
+
+:where([data-exo="collapsible-trigger"]):hover {
+  background: var(--exo-muted);
+}
+
+:where([data-exo="collapsible-trigger"]):focus-visible {
+  outline: 2px solid var(--exo-ring);
+  outline-offset: 2px;
 }
 
 /* --- Content (clipping container) --- */

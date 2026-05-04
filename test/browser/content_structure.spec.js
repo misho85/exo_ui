@@ -71,4 +71,57 @@ test.describe("content structure components", () => {
     await viewport.focus();
     await expectFocused(viewport);
   });
+
+  test("accordion and collapsible hide closed content from assistive tech", async ({ page }) => {
+    await gotoStory(page, "/components/layout/accordion");
+
+    const canvas = story(page);
+    const defaultAccordion = canvas.locator("#default");
+    const firstTrigger = defaultAccordion.locator('[data-exo="accordion-trigger"]').first();
+    const secondTrigger = defaultAccordion.locator('[data-exo="accordion-trigger"]').nth(1);
+    const firstContent = defaultAccordion.locator("#default-content-0");
+    const secondContent = defaultAccordion.locator("#default-content-1");
+
+    await expect(defaultAccordion).toHaveAttribute("data-ready", "");
+    await expect(firstTrigger).toHaveAttribute("aria-expanded", "true");
+    await expect(firstContent).toHaveAttribute("aria-hidden", "false");
+    await expect(secondContent).toHaveAttribute("aria-hidden", "true");
+    await expect
+      .poll(async () => await secondContent.evaluate((node) => node.inert))
+      .toBe(true);
+
+    await secondTrigger.click();
+
+    await expect(firstTrigger).toHaveAttribute("aria-expanded", "false");
+    await expect(secondTrigger).toHaveAttribute("aria-expanded", "true");
+    await expect(firstContent).toHaveAttribute("aria-hidden", "true");
+    await expect(secondContent).toHaveAttribute("aria-hidden", "false");
+    await expect
+      .poll(async () => await firstContent.evaluate((node) => node.inert))
+      .toBe(true);
+    await expect
+      .poll(async () => await secondContent.evaluate((node) => node.inert))
+      .toBe(false);
+
+    await gotoStory(page, "/components/layout/collapsible");
+
+    const closedCollapsible = story(page).locator("#col-2");
+    const closedTrigger = closedCollapsible.locator('[data-exo="collapsible-trigger"]');
+    const closedContent = closedCollapsible.locator("#col-2-content");
+
+    await expect(closedCollapsible).toHaveAttribute("data-ready", "");
+    await expect(closedTrigger).toHaveAttribute("aria-controls", "col-2-content");
+    await expect(closedTrigger).toHaveAttribute("aria-expanded", "false");
+    await expect(closedContent).toHaveAttribute("aria-labelledby", "col-2-trigger");
+    await expect(closedContent).toHaveAttribute("aria-hidden", "true");
+    await expect(closedTrigger.locator("button")).toHaveCount(0);
+
+    await closedTrigger.click();
+
+    await expect(closedTrigger).toHaveAttribute("aria-expanded", "true");
+    await expect(closedContent).toHaveAttribute("aria-hidden", "false");
+    await expect
+      .poll(async () => await closedContent.evaluate((node) => node.inert))
+      .toBe(false);
+  });
 });

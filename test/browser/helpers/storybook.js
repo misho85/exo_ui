@@ -3,6 +3,7 @@ const { expect } = require("@playwright/test");
 async function gotoStory(page, path) {
   await page.goto(path);
   await expect(page.locator("#story-live")).toBeVisible();
+  await expect(page.locator("[data-phx-main]").first()).toHaveClass(/phx-connected/);
 }
 
 async function expectAttribute(locator, name, value) {
