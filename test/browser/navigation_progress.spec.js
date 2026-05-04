@@ -62,4 +62,21 @@ test.describe("navigation and progress components", () => {
     );
     await expect(pendingWizardStep).toHaveAttribute("aria-label", "Step 3, Billing, pending");
   });
+
+  test("progress components expose bounded values and accessible names", async ({ page }) => {
+    await gotoStory(page, "/components/progress");
+
+    const progress = story(page).locator('[data-exo="progress"]').first();
+    await expect(progress).toHaveAttribute("aria-label", "Storage used");
+    await expect(progress).toHaveAttribute("aria-valuenow", "65");
+    await expect(progress).toHaveAttribute("aria-valuetext", "65%");
+
+    await gotoStory(page, "/components/radial_progress");
+
+    const radial = story(page).locator('[data-exo="radial-progress"]').first();
+    await expect(radial).toHaveAttribute("aria-label", "0 percent complete");
+    await expect(radial).toHaveAttribute("aria-valuenow", "0");
+    await expect(radial).toHaveAttribute("aria-valuetext", "0%");
+    await expect(radial.locator("svg")).toHaveAttribute("aria-hidden", "true");
+  });
 });

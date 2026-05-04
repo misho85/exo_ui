@@ -20,10 +20,12 @@ defmodule ExoUI.Components.ProgressTest do
 
   test "renders progress with aria attributes" do
     assigns = %{}
-    html = rendered_to_string(~H|<.progress value={30} max={100} />|)
+    html = rendered_to_string(~H|<.progress value={30} max={100} label="Upload" />|)
+    assert html =~ ~s(aria-label="Upload")
     assert html =~ ~s(aria-valuenow="30")
     assert html =~ ~s(aria-valuemin="0")
     assert html =~ ~s(aria-valuemax="100")
+    assert html =~ ~s(aria-valuetext="30%")
   end
 
   test "renders progress bar width as percentage" do
@@ -72,12 +74,24 @@ defmodule ExoUI.Components.ProgressTest do
     assigns = %{}
     html = rendered_to_string(~H|<.progress value={150} max={100} />|)
     assert html =~ ~s(width: 100%)
+    assert html =~ ~s(aria-valuenow="100")
+    assert html =~ ~s(aria-valuetext="100%")
+  end
+
+  test "clamps progress at 0 percent when value is negative" do
+    assigns = %{}
+    html = rendered_to_string(~H|<.progress value={-10} max={100} />|)
+    assert html =~ ~s(width: 0%)
+    assert html =~ ~s(aria-valuenow="0")
+    assert html =~ ~s(aria-valuetext="0%")
   end
 
   test "handles zero max gracefully" do
     assigns = %{}
     html = rendered_to_string(~H|<.progress value={50} max={0} />|)
     assert html =~ ~s(width: 0%)
+    assert html =~ ~s(aria-valuenow="0")
+    assert html =~ ~s(aria-valuemax="0")
   end
 
   test "renders progress with class" do

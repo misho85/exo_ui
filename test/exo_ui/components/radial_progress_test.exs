@@ -22,9 +22,19 @@ defmodule ExoUI.Components.RadialProgressTest do
 
     ~H|<.radial_progress value={30} max={100} />|
     |> parse_component()
+    |> assert_attribute("aria-label", "Progress")
     |> assert_attribute("aria-valuenow", "30")
     |> assert_attribute("aria-valuemin", "0")
     |> assert_attribute("aria-valuemax", "100")
+    |> assert_attribute("aria-valuetext", "30%")
+  end
+
+  test "renders custom aria label" do
+    assigns = %{}
+
+    ~H|<.radial_progress value={30} max={100} aria_label="Storage usage" />|
+    |> parse_component()
+    |> assert_attribute("aria-label", "Storage usage")
   end
 
   test "renders SVG with track and fill circles" do
@@ -110,6 +120,26 @@ defmodule ExoUI.Components.RadialProgressTest do
     |> parse_component()
     |> assert_attribute("aria-valuenow", "100")
     |> assert_text("100%")
+  end
+
+  test "clamps value above max for visual and aria output" do
+    assigns = %{}
+
+    ~H|<.radial_progress value={125} max={100} />|
+    |> parse_component()
+    |> assert_attribute("aria-valuenow", "100")
+    |> assert_attribute("aria-valuetext", "100%")
+    |> assert_text("100%")
+  end
+
+  test "clamps negative value for visual and aria output" do
+    assigns = %{}
+
+    ~H|<.radial_progress value={-5} max={100} />|
+    |> parse_component()
+    |> assert_attribute("aria-valuenow", "0")
+    |> assert_attribute("aria-valuetext", "0%")
+    |> assert_text("0%")
   end
 
   test "renders radial_progress with class" do

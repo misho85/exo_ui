@@ -168,12 +168,22 @@ defmodule ExoUI.Components.Feedback do
   attr :value, :integer, required: true
   attr :max, :integer, default: 100
   attr :label, :string, default: nil
+  attr :aria_label, :string, default: nil
   attr :class, :any, default: nil
   attr :rest, :global
 
   def progress(assigns) do
-    pct = if assigns.max == 0, do: 0, else: min(100, round(assigns.value / assigns.max * 100))
-    assigns = assign(assigns, :pct, pct)
+    value_max = max(assigns.max, 0)
+    value_now = assigns.value |> max(0) |> min(value_max)
+    pct = if value_max == 0, do: 0, else: min(100, round(value_now / value_max * 100))
+
+    assigns =
+      assign(assigns,
+        pct: pct,
+        value_now: value_now,
+        value_max: value_max,
+        progress_label: assigns.aria_label || assigns.label || "Progress"
+      )
 
     ~H"""
     <div data-exo="progress-field" class={@class} {@rest}>
@@ -184,9 +194,11 @@ defmodule ExoUI.Components.Feedback do
       <div
         data-exo="progress"
         role="progressbar"
-        aria-valuenow={@value}
+        aria-label={@progress_label}
+        aria-valuenow={@value_now}
         aria-valuemin="0"
-        aria-valuemax={@max}
+        aria-valuemax={@value_max}
+        aria-valuetext={"#{@pct}%"}
       >
         <div data-exo="progress-bar" style={"width: #{@pct}%"} />
       </div>
@@ -199,18 +211,23 @@ defmodule ExoUI.Components.Feedback do
   attr :max, :integer, default: 100
   attr :size, :string, values: ~w(sm md lg), default: "md"
   attr :show_value, :boolean, default: true
+  attr :aria_label, :string, default: "Progress"
   attr :class, :any, default: nil
   attr :rest, :global
   slot :inner_block
 
   def radial_progress(assigns) do
-    pct = if assigns.max == 0, do: 0, else: min(100, round(assigns.value / assigns.max * 100))
+    value_max = max(assigns.max, 0)
+    value_now = assigns.value |> max(0) |> min(value_max)
+    pct = if value_max == 0, do: 0, else: min(100, round(value_now / value_max * 100))
     circumference = 2 * :math.pi() * 40
     offset = circumference - pct / 100 * circumference
 
     assigns =
       assigns
       |> assign(:pct, pct)
+      |> assign(:value_now, value_now)
+      |> assign(:value_max, value_max)
       |> assign(:circumference, circumference)
       |> assign(:offset, offset)
 
@@ -219,13 +236,15 @@ defmodule ExoUI.Components.Feedback do
       data-exo="radial-progress"
       data-size={@size}
       role="progressbar"
-      aria-valuenow={@value}
+      aria-label={@aria_label}
+      aria-valuenow={@value_now}
       aria-valuemin="0"
-      aria-valuemax={@max}
+      aria-valuemax={@value_max}
+      aria-valuetext={"#{@pct}%"}
       class={@class}
       {@rest}
     >
-      <svg viewBox="0 0 100 100">
+      <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
         <circle
           data-exo="radial-progress-track"
           cx="50"

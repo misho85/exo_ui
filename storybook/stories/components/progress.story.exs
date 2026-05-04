@@ -15,19 +15,19 @@ defmodule Storybook.Components.Progress do
     [
       %Variation{
         id: :default,
-        attributes: %{value: 65, label: "Storage used"}
+        attributes: %{value: 65, label: "Storage used", aria_label: "Storage used"}
       },
       %Variation{
         id: :low,
-        attributes: %{value: 12, label: "CPU usage"}
+        attributes: %{value: 12, label: "CPU usage", aria_label: "CPU usage"}
       },
       %Variation{
         id: :full,
-        attributes: %{value: 100, label: "Upload complete"}
+        attributes: %{value: 100, label: "Upload complete", aria_label: "Upload complete"}
       },
       %Variation{
         id: :no_label,
-        attributes: %{value: 42}
+        attributes: %{value: 42, aria_label: "Background task progress"}
       }
     ]
   end
