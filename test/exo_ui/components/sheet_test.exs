@@ -22,6 +22,9 @@ defmodule ExoUI.Components.SheetTest do
     assert html =~ ~s(phx-hook="ExoOverlay")
     assert html =~ ~s(role="dialog")
     assert html =~ ~s(aria-modal="true")
+    assert html =~ ~s(aria-label="Sheet")
+    assert html =~ ~s(aria-describedby="test-sheet-body")
+    assert html =~ ~s(id="test-sheet-body")
     assert html =~ ~s(id="test-sheet")
     assert html =~ "Content"
   end
@@ -55,9 +58,24 @@ defmodule ExoUI.Components.SheetTest do
     assert html =~ ~s(data-exo="sheet-title")
     assert html =~ ~s(id="s-title")
     assert html =~ ~s(aria-labelledby="s-title")
+    refute html =~ ~s(aria-label="Sheet")
     assert html =~ "Title"
     assert html =~ ~s(data-exo="sheet-footer")
+    assert html =~ ~s(type="button")
     assert html =~ "Footer"
+  end
+
+  test "renders sheet with custom accessible label when title is omitted" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.sheet id="s" label="Filters">
+        <p>Body</p>
+      </.sheet>
+      """)
+
+    assert html =~ ~s(aria-label="Filters")
   end
 
   test "renders sheet open when show is true" do

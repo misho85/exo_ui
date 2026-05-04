@@ -97,6 +97,7 @@ defmodule ExoUI.Components.PopoverTest do
     assert html =~ ~s(data-popover-target="aria")
     assert html =~ ~s(aria-haspopup="true")
     assert html =~ ~s(aria-expanded="false")
+    assert html =~ ~s(aria-controls="aria")
   end
 
   test "allows haspopup override" do

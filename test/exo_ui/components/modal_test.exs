@@ -15,8 +15,11 @@ defmodule ExoUI.Components.ModalTest do
     assert html =~ ~s(data-exo="modal-content")
     assert html =~ ~s(role="dialog")
     assert html =~ ~s(aria-modal="true")
+    assert html =~ ~s(aria-label="Dialog")
     assert html =~ ~s(aria-describedby="test-modal-body")
     assert html =~ ~s(id="test-modal-body")
+    assert html =~ ~s(type="button")
+    assert html =~ ~s(aria-label="Close")
     assert html =~ "Content"
   end
 
@@ -32,7 +35,17 @@ defmodule ExoUI.Components.ModalTest do
       """)
 
     assert html =~ ~s(data-exo="modal-title")
+    assert html =~ ~s(aria-labelledby="test-modal-title")
+    refute html =~ ~s(aria-label="Dialog")
     assert html =~ "My Title"
+  end
+
+  test "renders modal with custom accessible label when title is omitted" do
+    assigns = %{}
+
+    html = rendered_to_string(~H|<.modal id="test-modal" label="Preferences">Content</.modal>|)
+
+    assert html =~ ~s(aria-label="Preferences")
   end
 
   test "renders modal with open state" do

@@ -13,6 +13,9 @@ defmodule ExoUI.Components.DrawerTest do
     assert html =~ ~s(phx-hook="ExoOverlay")
     assert html =~ ~s(role="dialog")
     assert html =~ ~s(aria-modal="true")
+    assert html =~ ~s(aria-label="Drawer")
+    assert html =~ ~s(aria-describedby="d1-body")
+    assert html =~ ~s(id="d1-body")
     assert html =~ "Content"
   end
 
@@ -54,7 +57,16 @@ defmodule ExoUI.Components.DrawerTest do
     assert html =~ ~s(data-exo="drawer-title")
     assert html =~ ~s(id="d1-title")
     assert html =~ ~s(aria-labelledby="d1-title")
+    refute html =~ ~s(aria-label="Drawer")
     assert html =~ "Drawer Title"
+  end
+
+  test "renders drawer with custom accessible label when title is omitted" do
+    assigns = %{}
+
+    html = rendered_to_string(~H|<.drawer id="d1" label="Navigation drawer">Content</.drawer>|)
+
+    assert html =~ ~s(aria-label="Navigation drawer")
   end
 
   test "renders drawer backdrop" do
@@ -74,7 +86,8 @@ defmodule ExoUI.Components.DrawerTest do
     assigns = %{}
     html = rendered_to_string(~H|<.drawer id="d1">Content</.drawer>|)
     assert html =~ ~s(data-exo="drawer-close")
-    assert html =~ ~s(aria-label="close")
+    assert html =~ ~s(type="button")
+    assert html =~ ~s(aria-label="Close")
   end
 
   test "renders drawer header" do

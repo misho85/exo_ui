@@ -11,6 +11,7 @@ defmodule ExoUI.Components.Overlay do
   attr :id, :string, required: true
   attr :show, :boolean, default: false
   attr :role, :string, values: ~w(dialog alertdialog), default: "dialog"
+  attr :label, :string, default: "Dialog"
   attr :on_cancel, Phoenix.LiveView.JS, default: %Phoenix.LiveView.JS{}
   attr :class, :any, default: nil
   attr :rest, :global
@@ -38,6 +39,7 @@ defmodule ExoUI.Components.Overlay do
         role={@role}
         aria-modal="true"
         aria-labelledby={if @title != [], do: "#{@id}-title"}
+        aria-label={if @title == [], do: @label}
         aria-describedby={"#{@id}-body"}
         tabindex="-1"
       >
@@ -45,7 +47,12 @@ defmodule ExoUI.Components.Overlay do
           <h2 :if={@title != []} id={"#{@id}-title"} data-exo="modal-title">
             {render_slot(@title)}
           </h2>
-          <button data-exo="modal-close" phx-click={@on_cancel |> hide_modal(@id)} aria-label="close">
+          <button
+            type="button"
+            data-exo="modal-close"
+            phx-click={@on_cancel |> hide_modal(@id)}
+            aria-label="Close"
+          >
             ✕
           </button>
         </div>
@@ -126,6 +133,7 @@ defmodule ExoUI.Components.Overlay do
         data-popover-haspopup={@haspopup}
         aria-haspopup={@haspopup}
         aria-expanded="false"
+        aria-controls={@id}
         style={"anchor-name: --popover-#{@id}"}
       >
         {render_slot(@trigger)}
@@ -374,6 +382,7 @@ defmodule ExoUI.Components.Overlay do
   attr :id, :string, required: true
   attr :show, :boolean, default: false
   attr :side, :string, values: ~w(left right), default: "right"
+  attr :label, :string, default: "Drawer"
   attr :on_cancel, Phoenix.LiveView.JS, default: %Phoenix.LiveView.JS{}
   attr :class, :any, default: nil
   attr :rest, :global
@@ -399,6 +408,8 @@ defmodule ExoUI.Components.Overlay do
         role="dialog"
         aria-modal="true"
         aria-labelledby={if @title != [], do: "#{@id}-title"}
+        aria-label={if @title == [], do: @label}
+        aria-describedby={"#{@id}-body"}
         tabindex="-1"
       >
         <div data-exo="drawer-header">
@@ -406,14 +417,15 @@ defmodule ExoUI.Components.Overlay do
             {render_slot(@title)}
           </h2>
           <button
+            type="button"
             data-exo="drawer-close"
             phx-click={@on_cancel |> hide_drawer(@id)}
-            aria-label="close"
+            aria-label="Close"
           >
             ✕
           </button>
         </div>
-        <div data-exo="drawer-body">
+        <div id={"#{@id}-body"} data-exo="drawer-body">
           {render_slot(@inner_block)}
         </div>
       </div>
@@ -444,6 +456,7 @@ defmodule ExoUI.Components.Overlay do
   attr :show, :boolean, default: false
   attr :side, :string, values: ~w(left right top bottom), default: "right"
   attr :class, :any, default: nil
+  attr :label, :string, default: "Sheet"
   attr :on_cancel, Phoenix.LiveView.JS, default: %Phoenix.LiveView.JS{}
   attr :rest, :global
   slot :inner_block, required: true
@@ -470,18 +483,21 @@ defmodule ExoUI.Components.Overlay do
         role="dialog"
         aria-modal="true"
         aria-labelledby={if @title != [], do: "#{@id}-title"}
+        aria-label={if @title == [], do: @label}
+        aria-describedby={"#{@id}-body"}
         tabindex="-1"
       >
         <div :if={@title != []} data-exo="sheet-header">
           <h2 id={"#{@id}-title"} data-exo="sheet-title">{render_slot(@title)}</h2>
         </div>
-        <div data-exo="sheet-body">
+        <div id={"#{@id}-body"} data-exo="sheet-body">
           {render_slot(@inner_block)}
         </div>
         <div :if={@footer != []} data-exo="sheet-footer">
           {render_slot(@footer)}
         </div>
         <button
+          type="button"
           data-exo="sheet-close"
           aria-label="Close"
           phx-click={hide_sheet(@on_cancel, @id)}
