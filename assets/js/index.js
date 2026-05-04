@@ -11,6 +11,7 @@ import { ExoCombobox } from './hooks/combobox.js'
 import { ExoTooltip } from './hooks/tooltip.js'
 import { ExoHoverCard } from './hooks/hover_card.js'
 import { ExoContextMenu } from './hooks/context_menu.js'
+import { ExoDatePicker } from './hooks/date_picker.js'
 import { ExoRating } from './hooks/rating.js'
 import { ExoMenubar } from './hooks/menubar.js'
 import { ExoOverlay } from './hooks/overlay.js'
@@ -31,6 +32,7 @@ const hooks = {
   ExoTooltip,
   ExoHoverCard,
   ExoContextMenu,
+  ExoDatePicker,
   ExoRating,
   ExoMenubar,
   ExoOverlay,

@@ -14,7 +14,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Missing Storybook stories | 0 public components missing a story |
 | Playwright component capture | 83 Storybook routes captured |
 | Capture artifacts | 83 screenshots, 83 WebM videos, 83 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-04T14-07-50-622Z/viewer.html` |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-04T14-43-44-205Z/viewer.html` |
 | Browser suite | 56 Playwright tests passing |
 | ExUnit suite | 495 tests passing after disclosure changes |
 
@@ -26,6 +26,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - Accordion and collapsible now hide closed content from assistive tech and focus with `aria-hidden` plus `inert`, and their hooks keep those states synced after interaction.
 - Storybook browser tests now wait for LiveView `phx-connected`, avoiding false negatives caused by clicking server-rendered markup before hooks mount.
 - Rating no longer hardcodes amber in component CSS; it uses `--exo-rating-active`, and the browser test verifies keyboard selection and visible focus styling.
+- Date picker now has roving keyboard grid navigation for Arrow keys, Home, End, PageUp, and PageDown, plus browser coverage against a fixed-date Storybook example.
 - The capture workflow now produces a real manifest and validated local screenshot/video files for every captured component route.
 
 ## Comparison vs shadcn/daisyUI
@@ -36,19 +37,18 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Theming | Token-driven CSS with light/dark support and reduced-motion guard | Needs more component-specific semantic tokens and fewer hardcoded overlay/shadow colors |
 | Forms | Phoenix FormField integration is now strong across most controls | Select/combobox can still improve active-descendant semantics and loading/live-region polish |
 | Overlays/menus | Browser-tested popover, dropdown, context menu, menubar, modal/sheet/drawer paths | Needs deeper focus-trap/inert-outside audit against Radix/shadcn expectations |
-| Keyboard support | Covered for major actions, menus, select/combobox, rating, tabs | Date picker still needs full roving keyboard grid behavior |
+| Keyboard support | Covered for major actions, menus, select/combobox, rating, tabs, and date picker grid movement | Date picker month changes still depend on the parent LiveView handling prev/next events |
 | Visual proof | Automated screenshots and videos for 83 routes | Not yet turned into CI visual regression baselines |
 | Composability | Slots and `data-exo` styling are consistent | No shadcn-style `asChild`/polymorphic root pattern for advanced composition |
 
 ## Remaining priorities
 
 1. Convert more page-mode Storybook examples to component-mode stories where PhoenixStorybook can expose attrs, slots, playground controls, and source examples.
-2. Add date picker keyboard grid behavior: Arrow keys, Home/End, PageUp/PageDown, roving tabindex, and browser tests.
-3. Audit overlays against Radix/shadcn expectations: focus trap, outside inerting, nested overlays, escape stack order, focus restoration, and scroll lock edge cases.
-4. Improve select/combobox active option semantics with `aria-activedescendant` or document the DOM-focus pattern explicitly.
-5. Add CI-friendly visual regression from the existing capture output instead of using screenshots/videos only as manual proof.
-6. Replace remaining hardcoded overlay/shadow colors with semantic tokens where the component owns the visual state.
-7. Add docs that show copy-paste Phoenix usage for every component: basic, disabled, error, long content, dark mode, and keyboard/a11y notes.
+2. Audit overlays against Radix/shadcn expectations: focus trap, outside inerting, nested overlays, escape stack order, focus restoration, and scroll lock edge cases.
+3. Improve select/combobox active option semantics with `aria-activedescendant` or document the DOM-focus pattern explicitly.
+4. Add CI-friendly visual regression from the existing capture output instead of using screenshots/videos only as manual proof.
+5. Replace remaining hardcoded overlay/shadow colors with semantic tokens where the component owns the visual state.
+6. Add docs that show copy-paste Phoenix usage for every component: basic, disabled, error, long content, dark mode, and keyboard/a11y notes.
 
 ## Verification used
 

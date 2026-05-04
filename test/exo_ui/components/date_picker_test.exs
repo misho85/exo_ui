@@ -8,6 +8,7 @@ defmodule ExoUI.Components.DatePickerTest do
     assigns = %{}
     html = rendered_to_string(~H|<.date_picker id="dp" />|)
     assert html =~ ~s(data-exo="date-picker")
+    assert html =~ ~s(phx-hook="ExoDatePicker")
     assert html =~ ~s(data-exo="date-picker-header")
     assert html =~ ~s(data-exo="date-picker-grid")
     assert html =~ "Mon"

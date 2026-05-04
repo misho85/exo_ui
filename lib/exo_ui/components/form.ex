@@ -994,6 +994,7 @@ defmodule ExoUI.Components.Form do
       aria-labelledby={@label_id}
       aria-describedby={@describedby}
       aria-invalid={if @errors != [], do: "true"}
+      phx-hook={if @id, do: "ExoDatePicker"}
       {@rest}
     >
       <label :if={@label} id={@label_id} data-exo="date-picker-label">{@label}</label>

@@ -1,6 +1,6 @@
 const { test, expect } = require("@playwright/test");
 
-const { expectAttribute, gotoStory, story } = require("./helpers/storybook");
+const { expectAttribute, expectFocused, gotoStory, story } = require("./helpers/storybook");
 
 test.describe("data and feedback components", () => {
   test("date picker exposes calendar semantics, form value, and error links", async ({ page }) => {
@@ -9,7 +9,9 @@ test.describe("data and feedback components", () => {
     const canvas = story(page);
     const invalidPicker = canvas.locator("#dp-error");
     const selectedPicker = canvas.locator("#dp-selected");
+    const keyboardPicker = canvas.locator("#dp-keyboard");
 
+    await expectAttribute(selectedPicker, "data-ready", "");
     await expectAttribute(invalidPicker, "role", "group");
     await expectAttribute(invalidPicker, "aria-invalid", "true");
     await expectAttribute(invalidPicker, "aria-describedby", "dp-error-description dp-error-error");
@@ -19,6 +21,33 @@ test.describe("data and feedback components", () => {
     const selectedValue = await selectedPicker.locator('input[name="departure"]').inputValue();
     await expect(selectedPicker.locator(`[data-exo="date-picker-day"][aria-selected="true"]`)).toHaveCount(1);
     expect(selectedValue).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+
+    await expectAttribute(keyboardPicker, "data-ready", "");
+
+    const day15 = keyboardPicker.locator('[data-exo="date-picker-day"][phx-value-date="2026-03-15"]');
+    const day16 = keyboardPicker.locator('[data-exo="date-picker-day"][phx-value-date="2026-03-16"]');
+    const day22 = keyboardPicker.locator('[data-exo="date-picker-day"][phx-value-date="2026-03-22"]');
+    const day23 = keyboardPicker.locator('[data-exo="date-picker-day"][phx-value-date="2026-03-23"]');
+
+    await day15.focus();
+    await expectFocused(day15);
+
+    await page.keyboard.press("ArrowRight");
+    await expectFocused(day16);
+    await expect(day16).toHaveAttribute("tabindex", "0");
+    await expect(day15).toHaveAttribute("tabindex", "-1");
+
+    await page.keyboard.press("End");
+    await expectFocused(day22);
+
+    await page.keyboard.press("Home");
+    await expectFocused(day16);
+
+    await page.keyboard.press("ArrowDown");
+    await expectFocused(day23);
+
+    await page.keyboard.press("ArrowUp");
+    await expectFocused(day16);
   });
 
   test("table renders caption, aligned cells, row labels, and empty state", async ({ page }) => {

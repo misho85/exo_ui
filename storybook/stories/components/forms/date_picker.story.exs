@@ -65,6 +65,18 @@ defmodule Storybook.Components.DatePicker do
 
       <div>
         <p style="margin-bottom: 0.5rem; font-size: 0.875rem; color: var(--exo-muted-foreground);">
+          Keyboard navigation
+        </p>
+        <ExoUI.Components.date_picker
+          id="dp-keyboard"
+          label="Keyboard date"
+          current_month={~D[2026-03-15]}
+          selected={~D[2026-03-15]}
+        />
+      </div>
+
+      <div>
+        <p style="margin-bottom: 0.5rem; font-size: 0.875rem; color: var(--exo-muted-foreground);">
           With error
         </p>
         <ExoUI.Components.date_picker
