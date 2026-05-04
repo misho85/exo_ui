@@ -194,7 +194,7 @@ defmodule ExoUI.Components.Overlay do
                 type="button"
                 data-exo="dropdown-item"
                 role="menuitem"
-                popovertarget={entry.target}
+                popovertarget={entry[:target]}
                 disabled={entry[:disabled]}
               >
                 <span :if={entry[:icon]} data-exo="dropdown-item-icon">

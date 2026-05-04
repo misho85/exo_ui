@@ -192,6 +192,34 @@
   };
 
   // ../../assets/js/hooks/command_palette.js
+  var PaletteRegistry = {
+    stack: [],
+    listenerBound: false,
+    register(hook) {
+      this.stack = this.stack.filter((entry) => entry !== hook);
+      this.stack.push(hook);
+      this._ensureListener();
+    },
+    unregister(hook) {
+      this.stack = this.stack.filter((entry) => entry !== hook);
+      if (this.stack.length === 0 && this.listenerBound) {
+        document.removeEventListener("keydown", this._onKey);
+        this.listenerBound = false;
+      }
+    },
+    _ensureListener() {
+      if (this.listenerBound) return;
+      this._onKey = (e) => {
+        if (!((e.metaKey || e.ctrlKey) && e.key === "k")) return;
+        const target = this.stack[this.stack.length - 1];
+        if (!target || !target._toggle) return;
+        e.preventDefault();
+        target._toggle();
+      };
+      document.addEventListener("keydown", this._onKey);
+      this.listenerBound = true;
+    }
+  };
   var ExoCommandPalette = {
     mounted() {
       this._bind();
@@ -200,6 +228,7 @@
       this._bind();
     },
     destroyed() {
+      PaletteRegistry.unregister(this);
       this._unbind();
     },
     _bind() {
@@ -262,13 +291,8 @@
       if (!isOpen()) this.el.style.display = "none";
       if (this.empty) this.empty.hidden = true;
       this.el.dataset.ready = "true";
-      this._onGlobalKey = (e) => {
-        if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-          e.preventDefault();
-          isOpen() ? this._close() : this._open();
-        }
-      };
-      document.addEventListener("keydown", this._onGlobalKey);
+      this._toggle = () => isOpen() ? this._close() : this._open();
+      PaletteRegistry.register(this);
       this._onKey = (e) => {
         if (e.key === "Escape") {
           this._close();
@@ -388,7 +412,7 @@
       }
     },
     _unbind() {
-      if (this._onGlobalKey) document.removeEventListener("keydown", this._onGlobalKey);
+      PaletteRegistry.unregister(this);
       if (this._onKey) this.el.removeEventListener("keydown", this._onKey);
       if (this.input && this._onInput) this.input.removeEventListener("input", this._onInput);
       if (this._onItemPointerMove) this.el.removeEventListener("pointermove", this._onItemPointerMove);
@@ -403,7 +427,6 @@
       this.empty = null;
       this.items = [];
       this.activeIndex = -1;
-      this._onGlobalKey = null;
       this._onKey = null;
       this._onInput = null;
       this._onItemPointerMove = null;
@@ -411,6 +434,7 @@
       this._onBackdrop = null;
       this._open = null;
       this._close = null;
+      this._toggle = null;
     }
   };
 
@@ -558,7 +582,8 @@
         } else {
           this._popover.showPopover();
         }
-      } catch (_err) {
+      } catch (err) {
+        console.warn("ExoPopover: toggle failed", err);
       }
     },
     _unbind() {

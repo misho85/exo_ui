@@ -15,7 +15,11 @@ defmodule ExoUI.Charts.Shared do
       defp to_number(n) when is_float(n), do: n
       defp to_number(n) when is_integer(n), do: n * 1.0
       defp to_number(%{__struct__: Decimal} = d), do: apply(Decimal, :to_float, [d])
-      defp to_number(_), do: 0.0
+
+      defp to_number(other) do
+        raise ArgumentError,
+              "chart values must be numeric (integer, float, or Decimal); got: #{inspect(other)}"
+      end
 
       defp format_tooltip(value) when is_float(value),
         do: :erlang.float_to_binary(value, decimals: 2)

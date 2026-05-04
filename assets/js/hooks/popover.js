@@ -79,7 +79,9 @@ const ExoPopover = {
       } else {
         this._popover.showPopover()
       }
-    } catch (_err) {}
+    } catch (err) {
+      console.warn('ExoPopover: toggle failed', err)
+    }
   },
 
   _unbind() {
