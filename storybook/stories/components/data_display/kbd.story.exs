@@ -1,29 +1,22 @@
 defmodule Storybook.Components.Kbd do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Keyboard shortcut indicator."
+  def function, do: &ExoUI.Components.Core.kbd/1
 
-  def render(assigns) do
-    ~H"""
-    <div style="display: flex; gap: 1rem; align-items: center; padding: 1rem; font-size: 0.875rem;">
-      <span>
-        Press
-        <ExoUI.Components.kbd>⌘</ExoUI.Components.kbd>
-
-        <ExoUI.Components.kbd>K</ExoUI.Components.kbd>
-        to search
-      </span>
-      <span>
-        <ExoUI.Components.kbd>Ctrl</ExoUI.Components.kbd>
-        +
-        <ExoUI.Components.kbd>C</ExoUI.Components.kbd>
-        to copy
-      </span>
-      <span>
-        <ExoUI.Components.kbd>Esc</ExoUI.Components.kbd>
-        to close
-      </span>
+  def template do
+    """
+    <div style="display: flex; gap: 0.5rem; align-items: center; padding: 1rem; font-size: 0.875rem;" psb-code-hidden>
+      <.psb-variation/>
     </div>
     """
+  end
+
+  def variations do
+    [
+      %Variation{id: :command, slots: ["⌘"]},
+      %Variation{id: :letter, slots: ["K"]},
+      %Variation{id: :modifier, slots: ["Ctrl"]},
+      %Variation{id: :escape, slots: ["Esc"]}
+    ]
   end
 end

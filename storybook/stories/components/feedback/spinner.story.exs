@@ -1,28 +1,22 @@
 defmodule Storybook.Components.Spinner do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Loading spinner indicator."
+  def function, do: &ExoUI.Components.Core.spinner/1
 
-  def render(assigns) do
-    ~H"""
+  def template do
+    """
     <div style="display: flex; gap: 2rem; align-items: center; padding: 1rem; flex-wrap: wrap;">
-      <div>
-        <p style="margin-bottom: 0.5rem; font-weight: 600; font-size: 0.875rem;">Small</p>
-        <ExoUI.Components.spinner size="sm" />
-      </div>
-      <div>
-        <p style="margin-bottom: 0.5rem; font-weight: 600; font-size: 0.875rem;">Medium (default)</p>
-        <ExoUI.Components.spinner />
-      </div>
-      <div>
-        <p style="margin-bottom: 0.5rem; font-weight: 600; font-size: 0.875rem;">Large</p>
-        <ExoUI.Components.spinner size="lg" />
-      </div>
-      <div>
-        <p style="margin-bottom: 0.5rem; font-weight: 600; font-size: 0.875rem;">Custom label</p>
-        <ExoUI.Components.spinner size="md" label="Loading invoices" />
-      </div>
+      <.psb-variation/>
     </div>
     """
+  end
+
+  def variations do
+    [
+      %Variation{id: :small, attributes: %{size: "sm"}},
+      %Variation{id: :medium, attributes: %{size: "md"}},
+      %Variation{id: :large, attributes: %{size: "lg"}},
+      %Variation{id: :custom_label, attributes: %{size: "md", label: "Loading invoices"}}
+    ]
   end
 end

@@ -1,68 +1,60 @@
 defmodule Storybook.Components.Indicator do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Notification dot or badge overlay positioned on another element."
+  def function, do: &ExoUI.Components.Core.indicator/1
 
-  def render(assigns) do
-    ~H"""
-    <div style="display: flex; flex-direction: column; gap: 3rem; padding: 1rem;">
-      <section>
-        <h3 style="margin-bottom: 0.75rem; font-weight: 600;">Badge with count</h3>
-        <div style="display: flex; gap: 2rem; align-items: center;">
-          <ExoUI.Components.indicator>
-            <:badge>5</:badge>
-            <ExoUI.Components.button>Inbox</ExoUI.Components.button>
-          </ExoUI.Components.indicator>
-
-          <ExoUI.Components.indicator>
-            <:badge>99+</:badge>
-            <ExoUI.Components.button>Notifications</ExoUI.Components.button>
-          </ExoUI.Components.indicator>
-        </div>
-      </section>
-
-      <section>
-        <h3 style="margin-bottom: 0.75rem; font-weight: 600;">Positions</h3>
-        <div style="display: flex; gap: 2rem; align-items: center; flex-wrap: wrap;">
-          <ExoUI.Components.indicator position="top-right">
-            <:badge>TR</:badge>
-            <ExoUI.Components.badge>Item</ExoUI.Components.badge>
-          </ExoUI.Components.indicator>
-
-          <ExoUI.Components.indicator position="top-left">
-            <:badge>TL</:badge>
-            <ExoUI.Components.badge>Item</ExoUI.Components.badge>
-          </ExoUI.Components.indicator>
-
-          <ExoUI.Components.indicator position="bottom-right">
-            <:badge>BR</:badge>
-            <ExoUI.Components.badge>Item</ExoUI.Components.badge>
-          </ExoUI.Components.indicator>
-
-          <ExoUI.Components.indicator position="bottom-left">
-            <:badge>BL</:badge>
-            <ExoUI.Components.badge>Item</ExoUI.Components.badge>
-          </ExoUI.Components.indicator>
-
-          <ExoUI.Components.indicator position="top-center">
-            <:badge>TC</:badge>
-            <ExoUI.Components.badge>Item</ExoUI.Components.badge>
-          </ExoUI.Components.indicator>
-
-          <ExoUI.Components.indicator position="bottom-center">
-            <:badge>BC</:badge>
-            <ExoUI.Components.badge>Item</ExoUI.Components.badge>
-          </ExoUI.Components.indicator>
-        </div>
-      </section>
-
-      <section>
-        <h3 style="margin-bottom: 0.75rem; font-weight: 600;">Without badge (dot only via CSS)</h3>
-        <ExoUI.Components.indicator>
-          <ExoUI.Components.avatar name="John Doe" size="md" />
-        </ExoUI.Components.indicator>
-      </section>
+  def template do
+    """
+    <div style="display: flex; gap: 2rem; align-items: center; padding: 1.5rem; flex-wrap: wrap;" psb-code-hidden>
+      <.psb-variation/>
     </div>
     """
+  end
+
+  def variations do
+    [
+      %Variation{
+        id: :count,
+        slots: [
+          ~s|<:badge>5</:badge>|,
+          ~s|<button data-exo="btn" data-variant="primary" data-size="md">Inbox</button>|
+        ]
+      },
+      %Variation{
+        id: :large_count,
+        slots: [
+          ~s|<:badge>99+</:badge>|,
+          ~s|<button data-exo="btn" data-variant="outline" data-size="md">Notifications</button>|
+        ]
+      },
+      %VariationGroup{
+        id: :positions,
+        variations:
+          Enum.map(
+            ~w(top-right top-left bottom-right bottom-left top-center bottom-center),
+            fn position ->
+              %Variation{
+                id: String.to_atom(position),
+                attributes: %{position: position},
+                slots: [
+                  ~s|<:badge>#{position_label(position)}</:badge>|,
+                  ~s|<span data-exo="badge" data-variant="secondary">Item</span>|
+                ]
+              }
+            end
+          )
+      },
+      %Variation{
+        id: :without_badge,
+        slots: [~s|<span data-exo="avatar" data-size="md">JD</span>|]
+      }
+    ]
+  end
+
+  defp position_label(position) do
+    position
+    |> String.split("-")
+    |> Enum.map_join("", &String.first/1)
+    |> String.upcase()
   end
 end

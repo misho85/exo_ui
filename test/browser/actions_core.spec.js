@@ -72,7 +72,7 @@ test.describe("core action components", () => {
     await gotoStory(page, "/components/actions/swap");
 
     const canvas = story(page);
-    const swap = canvas.locator("#swap-1");
+    const swap = canvas.getByRole("switch", { name: "Enable notifications" });
     const input = swap.locator('[data-exo="swap-state"]');
 
     await expect(swap).toHaveAttribute("data-ready", "");
