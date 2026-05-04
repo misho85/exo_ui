@@ -44,6 +44,10 @@
   background: var(--exo-primary);
 }
 
+:where([data-exo="checkbox"][data-invalid] + [data-exo="checkbox-indicator"]) {
+  border-color: var(--exo-danger);
+}
+
 :where([data-exo="checkbox"]:checked + [data-exo="checkbox-indicator"]) svg {
   opacity: 1;
   transform: scale(1);

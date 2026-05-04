@@ -15,7 +15,12 @@ defmodule Storybook.Components.Slider do
     [
       %Variation{
         id: :default,
-        attributes: %{name: "volume", value: 50, label: "Volume"}
+        attributes: %{
+          name: "volume",
+          value: 50,
+          label: "Volume",
+          description: "Applies to notification sounds."
+        }
       },
       %Variation{
         id: :min_max,
@@ -24,6 +29,18 @@ defmodule Storybook.Components.Slider do
       %Variation{
         id: :stepped,
         attributes: %{name: "rating", value: 3, min: 1, max: 5, step: 1, label: "Rating (1-5)"}
+      },
+      %Variation{
+        id: :with_error,
+        attributes: %{
+          name: "threshold",
+          value: 95,
+          min: 0,
+          max: 100,
+          label: "Alert threshold",
+          description: "Keep the threshold below 90 for this plan.",
+          errors: ["must be 90 or lower"]
+        }
       },
       %Variation{
         id: :no_label,

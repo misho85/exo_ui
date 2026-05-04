@@ -52,6 +52,10 @@
   box-shadow: inset 0 0 0 3px var(--exo-background);
 }
 
+:where([data-exo="radio-group"][aria-invalid="true"] [data-exo="radio-indicator"]) {
+  border-color: var(--exo-danger);
+}
+
 :where([data-exo="radio"]:focus-visible + [data-exo="radio-indicator"]) {
   box-shadow: 0 0 0 2px color-mix(in oklch, var(--exo-ring) 25%, transparent);
 }

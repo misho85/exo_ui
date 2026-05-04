@@ -140,6 +140,23 @@ defmodule ExoUI.Components.SelectTest do
     assert html =~ "required"
   end
 
+  test "connects description and errors to trigger with aria-describedby" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.select id="s-aria" name="role" description="Choose one role" errors={["required"]}>
+        <:option value="admin">Admin</:option>
+      </.select>
+      """)
+
+    assert html =~ ~s(id="s-aria-description")
+    assert html =~ ~s(id="s-aria-error")
+    assert html =~ ~s(aria-describedby="s-aria-description s-aria-error")
+    assert html =~ ~s(aria-invalid="true")
+    assert html =~ ~s(role="alert")
+  end
+
   test "renders with field struct" do
     assigns = %{form: Phoenix.Component.to_form(%{"role" => "admin"})}
 

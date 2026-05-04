@@ -87,6 +87,28 @@ defmodule ExoUI.Components.RadioGroupTest do
     assert html =~ "is required"
   end
 
+  test "connects description and errors to radio group with aria-describedby" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H|<.radio_group
+  name="plan"
+  label="Plan"
+  description="Choose a plan"
+  errors={["is required"]}
+  options={[{"Free", "free"}]}
+/>|)
+
+    assert html =~ ~s(id="plan")
+    assert html =~ ~s(id="plan-label")
+    assert html =~ ~s(id="plan-description")
+    assert html =~ ~s(id="plan-error")
+    assert html =~ ~s(aria-describedby="plan-description plan-error")
+    assert html =~ ~s(aria-invalid="true")
+    assert html =~ ~s(for="plan-free")
+    assert html =~ ~s(id="plan-free")
+  end
+
   test "renders radio group with class" do
     assigns = %{}
 

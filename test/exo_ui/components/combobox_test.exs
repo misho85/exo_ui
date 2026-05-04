@@ -255,6 +255,42 @@ defmodule ExoUI.Components.ComboboxTest do
     assert html =~ "required"
   end
 
+  test "connects description and errors to button trigger with aria-describedby" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.combobox id="c-aria" name="country" description="Pick one" errors={["required"]}>
+        <:option value="rs">Serbia</:option>
+      </.combobox>
+      """)
+
+    assert html =~ ~s(id="c-aria-description")
+    assert html =~ ~s(id="c-aria-error")
+    assert html =~ ~s(aria-describedby="c-aria-description c-aria-error")
+    assert html =~ ~s(aria-invalid="true")
+  end
+
+  test "connects description and errors to input trigger with aria-describedby" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.combobox
+        id="c-input-aria"
+        name="country"
+        trigger="input"
+        description="Pick one"
+        errors={["required"]}
+      >
+        <:option value="rs">Serbia</:option>
+      </.combobox>
+      """)
+
+    assert html =~ ~s(aria-describedby="c-input-aria-description c-input-aria-error")
+    assert html =~ ~s(aria-invalid="true")
+  end
+
   test "renders disabled trigger" do
     assigns = %{}
 

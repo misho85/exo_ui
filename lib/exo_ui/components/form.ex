@@ -68,14 +68,132 @@ defmodule ExoUI.Components.Form do
       assign_new(assigns, :checked, fn ->
         Phoenix.HTML.Form.normalize_value("checkbox", assigns[:value])
       end)
+      |> prepare_basic_field()
+      |> assign(:wrap, assigns.description != nil or assigns.errors != [])
 
     ~H"""
-    <label data-exo="checkbox-item">
+    <div :if={@wrap} data-exo="field">
+      <.checkbox_control
+        id={@id}
+        name={@name}
+        checked={@checked}
+        class={@class}
+        label={@label}
+        errors={@errors}
+        describedby={@describedby}
+        rest={@rest}
+      />
+      <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
+      <.field_errors id={@error_id} errors={@errors} />
+    </div>
+    <.checkbox_control
+      :if={!@wrap}
+      id={@id}
+      name={@name}
+      checked={@checked}
+      class={@class}
+      label={@label}
+      errors={@errors}
+      describedby={@describedby}
+      rest={@rest}
+    />
+    """
+  end
+
+  def input(%{type: "textarea"} = assigns) do
+    assigns = prepare_basic_field(assigns)
+
+    ~H"""
+    <div data-exo="field">
+      <label :if={@label} data-exo="label" for={@id}>{@label}</label>
+      <textarea
+        id={@id}
+        data-exo="input"
+        data-invalid={@errors != [] && ""}
+        aria-invalid={if @errors != [], do: "true"}
+        aria-describedby={@describedby}
+        name={@name}
+        class={@class}
+        {@rest}
+      >{Phoenix.HTML.Form.normalize_value("textarea", @value)}</textarea>
+      <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
+      <.field_errors id={@error_id} errors={@errors} />
+    </div>
+    """
+  end
+
+  # Deprecated: Use select/1 instead
+  def input(%{type: "select"} = assigns) do
+    assigns = prepare_basic_field(assigns)
+
+    ~H"""
+    <div data-exo="field">
+      <label :if={@label} data-exo="label" for={@id}>{@label}</label>
+      <select
+        id={@id}
+        data-exo="select"
+        data-invalid={@errors != [] && ""}
+        aria-invalid={if @errors != [], do: "true"}
+        aria-describedby={@describedby}
+        name={@name}
+        multiple={@multiple}
+        class={@class}
+        {@rest}
+      >
+        <option :if={@prompt} value="">{@prompt}</option>
+        {Phoenix.HTML.Form.options_for_select(@options, @value)}
+      </select>
+      <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
+      <.field_errors id={@error_id} errors={@errors} />
+    </div>
+    """
+  end
+
+  def input(assigns) do
+    assigns = prepare_basic_field(assigns)
+
+    ~H"""
+    <div data-exo="field">
+      <label :if={@label} data-exo="label" for={@id}>{@label}</label>
+      <input
+        id={@id}
+        data-exo="input"
+        data-invalid={@errors != [] && ""}
+        aria-invalid={if @errors != [], do: "true"}
+        aria-describedby={@describedby}
+        type={@type}
+        name={@name}
+        value={Phoenix.HTML.Form.normalize_value(@type, @value)}
+        class={@class}
+        {@rest}
+      />
+      <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
+      <.field_errors id={@error_id} errors={@errors} />
+    </div>
+    """
+  end
+
+  attr :id, :any, default: nil
+  attr :name, :any, default: nil
+  attr :checked, :boolean, required: true
+  attr :class, :any, default: nil
+  attr :label, :string, default: nil
+  attr :errors, :list, default: []
+  attr :describedby, :string, default: nil
+  attr :rest, :map, default: %{}
+
+  defp checkbox_control(assigns) do
+    ~H"""
+    <label data-exo="checkbox-item" for={@id}>
       <input type="hidden" name={@name} value="false" disabled={@rest[:disabled]} />
       <input
+        id={@id}
         type="checkbox"
         data-exo="checkbox"
         data-checked={@checked && ""}
+        data-invalid={@errors != [] && ""}
+        aria-invalid={if @errors != [], do: "true"}
+        aria-describedby={@describedby}
         name={@name}
         value="true"
         checked={@checked}
@@ -100,73 +218,19 @@ defmodule ExoUI.Components.Form do
     """
   end
 
-  def input(%{type: "textarea"} = assigns) do
-    assigns = assign_new(assigns, :id, fn -> nil end)
-
-    ~H"""
-    <div data-exo="field">
-      <label :if={@label} data-exo="label" for={@id}>{@label}</label>
-      <textarea
-        id={@id}
-        data-exo="input"
-        data-invalid={@errors != [] && ""}
-        name={@name}
-        class={@class}
-        {@rest}
-      >{Phoenix.HTML.Form.normalize_value("textarea", @value)}</textarea>
-      <p :if={@description} data-exo="field-description">{@description}</p>
-      <.field_errors errors={@errors} />
-    </div>
-    """
-  end
-
-  # Deprecated: Use select/1 instead
-  def input(%{type: "select"} = assigns) do
-    ~H"""
-    <div data-exo="field">
-      <label :if={@label} data-exo="label">{@label}</label>
-      <select
-        data-exo="select"
-        data-invalid={@errors != [] && ""}
-        name={@name}
-        multiple={@multiple}
-        class={@class}
-        {@rest}
-      >
-        <option :if={@prompt} value="">{@prompt}</option>
-        {Phoenix.HTML.Form.options_for_select(@options, @value)}
-      </select>
-      <p :if={@description} data-exo="field-description">{@description}</p>
-      <.field_errors errors={@errors} />
-    </div>
-    """
-  end
-
-  def input(assigns) do
-    assigns = assign_new(assigns, :id, fn -> nil end)
-
-    ~H"""
-    <div data-exo="field">
-      <label :if={@label} data-exo="label" for={@id}>{@label}</label>
-      <input
-        id={@id}
-        data-exo="input"
-        data-invalid={@errors != [] && ""}
-        type={@type}
-        name={@name}
-        value={Phoenix.HTML.Form.normalize_value(@type, @value)}
-        class={@class}
-        {@rest}
-      />
-      <p :if={@description} data-exo="field-description">{@description}</p>
-      <.field_errors errors={@errors} />
-    </div>
-    """
-  end
+  attr :id, :string, default: nil
+  attr :errors, :list, required: true
 
   defp field_errors(assigns) do
+    assigns = assign(assigns, :error_items, Enum.with_index(assigns.errors))
+
     ~H"""
-    <div :for={msg <- @errors} data-exo="field-error">
+    <div
+      :for={{msg, index} <- @error_items}
+      id={if index == 0, do: @id}
+      data-exo="field-error"
+      role="alert"
+    >
       {msg}
     </div>
     """
@@ -195,19 +259,22 @@ defmodule ExoUI.Components.Form do
   end
 
   def toggle(assigns) do
+    assigns = prepare_basic_field(assigns)
     wrap? = assigns.label != nil or assigns.description != nil or assigns.errors != []
     assigns = assign(assigns, :wrap, wrap?)
 
     ~H"""
     <div :if={@wrap} data-exo="field">
       <label data-exo="toggle" data-checked={@checked && ""}>
-        <input :if={@name} type="hidden" name={@name} value="false" />
+        <input :if={@name} type="hidden" name={@name} value="false" disabled={@rest[:disabled]} />
         <input
           type="checkbox"
           id={@id}
           name={@name}
           value="true"
           checked={@checked}
+          aria-invalid={if @errors != [], do: "true"}
+          aria-describedby={@describedby}
           class={@class}
           {@rest}
         />
@@ -216,17 +283,19 @@ defmodule ExoUI.Components.Form do
         </span>
         <span :if={@label}>{@label}</span>
       </label>
-      <p :if={@description} data-exo="field-description">{@description}</p>
-      <.field_errors errors={@errors} />
+      <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
+      <.field_errors id={@error_id} errors={@errors} />
     </div>
     <label :if={!@wrap} data-exo="toggle" data-checked={@checked && ""}>
-      <input :if={@name} type="hidden" name={@name} value="false" />
+      <input :if={@name} type="hidden" name={@name} value="false" disabled={@rest[:disabled]} />
       <input
         type="checkbox"
         id={@id}
         name={@name}
         value="true"
         checked={@checked}
+        aria-invalid={if @errors != [], do: "true"}
+        aria-describedby={@describedby}
         class={@class}
         {@rest}
       />
@@ -283,6 +352,8 @@ defmodule ExoUI.Components.Form do
           data-exo="popover-trigger"
           data-exo-select="trigger"
           data-invalid={@errors != [] && ""}
+          aria-invalid={if @errors != [], do: "true"}
+          aria-describedby={@describedby}
           aria-haspopup="listbox"
           aria-expanded="false"
           aria-labelledby={if @label_id, do: @label_id}
@@ -318,8 +389,8 @@ defmodule ExoUI.Components.Form do
         </div>
       </div>
       <.choice_hidden_input name={@name} value={@value} />
-      <p :if={@description} data-exo="field-description">{@description}</p>
-      <.field_errors errors={@errors} />
+      <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
+      <.field_errors id={@error_id} errors={@errors} />
     </div>
     """
   end
@@ -387,6 +458,8 @@ defmodule ExoUI.Components.Form do
           data-exo="popover-trigger"
           data-exo-combobox="input-trigger"
           data-invalid={@errors != [] && ""}
+          aria-invalid={if @errors != [], do: "true"}
+          aria-describedby={@describedby}
           role="combobox"
           placeholder={@prompt}
           autocomplete="off"
@@ -419,8 +492,8 @@ defmodule ExoUI.Components.Form do
         </div>
       </div>
       <.choice_hidden_input name={@name} value={@value} />
-      <p :if={@description} data-exo="field-description">{@description}</p>
-      <.field_errors errors={@errors} />
+      <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
+      <.field_errors id={@error_id} errors={@errors} />
     </div>
     """
   end
@@ -447,6 +520,8 @@ defmodule ExoUI.Components.Form do
             data-exo="popover-trigger"
             data-exo-combobox="trigger"
             data-invalid={@errors != [] && ""}
+            aria-invalid={if @errors != [], do: "true"}
+            aria-describedby={@describedby}
             aria-haspopup="listbox"
             aria-expanded="false"
             aria-labelledby={if @label_id, do: @label_id}
@@ -473,6 +548,7 @@ defmodule ExoUI.Components.Form do
             type="button"
             data-exo="combobox-clear"
             aria-label="Clear"
+            disabled={@disabled}
           >
             &#x2715;
           </button>
@@ -511,8 +587,8 @@ defmodule ExoUI.Components.Form do
         </div>
       </div>
       <.choice_hidden_input name={@name} value={@value} />
-      <p :if={@description} data-exo="field-description">{@description}</p>
-      <.field_errors errors={@errors} />
+      <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
+      <.field_errors id={@error_id} errors={@errors} />
     </div>
     """
   end
@@ -571,6 +647,8 @@ defmodule ExoUI.Components.Form do
   end
 
   defp prepare_choice(assigns) do
+    assigns = prepare_basic_field(assigns)
+
     assign(assigns,
       grouped: group_options(assigns.option),
       label_id: choice_label_id(assigns),
@@ -593,13 +671,80 @@ defmodule ExoUI.Components.Form do
   end
 
   defp choice_label_id(assigns) do
-    if assigns[:label], do: "#{assigns.id}-label"
+    assigns[:label_id]
   end
 
   defp hidden_choice_value(value), do: value || ""
 
+  defp prepare_basic_field(assigns) do
+    id = assigns[:id] || generated_input_id(assigns[:name])
+    errors = assigns[:errors] || []
+
+    description_id =
+      if present?(assigns[:description]) && present?(id), do: "#{id}-description"
+
+    error_id = if errors != [] && present?(id), do: "#{id}-error"
+    label_id = if present?(assigns[:label]) && present?(id), do: "#{id}-label"
+
+    assign(assigns,
+      id: id,
+      label_id: label_id,
+      description_id: description_id,
+      error_id: error_id,
+      describedby: describedby([description_id, error_id])
+    )
+  end
+
+  defp prepare_fieldset(assigns) do
+    id = assigns[:id] || generated_input_id(assigns[:legend])
+    errors = assigns[:errors] || []
+
+    description_id =
+      if present?(assigns[:description]) && present?(id), do: "#{id}-description"
+
+    error_id = if errors != [] && present?(id), do: "#{id}-error"
+    legend_id = if present?(assigns[:legend]) && present?(id), do: "#{id}-legend"
+
+    assign(assigns,
+      id: id,
+      legend_id: legend_id,
+      description_id: description_id,
+      error_id: error_id,
+      describedby: describedby([description_id, error_id])
+    )
+  end
+
+  defp describedby(ids) do
+    ids
+    |> Enum.filter(&present?/1)
+    |> Enum.join(" ")
+    |> case do
+      "" -> nil
+      value -> value
+    end
+  end
+
+  defp radio_item_id(nil, _value), do: nil
+  defp radio_item_id(group_id, value), do: "#{group_id}-#{generated_input_id(value) || "option"}"
+
+  defp generated_input_id(nil), do: nil
+
+  defp generated_input_id(value) do
+    value
+    |> to_string()
+    |> String.replace(~r/[^a-zA-Z0-9_-]+/, "-")
+    |> String.trim("-")
+    |> case do
+      "" -> nil
+      id -> id
+    end
+  end
+
+  defp present?(value), do: value not in [nil, ""]
+
   @doc "Renders a radio button group from a list of {label, value} tuples or slot-based items."
   attr :field, Phoenix.HTML.FormField, default: nil, doc: "a form field struct"
+  attr :id, :string, default: nil
   attr :name, :string
   attr :value, :any, default: nil
   attr :options, :list, default: [], doc: "list of {label, value} tuples"
@@ -619,7 +764,7 @@ defmodule ExoUI.Components.Form do
     errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
 
     assigns
-    |> assign(field: nil)
+    |> assign(field: nil, id: assigns[:id] || field.id)
     |> assign(:errors, Enum.map(errors, &translate_error(&1)))
     |> assign(:name, if(is_nil(assigns[:name]), do: field.name, else: assigns[:name]))
     |> assign(:value, if(is_nil(assigns.value), do: field.value, else: assigns.value))
@@ -627,12 +772,28 @@ defmodule ExoUI.Components.Form do
   end
 
   def radio_group(assigns) do
+    assigns = prepare_basic_field(assigns)
+
     ~H"""
-    <fieldset data-exo="radio-group" class={@class} disabled={@disabled} {@rest}>
-      <legend :if={@label} data-exo="label">{@label}</legend>
+    <fieldset
+      id={@id}
+      data-exo="radio-group"
+      class={@class}
+      disabled={@disabled}
+      aria-invalid={if @errors != [], do: "true"}
+      aria-describedby={@describedby}
+      {@rest}
+    >
+      <legend :if={@label} id={@label_id} data-exo="label">{@label}</legend>
       <%= if @item != [] do %>
-        <label :for={item <- @item} data-exo="radio-item" data-disabled={item[:disabled] && ""}>
+        <label
+          :for={item <- @item}
+          data-exo="radio-item"
+          for={radio_item_id(@id, item[:value])}
+          data-disabled={(@disabled || item[:disabled]) && ""}
+        >
           <input
+            id={radio_item_id(@id, item[:value])}
             type="radio"
             data-exo="radio"
             name={@name}
@@ -644,8 +805,14 @@ defmodule ExoUI.Components.Form do
           <span>{render_slot(item)}</span>
         </label>
       <% else %>
-        <label :for={{opt_label, opt_value} <- @options} data-exo="radio-item">
+        <label
+          :for={{opt_label, opt_value} <- @options}
+          data-exo="radio-item"
+          for={radio_item_id(@id, opt_value)}
+          data-disabled={@disabled && ""}
+        >
           <input
+            id={radio_item_id(@id, opt_value)}
             type="radio"
             data-exo="radio"
             name={@name}
@@ -657,13 +824,14 @@ defmodule ExoUI.Components.Form do
           <span>{opt_label}</span>
         </label>
       <% end %>
-      <p :if={@description} data-exo="field-description">{@description}</p>
-      <.field_errors errors={@errors} />
+      <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
+      <.field_errors id={@error_id} errors={@errors} />
     </fieldset>
     """
   end
 
   @doc "Renders a range slider input."
+  attr :id, :string, default: nil
   attr :name, :string, required: true
   attr :value, :any, default: 50
   attr :min, :integer, default: 0
@@ -671,16 +839,23 @@ defmodule ExoUI.Components.Form do
   attr :step, :integer, default: 1
   attr :label, :string, default: nil
   attr :description, :string, default: nil
+  attr :errors, :list, default: []
   attr :class, :any, default: nil
   attr :rest, :global, include: ~w(disabled)
 
   def slider(assigns) do
+    assigns = prepare_basic_field(assigns)
+
     ~H"""
     <div data-exo="slider-field" class={@class}>
-      <label :if={@label} data-exo="label">{@label}</label>
+      <label :if={@label} data-exo="label" for={@id}>{@label}</label>
       <input
+        id={@id}
         type="range"
         data-exo="slider"
+        data-invalid={@errors != [] && ""}
+        aria-invalid={if @errors != [], do: "true"}
+        aria-describedby={@describedby}
         name={@name}
         value={@value}
         min={@min}
@@ -688,7 +863,8 @@ defmodule ExoUI.Components.Form do
         step={@step}
         {@rest}
       />
-      <p :if={@description} data-exo="field-description">{@description}</p>
+      <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
+      <.field_errors id={@error_id} errors={@errors} />
     </div>
     """
   end
@@ -860,21 +1036,36 @@ defmodule ExoUI.Components.Form do
   end
 
   @doc "Renders a fieldset for grouping related form elements."
+  attr :id, :string, default: nil
   attr :legend, :string, default: nil
   attr :description, :string, default: nil
+  attr :errors, :list, default: []
   attr :disabled, :boolean, default: false
   attr :class, :any, default: nil
   attr :rest, :global
   slot :inner_block, required: true
 
   def fieldset(assigns) do
+    assigns = prepare_fieldset(assigns)
+
     ~H"""
-    <fieldset data-exo="fieldset" disabled={@disabled} class={@class} {@rest}>
-      <legend :if={@legend} data-exo="fieldset-legend">{@legend}</legend>
-      <p :if={@description} data-exo="fieldset-description">{@description}</p>
+    <fieldset
+      id={@id}
+      data-exo="fieldset"
+      disabled={@disabled}
+      class={@class}
+      aria-describedby={@describedby}
+      aria-invalid={if @errors != [], do: "true"}
+      {@rest}
+    >
+      <legend :if={@legend} id={@legend_id} data-exo="fieldset-legend">{@legend}</legend>
+      <p :if={@description} id={@description_id} data-exo="fieldset-description">
+        {@description}
+      </p>
       <div data-exo="fieldset-content">
         {render_slot(@inner_block)}
       </div>
+      <.field_errors id={@error_id} errors={@errors} />
     </fieldset>
     """
   end
@@ -884,12 +1075,15 @@ defmodule ExoUI.Components.Form do
   attr :id, :string, default: nil
   attr :label, :string, default: nil
   attr :description, :string, default: nil
+  attr :errors, :list, default: []
   attr :accept, :string, default: nil
   attr :multiple, :boolean, default: false
   attr :class, :any, default: nil
   attr :rest, :global, include: ~w(disabled required)
 
   def file_input(assigns) do
+    assigns = prepare_basic_field(assigns)
+
     ~H"""
     <div data-exo="field">
       <label :if={@label} data-exo="label" for={@id}>{@label}</label>
@@ -900,10 +1094,14 @@ defmodule ExoUI.Components.Form do
         accept={@accept}
         multiple={@multiple}
         data-exo="file-input"
+        data-invalid={@errors != [] && ""}
+        aria-invalid={if @errors != [], do: "true"}
+        aria-describedby={@describedby}
         class={@class}
         {@rest}
       />
-      <p :if={@description} data-exo="field-description">{@description}</p>
+      <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
+      <.field_errors id={@error_id} errors={@errors} />
     </div>
     """
   end

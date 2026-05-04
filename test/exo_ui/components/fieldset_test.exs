@@ -45,4 +45,23 @@ defmodule ExoUI.Components.FieldsetTest do
 
     assert html =~ "disabled"
   end
+
+  test "connects description and errors with aria-describedby" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.fieldset legend="Billing" description="Payment details" errors={["incomplete"]}>
+        <span>content</span>
+      </.fieldset>
+      """)
+
+    assert html =~ ~s(id="Billing")
+    assert html =~ ~s(id="Billing-legend")
+    assert html =~ ~s(id="Billing-description")
+    assert html =~ ~s(id="Billing-error")
+    assert html =~ ~s(aria-describedby="Billing-description Billing-error")
+    assert html =~ ~s(aria-invalid="true")
+    assert html =~ ~s(role="alert")
+  end
 end

@@ -43,6 +43,13 @@ defmodule ExoUI.Components.InputTest do
     assert html =~ "I agree"
   end
 
+  test "does not submit checkbox false fallback when disabled" do
+    assigns = %{}
+    html = rendered_to_string(~H|<.input type="checkbox" name="agree" disabled />|)
+
+    assert html =~ ~s(type="hidden" name="agree" value="false" disabled)
+  end
+
   test "shows errors" do
     assigns = %{}
 
@@ -53,6 +60,54 @@ defmodule ExoUI.Components.InputTest do
 
     assert html =~ ~s(data-invalid)
     assert html =~ "is required"
+  end
+
+  test "connects description and errors with aria-describedby" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(
+        ~H|<.input type="email" name="email" value="" description="Work email" errors={["is invalid"]} />|
+      )
+
+    assert html =~ ~s(id="email")
+    assert html =~ ~s(id="email-description")
+    assert html =~ ~s(id="email-error")
+    assert html =~ ~s(aria-describedby="email-description email-error")
+    assert html =~ ~s(aria-invalid="true")
+    assert html =~ ~s(role="alert")
+  end
+
+  test "connects textarea description and errors with aria" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(
+        ~H|<.input type="textarea" name="bio" value="" description="Short bio" errors={["too short"]} />|
+      )
+
+    assert html =~ ~s(id="bio")
+    assert html =~ ~s(aria-describedby="bio-description bio-error")
+    assert html =~ ~s(aria-invalid="true")
+  end
+
+  test "connects checkbox description and errors with aria" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H|<.input
+  type="checkbox"
+  name="agree"
+  label="Agree"
+  description="Required for signup"
+  errors={["must be accepted"]}
+/>|)
+
+    assert html =~ ~s(id="agree")
+    assert html =~ ~s(id="agree-description")
+    assert html =~ ~s(id="agree-error")
+    assert html =~ ~s(aria-describedby="agree-description agree-error")
+    assert html =~ ~s(aria-invalid="true")
   end
 
   test "renders description" do

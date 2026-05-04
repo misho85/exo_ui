@@ -25,4 +25,22 @@ defmodule ExoUI.Components.FileInputTest do
     assert html =~ ~s(accept="image/*")
     assert html =~ "multiple"
   end
+
+  test "connects description and errors with aria-describedby" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(
+        ~H|<.file_input name="avatar" label="Avatar" description="PNG or JPG" errors={["is required"]} />|
+      )
+
+    assert html =~ ~s(id="avatar")
+    assert html =~ ~s(for="avatar")
+    assert html =~ ~s(id="avatar-description")
+    assert html =~ ~s(id="avatar-error")
+    assert html =~ ~s(aria-describedby="avatar-description avatar-error")
+    assert html =~ ~s(aria-invalid="true")
+    assert html =~ ~s(data-invalid)
+    assert html =~ ~s(role="alert")
+  end
 end

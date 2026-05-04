@@ -74,4 +74,21 @@ defmodule ExoUI.Components.SliderTest do
     html = rendered_to_string(~H|<.slider name="vol" disabled />|)
     assert html =~ "disabled"
   end
+
+  test "connects label, description and errors with aria" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(
+        ~H|<.slider name="volume" label="Volume" description="Set volume" errors={["out of range"]} />|
+      )
+
+    assert html =~ ~s(id="volume")
+    assert html =~ ~s(for="volume")
+    assert html =~ ~s(id="volume-description")
+    assert html =~ ~s(id="volume-error")
+    assert html =~ ~s(aria-describedby="volume-description volume-error")
+    assert html =~ ~s(aria-invalid="true")
+    assert html =~ ~s(data-invalid)
+  end
 end

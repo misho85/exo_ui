@@ -8,7 +8,12 @@ defmodule Storybook.Components.Combobox do
     <div style="display: flex; flex-direction: column; gap: 3rem; padding: 2rem; max-width: 20rem;">
       <div>
         <h3>Client-side filter</h3>
-        <ExoUI.Components.combobox id="cb-client" name="country" filter="client" prompt="Search countries...">
+        <ExoUI.Components.combobox
+          id="cb-client"
+          name="country"
+          filter="client"
+          prompt="Search countries..."
+        >
           <:option value="rs">Serbia</:option>
           <:option value="hr">Croatia</:option>
           <:option value="ba">Bosnia &amp; Herzegovina</:option>
@@ -20,7 +25,15 @@ defmodule Storybook.Components.Combobox do
 
       <div>
         <h3>With value selected</h3>
-        <ExoUI.Components.combobox id="cb-selected" name="lang" value="elixir" filter="client" prompt="Search...">
+        <ExoUI.Components.combobox
+          id="cb-selected"
+          name="lang"
+          value="elixir"
+          label="Language"
+          description="Choose the primary implementation language."
+          filter="client"
+          prompt="Search..."
+        >
           <:option value="elixir">Elixir</:option>
           <:option value="rust">Rust</:option>
           <:option value="go">Go</:option>
@@ -30,7 +43,13 @@ defmodule Storybook.Components.Combobox do
 
       <div>
         <h3>Input trigger (autocomplete)</h3>
-        <ExoUI.Components.combobox id="cb-input" name="city" trigger="input" filter="client" prompt="Type a city...">
+        <ExoUI.Components.combobox
+          id="cb-input"
+          name="city"
+          trigger="input"
+          filter="client"
+          prompt="Type a city..."
+        >
           <:option value="bg">Belgrade</:option>
           <:option value="zg">Zagreb</:option>
           <:option value="sa">Sarajevo</:option>
@@ -40,10 +59,33 @@ defmodule Storybook.Components.Combobox do
 
       <div>
         <h3>With empty state</h3>
-        <ExoUI.Components.combobox id="cb-empty" name="x" filter="client" prompt="Search (try 'zzz')...">
+        <ExoUI.Components.combobox
+          id="cb-empty"
+          name="x"
+          label="Result"
+          description="Type a query to filter client-side options."
+          filter="client"
+          prompt="Search (try 'zzz')..."
+        >
           <:option value="a">Alpha</:option>
           <:option value="b">Beta</:option>
           <:empty>No results found</:empty>
+        </ExoUI.Components.combobox>
+      </div>
+
+      <div>
+        <h3>With errors</h3>
+        <ExoUI.Components.combobox
+          id="cb-error"
+          name="team"
+          label="Team"
+          description="Required for routing ownership."
+          errors={["can't be blank"]}
+          filter="client"
+          prompt="Choose a team..."
+        >
+          <:option value="design">Design</:option>
+          <:option value="engineering">Engineering</:option>
         </ExoUI.Components.combobox>
       </div>
     </div>

@@ -18,6 +18,13 @@ defmodule ExoUI.Components.ToggleTest do
     assert html =~ ~s(data-checked)
   end
 
+  test "does not submit toggle false fallback when disabled" do
+    assigns = %{}
+    html = rendered_to_string(~H|<.toggle name="active" disabled />|)
+
+    assert html =~ ~s(type="hidden" name="active" value="false" disabled)
+  end
+
   test "renders toggle with label" do
     assigns = %{}
     html = rendered_to_string(~H|<.toggle name="active" label="Active" />|)
@@ -37,6 +44,9 @@ defmodule ExoUI.Components.ToggleTest do
     html = rendered_to_string(~H|<.toggle name="active" errors={["must be accepted"]} />|)
     assert html =~ ~s(data-exo="field-error")
     assert html =~ "must be accepted"
+    assert html =~ ~s(id="active-error")
+    assert html =~ ~s(aria-describedby="active-error")
+    assert html =~ ~s(aria-invalid="true")
   end
 
   test "renders toggle with description" do
@@ -49,6 +59,8 @@ defmodule ExoUI.Components.ToggleTest do
 
     assert html =~ ~s(data-exo="field-description")
     assert html =~ "Enable notifications"
+    assert html =~ ~s(id="active-description")
+    assert html =~ ~s(aria-describedby="active-description")
   end
 
   test "renders toggle without field wrapper when no label or errors" do

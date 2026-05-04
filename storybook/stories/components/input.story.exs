@@ -15,31 +15,85 @@ defmodule Storybook.Components.Input do
     [
       %Variation{
         id: :text,
-        attributes: %{type: "text", name: "name", value: "", label: "Full Name", placeholder: "John Doe"}
+        attributes: %{
+          type: "text",
+          id: "input-name",
+          name: "name",
+          value: "",
+          label: "Full Name",
+          description: "Use the name shown on invoices.",
+          placeholder: "John Doe"
+        }
       },
       %Variation{
         id: :email,
-        attributes: %{type: "email", name: "email", value: "", label: "Email"}
+        attributes: %{type: "email", id: "input-email", name: "email", value: "", label: "Email"}
       },
       %Variation{
         id: :password,
-        attributes: %{type: "password", name: "pass", value: "", label: "Password"}
+        attributes: %{
+          type: "password",
+          id: "input-password",
+          name: "pass",
+          value: "",
+          label: "Password"
+        }
       },
       %Variation{
         id: :textarea,
-        attributes: %{type: "textarea", name: "bio", value: "", label: "Bio"}
+        attributes: %{
+          type: "textarea",
+          id: "input-bio",
+          name: "bio",
+          value: "",
+          label: "Bio",
+          description: "Max 160 characters."
+        }
       },
       %Variation{
         id: :with_error,
-        attributes: %{type: "text", name: "email", value: "bad", label: "Email", errors: ["is invalid"]}
+        attributes: %{
+          type: "text",
+          id: "input-email-error",
+          name: "email",
+          value: "bad",
+          label: "Email",
+          description: "We'll send a confirmation link.",
+          errors: ["is invalid"]
+        }
       },
       %Variation{
         id: :checkbox,
-        attributes: %{type: "checkbox", name: "agree", label: "I agree to the terms", value: "false"}
+        attributes: %{
+          type: "checkbox",
+          id: "input-agree",
+          name: "agree",
+          label: "I agree to the terms",
+          description: "Required before creating an account.",
+          value: "false"
+        }
+      },
+      %Variation{
+        id: :checkbox_error,
+        attributes: %{
+          type: "checkbox",
+          id: "input-terms-error",
+          name: "terms",
+          label: "Accept terms",
+          description: "You need to accept the current terms.",
+          errors: ["must be accepted"],
+          value: "false"
+        }
       },
       %Variation{
         id: :checkbox_checked,
-        attributes: %{type: "checkbox", name: "agree", label: "Already checked", value: "true"}
+        attributes: %{
+          type: "checkbox",
+          id: "input-agree-checked",
+          name: "agree",
+          label: "Already checked",
+          value: "true"
+        }
       }
     ]
   end

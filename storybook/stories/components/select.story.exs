@@ -61,7 +61,13 @@ defmodule Storybook.Components.Select do
 
       <div>
         <h3>Disabled</h3>
-        <ExoUI.Components.select id="sel-disabled" name="locked" label="Locked field" disabled prompt="Cannot select">
+        <ExoUI.Components.select
+          id="sel-disabled"
+          name="locked"
+          label="Locked field"
+          disabled
+          prompt="Cannot select"
+        >
           <:option value="a">Option A</:option>
           <:option value="b">Option B</:option>
         </ExoUI.Components.select>
@@ -69,7 +75,14 @@ defmodule Storybook.Components.Select do
 
       <div>
         <h3>With errors</h3>
-        <ExoUI.Components.select id="sel-err" name="x" label="Required field" errors={["can't be blank"]} prompt="Select...">
+        <ExoUI.Components.select
+          id="sel-err"
+          name="x"
+          label="Required field"
+          description="The form cannot be submitted without this value."
+          errors={["can't be blank"]}
+          prompt="Select..."
+        >
           <:option value="a">Option A</:option>
         </ExoUI.Components.select>
       </div>

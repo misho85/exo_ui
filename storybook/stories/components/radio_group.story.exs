@@ -9,6 +9,7 @@ defmodule Storybook.Components.RadioGroup do
       <ExoUI.Components.radio_group
         name="plan"
         label="Select a plan"
+        description="Choose the subscription tier for this workspace."
         value="pro"
         options={[{"Free", "free"}, {"Pro", "pro"}, {"Enterprise", "enterprise"}]}
       />
@@ -23,6 +24,8 @@ defmodule Storybook.Components.RadioGroup do
       <ExoUI.Components.radio_group
         name="frequency"
         label="Billing frequency"
+        description="Required before checkout."
+        errors={["choose a billing frequency"]}
         options={[{"Monthly", "monthly"}, {"Yearly", "yearly"}]}
       />
     </div>

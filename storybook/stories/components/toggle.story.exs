@@ -12,6 +12,19 @@ defmodule Storybook.Components.Toggle do
       %Variation{
         id: :on,
         attributes: %{checked: true}
+      },
+      %Variation{
+        id: :with_label,
+        attributes: %{
+          name: "notifications",
+          checked: true,
+          label: "Notifications",
+          description: "Send product updates by email."
+        }
+      },
+      %Variation{
+        id: :with_error,
+        attributes: %{name: "terms", label: "Accept terms", errors: ["must be accepted"]}
       }
     ]
   end

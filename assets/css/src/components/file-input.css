@@ -28,6 +28,15 @@
   background: var(--exo-accent);
 }
 
+:where([data-exo="file-input"][data-invalid]) {
+  border-color: var(--exo-danger);
+}
+
+:where([data-exo="file-input"][data-invalid]):focus-visible {
+  outline: 2px solid color-mix(in oklch, var(--exo-danger) 35%, transparent);
+  outline-offset: 2px;
+}
+
 :where([data-exo="file-input"]:disabled) {
   opacity: 0.5;
   cursor: not-allowed;
