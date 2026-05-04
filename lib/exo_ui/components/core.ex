@@ -234,15 +234,39 @@ defmodule ExoUI.Components.Core do
   end
 
   @doc "Renders a scrollable container with custom scrollbar styling."
+  attr :id, :string, default: nil
+  attr :aria_label, :string, default: nil
+  attr :viewport_class, :any, default: nil
+  attr :viewport_id, :string, default: nil
+  attr :tabindex, :string, default: "0"
   attr :class, :any, default: nil
   attr :orientation, :string, values: ~w(vertical horizontal both), default: "vertical"
   attr :rest, :global
   slot :inner_block, required: true
 
   def scroll_area(assigns) do
+    assigns =
+      assign(assigns,
+        role: if(assigns[:aria_label], do: "region"),
+        viewport_id: assigns[:viewport_id] || (assigns[:id] && "#{assigns[:id]}-viewport")
+      )
+
     ~H"""
-    <div data-exo="scroll-area" data-orientation={@orientation} class={@class} {@rest}>
-      <div data-exo="scroll-area-viewport">
+    <div
+      id={@id}
+      data-exo="scroll-area"
+      data-orientation={@orientation}
+      role={@role}
+      aria-label={@aria_label}
+      class={@class}
+      {@rest}
+    >
+      <div
+        id={@viewport_id}
+        data-exo="scroll-area-viewport"
+        tabindex={@tabindex}
+        class={@viewport_class}
+      >
         {render_slot(@inner_block)}
       </div>
     </div>

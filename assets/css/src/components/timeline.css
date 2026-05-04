@@ -2,6 +2,9 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 :where([data-exo="timeline-event"]) {
@@ -32,6 +35,11 @@
 :where([data-exo="timeline-event"][data-variant="primary"] [data-exo="timeline-indicator"]) {
   background: var(--exo-primary);
   outline-color: var(--exo-primary);
+}
+
+:where([data-exo="timeline-event"][aria-current="step"] [data-exo="timeline-indicator"]) {
+  background: var(--exo-success);
+  outline-color: var(--exo-success);
 }
 
 :where([data-exo="timeline-connector"]) {

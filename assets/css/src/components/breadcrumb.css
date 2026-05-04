@@ -29,7 +29,7 @@
   color: var(--exo-foreground);
 }
 
-:where([data-exo="breadcrumb-item"] span[aria-current="page"]) {
+:where([data-exo="breadcrumb-current"]) {
   color: var(--exo-foreground);
   font-weight: 500;
 }

@@ -259,6 +259,8 @@ defmodule ExoUI.Components.DataDisplay do
   end
 
   @doc "Renders a breadcrumb navigation trail."
+  attr :aria_label, :string, default: "Breadcrumb"
+  attr :separator, :string, default: "/"
   attr :class, :any, default: nil
   attr :rest, :global
 
@@ -266,26 +268,56 @@ defmodule ExoUI.Components.DataDisplay do
     attr :href, :string
     attr :navigate, :string
     attr :patch, :string
+    attr :current, :boolean
   end
 
   def breadcrumb(assigns) do
+    assigns = assign(assigns, :item_count, length(assigns.item))
+
     ~H"""
-    <nav data-exo="breadcrumb" aria-label="Breadcrumb" class={@class} {@rest}>
+    <nav data-exo="breadcrumb" aria-label={@aria_label} class={@class} {@rest}>
       <ol>
         <li :for={{item, idx} <- Enum.with_index(@item)} data-exo="breadcrumb-item">
-          <span :if={idx > 0} data-exo="breadcrumb-separator">/</span>
-          <.link :if={item[:navigate]} navigate={item.navigate}>{render_slot(item)}</.link>
-          <.link :if={item[:patch] && !item[:navigate]} patch={item.patch}>{render_slot(item)}</.link>
-          <.link :if={item[:href] && !item[:navigate] && !item[:patch]} href={item.href}>
+          <span :if={idx > 0} data-exo="breadcrumb-separator" aria-hidden="true">
+            {@separator}
+          </span>
+          <.link
+            :if={item[:navigate] && !breadcrumb_current?(item, idx, @item_count)}
+            navigate={item.navigate}
+          >
             {render_slot(item)}
           </.link>
-          <span :if={!item[:href] && !item[:navigate] && !item[:patch]} aria-current="page">
+          <.link
+            :if={item[:patch] && !item[:navigate] && !breadcrumb_current?(item, idx, @item_count)}
+            patch={item.patch}
+          >
+            {render_slot(item)}
+          </.link>
+          <.link
+            :if={
+              item[:href] && !item[:navigate] && !item[:patch] &&
+                !breadcrumb_current?(item, idx, @item_count)
+            }
+            href={item.href}
+          >
+            {render_slot(item)}
+          </.link>
+          <span
+            :if={breadcrumb_current?(item, idx, @item_count)}
+            data-exo="breadcrumb-current"
+            aria-current="page"
+          >
             {render_slot(item)}
           </span>
         </li>
       </ol>
     </nav>
     """
+  end
+
+  defp breadcrumb_current?(item, idx, count) do
+    item[:current] == true ||
+      (idx == count - 1 && !item[:href] && !item[:navigate] && !item[:patch])
   end
 
   @doc "Renders a tab bar with click or navigation-based tabs."
@@ -526,68 +558,139 @@ defmodule ExoUI.Components.DataDisplay do
   end
 
   @doc "Renders a chronological timeline of events."
+  attr :aria_label, :string, default: "Timeline"
+  attr :ordered, :boolean, default: false
   attr :class, :any, default: nil
   attr :rest, :global
 
   slot :event, required: true do
     attr :title, :string, required: true
     attr :time, :string
+    attr :datetime, :string
     attr :variant, :string
+    attr :current, :boolean
   end
 
   def timeline(assigns) do
     ~H"""
-    <div data-exo="timeline" class={@class} {@rest}>
-      <div :for={event <- @event} data-exo="timeline-event" data-variant={event[:variant]}>
-        <div data-exo="timeline-indicator" />
-        <div data-exo="timeline-connector" />
-        <div data-exo="timeline-body">
-          <p data-exo="timeline-title">{event.title}</p>
-          <time :if={event[:time]} data-exo="timeline-time">{event.time}</time>
-          <div :if={event.inner_block} data-exo="timeline-content">
-            {render_slot(event)}
-          </div>
+    <ol
+      :if={@ordered}
+      data-exo="timeline"
+      aria-label={@aria_label}
+      class={@class}
+      {@rest}
+    >
+      <.timeline_events events={@event} />
+    </ol>
+    <ul
+      :if={!@ordered}
+      data-exo="timeline"
+      aria-label={@aria_label}
+      class={@class}
+      {@rest}
+    >
+      <.timeline_events events={@event} />
+    </ul>
+    """
+  end
+
+  attr :events, :list, required: true
+
+  defp timeline_events(assigns) do
+    ~H"""
+    <li
+      :for={event <- @events}
+      data-exo="timeline-event"
+      data-variant={event[:variant]}
+      aria-current={event[:current] && "step"}
+    >
+      <div data-exo="timeline-indicator" aria-hidden="true" />
+      <div data-exo="timeline-connector" aria-hidden="true" />
+      <div data-exo="timeline-body">
+        <p data-exo="timeline-title">{event.title}</p>
+        <time :if={event[:time]} data-exo="timeline-time" datetime={event[:datetime]}>
+          {event.time}
+        </time>
+        <div :if={event.inner_block} data-exo="timeline-content">
+          {render_slot(event)}
         </div>
       </div>
-    </div>
+    </li>
     """
   end
 
   @doc "Renders a scrollable carousel of items."
   attr :id, :string, required: true
+  attr :aria_label, :string, default: "Carousel"
+  attr :prev_label, :string, default: "Previous slide"
+  attr :next_label, :string, default: "Next slide"
   attr :class, :any, default: nil
   attr :loop, :boolean, default: false
+  attr :controls, :boolean, default: true
   attr :rest, :global
-  slot :item, required: true
+
+  slot :item, required: true do
+    attr :label, :string
+  end
 
   def carousel(assigns) do
+    assigns = assign(assigns, :slide_count, length(assigns.item))
+
     ~H"""
     <div
       data-exo="carousel"
       id={@id}
       data-loop={@loop || nil}
+      data-slide-count={@slide_count}
       phx-hook="ExoCarousel"
       class={@class}
       role="region"
       aria-roledescription="carousel"
-      aria-label="Carousel"
+      aria-label={@aria_label}
+      tabindex="0"
       {@rest}
     >
-      <div data-exo="carousel-viewport">
-        <div data-exo="carousel-track">
+      <div
+        id={"#{@id}-viewport"}
+        data-exo="carousel-viewport"
+        aria-live="polite"
+        aria-atomic="false"
+      >
+        <div id={"#{@id}-track"} data-exo="carousel-track">
           <div
             :for={{item, idx} <- Enum.with_index(@item)}
+            id={"#{@id}-slide-#{idx + 1}"}
             data-exo="carousel-slide"
             role="group"
             aria-roledescription="slide"
-            aria-label={"Slide #{idx + 1}"}
+            aria-label={item[:label] || "Slide #{idx + 1} of #{@slide_count}"}
           >
             {render_slot(item)}
           </div>
         </div>
       </div>
-      <button data-exo="carousel-prev" aria-label="Previous slide">‹</button>
-      <button data-exo="carousel-next" aria-label="Next slide">›</button>
+      <button
+        :if={@controls}
+        type="button"
+        data-exo="carousel-prev"
+        aria-label={@prev_label}
+        aria-controls={"#{@id}-viewport"}
+        disabled={@slide_count <= 1}
+        data-disabled={@slide_count <= 1 && ""}
+      >
+        ‹
+      </button>
+      <button
+        :if={@controls}
+        type="button"
+        data-exo="carousel-next"
+        aria-label={@next_label}
+        aria-controls={"#{@id}-viewport"}
+        disabled={@slide_count <= 1}
+        data-disabled={@slide_count <= 1 && ""}
+      >
+        ›
+      </button>
     </div>
     """
   end

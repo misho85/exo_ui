@@ -10,7 +10,7 @@ defmodule ExoUI.Components.CarouselTest do
     html =
       rendered_to_string(~H"""
       <.carousel id="c">
-        <:item>Slide 1</:item>
+        <:item label="Intro">Slide 1</:item>
         <:item>Slide 2</:item>
       </.carousel>
       """)
@@ -18,6 +18,12 @@ defmodule ExoUI.Components.CarouselTest do
     assert html =~ ~s(data-exo="carousel")
     assert html =~ ~s(phx-hook="ExoCarousel")
     assert html =~ ~s(data-exo="carousel-slide")
+    assert html =~ ~s(data-slide-count="2")
+    assert html =~ ~s(tabindex="0")
+    assert html =~ ~s(aria-label="Intro")
+    assert html =~ ~s(aria-label="Slide 2 of 2")
+    assert html =~ ~s(id="c-slide-1")
+    assert html =~ ~s(aria-controls="c-viewport")
     assert html =~ "Slide 1"
     assert html =~ "Slide 2"
   end
@@ -47,5 +53,23 @@ defmodule ExoUI.Components.CarouselTest do
 
     assert html =~ ~s(data-exo="carousel-prev")
     assert html =~ ~s(data-exo="carousel-next")
+    assert html =~ ~s(type="button")
+    assert html =~ ~s(disabled)
+    assert html =~ ~s(data-disabled)
+  end
+
+  test "renders carousel without controls" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.carousel id="c" controls={false}>
+        <:item>A</:item>
+        <:item>B</:item>
+      </.carousel>
+      """)
+
+    refute html =~ ~s(data-exo="carousel-prev")
+    refute html =~ ~s(data-exo="carousel-next")
   end
 end

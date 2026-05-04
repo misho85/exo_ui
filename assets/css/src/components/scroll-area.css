@@ -9,6 +9,11 @@
   border-radius: inherit;
 }
 
+:where([data-exo="scroll-area-viewport"]):focus-visible {
+  outline: 2px solid var(--exo-ring);
+  outline-offset: 2px;
+}
+
 :where([data-exo="scroll-area"][data-orientation="vertical"] [data-exo="scroll-area-viewport"]) {
   overflow-y: auto;
   overflow-x: hidden;

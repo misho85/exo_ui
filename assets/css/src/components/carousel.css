@@ -2,6 +2,12 @@
   position: relative;
 }
 
+:where([data-exo="carousel"]):focus-visible {
+  outline: 2px solid var(--exo-ring);
+  outline-offset: 4px;
+  border-radius: var(--exo-radius);
+}
+
 :where([data-exo="carousel-viewport"]) {
   overflow: hidden;
   border-radius: var(--exo-radius);
@@ -43,4 +49,16 @@
 :where([data-exo="carousel-prev"]:hover),
 :where([data-exo="carousel-next"]:hover) {
   background: var(--exo-accent);
+}
+
+:where([data-exo="carousel-prev"]:focus-visible),
+:where([data-exo="carousel-next"]:focus-visible) {
+  outline: 2px solid var(--exo-ring);
+  outline-offset: 2px;
+}
+
+:where([data-exo="carousel-prev"][data-disabled]),
+:where([data-exo="carousel-next"][data-disabled]) {
+  opacity: 0.45;
+  cursor: not-allowed;
 }

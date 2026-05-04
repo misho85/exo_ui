@@ -16,6 +16,7 @@ defmodule ExoUI.Components.BreadcrumbTest do
 
     assert html =~ ~s(data-exo="breadcrumb")
     assert html =~ ~s(aria-label="Breadcrumb")
+    assert html =~ ~s(data-exo="breadcrumb-current")
     assert html =~ "Home"
   end
 
@@ -49,6 +50,7 @@ defmodule ExoUI.Components.BreadcrumbTest do
       """)
 
     assert html =~ ~s(data-exo="breadcrumb-separator")
+    assert html =~ ~s(aria-hidden="true")
   end
 
   test "does not render separator before first item" do
@@ -105,6 +107,24 @@ defmodule ExoUI.Components.BreadcrumbTest do
 
     assert html =~ ~s(aria-current="page")
     assert html =~ "Current"
+  end
+
+  test "renders custom separator and explicit current item" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.breadcrumb aria_label="Project path" separator="›">
+        <:item href="/">Home</:item>
+        <:item href="/docs" current>Docs</:item>
+      </.breadcrumb>
+      """)
+
+    assert html =~ ~s(aria-label="Project path")
+    assert html =~ "›"
+    assert html =~ ~s(data-exo="breadcrumb-current")
+    assert html =~ ~s(aria-current="page")
+    refute html =~ ~s(href="/docs")
   end
 
   test "renders breadcrumb with class" do
