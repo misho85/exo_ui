@@ -10,6 +10,14 @@ defmodule Storybook.Components.Flash do
         Your profile has been updated.
       </ExoUI.Components.flash>
 
+      <ExoUI.Components.flash kind={:success} title="Success" flash={%{}}>
+        Payment method saved.
+      </ExoUI.Components.flash>
+
+      <ExoUI.Components.flash kind={:warning} title="Warning" flash={%{}}>
+        The next sync may take a few minutes.
+      </ExoUI.Components.flash>
+
       <ExoUI.Components.flash kind={:error} title="Error" flash={%{}}>
         Something went wrong. Please try again.
       </ExoUI.Components.flash>

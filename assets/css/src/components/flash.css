@@ -21,7 +21,6 @@
   font-family: var(--exo-font);
   font-size: var(--exo-text-sm);
   box-shadow: var(--exo-shadow-lg);
-  cursor: pointer;
 }
 
 :where([data-exo="flash"][data-kind="info"]) {
@@ -69,6 +68,13 @@
   opacity: 1;
 }
 
+:where([data-exo="flash-close"]):focus-visible,
+:where([data-exo="toast-close"]):focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  border-radius: var(--exo-radius-sm);
+}
+
 /* Toast container */
 :where([data-exo="toast-container"]) {
   position: fixed;
@@ -80,6 +86,30 @@
   gap: var(--exo-space-2);
   max-width: 24rem;
   width: 100%;
+}
+
+:where([data-exo="toast-container"][data-placement="top-right"]) {
+  top: var(--exo-space-4);
+  right: var(--exo-space-4);
+  bottom: auto;
+  left: auto;
+}
+
+:where([data-exo="toast-container"][data-placement="top-left"]) {
+  top: var(--exo-space-4);
+  right: auto;
+  bottom: auto;
+  left: var(--exo-space-4);
+}
+
+:where([data-exo="toast-container"][data-placement="bottom-left"]) {
+  right: auto;
+  left: var(--exo-space-4);
+}
+
+:where([data-exo="toast-container"][data-placement="bottom-right"]) {
+  right: var(--exo-space-4);
+  left: auto;
 }
 
 :where([data-exo="toast"]) {

@@ -2,6 +2,11 @@
   user-select: none;
 }
 
+:where([data-exo="date-picker"][data-invalid] [data-exo="date-picker-container"]) {
+  border-color: var(--exo-danger);
+  box-shadow: 0 0 0 1px color-mix(in oklch, var(--exo-danger) 35%, transparent);
+}
+
 :where([data-exo="date-picker-label"]) {
   display: block;
   font-family: var(--exo-font);
@@ -46,6 +51,12 @@
   background: var(--exo-muted);
 }
 
+:where([data-exo="date-picker-nav"]):focus-visible,
+:where([data-exo="date-picker-day"]):focus-visible {
+  outline: 2px solid var(--exo-ring);
+  outline-offset: 2px;
+}
+
 :where([data-exo="date-picker-nav"][data-disabled]) {
   opacity: 0.3;
   pointer-events: none;
@@ -84,6 +95,7 @@
 }
 
 :where([data-exo="date-picker-day"]) {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -113,6 +125,20 @@
   background: color-mix(in oklch, var(--exo-primary) 10%, transparent);
   color: var(--exo-primary);
   font-weight: 600;
+}
+
+:where([data-exo="date-picker-day"][data-available]:not([data-selected]))::after {
+  content: "";
+  position: absolute;
+  bottom: 0.25rem;
+  width: 0.25rem;
+  height: 0.25rem;
+  border-radius: 9999px;
+  background: var(--exo-success);
+}
+
+:where([data-exo="date-picker-day"][data-unavailable]) {
+  color: var(--exo-muted-foreground);
 }
 
 :where([data-exo="date-picker-day"][data-outside]) {

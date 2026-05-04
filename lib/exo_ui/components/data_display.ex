@@ -11,15 +11,22 @@ defmodule ExoUI.Components.DataDisplay do
   attr :row_id, :any, default: nil
   attr :row_click, :any, default: nil
   attr :row_item, :any, default: &Function.identity/1
+  attr :row_label, :any, default: nil
+  attr :caption, :string, default: nil
+  attr :empty_label, :string, default: "No results."
   attr :actions_label, :string, default: "Actions"
   attr :class, :any, default: nil
   attr :rest, :global
 
   slot :col, required: true do
     attr :label, :string
+    attr :align, :string
+    attr :class, :any
+    attr :header_class, :any
   end
 
   slot :action
+  slot :empty
 
   def table(assigns) do
     assigns =
@@ -27,13 +34,28 @@ defmodule ExoUI.Components.DataDisplay do
         assign(assigns, row_id: assigns.row_id || fn {id, _item} -> id end)
       end
 
+    assigns =
+      assign(assigns,
+        column_count: length(assigns.col) + if(assigns.action == [], do: 0, else: 1),
+        empty?: table_empty?(assigns.rows)
+      )
+
     ~H"""
     <div data-exo="table-wrapper" class={@class} {@rest}>
       <table data-exo="table">
+        <caption :if={@caption} data-exo="table-caption">{@caption}</caption>
         <thead>
           <tr data-exo="table-head-row">
-            <th :for={col <- @col} data-exo="table-head-cell">{col[:label]}</th>
-            <th :if={@action != []} data-exo="table-head-cell">
+            <th
+              :for={col <- @col}
+              data-exo="table-head-cell"
+              data-align={col[:align]}
+              scope="col"
+              class={col[:header_class]}
+            >
+              {col[:label]}
+            </th>
+            <th :if={@action != []} data-exo="table-head-cell" scope="col">
               <span data-exo="sr-only">{@actions_label}</span>
             </th>
           </tr>
@@ -42,15 +64,29 @@ defmodule ExoUI.Components.DataDisplay do
           id={@id}
           phx-update={is_struct(@rows, Phoenix.LiveView.LiveStream) && "stream"}
         >
+          <tr :if={@empty?} data-exo="table-empty-row">
+            <td data-exo="table-empty-cell" colspan={@column_count}>
+              <div data-exo="table-empty">
+                <%= if @empty != [] do %>
+                  {render_slot(@empty)}
+                <% else %>
+                  {@empty_label}
+                <% end %>
+              </div>
+            </td>
+          </tr>
           <tr
             :for={row <- @rows}
             id={@row_id && @row_id.(row)}
             data-exo="table-row"
             data-clickable={@row_click && ""}
+            aria-label={@row_label && @row_label.(@row_item.(row))}
           >
             <td
               :for={col <- @col}
               data-exo="table-cell"
+              data-align={col[:align]}
+              class={col[:class]}
               phx-click={@row_click && @row_click.(row)}
             >
               {render_slot(col, @row_item.(row))}
@@ -66,6 +102,9 @@ defmodule ExoUI.Components.DataDisplay do
     </div>
     """
   end
+
+  defp table_empty?(%Phoenix.LiveView.LiveStream{}), do: false
+  defp table_empty?(rows), do: Enum.empty?(rows)
 
   @doc "Renders a description list of title/content pairs."
   attr :class, :any, default: nil

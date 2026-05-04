@@ -9,13 +9,25 @@ defmodule ExoUI.Components.Feedback do
   attr :id, :string, default: nil
   attr :flash, :map, default: %{}
   attr :title, :string, default: nil
-  attr :kind, :atom, required: true, values: [:info, :error]
-  attr :close_label, :string, default: "close"
+  attr :kind, :atom, required: true, values: [:info, :success, :warning, :error]
+  attr :close_label, :string, default: "Dismiss notification"
   attr :rest, :global
   slot :inner_block
 
   def flash(assigns) do
-    assigns = assign_new(assigns, :id, fn -> "flash-#{assigns.kind}" end)
+    id = assigns[:id] || "flash-#{assigns.kind}"
+
+    assigns =
+      assign(assigns,
+        id: id,
+        role: feedback_role(assigns.kind),
+        live: feedback_live(assigns.kind),
+        title_id: if(assigns[:title], do: "#{id}-title"),
+        message_id: "#{id}-message",
+        dismiss:
+          Phoenix.LiveView.JS.push("lv:clear-flash", value: %{key: assigns.kind})
+          |> Phoenix.LiveView.JS.hide(to: "##{id}")
+      )
 
     ~H"""
     <div
@@ -25,18 +37,20 @@ defmodule ExoUI.Components.Feedback do
       id={@id}
       data-exo="flash"
       data-kind={@kind}
-      role="alert"
-      phx-click={
-        Phoenix.LiveView.JS.push("lv:clear-flash", value: %{key: @kind})
-        |> Phoenix.LiveView.JS.hide(to: "##{@id}")
-      }
+      role={@role}
+      aria-live={@live}
+      aria-atomic="true"
+      aria-labelledby={@title_id}
+      aria-describedby={@message_id}
       {@rest}
     >
       <div data-exo="flash-content">
-        <p :if={@title} data-exo="flash-title">{@title}</p>
-        <p data-exo="flash-message">{msg}</p>
+        <p :if={@title} id={@title_id} data-exo="flash-title">{@title}</p>
+        <p id={@message_id} data-exo="flash-message">{msg}</p>
       </div>
-      <button data-exo="flash-close" aria-label={@close_label}>✕</button>
+      <button type="button" data-exo="flash-close" aria-label={@close_label} phx-click={@dismiss}>
+        ✕
+      </button>
     </div>
     """
   end
@@ -78,23 +92,41 @@ defmodule ExoUI.Components.Feedback do
 
   @doc "Renders a stream-based toast notification container."
   attr :toasts, :any, default: []
-  attr :close_label, :string, default: "close"
+  attr :id, :string, default: "toast-container"
+  attr :close_label, :string, default: "Dismiss notification"
+
+  attr :placement, :string,
+    values: ~w(top-right top-left bottom-right bottom-left),
+    default: "bottom-right"
+
+  attr :rest, :global
 
   def toast_container(assigns) do
     ~H"""
-    <div data-exo="toast-container" id="toast-container" phx-update="stream">
+    <div
+      data-exo="toast-container"
+      id={@id}
+      data-placement={@placement}
+      phx-update="stream"
+      {@rest}
+    >
       <div
         :for={{dom_id, toast} <- @toasts}
         id={dom_id}
         data-exo="toast"
         data-kind={toast.kind}
-        role="alert"
+        role={feedback_role(toast.kind)}
+        aria-live={feedback_live(toast.kind)}
+        aria-atomic="true"
+        aria-labelledby={toast[:title] && "#{dom_id}-title"}
+        aria-describedby={"#{dom_id}-message"}
       >
         <div data-exo="toast-content">
-          <p :if={toast[:title]} data-exo="toast-title">{toast.title}</p>
-          <p data-exo="toast-message">{toast.message}</p>
+          <p :if={toast[:title]} id={"#{dom_id}-title"} data-exo="toast-title">{toast.title}</p>
+          <p id={"#{dom_id}-message"} data-exo="toast-message">{toast.message}</p>
         </div>
         <button
+          type="button"
           data-exo="toast-close"
           phx-click={Phoenix.LiveView.JS.hide(to: "##{dom_id}")}
           aria-label={@close_label}
@@ -105,6 +137,12 @@ defmodule ExoUI.Components.Feedback do
     </div>
     """
   end
+
+  defp feedback_role(kind) when kind in [:error, :warning, "error", "warning"], do: "alert"
+  defp feedback_role(_kind), do: "status"
+
+  defp feedback_live(kind) when kind in [:error, :warning, "error", "warning"], do: "assertive"
+  defp feedback_live(_kind), do: "polite"
 
   @doc "Renders an alert banner with kind-based styling (info, success, warning, error)."
   attr :kind, :atom, required: true, values: [:info, :success, :warning, :error]

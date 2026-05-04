@@ -879,13 +879,25 @@ defmodule ExoUI.Components.Form do
   attr :on_select, :string, default: "select-date"
   attr :on_prev_month, :string, default: "prev-month"
   attr :on_next_month, :string, default: "next-month"
+  attr :name, :string, default: nil
   attr :label, :string, default: nil
+  attr :description, :string, default: nil
+  attr :errors, :list, default: []
   attr :class, :any, default: nil
   attr :disabled, :boolean, default: false
+  attr :rest, :global
 
   def date_picker(assigns) do
+    assigns = prepare_basic_field(assigns)
     today = Date.utc_today()
-    current = assigns[:current_month] || today
+    selected = normalize_date(assigns[:selected])
+    current = normalize_date(assigns[:current_month]) || selected || today
+    min_date = normalize_date(assigns[:min])
+    max_date = normalize_date(assigns[:max])
+
+    available_dates =
+      Enum.reject(Enum.map(assigns[:available_dates] || [], &normalize_date/1), &is_nil/1)
+
     first_of_month = Date.beginning_of_month(current)
     last_of_month = Date.end_of_month(current)
 
@@ -895,22 +907,26 @@ defmodule ExoUI.Components.Form do
 
     days = Enum.map(0..41, fn i -> Date.add(grid_start, i) end)
     weeks = Enum.chunk_every(days, 7)
-    available_set = MapSet.new(assigns[:available_dates] || [])
+    available_set = MapSet.new(available_dates)
 
     can_prev =
-      case assigns[:min] do
+      case min_date do
         nil -> true
         min_date -> Date.compare(first_of_month, Date.beginning_of_month(min_date)) == :gt
       end
 
     can_next =
-      case assigns[:max] do
+      case max_date do
         nil -> true
         max_date -> Date.compare(last_of_month, max_date) == :lt
       end
 
     assigns =
       assign(assigns,
+        selected: selected,
+        min: min_date,
+        max: max_date,
+        available_dates: available_dates,
         today: today,
         current: current,
         weeks: weeks,
@@ -920,26 +936,37 @@ defmodule ExoUI.Components.Form do
       )
 
     ~H"""
-    <div id={@id} data-exo="date-picker" class={@class}>
-      <span :if={@label} data-exo="date-picker-label">{@label}</span>
+    <div
+      id={@id}
+      data-exo="date-picker"
+      data-invalid={@errors != [] && ""}
+      class={@class}
+      role="group"
+      aria-labelledby={@label_id}
+      aria-describedby={@describedby}
+      aria-invalid={if @errors != [], do: "true"}
+      {@rest}
+    >
+      <label :if={@label} id={@label_id} data-exo="date-picker-label">{@label}</label>
       <div data-exo="date-picker-container">
-        <%!-- Header: Month navigation --%>
         <div data-exo="date-picker-header">
           <button
             type="button"
             data-exo="date-picker-nav"
+            aria-label="Previous month"
             phx-click={@on_prev_month}
             disabled={!@can_prev || @disabled}
             data-disabled={(!@can_prev || @disabled) && ""}
           >
             ‹
           </button>
-          <span data-exo="date-picker-month">
+          <span id={"#{@id}-month"} data-exo="date-picker-month" aria-live="polite">
             {Calendar.strftime(@current, "%B %Y")}
           </span>
           <button
             type="button"
             data-exo="date-picker-nav"
+            aria-label="Next month"
             phx-click={@on_next_month}
             disabled={!@can_next || @disabled}
             data-disabled={(!@can_next || @disabled) && ""}
@@ -948,16 +975,24 @@ defmodule ExoUI.Components.Form do
           </button>
         </div>
 
-        <%!-- Weekday headers --%>
-        <div data-exo="date-picker-weekdays">
-          <div :for={day_name <- ~w(Mon Tue Wed Thu Fri Sat Sun)} data-exo="date-picker-weekday">
+        <div data-exo="date-picker-weekdays" role="row">
+          <div
+            :for={day_name <- ~w(Mon Tue Wed Thu Fri Sat Sun)}
+            data-exo="date-picker-weekday"
+            role="columnheader"
+            aria-label={weekday_label(day_name)}
+          >
             {day_name}
           </div>
         </div>
 
-        <%!-- Calendar grid --%>
-        <div data-exo="date-picker-grid">
-          <div :for={week <- @weeks} data-exo="date-picker-week">
+        <div
+          data-exo="date-picker-grid"
+          role="grid"
+          aria-labelledby={"#{@id}-month"}
+          aria-readonly="true"
+        >
+          <div :for={week <- @weeks} data-exo="date-picker-week" role="row">
             <%= for day <- week do %>
               <% in_month = day.month == @current.month and day.year == @current.year
               is_today = day == @today
@@ -976,6 +1011,17 @@ defmodule ExoUI.Components.Form do
                 data-outside={!in_month && ""}
                 data-disabled={is_disabled && ""}
                 data-available={has_availability && in_month && ""}
+                data-unavailable={
+                  @available_dates != [] && in_month && !has_availability && !is_disabled && ""
+                }
+                role="gridcell"
+                aria-label={
+                  date_aria_label(day, is_selected, is_today, is_disabled, has_availability, in_month)
+                }
+                aria-selected={to_string(is_selected)}
+                aria-current={if is_today && in_month, do: "date"}
+                aria-disabled={to_string(is_disabled)}
+                tabindex={date_tabindex(is_selected, is_today, in_month, is_disabled)}
                 phx-click={unless(is_disabled, do: @on_select)}
                 phx-value-date={Date.to_iso8601(day)}
                 disabled={is_disabled}
@@ -986,9 +1032,60 @@ defmodule ExoUI.Components.Form do
           </div>
         </div>
       </div>
+      <input
+        :if={@name}
+        type="hidden"
+        name={@name}
+        value={date_input_value(@selected)}
+        disabled={@disabled}
+      />
+      <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
+      <.field_errors id={@error_id} errors={@errors} />
     </div>
     """
   end
+
+  defp weekday_label("Mon"), do: "Monday"
+  defp weekday_label("Tue"), do: "Tuesday"
+  defp weekday_label("Wed"), do: "Wednesday"
+  defp weekday_label("Thu"), do: "Thursday"
+  defp weekday_label("Fri"), do: "Friday"
+  defp weekday_label("Sat"), do: "Saturday"
+  defp weekday_label("Sun"), do: "Sunday"
+
+  defp date_aria_label(day, selected?, today?, disabled?, available?, in_month?) do
+    base = Calendar.strftime(day, "%B %-d, %Y")
+
+    [
+      base,
+      selected? && "selected",
+      today? && in_month? && "today",
+      disabled? && "unavailable",
+      available? && in_month? && "available"
+    ]
+    |> Enum.filter(&(&1 not in [false, nil]))
+    |> Enum.join(", ")
+  end
+
+  defp date_tabindex(true, _today?, _in_month?, false), do: "0"
+  defp date_tabindex(false, true, true, false), do: "0"
+  defp date_tabindex(_selected?, _today?, _in_month?, _disabled?), do: "-1"
+
+  defp date_input_value(nil), do: ""
+  defp date_input_value(%Date{} = date), do: Date.to_iso8601(date)
+  defp date_input_value(value), do: to_string(value)
+
+  defp normalize_date(%Date{} = date), do: date
+  defp normalize_date(nil), do: nil
+
+  defp normalize_date(value) when is_binary(value) do
+    case Date.from_iso8601(value) do
+      {:ok, date} -> date
+      {:error, _reason} -> nil
+    end
+  end
+
+  defp normalize_date(_value), do: nil
 
   @doc "Renders a star rating input."
   attr :name, :string, required: true
