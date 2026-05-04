@@ -20,7 +20,8 @@
   transition: background var(--exo-duration) var(--exo-easing);
 }
 
-:where([data-exo="toggle"][data-checked] [data-exo="toggle-track"]) {
+:where([data-exo="toggle"][data-checked] [data-exo="toggle-track"],
+[data-exo="toggle"]:has(input[type="checkbox"]:checked) [data-exo="toggle-track"]) {
   background: var(--exo-primary);
 }
 
@@ -35,8 +36,14 @@
   transition: transform var(--exo-duration) var(--exo-easing);
 }
 
-:where([data-exo="toggle"][data-checked] [data-exo="toggle-thumb"]) {
+:where([data-exo="toggle"][data-checked] [data-exo="toggle-thumb"],
+[data-exo="toggle"]:has(input[type="checkbox"]:checked) [data-exo="toggle-thumb"]) {
   transform: translateX(1rem);
+}
+
+:where([data-exo="toggle"] input[type="checkbox"]:focus-visible + [data-exo="toggle-track"]) {
+  outline: 2px solid var(--exo-ring);
+  outline-offset: 2px;
 }
 
 :where([data-exo="toggle"]:has(input:disabled)) {

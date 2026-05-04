@@ -10,6 +10,14 @@ defmodule ExoUI.Components.ToggleTest do
     assert html =~ ~s(data-exo="toggle")
     assert html =~ ~s(data-exo="toggle-track")
     assert html =~ ~s(data-exo="toggle-thumb")
+    assert html =~ ~s(role="switch")
+    assert html =~ ~s(aria-label="Toggle")
+  end
+
+  test "renders custom aria label for unlabeled toggle" do
+    assigns = %{}
+    html = rendered_to_string(~H|<.toggle aria_label="Enable email alerts" />|)
+    assert html =~ ~s(aria-label="Enable email alerts")
   end
 
   test "renders checked toggle" do
@@ -29,6 +37,8 @@ defmodule ExoUI.Components.ToggleTest do
     assigns = %{}
     html = rendered_to_string(~H|<.toggle name="active" label="Active" />|)
     assert html =~ ~s(data-exo="field")
+    assert html =~ ~s(role="switch")
+    refute html =~ ~s(aria-label="Toggle")
     assert html =~ "Active"
   end
 

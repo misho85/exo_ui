@@ -29,8 +29,8 @@ defmodule ExoUI.Components.Form do
   attr :field, Phoenix.HTML.FormField, doc: "a form field struct"
   attr :id, :any, default: nil
   attr :type, :string, default: "text"
-  attr :name, :any
-  attr :value, :any
+  attr :name, :any, default: nil
+  attr :value, :any, default: nil
   attr :label, :string, default: nil
   attr :description, :string, default: nil
   attr :errors, :list, default: []
@@ -185,7 +185,7 @@ defmodule ExoUI.Components.Form do
   defp checkbox_control(assigns) do
     ~H"""
     <label data-exo="checkbox-item" for={@id}>
-      <input type="hidden" name={@name} value="false" disabled={@rest[:disabled]} />
+      <input :if={@name} type="hidden" name={@name} value="false" disabled={@rest[:disabled]} />
       <input
         id={@id}
         type="checkbox"
@@ -242,6 +242,7 @@ defmodule ExoUI.Components.Form do
   attr :checked, :boolean, default: false
   attr :name, :string, default: nil
   attr :label, :string, default: nil
+  attr :aria_label, :string, default: nil
   attr :description, :string, default: nil
   attr :errors, :list, default: []
   attr :class, :any, default: nil
@@ -261,7 +262,12 @@ defmodule ExoUI.Components.Form do
   def toggle(assigns) do
     assigns = prepare_basic_field(assigns)
     wrap? = assigns.label != nil or assigns.description != nil or assigns.errors != []
-    assigns = assign(assigns, :wrap, wrap?)
+
+    assigns =
+      assign(assigns,
+        wrap: wrap?,
+        input_label: assigns.aria_label || if(assigns.label, do: nil, else: "Toggle")
+      )
 
     ~H"""
     <div :if={@wrap} data-exo="field">
@@ -273,6 +279,8 @@ defmodule ExoUI.Components.Form do
           name={@name}
           value="true"
           checked={@checked}
+          role="switch"
+          aria-label={@input_label}
           aria-invalid={if @errors != [], do: "true"}
           aria-describedby={@describedby}
           class={@class}
@@ -294,6 +302,8 @@ defmodule ExoUI.Components.Form do
         name={@name}
         value="true"
         checked={@checked}
+        role="switch"
+        aria-label={@input_label}
         aria-invalid={if @errors != [], do: "true"}
         aria-describedby={@describedby}
         class={@class}

@@ -50,6 +50,13 @@ defmodule ExoUI.Components.InputTest do
     assert html =~ ~s(type="hidden" name="agree" value="false" disabled)
   end
 
+  test "does not render checkbox false fallback without a name" do
+    assigns = %{}
+    html = rendered_to_string(~H|<.input type="checkbox" label="Agree" />|)
+
+    refute html =~ ~s(type="hidden")
+  end
+
   test "shows errors" do
     assigns = %{}
 

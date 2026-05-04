@@ -54,4 +54,25 @@ test.describe("core action components", () => {
     await expect(swap).toHaveAttribute("aria-checked", "false");
     await expect(input).not.toBeChecked();
   });
+
+  test("toggle exposes switch semantics and updates visual state from the checked input", async ({ page }) => {
+    await gotoStory(page, "/components/actions/toggle");
+
+    const canvas = story(page);
+    const toggle = canvas.locator('[data-exo="toggle"]').first();
+    const input = toggle.locator('input[type="checkbox"]');
+    const thumb = toggle.locator('[data-exo="toggle-thumb"]');
+
+    await expect(input).toHaveAttribute("role", "switch");
+    await expect(input).toHaveAccessibleName("Toggle");
+    await expect(input).not.toBeChecked();
+
+    const before = await thumb.evaluate((node) => getComputedStyle(node).transform);
+    await toggle.click();
+
+    await expect(input).toBeChecked();
+    await expect
+      .poll(async () => thumb.evaluate((node) => getComputedStyle(node).transform))
+      .not.toBe(before);
+  });
 });
