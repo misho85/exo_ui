@@ -1,0 +1,764 @@
+{
+  "version": 1,
+  "updatedAt": "2026-05-04T21:35:00.646Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-04T21-32-01-450Z",
+  "count": 84,
+  "entries": [
+    {
+      "name": "actions/button",
+      "route": "/components/actions/button",
+      "screenshot": "screenshots/actions__button.png",
+      "dataExoCount": 11,
+      "width": 1280,
+      "height": 900,
+      "sha256": "1636a1b4def513248283645b2e0eabb9018c8d378a50f79d0e7cffbae8bc99c5"
+    },
+    {
+      "name": "actions/swap",
+      "route": "/components/actions/swap",
+      "screenshot": "screenshots/actions__swap.png",
+      "dataExoCount": 12,
+      "width": 1280,
+      "height": 900,
+      "sha256": "a84d8a4ed9c190bc61595354737c5cbb2c79bae7022b75ca73e037d9a0d05622"
+    },
+    {
+      "name": "actions/theme_toggle",
+      "route": "/components/actions/theme_toggle",
+      "screenshot": "screenshots/actions__theme_toggle.png",
+      "dataExoCount": 4,
+      "width": 1280,
+      "height": 900,
+      "sha256": "4dbdd1f75ae4f5e51de9c4877f5acb90f155fd4c8e022170d3e6461479a0bdb4"
+    },
+    {
+      "name": "actions/toggle",
+      "route": "/components/actions/toggle",
+      "screenshot": "screenshots/actions__toggle.png",
+      "dataExoCount": 16,
+      "width": 1280,
+      "height": 900,
+      "sha256": "3f96e7cc33c51f28506a9eb826a424e5bf5f7a6788dc2fbabe6a7c0cd035f238"
+    },
+    {
+      "name": "charts/area_chart",
+      "route": "/components/charts/area_chart",
+      "screenshot": "screenshots/charts__area_chart.png",
+      "dataExoCount": 5,
+      "width": 1280,
+      "height": 900,
+      "sha256": "9fa8d359c4b6a925f9778215dede4acc9f71e2193aef8672783fb003b386c61c"
+    },
+    {
+      "name": "charts/area_chart_stacked",
+      "route": "/components/charts/area_chart_stacked",
+      "screenshot": "screenshots/charts__area_chart_stacked.png",
+      "dataExoCount": 5,
+      "width": 1280,
+      "height": 900,
+      "sha256": "d6c0f829a8428861fc51a235b84b2470fb30109d6d3fcc2d4843d95ebe1045db"
+    },
+    {
+      "name": "charts/bar_charts/bar_chart",
+      "route": "/components/charts/bar_charts/bar_chart",
+      "screenshot": "screenshots/charts__bar_charts__bar_chart.png",
+      "dataExoCount": 5,
+      "width": 1280,
+      "height": 900,
+      "sha256": "74acd8dc1d06c0c1807d8908bda21ac69d9617f34ee198a3daaeb2f88432a05e"
+    },
+    {
+      "name": "charts/bar_charts/bar_chart_label",
+      "route": "/components/charts/bar_charts/bar_chart_label",
+      "screenshot": "screenshots/charts__bar_charts__bar_chart_label.png",
+      "dataExoCount": 5,
+      "width": 1280,
+      "height": 900,
+      "sha256": "b7abb13504ea025fca76385ef6a8ab2ffd63dd024f053f710779745b488d24c1"
+    },
+    {
+      "name": "charts/bar_charts/bar_chart_multiple",
+      "route": "/components/charts/bar_charts/bar_chart_multiple",
+      "screenshot": "screenshots/charts__bar_charts__bar_chart_multiple.png",
+      "dataExoCount": 5,
+      "width": 1280,
+      "height": 900,
+      "sha256": "6ab2060e5c6015dced295f92eb737d340c309853d4c9d1a4b77297821f74611f"
+    },
+    {
+      "name": "charts/bar_charts/bar_chart_negative",
+      "route": "/components/charts/bar_charts/bar_chart_negative",
+      "screenshot": "screenshots/charts__bar_charts__bar_chart_negative.png",
+      "dataExoCount": 5,
+      "width": 1280,
+      "height": 900,
+      "sha256": "544c1cda1bc1974f663028aa1ef12fa3c7f072fcb005b8297873a40a1d309627"
+    },
+    {
+      "name": "charts/bar_charts/horizontal_bar_chart",
+      "route": "/components/charts/bar_charts/horizontal_bar_chart",
+      "screenshot": "screenshots/charts__bar_charts__horizontal_bar_chart.png",
+      "dataExoCount": 5,
+      "width": 1280,
+      "height": 900,
+      "sha256": "3dfebe89a895e12cca766d57c15d5706f6a1300359e543715048e37a903ccb96"
+    },
+    {
+      "name": "charts/bar_charts/stacked_bar_chart",
+      "route": "/components/charts/bar_charts/stacked_bar_chart",
+      "screenshot": "screenshots/charts__bar_charts__stacked_bar_chart.png",
+      "dataExoCount": 5,
+      "width": 1280,
+      "height": 900,
+      "sha256": "9a0aeeae1d9c3eafee996cb96b7dddf391d9159292ee5818538ea9b62cf8db27"
+    },
+    {
+      "name": "charts/donut_chart",
+      "route": "/components/charts/donut_chart",
+      "screenshot": "screenshots/charts__donut_chart.png",
+      "dataExoCount": 5,
+      "width": 1280,
+      "height": 900,
+      "sha256": "f4096f77a13c2d672a2caf14503e8098b3dfc3111138ff50a653f9f95c99e552"
+    },
+    {
+      "name": "charts/donut_chart_text",
+      "route": "/components/charts/donut_chart_text",
+      "screenshot": "screenshots/charts__donut_chart_text.png",
+      "dataExoCount": 5,
+      "width": 1280,
+      "height": 900,
+      "sha256": "77674956b13d1a1e4625dbc27c14ed44ed5ad8e1d79f072aa09456c7566a72e3"
+    },
+    {
+      "name": "charts/line_chart",
+      "route": "/components/charts/line_chart",
+      "screenshot": "screenshots/charts__line_chart.png",
+      "dataExoCount": 5,
+      "width": 1280,
+      "height": 900,
+      "sha256": "e21a03cf77416632db8ddf01a5b2ff84c3798d3858fbe3502a04c86e4e09f212"
+    },
+    {
+      "name": "charts/line_chart_multiple",
+      "route": "/components/charts/line_chart_multiple",
+      "screenshot": "screenshots/charts__line_chart_multiple.png",
+      "dataExoCount": 5,
+      "width": 1280,
+      "height": 900,
+      "sha256": "00f3a2b8d86c36edd39d37df3881c5753b4d68a296d0fbc4159409665c3f88c1"
+    },
+    {
+      "name": "charts/overview",
+      "route": "/components/charts/overview",
+      "screenshot": "screenshots/charts__overview.png",
+      "dataExoCount": 81,
+      "width": 1280,
+      "height": 900,
+      "sha256": "591ae0e2b94ef9f3564333d85cc2717a373203f14f1df19dbc408c1ead1e6ade"
+    },
+    {
+      "name": "charts/pie_chart",
+      "route": "/components/charts/pie_chart",
+      "screenshot": "screenshots/charts__pie_chart.png",
+      "dataExoCount": 5,
+      "width": 1280,
+      "height": 900,
+      "sha256": "165a3333e185c84d6b8da8b676f63305b3a4f616624d1cd77a662c4f4e575155"
+    },
+    {
+      "name": "charts/progress_bar",
+      "route": "/components/charts/progress_bar",
+      "screenshot": "screenshots/charts__progress_bar.png",
+      "dataExoCount": 15,
+      "width": 1280,
+      "height": 900,
+      "sha256": "202e00fe7a07e799ec5b026165c720e1bef203032acf83261b11843c850a5906"
+    },
+    {
+      "name": "charts/radar_chart",
+      "route": "/components/charts/radar_chart",
+      "screenshot": "screenshots/charts__radar_chart.png",
+      "dataExoCount": 5,
+      "width": 1280,
+      "height": 900,
+      "sha256": "29f046386c36fedced052916a58c4b75d3cd61a9099872a0d38bb4d4ac5653ea"
+    },
+    {
+      "name": "charts/radial_chart",
+      "route": "/components/charts/radial_chart",
+      "screenshot": "screenshots/charts__radial_chart.png",
+      "dataExoCount": 5,
+      "width": 1280,
+      "height": 900,
+      "sha256": "134d74f09b4549cd347f6b468530191b2e5ca33f946085f8da727875f32f927a"
+    },
+    {
+      "name": "charts/sparkline",
+      "route": "/components/charts/sparkline",
+      "screenshot": "screenshots/charts__sparkline.png",
+      "dataExoCount": 3,
+      "width": 1280,
+      "height": 900,
+      "sha256": "aedee6f47f38f26532d37fa9d193d7999f1e8f21ea3f48a7f55442d22facb965"
+    },
+    {
+      "name": "charts/trend_badge",
+      "route": "/components/charts/trend_badge",
+      "screenshot": "screenshots/charts__trend_badge.png",
+      "dataExoCount": 4,
+      "width": 1280,
+      "height": 900,
+      "sha256": "36ddb0abdf26ed7110133e6e3f48e35871c6536c019fa600bb4715528bc3fed1"
+    },
+    {
+      "name": "data_display/avatar",
+      "route": "/components/data_display/avatar",
+      "screenshot": "screenshots/data_display__avatar.png",
+      "dataExoCount": 24,
+      "width": 1280,
+      "height": 900,
+      "sha256": "ba2570014b6c1bc37e2bbed71574dba19129706dfc1875c6da4a3ec24bf9687b"
+    },
+    {
+      "name": "data_display/chat_bubble",
+      "route": "/components/data_display/chat_bubble",
+      "screenshot": "screenshots/data_display__chat_bubble.png",
+      "dataExoCount": 31,
+      "width": 1280,
+      "height": 900,
+      "sha256": "04c5a9edbb428fddbe4ba79ac4600d335a9756bc02a217942fd93b5e9639e2d1"
+    },
+    {
+      "name": "data_display/content_card",
+      "route": "/components/data_display/content_card",
+      "screenshot": "screenshots/data_display__content_card.png",
+      "dataExoCount": 12,
+      "width": 1280,
+      "height": 900,
+      "sha256": "3cfe56f6f1a477e7287d15ecbedc022ca7d0a3f3cdd4d7160f221415b76779a0"
+    },
+    {
+      "name": "data_display/kbd",
+      "route": "/components/data_display/kbd",
+      "screenshot": "screenshots/data_display__kbd.png",
+      "dataExoCount": 5,
+      "width": 1280,
+      "height": 900,
+      "sha256": "5d5c1cc3eb9b0d25ef74a3d659212bc91ed61770a237f4b29460f40e7974afe0"
+    },
+    {
+      "name": "data_display/list",
+      "route": "/components/data_display/list",
+      "screenshot": "screenshots/data_display__list.png",
+      "dataExoCount": 16,
+      "width": 1280,
+      "height": 900,
+      "sha256": "2fd06eb15900a212f9394d30dccac15919c2693634dc9722b8c4c750ce50c658"
+    },
+    {
+      "name": "data_display/metric_card",
+      "route": "/components/data_display/metric_card",
+      "screenshot": "screenshots/data_display__metric_card.png",
+      "dataExoCount": 11,
+      "width": 1280,
+      "height": 900,
+      "sha256": "36d70299f7958abe77eab15ce55469ec126f45feb8ede91174fc638d48c3016b"
+    },
+    {
+      "name": "data_display/stat_card",
+      "route": "/components/data_display/stat_card",
+      "screenshot": "screenshots/data_display__stat_card.png",
+      "dataExoCount": 32,
+      "width": 1280,
+      "height": 900,
+      "sha256": "0d5b00564d8a459ee3c45bf5894a87cec7ba4f115a9b011cb016eb9c9d23ef91"
+    },
+    {
+      "name": "data_display/table",
+      "route": "/components/data_display/table",
+      "screenshot": "screenshots/data_display__table.png",
+      "dataExoCount": 59,
+      "width": 1280,
+      "height": 900,
+      "sha256": "1f6c3b5df7a4e19b93144cc72fd9fa43b0708a34c06dea7b02f2d0503182645f"
+    },
+    {
+      "name": "data_display/timeline",
+      "route": "/components/data_display/timeline",
+      "screenshot": "screenshots/data_display__timeline.png",
+      "dataExoCount": 25,
+      "width": 1280,
+      "height": 900,
+      "sha256": "ecfcc9dbcd311d7c241cf39f5e75e958f12306240fba9e624c7a6c8b1c729709"
+    },
+    {
+      "name": "feedback/alert",
+      "route": "/components/feedback/alert",
+      "screenshot": "screenshots/feedback__alert.png",
+      "dataExoCount": 19,
+      "width": 1280,
+      "height": 900,
+      "sha256": "9923d3280358230764ecf84e494e262bae53473ed66c2a3233bf3481c0f2a5ef"
+    },
+    {
+      "name": "feedback/badge",
+      "route": "/components/feedback/badge",
+      "screenshot": "screenshots/feedback__badge.png",
+      "dataExoCount": 6,
+      "width": 1280,
+      "height": 900,
+      "sha256": "f140fe97a4a4a09d55dd69f8db8886cd6db51fbd38ad06e3442b7472f46ca562"
+    },
+    {
+      "name": "feedback/empty_state",
+      "route": "/components/feedback/empty_state",
+      "screenshot": "screenshots/feedback__empty_state.png",
+      "dataExoCount": 14,
+      "width": 1280,
+      "height": 900,
+      "sha256": "0157415c060fb07d43b2d5d36b8a953ac0418ec34c220da1c421217fa8bd0e8a"
+    },
+    {
+      "name": "feedback/flash",
+      "route": "/components/feedback/flash",
+      "screenshot": "screenshots/feedback__flash.png",
+      "dataExoCount": 20,
+      "width": 1280,
+      "height": 900,
+      "sha256": "6af2e796b7327d765569a163c5b2ad6c3afccda9927c86cf536a61f47198665f"
+    },
+    {
+      "name": "feedback/flash_group",
+      "route": "/components/feedback/flash_group",
+      "screenshot": "screenshots/feedback__flash_group.png",
+      "dataExoCount": 21,
+      "width": 1280,
+      "height": 900,
+      "sha256": "72c01f123b5dec56ca362cc5ef99b1c4fbcf914d0e7691349dd7286f7c592133"
+    },
+    {
+      "name": "feedback/indicator",
+      "route": "/components/feedback/indicator",
+      "screenshot": "screenshots/feedback__indicator.png",
+      "dataExoCount": 27,
+      "width": 1280,
+      "height": 900,
+      "sha256": "98de11a5004ce822f701fa8ecac53bd63d400f62f29af73a81f91456eaf2e11c"
+    },
+    {
+      "name": "feedback/progress",
+      "route": "/components/feedback/progress",
+      "screenshot": "screenshots/feedback__progress.png",
+      "dataExoCount": 33,
+      "width": 1280,
+      "height": 900,
+      "sha256": "ff3051431c3dac925636f8b0b7187529af0873a5054da9ada11867416f1abbc1"
+    },
+    {
+      "name": "feedback/radial_progress",
+      "route": "/components/feedback/radial_progress",
+      "screenshot": "screenshots/feedback__radial_progress.png",
+      "dataExoCount": 48,
+      "width": 1280,
+      "height": 900,
+      "sha256": "84687d8d97651146a764e69a7fabb049cac77dda10e5f2c9a337cb12b45ef583"
+    },
+    {
+      "name": "feedback/skeleton",
+      "route": "/components/feedback/skeleton",
+      "screenshot": "screenshots/feedback__skeleton.png",
+      "dataExoCount": 22,
+      "width": 1280,
+      "height": 900,
+      "sha256": "ac5d0d5b7974af11b99d94f50e174a1a9b119275437c6cbcec9e92514966625c"
+    },
+    {
+      "name": "feedback/spinner",
+      "route": "/components/feedback/spinner",
+      "screenshot": "screenshots/feedback__spinner.png",
+      "dataExoCount": 4,
+      "width": 1280,
+      "height": 900,
+      "sha256": "b02214357864d0aa3c423cb8fce96b47997d66742de6920be7370f8729df93c7"
+    },
+    {
+      "name": "feedback/toast_container",
+      "route": "/components/feedback/toast_container",
+      "screenshot": "screenshots/feedback__toast_container.png",
+      "dataExoCount": 26,
+      "width": 1280,
+      "height": 900,
+      "sha256": "b5df48ff43192b03fd22ba38d9070021d156d6f3b89adc6823f47a4dc27558e2"
+    },
+    {
+      "name": "forms/combobox",
+      "route": "/components/forms/combobox",
+      "screenshot": "screenshots/forms__combobox.png",
+      "dataExoCount": 180,
+      "width": 1280,
+      "height": 900,
+      "sha256": "89e905033e1812ca2acc8c0a3b730427394bffaa56a809f1a7dc1bae772c036b"
+    },
+    {
+      "name": "forms/combobox_async",
+      "route": "/components/forms/combobox_async",
+      "screenshot": "screenshots/forms__combobox_async.png",
+      "dataExoCount": 18,
+      "width": 1280,
+      "height": 900,
+      "sha256": "8450e991d2b8cee88cf2683b2e60a0cff888fdd9daed81961fd3417c24178626"
+    },
+    {
+      "name": "forms/date_picker",
+      "route": "/components/forms/date_picker",
+      "screenshot": "screenshots/forms__date_picker.png",
+      "dataExoCount": 451,
+      "width": 1280,
+      "height": 900,
+      "sha256": "aee9bb954a7a309036411cfb2b5cabf4e84f00ac921f9571d0f219be5af04dca"
+    },
+    {
+      "name": "forms/fieldset",
+      "route": "/components/forms/fieldset",
+      "screenshot": "screenshots/forms__fieldset.png",
+      "dataExoCount": 27,
+      "width": 1280,
+      "height": 900,
+      "sha256": "1707355c5d2b86f522d606452b606c9c997e146bae96c27936b96577416bc116"
+    },
+    {
+      "name": "forms/file_input",
+      "route": "/components/forms/file_input",
+      "screenshot": "screenshots/forms__file_input.png",
+      "dataExoCount": 15,
+      "width": 1280,
+      "height": 900,
+      "sha256": "4db9b542e3005274d60637137a27ce0d63aa57d1cf324f556220d2f24b4d83ca"
+    },
+    {
+      "name": "forms/form",
+      "route": "/components/forms/form",
+      "screenshot": "screenshots/forms__form.png",
+      "dataExoCount": 15,
+      "width": 1280,
+      "height": 900,
+      "sha256": "aea1f0f9c5e8ae4cec8dc008f91e20b1be3d5b78c61f8f85069549013d411800"
+    },
+    {
+      "name": "forms/input",
+      "route": "/components/forms/input",
+      "screenshot": "screenshots/forms__input.png",
+      "dataExoCount": 33,
+      "width": 1280,
+      "height": 900,
+      "sha256": "18951a52e753b16e9010f19fef01fd572db4ae6d335c1276c9f42106ecd7b09f"
+    },
+    {
+      "name": "forms/radio_group",
+      "route": "/components/forms/radio_group",
+      "screenshot": "screenshots/forms__radio_group.png",
+      "dataExoCount": 55,
+      "width": 1280,
+      "height": 900,
+      "sha256": "a8ee53410394b4ee50503b636b62751de36634b4aeefa75b5b15a8c3a6e8d79b"
+    },
+    {
+      "name": "forms/rating",
+      "route": "/components/forms/rating",
+      "screenshot": "screenshots/forms__rating.png",
+      "dataExoCount": 62,
+      "width": 1280,
+      "height": 900,
+      "sha256": "709c004540b70a215f7c894a2c5a847cc74621cc6f41dadfc0260b72aac4adda"
+    },
+    {
+      "name": "forms/select",
+      "route": "/components/forms/select",
+      "screenshot": "screenshots/forms__select.png",
+      "dataExoCount": 105,
+      "width": 1280,
+      "height": 900,
+      "sha256": "46251c1654c6e095e18041e191612fdd28f2a360c5a268926a329495ba4d5a5f"
+    },
+    {
+      "name": "forms/slider",
+      "route": "/components/forms/slider",
+      "screenshot": "screenshots/forms__slider.png",
+      "dataExoCount": 21,
+      "width": 1280,
+      "height": 900,
+      "sha256": "7e01740a4fbfc715329ba57a0f9af8ffd9a1bf967f5f39939fcf66851d5366ae"
+    },
+    {
+      "name": "layout/accordion",
+      "route": "/components/layout/accordion",
+      "screenshot": "screenshots/layout__accordion.png",
+      "dataExoCount": 112,
+      "width": 1280,
+      "height": 900,
+      "sha256": "f793923f7d09d7d3dd76066c53f705eafabccbb0e4eafc222e9f27b74d1a53f5"
+    },
+    {
+      "name": "layout/card",
+      "route": "/components/layout/card",
+      "screenshot": "screenshots/layout__card.png",
+      "dataExoCount": 55,
+      "width": 1280,
+      "height": 900,
+      "sha256": "1c190da81ba8dd87cda44a2d1894252c33f9ba1c96c058ba74591b8ec6997054"
+    },
+    {
+      "name": "layout/carousel",
+      "route": "/components/layout/carousel",
+      "screenshot": "screenshots/layout__carousel.png",
+      "dataExoCount": 26,
+      "width": 1280,
+      "height": 900,
+      "sha256": "2e77dc178bfe3c5735175ff9d278ba9d2101d9675df49206b7482b00effcb488"
+    },
+    {
+      "name": "layout/collapsible",
+      "route": "/components/layout/collapsible",
+      "screenshot": "screenshots/layout__collapsible.png",
+      "dataExoCount": 15,
+      "width": 1280,
+      "height": 900,
+      "sha256": "1343625a9c3d2eb1a0d258014c7b7848ea6e061dd99bc594af5dfd94d07c1721"
+    },
+    {
+      "name": "layout/footer",
+      "route": "/components/layout/footer",
+      "screenshot": "screenshots/layout__footer.png",
+      "dataExoCount": 15,
+      "width": 1280,
+      "height": 900,
+      "sha256": "434a8b38e2c775c391a1ff3ff7a4ec90ceb2de37eba161453235e2c7396f0e24"
+    },
+    {
+      "name": "layout/header",
+      "route": "/components/layout/header",
+      "screenshot": "screenshots/layout__header.png",
+      "dataExoCount": 13,
+      "width": 1280,
+      "height": 900,
+      "sha256": "986ecbd13bbd9bc46b6e8638e6a71bc50c15e4d7a66145ae0cd4072179998eaa"
+    },
+    {
+      "name": "layout/hero",
+      "route": "/components/layout/hero",
+      "screenshot": "screenshots/layout__hero.png",
+      "dataExoCount": 14,
+      "width": 1280,
+      "height": 900,
+      "sha256": "3e34ec51c933cb2be8850f5dddb670ae3df6cabd385ba5758ae1979e48fbf426"
+    },
+    {
+      "name": "layout/icon",
+      "route": "/components/layout/icon",
+      "screenshot": "screenshots/layout__icon.png",
+      "dataExoCount": 0,
+      "width": 1280,
+      "height": 900,
+      "sha256": "c5d332df1e0652c5ae7f45502abfefe35ef9a8e1cc6bfbd3cde7c117b3ccb723"
+    },
+    {
+      "name": "layout/scroll_area",
+      "route": "/components/layout/scroll_area",
+      "screenshot": "screenshots/layout__scroll_area.png",
+      "dataExoCount": 4,
+      "width": 1280,
+      "height": 900,
+      "sha256": "b9dd8846341f528188dcecd943204c9ffb8fbe21e88c94a75a287fb9fd225caf"
+    },
+    {
+      "name": "layout/separator",
+      "route": "/components/layout/separator",
+      "screenshot": "screenshots/layout__separator.png",
+      "dataExoCount": 2,
+      "width": 1280,
+      "height": 900,
+      "sha256": "0a86dd14f14c1c2a096a1d0103a86a0a8ca100b1330a2728326c155366533fb4"
+    },
+    {
+      "name": "layouts/sidebar_layout",
+      "route": "/layouts/sidebar_layout",
+      "screenshot": "screenshots/layouts__sidebar_layout.png",
+      "dataExoCount": 54,
+      "width": 1280,
+      "height": 900,
+      "sha256": "7c4c6866d8c3e46f1f4de38c2b72b3624e935ccd552abcf9f6b48f76d837e3d2"
+    },
+    {
+      "name": "menus/command_palette",
+      "route": "/components/menus/command_palette",
+      "screenshot": "screenshots/menus__command_palette.png",
+      "dataExoCount": 19,
+      "width": 1280,
+      "height": 900,
+      "sha256": "5b085551d445d564eb1655de9e9939ae0c3832ae5cceeb0d7d0a833e78e8288e"
+    },
+    {
+      "name": "menus/context_menu",
+      "route": "/components/menus/context_menu",
+      "screenshot": "screenshots/menus__context_menu.png",
+      "dataExoCount": 8,
+      "width": 1280,
+      "height": 900,
+      "sha256": "425adfc3302e7cade7420aca217da673b3c36ba35b3046fe75de4e9999baa728"
+    },
+    {
+      "name": "menus/dropdown",
+      "route": "/components/menus/dropdown",
+      "screenshot": "screenshots/menus__dropdown.png",
+      "dataExoCount": 54,
+      "width": 1280,
+      "height": 900,
+      "sha256": "a655b590a5e6fddb5bea3a014e5dcaea5bdd2ce1e946fd43a0bbaee2bba5a0ab"
+    },
+    {
+      "name": "menus/dropdown_menu",
+      "route": "/components/menus/dropdown_menu",
+      "screenshot": "screenshots/menus__dropdown_menu.png",
+      "dataExoCount": 51,
+      "width": 1280,
+      "height": 900,
+      "sha256": "829345527dd7d4e66eb75d233163bec40e0075be6461a1a671cd6720395200f5"
+    },
+    {
+      "name": "menus/menubar",
+      "route": "/components/menus/menubar",
+      "screenshot": "screenshots/menus__menubar.png",
+      "dataExoCount": 10,
+      "width": 1280,
+      "height": 900,
+      "sha256": "391935210e72eaa4c19ed4b87802159bed76195705270ab5a8ba63a261077e14"
+    },
+    {
+      "name": "navigation/bottom_nav",
+      "route": "/components/navigation/bottom_nav",
+      "screenshot": "screenshots/navigation__bottom_nav.png",
+      "dataExoCount": 36,
+      "width": 1280,
+      "height": 900,
+      "sha256": "cef442607a092cfb5314668fad7c3721498ae32cae6d91508cd6cd698190b6ac"
+    },
+    {
+      "name": "navigation/breadcrumb",
+      "route": "/components/navigation/breadcrumb",
+      "screenshot": "screenshots/navigation__breadcrumb.png",
+      "dataExoCount": 21,
+      "width": 1280,
+      "height": 900,
+      "sha256": "ecdf7b69f3a022dade2362cc7519fa2dd671dfb011dc57e883ce5db9f60e6594"
+    },
+    {
+      "name": "navigation/navbar",
+      "route": "/components/navigation/navbar",
+      "screenshot": "screenshots/navigation__navbar.png",
+      "dataExoCount": 11,
+      "width": 1280,
+      "height": 900,
+      "sha256": "f9f725f2e9d5ff06f4b13051d786417d93b48ab7e58f5bd02f256cc6d639c391"
+    },
+    {
+      "name": "navigation/pagination",
+      "route": "/components/navigation/pagination",
+      "screenshot": "screenshots/navigation__pagination.png",
+      "dataExoCount": 41,
+      "width": 1280,
+      "height": 900,
+      "sha256": "6ef2b57ce887c41af68ce7129b1cd7cd201e1540b6d7f9d34dc5fb379cf9b228"
+    },
+    {
+      "name": "navigation/steps",
+      "route": "/components/navigation/steps",
+      "screenshot": "screenshots/navigation__steps.png",
+      "dataExoCount": 33,
+      "width": 1280,
+      "height": 900,
+      "sha256": "d5276d37ec4d19ac458081eb5bff5cdbc96ce24a43e9fdeb032fbed5832a6715"
+    },
+    {
+      "name": "navigation/tabs",
+      "route": "/components/navigation/tabs",
+      "screenshot": "screenshots/navigation__tabs.png",
+      "dataExoCount": 22,
+      "width": 1280,
+      "height": 900,
+      "sha256": "4395a176d59f142cebb9595f723e42887717d17b93c0d35eccfa95cb9e02b496"
+    },
+    {
+      "name": "navigation/wizard_sidebar",
+      "route": "/components/navigation/wizard_sidebar",
+      "screenshot": "screenshots/navigation__wizard_sidebar.png",
+      "dataExoCount": 35,
+      "width": 1280,
+      "height": 900,
+      "sha256": "f42be3e932195ffe6f2c66cbf7dacc6ffad745adb98db2ce5fa29a44893ee979"
+    },
+    {
+      "name": "overlays/confirm_modal",
+      "route": "/components/overlays/confirm_modal",
+      "screenshot": "screenshots/overlays__confirm_modal.png",
+      "dataExoCount": 10,
+      "width": 1280,
+      "height": 900,
+      "sha256": "81be81b552fe0a6de8b74edfc27352f20440ff3db70b5758e8fca25bcd39fa8c"
+    },
+    {
+      "name": "overlays/drawer",
+      "route": "/components/overlays/drawer",
+      "screenshot": "screenshots/overlays__drawer.png",
+      "dataExoCount": 23,
+      "width": 1280,
+      "height": 900,
+      "sha256": "52bcd61959c78befba49bf8284d50d4a05274f28a274bd13dccab5736f186f5a"
+    },
+    {
+      "name": "overlays/hover_card",
+      "route": "/components/overlays/hover_card",
+      "screenshot": "screenshots/overlays__hover_card.png",
+      "dataExoCount": 3,
+      "width": 1280,
+      "height": 900,
+      "sha256": "de0422314a3b07b1e434e27f51a816423b8baac4e7605188db0feaf4922994be"
+    },
+    {
+      "name": "overlays/modal",
+      "route": "/components/overlays/modal",
+      "screenshot": "screenshots/overlays__modal.png",
+      "dataExoCount": 25,
+      "width": 1280,
+      "height": 900,
+      "sha256": "ab4e08b133c17881e9f5930259b35b90b2bb00543a60e91dfd4ec797988df003"
+    },
+    {
+      "name": "overlays/popover",
+      "route": "/components/overlays/popover",
+      "screenshot": "screenshots/overlays__popover.png",
+      "dataExoCount": 12,
+      "width": 1280,
+      "height": 900,
+      "sha256": "e5b1b38783f51aa687a4e724613e94f03ccca9450e91c82fd70fbcbae39654ba"
+    },
+    {
+      "name": "overlays/sheet",
+      "route": "/components/overlays/sheet",
+      "screenshot": "screenshots/overlays__sheet.png",
+      "dataExoCount": 33,
+      "width": 1280,
+      "height": 900,
+      "sha256": "6d5f934ca3f64f5b8dc98304a7aee22577bfe42e9990488640589f178036a553"
+    },
+    {
+      "name": "overlays/tooltip",
+      "route": "/components/overlays/tooltip",
+      "screenshot": "screenshots/overlays__tooltip.png",
+      "dataExoCount": 36,
+      "width": 1280,
+      "height": 900,
+      "sha256": "25562ff964287f3a65e04a91513b84d9f0cefe6b29af47cb71221a63845d321d"
+    }
+  ]
+}

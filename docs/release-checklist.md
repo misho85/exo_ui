@@ -15,6 +15,9 @@ Use this checklist before cutting a public ExoUI tag.
 - [ ] `mix compile --warnings-as-errors`
 - [ ] `bun run build:all`
 - [ ] `bun run test:browser`
+- [ ] `bun run capture:components`
+- [ ] `bun run capture:validate`
+- [ ] `bun run visual:check`
 - [ ] `cd storybook && mix compile --warnings-as-errors`
 
 ## Manual Sanity
@@ -32,6 +35,9 @@ mix test
 mix compile --warnings-as-errors
 bun run build:all
 bun run test:browser
+bun run capture:components
+bun run capture:validate
+bun run visual:check
 cd storybook && mix compile --warnings-as-errors
 git tag -a vX.Y.Z -m "ExoUI vX.Y.Z"
 git push origin main --tags

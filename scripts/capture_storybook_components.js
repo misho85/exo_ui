@@ -483,6 +483,10 @@ async function main() {
   writeViewer(runDir, results, conversion);
   fs.writeFileSync(path.join(runDir, "manifest.json"), JSON.stringify(results, null, 2));
   writeIndex(runDir, results);
+  fs.writeFileSync(
+    path.join(OUT_ROOT, "latest.json"),
+    JSON.stringify({ runDir, generatedAt: new Date().toISOString(), count: results.length }, null, 2)
+  );
 
   const failed = results.filter((result) => !result.ok || result.error);
   console.log(JSON.stringify({ runDir, count: results.length, conversion, failed }, null, 2));

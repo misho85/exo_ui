@@ -182,8 +182,9 @@ available:
 - `ExoUI.Charts`
 - `ExoUI.Layouts`
 
-Component-specific copy-paste notes live under `docs/guides/`, starting with
-the targetable server-filter [combobox guide](docs/guides/combobox.md).
+Component-specific copy-paste notes live under `docs/guides/`, including the
+targetable server-filter [combobox guide](docs/guides/combobox.md) and the
+[visual regression workflow](docs/guides/visual-regression.md).
 
 ## Theme And CSS Modes
 
@@ -301,6 +302,9 @@ mix test
 mix compile --warnings-as-errors
 bun run build:all
 bun run test:browser
+bun run capture:components
+bun run capture:validate
+bun run visual:check
 cd storybook && mix compile --warnings-as-errors
 ```
 

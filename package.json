@@ -5,7 +5,9 @@
   "devDependencies": {
     "@playwright/test": "^1.59.1",
     "lightningcss-cli": "^1.32.0",
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "pixelmatch": "^7.2.0",
+    "pngjs": "^7.0.0"
   },
   "scripts": {
     "build": "lightningcss --bundle --minify assets/css/exo.css -o priv/static/exo.css",
@@ -14,6 +16,9 @@
     "watch": "nodemon --watch assets/css -e css --exec 'bun run build:all'",
     "test:browser": "playwright test",
     "test:browser:install": "playwright install chromium",
-    "capture:components": "node scripts/capture_storybook_components.js"
+    "capture:components": "node scripts/capture_storybook_components.js",
+    "capture:validate": "node scripts/visual_regression.js validate",
+    "visual:update": "node scripts/visual_regression.js update",
+    "visual:check": "node scripts/visual_regression.js check"
   }
 }

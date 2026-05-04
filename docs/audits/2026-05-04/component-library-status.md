@@ -14,9 +14,10 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Missing Storybook stories | 0 public components missing a story |
 | Playwright component capture | 84 Storybook routes captured |
 | Capture artifacts | 84 screenshots, 84 WebM videos, 84 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-04T20-50-27-110Z/viewer.html` |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-04T21-32-01-450Z/viewer.html` |
 | Browser suite | 59 Playwright tests passing |
 | ExUnit suite | 496 tests passing after combobox server-filter changes |
+| Visual regression | 84 committed screenshot baselines with pixel-diff checking |
 
 ## What improved
 
@@ -32,7 +33,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - Storybook browser tests now wait for LiveView `phx-connected` with configurable browser/server timeouts, avoiding false negatives caused by clicking server-rendered markup before hooks mount or by slow cold Storybook starts.
 - Rating no longer hardcodes amber in component CSS; it uses `--exo-rating-active`, and the browser test verifies keyboard selection and visible focus styling.
 - Date picker now has roving keyboard grid navigation for Arrow keys, Home, End, PageUp, and PageDown, plus browser coverage against a fixed-date Storybook example.
-- The capture workflow now produces a real manifest and validated local screenshot/video files for every captured component route, with a longer navigation timeout to reduce false failed artifacts on slower Storybook responses.
+- The capture workflow now produces a real manifest, writes a latest-run pointer, validates local screenshot/video files for every captured component route, and supports committed screenshot baselines with pixel-diff checking.
 
 ## Comparison vs shadcn/daisyUI
 
@@ -43,21 +44,23 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Forms | Phoenix FormField integration is now strong across most controls, select/combobox expose active-descendant keyboard state, and combobox empty/loading states announce changes politely, including an async LiveComponent server-filter story | Component-mode controls should expose more attrs/slots directly in PhoenixStorybook playgrounds |
 | Overlays/menus | Browser-tested popover, dropdown, context menu, menubar, modal/sheet/drawer focus traps, topmost Escape/backdrop handling, outside inerting, scroll lock, stacking order, and focus restore | Richer nested overlay content examples still need deeper Radix/shadcn parity checks |
 | Keyboard support | Covered for major actions, menus, select/combobox, rating, tabs, and date picker grid movement | Date picker month changes still depend on the parent LiveView handling prev/next events |
-| Visual proof | Automated screenshots and videos for 84 routes | Not yet turned into CI visual regression baselines |
+| Visual proof | Automated screenshots and videos for 84 routes, committed visual baselines, a CI-friendly diff command, and GitHub Actions wiring | Needs review tuning once real PR diffs start producing visual changes |
 | Composability | Slots and `data-exo` styling are consistent | No shadcn-style `asChild`/polymorphic root pattern for advanced composition |
 
 ## Remaining priorities
 
 1. Convert more page-mode Storybook examples to component-mode stories where PhoenixStorybook can expose attrs, slots, playground controls, and source examples.
 2. Continue overlay parity work with richer nested overlay content examples and cross-type modal/sheet/drawer stacking.
-3. Add CI-friendly visual regression from the existing capture output instead of using screenshots/videos only as manual proof.
-4. Replace remaining hardcoded overlay/shadow colors with semantic tokens where the component owns the visual state.
-5. Add docs that show copy-paste Phoenix usage for every component: basic, disabled, error, long content, dark mode, and keyboard/a11y notes.
+3. Replace remaining hardcoded overlay/shadow colors with semantic tokens where the component owns the visual state.
+4. Add docs that show copy-paste Phoenix usage for every component: basic, disabled, error, long content, dark mode, and keyboard/a11y notes.
+5. Tune visual diff thresholds after the first few CI runs if Linux font rendering causes expected drift.
 
 ## Verification used
 
 - `mix test` -> 496 tests, 0 failures.
+- `bun run build:all`.
 - `mix compile --warnings-as-errors` in `storybook`.
 - `bun run test:browser` -> 59 tests, 0 failures.
-- `bun run capture:components` -> 84 entries, 0 failed, 84 MP4 conversions in `output/playwright/exo-ui-components/2026-05-04T20-50-27-110Z`.
-- Manifest validation checked that every manifest entry has non-empty screenshot, WebM, and MP4 files.
+- `bun run capture:components` -> 84 entries, 0 failed, 84 MP4 conversions in `output/playwright/exo-ui-components/2026-05-04T21-32-01-450Z`.
+- `bun run capture:validate` -> 84 entries with non-empty screenshot, WebM, and MP4 files.
+- `bun run visual:check` -> 84 current screenshots matched the committed baseline.
