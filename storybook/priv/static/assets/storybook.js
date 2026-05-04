@@ -1960,6 +1960,7 @@
     active: /* @__PURE__ */ new Set(),
     inertElements: /* @__PURE__ */ new Set(),
     originalState: /* @__PURE__ */ new WeakMap(),
+    scrollLock: null,
     register(hook) {
       if (!hook?.el?.isConnected) return;
       this.active.add(hook);
@@ -1979,6 +1980,7 @@
     syncOutsideInert() {
       const next = /* @__PURE__ */ new Set();
       const roots = this.hooks().map((hook) => hook.el);
+      this._syncScrollLock(roots.length > 0);
       if (roots.length > 0) {
         for (const element of this._outsideElements(roots)) {
           if (!this._canInert(element, roots)) continue;
@@ -2050,6 +2052,39 @@
     },
     _release(element) {
       this.originalState.delete(element);
+    },
+    _syncScrollLock(locked) {
+      if (locked) {
+        this._lockScroll();
+      } else {
+        this._restoreScroll();
+      }
+    },
+    _lockScroll() {
+      if (this.scrollLock || !document.body) return;
+      const html = document.documentElement;
+      const body = document.body;
+      const scrollbarWidth = Math.max(0, window.innerWidth - html.clientWidth);
+      this.scrollLock = {
+        htmlOverflow: html.style.overflow,
+        bodyOverflow: body.style.overflow,
+        bodyPaddingRight: body.style.paddingRight
+      };
+      html.style.overflow = "hidden";
+      body.style.overflow = "hidden";
+      if (scrollbarWidth > 0) {
+        const currentPadding = Number.parseFloat(window.getComputedStyle(body).paddingRight) || 0;
+        body.style.paddingRight = `${currentPadding + scrollbarWidth}px`;
+      }
+    },
+    _restoreScroll() {
+      if (!this.scrollLock || !document.body) return;
+      const html = document.documentElement;
+      const body = document.body;
+      html.style.overflow = this.scrollLock.htmlOverflow;
+      body.style.overflow = this.scrollLock.bodyOverflow;
+      body.style.paddingRight = this.scrollLock.bodyPaddingRight;
+      this.scrollLock = null;
     }
   };
   var ExoOverlay = {

@@ -10,6 +10,12 @@ async function expectWithinInert(locator, expected) {
     .toBe(expected);
 }
 
+async function expectHtmlOverflow(page, expected) {
+  await expect
+    .poll(async () => page.evaluate(() => document.documentElement.style.overflow))
+    .toBe(expected);
+}
+
 test.describe("overlay dialogs", () => {
   test("modal traps keyboard focus and closes with Escape", async ({ page }) => {
     await gotoStory(page, "/components/overlays/modal");
@@ -58,6 +64,7 @@ test.describe("overlay dialogs", () => {
     const topSheet = canvas.locator("#sheet-top");
     const bottomSheet = canvas.locator("#sheet-bottom");
     const dialog = sheet.locator('[data-exo="sheet-content"]');
+    const originalHtmlOverflow = await page.evaluate(() => document.documentElement.style.overflow);
 
     await expectAttribute(sheet, "data-ready", "true");
     await expect(dialog).toHaveAttribute("aria-labelledby", "sheet-right-title");
@@ -73,6 +80,7 @@ test.describe("overlay dialogs", () => {
     await expectAttribute(sheet, "data-state", "open");
     await expect(sheet).toHaveAttribute("aria-hidden", "false");
     await expectWithinInert(trigger, true);
+    await expectHtmlOverflow(page, "hidden");
 
     const closeButton = dialog.locator('[data-exo="sheet-close"]');
     const cancelButton = dialog.getByRole("button", { name: "Cancel" });
@@ -93,6 +101,7 @@ test.describe("overlay dialogs", () => {
     await expectAttribute(sheet, "data-state", "closed");
     await expect(sheet).toHaveAttribute("aria-hidden", "true");
     await expectWithinInert(trigger, false);
+    await expectHtmlOverflow(page, originalHtmlOverflow);
     await expectFocused(trigger);
   });
 
@@ -103,6 +112,7 @@ test.describe("overlay dialogs", () => {
     const trigger = canvas.locator("button", { hasText: "Open right sheet" }).first();
     const rightSheet = canvas.locator("#sheet-right");
     const leftSheet = canvas.locator("#sheet-left");
+    const originalHtmlOverflow = await page.evaluate(() => document.documentElement.style.overflow);
 
     await trigger.click();
     await expectAttribute(rightSheet, "data-state", "open");
@@ -123,10 +133,12 @@ test.describe("overlay dialogs", () => {
 
     await expectAttribute(leftSheet, "data-state", "closed");
     await expectAttribute(rightSheet, "data-state", "open");
+    await expectHtmlOverflow(page, "hidden");
 
     await page.keyboard.press("Escape");
 
     await expectAttribute(rightSheet, "data-state", "closed");
+    await expectHtmlOverflow(page, originalHtmlOverflow);
     await expectFocused(trigger);
   });
 
