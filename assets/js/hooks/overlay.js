@@ -8,6 +8,132 @@ const focusableSelector = [
   '[contenteditable="true"]'
 ].join(',')
 
+let overlaySequence = 0
+
+const overlayRegistry = {
+  active: new Set(),
+  inertElements: new Set(),
+  originalState: new WeakMap(),
+
+  register(hook) {
+    if (!hook?.el?.isConnected) return
+
+    this.active.add(hook)
+    this.syncOutsideInert()
+  },
+
+  unregister(hook) {
+    this.active.delete(hook)
+    this.syncOutsideInert()
+  },
+
+  top() {
+    const hooks = this.hooks()
+    return hooks[hooks.length - 1] || null
+  },
+
+  hooks() {
+    return Array.from(this.active)
+      .filter((hook) => hook?.el?.isConnected && hook._isOpen())
+      .sort((a, b) => (a._overlayOrder || 0) - (b._overlayOrder || 0))
+  },
+
+  syncOutsideInert() {
+    const next = new Set()
+    const roots = this.hooks().map((hook) => hook.el)
+
+    if (roots.length > 0) {
+      for (const element of this._outsideElements(roots)) {
+        if (!this._canInert(element, roots)) continue
+        this._applyInert(element)
+        next.add(element)
+      }
+    }
+
+    for (const element of this.inertElements) {
+      if (next.has(element)) continue
+
+      if (roots.includes(element)) {
+        this._release(element)
+      } else {
+        this._restore(element)
+      }
+    }
+
+    this.inertElements = next
+  },
+
+  _outsideElements(roots) {
+    const allowed = new Set()
+    const candidates = new Set()
+
+    for (const root of roots) {
+      let node = root
+
+      while (node && node instanceof HTMLElement) {
+        allowed.add(node)
+        if (node === document.body) break
+        node = node.parentElement
+      }
+    }
+
+    for (const root of roots) {
+      let node = root
+
+      while (node?.parentElement && node.parentElement !== document.documentElement) {
+        for (const child of Array.from(node.parentElement.children)) {
+          if (!(child instanceof HTMLElement)) continue
+          if (child === node || allowed.has(child)) continue
+          if (roots.some((activeRoot) => child.contains(activeRoot))) continue
+          candidates.add(child)
+        }
+
+        if (node.parentElement === document.body) break
+        node = node.parentElement
+      }
+    }
+
+    return candidates
+  },
+
+  _canInert(element, roots) {
+    if (element === document.body || element === document.documentElement) return false
+    if (element.matches('script,style,link,template')) return false
+    return roots.every((root) => !element.contains(root))
+  },
+
+  _applyInert(element) {
+    if (!this.originalState.has(element)) {
+      this.originalState.set(element, {
+        inert: element.inert,
+        ariaHidden: element.getAttribute('aria-hidden')
+      })
+    }
+
+    element.inert = true
+    element.setAttribute('aria-hidden', 'true')
+  },
+
+  _restore(element) {
+    const original = this.originalState.get(element)
+    if (!original) return
+
+    element.inert = original.inert
+
+    if (original.ariaHidden === null) {
+      element.removeAttribute('aria-hidden')
+    } else {
+      element.setAttribute('aria-hidden', original.ariaHidden)
+    }
+
+    this.originalState.delete(element)
+  },
+
+  _release(element) {
+    this.originalState.delete(element)
+  }
+}
+
 const ExoOverlay = {
   mounted() { this._bind() },
   updated() { this._bind() },
@@ -17,15 +143,20 @@ const ExoOverlay = {
     const wasOpen = this._isOpenActive
     const previousFocus = this._previousFocus
     const pendingInvoker = this._pendingInvoker
-    this._unbind()
+    const overlayOrder = this._overlayOrder
+    this._unbind({ preserveOpenState: true })
 
     this._isOpenActive = wasOpen || false
     this._previousFocus = previousFocus || null
     this._pendingInvoker = pendingInvoker || null
+    this._overlayOrder = overlayOrder || null
     this._panel = this._findPanel()
     this._close = this._findClose()
 
-    if (!this._panel) return
+    if (!this._panel) {
+      overlayRegistry.unregister(this)
+      return
+    }
 
     this._onKeydown = (event) => this._handleKeydown(event)
     this._onPointerdown = (event) => this._rememberInvoker(event)
@@ -80,6 +211,7 @@ const ExoOverlay = {
 
   _activate() {
     this._isOpenActive = true
+    this._overlayOrder = overlaySequence += 1
 
     const active = document.activeElement instanceof HTMLElement ? document.activeElement : null
     const previousFocus = this._isRestoreTarget(this._pendingInvoker)
@@ -93,13 +225,19 @@ const ExoOverlay = {
     this.el.setAttribute('aria-hidden', 'false')
 
     requestAnimationFrame(() => {
+      if (!this._isOpenActive || !this._isOpen()) return
+
       const target = this._firstFocusable() || this._panel
       target?.focus?.({ preventScroll: true })
+      overlayRegistry.register(this)
     })
   },
 
   _deactivate() {
     this._isOpenActive = false
+    this._overlayOrder = null
+    overlayRegistry.unregister(this)
+
     this.el.setAttribute('aria-hidden', 'true')
     this.el.setAttribute('inert', 'true')
 
@@ -128,6 +266,7 @@ const ExoOverlay = {
 
   _handleKeydown(event) {
     if (!this._isOpen()) return
+    if (overlayRegistry.top() && overlayRegistry.top() !== this) return
 
     if (event.key === 'Escape') {
       event.preventDefault()
@@ -181,7 +320,9 @@ const ExoOverlay = {
     return true
   },
 
-  _unbind() {
+  _unbind(options = {}) {
+    if (!options.preserveOpenState) overlayRegistry.unregister(this)
+
     if (this._observer) this._observer.disconnect()
     if (this._onKeydown) document.removeEventListener('keydown', this._onKeydown, true)
     if (this._onPointerdown) document.removeEventListener('pointerdown', this._onPointerdown, true)

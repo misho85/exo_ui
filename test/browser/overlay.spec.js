@@ -2,8 +2,16 @@ const { test, expect } = require("@playwright/test");
 
 const { expectAttribute, expectFocused, gotoStory, story } = require("./helpers/storybook");
 
+async function expectWithinInert(locator, expected) {
+  await expect
+    .poll(async () =>
+      locator.evaluate((node) => Boolean(node.inert || node.closest("[inert]")))
+    )
+    .toBe(expected);
+}
+
 test.describe("overlay dialogs", () => {
-  test("modal closes with Escape and syncs closed state", async ({ page }) => {
+  test("modal traps keyboard focus and closes with Escape", async ({ page }) => {
     await gotoStory(page, "/components/overlays/modal");
 
     const canvas = story(page);
@@ -11,6 +19,8 @@ test.describe("overlay dialogs", () => {
     const labelledModal = canvas.locator("#modal-single-labelled-without-title");
     const closedModal = canvas.locator("#modal-single-closed");
     const dialog = modal.locator('[data-exo="modal-content"]');
+    const closeButton = dialog.locator('[data-exo="modal-close"]');
+    const saveButton = dialog.getByRole("button", { name: "Save" });
     const modalId = await modal.getAttribute("id");
 
     await expectAttribute(modal, "data-ready", "true");
@@ -24,6 +34,13 @@ test.describe("overlay dialogs", () => {
     );
     await expect(closedModal).toHaveAttribute("data-state", "closed");
     await expect(closedModal).toHaveAttribute("aria-hidden", "true");
+    await expectFocused(closeButton);
+
+    await page.keyboard.press("Shift+Tab");
+    await expectFocused(saveButton);
+
+    await page.keyboard.press("Tab");
+    await expectFocused(closeButton);
 
     await page.keyboard.press("Escape");
 
@@ -32,11 +49,11 @@ test.describe("overlay dialogs", () => {
     await expect(modal).toHaveAttribute("inert", "true");
   });
 
-  test("sheet closes with Escape and restores focus to its trigger", async ({ page }) => {
+  test("sheet traps focus, closes with Escape, and restores focus to its trigger", async ({ page }) => {
     await gotoStory(page, "/components/overlays/sheet");
 
     const canvas = story(page);
-    const trigger = canvas.getByRole("button", { name: "Open right sheet" });
+    const trigger = canvas.locator("button", { hasText: "Open right sheet" }).first();
     const sheet = canvas.locator("#sheet-right");
     const topSheet = canvas.locator("#sheet-top");
     const bottomSheet = canvas.locator("#sheet-bottom");
@@ -55,19 +72,69 @@ test.describe("overlay dialogs", () => {
     await trigger.click();
     await expectAttribute(sheet, "data-state", "open");
     await expect(sheet).toHaveAttribute("aria-hidden", "false");
+    await expectWithinInert(trigger, true);
+
+    const closeButton = dialog.locator('[data-exo="sheet-close"]');
+    const cancelButton = dialog.getByRole("button", { name: "Cancel" });
+    const saveButton = dialog.getByRole("button", { name: "Save" });
+    await expectFocused(cancelButton);
+
+    await page.keyboard.press("Shift+Tab");
+    await expectFocused(closeButton);
+
+    await page.keyboard.press("Tab");
+    await expectFocused(cancelButton);
+
+    await page.keyboard.press("Tab");
+    await expectFocused(saveButton);
 
     await page.keyboard.press("Escape");
 
     await expectAttribute(sheet, "data-state", "closed");
     await expect(sheet).toHaveAttribute("aria-hidden", "true");
+    await expectWithinInert(trigger, false);
     await expectFocused(trigger);
   });
 
-  test("drawer closes with Escape and restores focus to its trigger", async ({ page }) => {
+  test("sheet Escape handling is scoped to the topmost open overlay", async ({ page }) => {
+    await gotoStory(page, "/components/overlays/sheet");
+
+    const canvas = story(page);
+    const trigger = canvas.locator("button", { hasText: "Open right sheet" }).first();
+    const rightSheet = canvas.locator("#sheet-right");
+    const leftSheet = canvas.locator("#sheet-left");
+
+    await trigger.click();
+    await expectAttribute(rightSheet, "data-state", "open");
+
+    await leftSheet.evaluate((node) => {
+      node.dataset.state = "open";
+      node.setAttribute("aria-hidden", "false");
+      node.removeAttribute("inert");
+      node.style.display = "block";
+      node.classList.add("open");
+    });
+
+    await expectAttribute(leftSheet, "data-state", "open");
+    await expect(leftSheet).toHaveAttribute("aria-hidden", "false");
+    await expectFocused(leftSheet.locator('[data-exo="sheet-close"]'));
+
+    await page.keyboard.press("Escape");
+
+    await expectAttribute(leftSheet, "data-state", "closed");
+    await expectAttribute(rightSheet, "data-state", "open");
+
+    await page.keyboard.press("Escape");
+
+    await expectAttribute(rightSheet, "data-state", "closed");
+    await expectFocused(trigger);
+  });
+
+  test("drawer traps focus, closes with Escape, and restores focus to its trigger", async ({ page }) => {
     await gotoStory(page, "/components/overlays/drawer");
 
     const canvas = story(page);
-    const trigger = canvas.getByRole("button", { name: "Open Right Drawer" });
+    const trigger = canvas.locator("button", { hasText: "Open Right Drawer" }).first();
     const drawer = canvas.locator("#drawer-right");
     const labelledDrawer = canvas.locator("#drawer-labelled");
     const dialog = drawer.locator('[data-exo="drawer-content"]');
@@ -83,11 +150,22 @@ test.describe("overlay dialogs", () => {
     await trigger.click();
     await expectAttribute(drawer, "data-state", "open");
     await expect(drawer).toHaveAttribute("aria-hidden", "false");
+    await expectWithinInert(trigger, true);
+
+    const closeButton = dialog.locator('[data-exo="drawer-close"]');
+    await expectFocused(closeButton);
+
+    await page.keyboard.press("Tab");
+    await expectFocused(closeButton);
+
+    await page.keyboard.press("Shift+Tab");
+    await expectFocused(closeButton);
 
     await page.keyboard.press("Escape");
 
     await expectAttribute(drawer, "data-state", "closed");
     await expect(drawer).toHaveAttribute("aria-hidden", "true");
+    await expectWithinInert(trigger, false);
     await expectFocused(trigger);
   });
 });
