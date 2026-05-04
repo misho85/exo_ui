@@ -7,15 +7,35 @@ defmodule ExoUI.Charts.Cartesian do
 
   use ExoUI.Charts.Shared
 
+  attr :empty_text, :string, required: true
+  attr :aria_label, :string, default: nil
+  attr :class, :any, default: nil
+  attr :rest, :global
+
+  defp chart_empty(assigns) do
+    assigns =
+      assign(assigns, :computed_label, chart_label(assigns.aria_label, assigns.empty_text))
+
+    ~H"""
+    <div data-exo="chart-empty" role="status" aria-label={@computed_label} class={@class} {@rest}>
+      {@empty_text}
+    </div>
+    """
+  end
+
   @doc "Renders a vertical bar chart with x-axis labels and hover tooltips."
   attr :data, :list, required: true
   attr :height, :integer, default: 200
   attr :color, :string, default: "var(--exo-primary)"
   attr :empty_text, :string, default: "No data"
+  attr :aria_label, :string, default: nil
+  attr :description, :string, default: nil
+  attr :class, :any, default: nil
+  attr :rest, :global
 
   def bar_chart(assigns) do
     if Enum.empty?(assigns.data) do
-      ~H|<div data-exo="chart-empty">{@empty_text}</div>|
+      ~H|<.chart_empty empty_text={@empty_text} aria_label={@aria_label} class={@class} {@rest} />|
     else
       data = assigns.data
       height = assigns.height
@@ -65,16 +85,24 @@ defmodule ExoUI.Charts.Cartesian do
           grid: grid,
           label_step: label_step,
           bar_count: bar_count,
-          bw: bw
+          bw: bw,
+          chart_title: chart_label(assigns.aria_label, "Bar chart"),
+          chart_description: chart_description(assigns.description)
         )
 
       ~H"""
       <svg
         data-exo="bar-chart"
+        role="img"
+        aria-label={@chart_title}
         viewBox={"0 0 #{@svg_width} #{@height}"}
         preserveAspectRatio="xMidYMid meet"
+        class={@class}
         style="width:100%;"
+        {@rest}
       >
+        <title>{@chart_title}</title>
+        <desc :if={@chart_description}>{@chart_description}</desc>
         <%= for {gy, x1, x2} <- @grid do %>
           <line x1={x1} y1={gy} x2={x2} y2={gy} stroke="currentColor" stroke-opacity="0.1" />
         <% end %>
@@ -112,10 +140,14 @@ defmodule ExoUI.Charts.Cartesian do
   attr :height, :integer, default: 200
   attr :color, :string, default: "var(--exo-primary)"
   attr :empty_text, :string, default: "No data"
+  attr :aria_label, :string, default: nil
+  attr :description, :string, default: nil
+  attr :class, :any, default: nil
+  attr :rest, :global
 
   def horizontal_bar_chart(assigns) do
     if Enum.empty?(assigns.data) do
-      ~H|<div data-exo="chart-empty">{@empty_text}</div>|
+      ~H|<.chart_empty empty_text={@empty_text} aria_label={@aria_label} class={@class} {@rest} />|
     else
       data = assigns.data
 
@@ -154,16 +186,24 @@ defmodule ExoUI.Charts.Cartesian do
           rows: rows,
           svg_width: width,
           total_height: total_height,
-          label_width: label_width
+          label_width: label_width,
+          chart_title: chart_label(assigns.aria_label, "Horizontal bar chart"),
+          chart_description: chart_description(assigns.description)
         )
 
       ~H"""
       <svg
         data-exo="h-bar-chart"
+        role="img"
+        aria-label={@chart_title}
         viewBox={"0 0 #{@svg_width} #{@total_height}"}
         preserveAspectRatio="xMidYMid meet"
+        class={@class}
         style="width:100%;"
+        {@rest}
       >
+        <title>{@chart_title}</title>
+        <desc :if={@chart_description}>{@chart_description}</desc>
         <%= for row <- @rows do %>
           <text
             x={@label_width - 12}
@@ -198,13 +238,17 @@ defmodule ExoUI.Charts.Cartesian do
   attr :color, :string, default: "var(--exo-primary)"
   attr :id, :string, default: nil
   attr :empty_text, :string, default: "No data"
+  attr :aria_label, :string, default: nil
+  attr :description, :string, default: nil
+  attr :class, :any, default: nil
+  attr :rest, :global
 
   def area_chart(assigns) do
     id = assigns[:id] || "area-#{:erlang.phash2(assigns.data)}"
     assigns = assign(assigns, :id, id)
 
     if Enum.empty?(assigns.data) do
-      ~H|<div data-exo="chart-empty">{@empty_text}</div>|
+      ~H|<.chart_empty empty_text={@empty_text} aria_label={@aria_label} class={@class} {@rest} />|
     else
       data = assigns.data
       height = assigns.height
@@ -254,16 +298,24 @@ defmodule ExoUI.Charts.Cartesian do
           grid: grid,
           curve_path: curve_path,
           area_path: area_path,
-          labels: labels
+          labels: labels,
+          chart_title: chart_label(assigns.aria_label, "Area chart"),
+          chart_description: chart_description(assigns.description)
         )
 
       ~H"""
       <svg
         data-exo="area-chart"
+        role="img"
+        aria-label={@chart_title}
         viewBox={"0 0 #{@svg_width} #{@height}"}
         preserveAspectRatio="xMidYMid meet"
+        class={@class}
         style="width:100%;"
+        {@rest}
       >
+        <title>{@chart_title}</title>
+        <desc :if={@chart_description}>{@chart_description}</desc>
         <defs>
           <linearGradient id={"#{@id}-grad"} x1="0" y1="0" x2="0" y2="1">
             <stop offset="5%" stop-color={@color} stop-opacity="0.8" />
@@ -306,10 +358,14 @@ defmodule ExoUI.Charts.Cartesian do
   attr :colors, :map, required: true
   attr :legend_keys, :list, default: []
   attr :empty_text, :string, default: "No data"
+  attr :aria_label, :string, default: nil
+  attr :description, :string, default: nil
+  attr :class, :any, default: nil
+  attr :rest, :global
 
   def stacked_bar_chart(assigns) do
     if Enum.empty?(assigns.data) do
-      ~H|<div data-exo="chart-empty">{@empty_text}</div>|
+      ~H|<.chart_empty empty_text={@empty_text} aria_label={@aria_label} class={@class} {@rest} />|
     else
       data = assigns.data
       height = assigns.height
@@ -392,16 +448,24 @@ defmodule ExoUI.Charts.Cartesian do
           label_step: label_step,
           bar_count: count,
           legend: legend,
-          legend_start: legend_start
+          legend_start: legend_start,
+          chart_title: chart_label(assigns.aria_label, "Stacked bar chart"),
+          chart_description: chart_description(assigns.description)
         )
 
       ~H"""
       <svg
         data-exo="stacked-bar-chart"
+        role="img"
+        aria-label={@chart_title}
         viewBox={"0 0 #{@svg_width} #{@height}"}
         preserveAspectRatio="xMidYMid meet"
+        class={@class}
         style="width:100%;"
+        {@rest}
       >
+        <title>{@chart_title}</title>
+        <desc :if={@chart_description}>{@chart_description}</desc>
         <%= for {gy, x1, x2} <- @grid do %>
           <line x1={x1} y1={gy} x2={x2} y2={gy} stroke="currentColor" stroke-opacity="0.1" />
         <% end %>
@@ -484,11 +548,15 @@ defmodule ExoUI.Charts.Cartesian do
   attr :height, :integer, default: 200
   attr :color1, :string, default: "var(--exo-primary)"
   attr :color2, :string, default: "color-mix(in oklch, var(--exo-primary) 50%, transparent)"
+  attr :empty_text, :string, default: "No data"
+  attr :aria_label, :string, default: nil
+  attr :description, :string, default: nil
+  attr :class, :any, default: nil
+  attr :rest, :global
 
   def bar_chart_multiple(assigns) do
     if Enum.empty?(assigns.data) do
-      assigns = assign_new(assigns, :empty_text, fn -> "No data" end)
-      ~H|<div data-exo="chart-empty">{@empty_text}</div>|
+      ~H|<.chart_empty empty_text={@empty_text} aria_label={@aria_label} class={@class} {@rest} />|
     else
       data = assigns.data
       height = assigns.height
@@ -542,16 +610,24 @@ defmodule ExoUI.Charts.Cartesian do
           bw: bw,
           grid: grid,
           label_step: label_step,
-          bar_count: count
+          bar_count: count,
+          chart_title: chart_label(assigns.aria_label, "Grouped bar chart"),
+          chart_description: chart_description(assigns.description)
         )
 
       ~H"""
       <svg
         data-exo="bar-chart-multiple"
+        role="img"
+        aria-label={@chart_title}
         viewBox={"0 0 #{@svg_width} #{@height}"}
         preserveAspectRatio="xMidYMid meet"
+        class={@class}
         style="width:100%;"
+        {@rest}
       >
+        <title>{@chart_title}</title>
+        <desc :if={@chart_description}>{@chart_description}</desc>
         <%= for {gy, x1, x2} <- @grid do %>
           <line x1={x1} y1={gy} x2={x2} y2={gy} stroke="currentColor" stroke-opacity="0.1" />
         <% end %>
@@ -584,10 +660,14 @@ defmodule ExoUI.Charts.Cartesian do
   attr :height, :integer, default: 200
   attr :color, :string, default: "var(--exo-primary)"
   attr :empty_text, :string, default: "No data"
+  attr :aria_label, :string, default: nil
+  attr :description, :string, default: nil
+  attr :class, :any, default: nil
+  attr :rest, :global
 
   def bar_chart_label(assigns) do
     if Enum.empty?(assigns.data) do
-      ~H|<div data-exo="chart-empty">{@empty_text}</div>|
+      ~H|<.chart_empty empty_text={@empty_text} aria_label={@aria_label} class={@class} {@rest} />|
     else
       data = assigns.data
       height = assigns.height
@@ -636,16 +716,24 @@ defmodule ExoUI.Charts.Cartesian do
           grid: grid,
           label_step: label_step,
           bar_count: count,
-          bw: bw
+          bw: bw,
+          chart_title: chart_label(assigns.aria_label, "Bar chart with labels"),
+          chart_description: chart_description(assigns.description)
         )
 
       ~H"""
       <svg
         data-exo="bar-chart-label"
+        role="img"
+        aria-label={@chart_title}
         viewBox={"0 0 #{@svg_width} #{@height}"}
         preserveAspectRatio="xMidYMid meet"
+        class={@class}
         style="width:100%;"
+        {@rest}
       >
+        <title>{@chart_title}</title>
+        <desc :if={@chart_description}>{@chart_description}</desc>
         <%= for {gy, x1, x2} <- @grid do %>
           <line x1={x1} y1={gy} x2={x2} y2={gy} stroke="currentColor" stroke-opacity="0.1" />
         <% end %>
@@ -694,10 +782,14 @@ defmodule ExoUI.Charts.Cartesian do
   attr :color_positive, :string, default: "var(--exo-primary)"
   attr :color_negative, :string, default: "var(--exo-destructive, #ef4444)"
   attr :empty_text, :string, default: "No data"
+  attr :aria_label, :string, default: nil
+  attr :description, :string, default: nil
+  attr :class, :any, default: nil
+  attr :rest, :global
 
   def bar_chart_negative(assigns) do
     if Enum.empty?(assigns.data) do
-      ~H|<div data-exo="chart-empty">{@empty_text}</div>|
+      ~H|<.chart_empty empty_text={@empty_text} aria_label={@aria_label} class={@class} {@rest} />|
     else
       data = assigns.data
       height = assigns.height
@@ -750,16 +842,24 @@ defmodule ExoUI.Charts.Cartesian do
           pr: pr,
           zero_y: zero_y,
           grid: grid,
-          bw: bw
+          bw: bw,
+          chart_title: chart_label(assigns.aria_label, "Positive and negative bar chart"),
+          chart_description: chart_description(assigns.description)
         )
 
       ~H"""
       <svg
         data-exo="bar-chart-negative"
+        role="img"
+        aria-label={@chart_title}
         viewBox={"0 0 #{@svg_width} #{@height}"}
         preserveAspectRatio="xMidYMid meet"
+        class={@class}
         style="width:100%;"
+        {@rest}
       >
+        <title>{@chart_title}</title>
+        <desc :if={@chart_description}>{@chart_description}</desc>
         <%= for {gy, x1, x2} <- @grid do %>
           <line x1={x1} y1={gy} x2={x2} y2={gy} stroke="currentColor" stroke-opacity="0.1" />
         <% end %>
@@ -803,87 +903,104 @@ defmodule ExoUI.Charts.Cartesian do
   attr :data, :list, required: true
   attr :height, :integer, default: 200
   attr :color, :string, default: "var(--exo-primary)"
+  attr :empty_text, :string, default: "No data"
+  attr :aria_label, :string, default: nil
+  attr :description, :string, default: nil
+  attr :class, :any, default: nil
+  attr :rest, :global
 
   def line_chart(assigns) do
-    data = assigns.data
-    height = assigns.height
-    values = Enum.map(data, fn {_label, value} -> to_number(value) end)
-    min_val = Enum.min(values, fn -> 0 end)
-    max_val = Enum.max(values, fn -> 1 end)
-    range = max_val - min_val
-    range = if range == 0, do: 1.0, else: range
-    count = length(values)
-    %{width: width, pl: pl, pr: pr, pt: pt, cw: cw, ch: ch} = H.chart_dimensions(height)
-    grid = horizontal_grid_lines(pt, ch, pl, width, pr)
+    if Enum.empty?(assigns.data) do
+      ~H|<.chart_empty empty_text={@empty_text} aria_label={@aria_label} class={@class} {@rest} />|
+    else
+      data = assigns.data
+      height = assigns.height
+      values = Enum.map(data, fn {_label, value} -> to_number(value) end)
+      min_val = Enum.min(values, fn -> 0 end)
+      max_val = Enum.max(values, fn -> 1 end)
+      range = max_val - min_val
+      range = if range == 0, do: 1.0, else: range
+      count = length(values)
+      %{width: width, pl: pl, pr: pr, pt: pt, cw: cw, ch: ch} = H.chart_dimensions(height)
+      grid = horizontal_grid_lines(pt, ch, pl, width, pr)
 
-    points =
-      data
-      |> Enum.with_index()
-      |> Enum.map(fn {{_label, value}, index} ->
-        x = pl + index / max(count - 1, 1) * cw
-        y = pt + ch - (to_number(value) - min_val) / range * ch
-        {r(x), r(y)}
-      end)
+      points =
+        data
+        |> Enum.with_index()
+        |> Enum.map(fn {{_label, value}, index} ->
+          x = pl + index / max(count - 1, 1) * cw
+          y = pt + ch - (to_number(value) - min_val) / range * ch
+          {r(x), r(y)}
+        end)
 
-    curve_path = catmull_rom_to_bezier_path(points)
-    label_step = H.label_step(count)
+      curve_path = catmull_rom_to_bezier_path(points)
+      label_step = H.label_step(count)
 
-    labels =
-      data
-      |> Enum.with_index()
-      |> Enum.map(fn {{label, _}, index} ->
-        x = pl + index / max(count - 1, 1) * cw
+      labels =
+        data
+        |> Enum.with_index()
+        |> Enum.map(fn {{label, _}, index} ->
+          x = pl + index / max(count - 1, 1) * cw
 
-        %{
-          label: H.short_label(label),
-          x: r(x),
-          show: rem(index, label_step) == 0 or index == count - 1
-        }
-      end)
+          %{
+            label: H.short_label(label),
+            x: r(x),
+            show: rem(index, label_step) == 0 or index == count - 1
+          }
+        end)
 
-    assigns =
-      assign(assigns,
-        svg_width: width,
-        chart_height: ch,
-        pt: pt,
-        grid: grid,
-        curve_path: curve_path,
-        labels: labels
-      )
+      assigns =
+        assign(assigns,
+          svg_width: width,
+          chart_height: ch,
+          pt: pt,
+          grid: grid,
+          curve_path: curve_path,
+          labels: labels,
+          chart_title: chart_label(assigns.aria_label, "Line chart"),
+          chart_description: chart_description(assigns.description)
+        )
 
-    ~H"""
-    <svg
-      data-exo="line-chart"
-      viewBox={"0 0 #{@svg_width} #{@height}"}
-      preserveAspectRatio="xMidYMid meet"
-      style="width:100%;"
-    >
-      <%= for {gy, x1, x2} <- @grid do %>
-        <line x1={x1} y1={gy} x2={x2} y2={gy} stroke="currentColor" stroke-opacity="0.1" />
-      <% end %>
-      <path
-        d={@curve_path}
-        fill="none"
-        stroke={@color}
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-      <%= for lbl <- @labels do %>
-        <text
-          :if={lbl.show}
-          x={lbl.x}
-          y={@pt + @chart_height + 18}
-          text-anchor="middle"
-          fill="currentColor"
-          fill-opacity="0.45"
-          font-size="12"
-        >
-          {lbl.label}
-        </text>
-      <% end %>
-    </svg>
-    """
+      ~H"""
+      <svg
+        data-exo="line-chart"
+        role="img"
+        aria-label={@chart_title}
+        viewBox={"0 0 #{@svg_width} #{@height}"}
+        preserveAspectRatio="xMidYMid meet"
+        class={@class}
+        style="width:100%;"
+        {@rest}
+      >
+        <title>{@chart_title}</title>
+        <desc :if={@chart_description}>{@chart_description}</desc>
+        <%= for {gy, x1, x2} <- @grid do %>
+          <line x1={x1} y1={gy} x2={x2} y2={gy} stroke="currentColor" stroke-opacity="0.1" />
+        <% end %>
+        <path
+          d={@curve_path}
+          fill="none"
+          stroke={@color}
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <%= for lbl <- @labels do %>
+          <text
+            :if={lbl.show}
+            x={lbl.x}
+            y={@pt + @chart_height + 18}
+            text-anchor="middle"
+            fill="currentColor"
+            fill-opacity="0.45"
+            font-size="12"
+          >
+            {lbl.label}
+          </text>
+        <% end %>
+      </svg>
+      """
+    end
   end
 
   @doc "Renders a two-series line chart with catmull-rom smoothing."
@@ -891,111 +1008,128 @@ defmodule ExoUI.Charts.Cartesian do
   attr :height, :integer, default: 200
   attr :color1, :string, default: "var(--exo-primary)"
   attr :color2, :string, default: "color-mix(in oklch, var(--exo-primary) 50%, transparent)"
+  attr :empty_text, :string, default: "No data"
+  attr :aria_label, :string, default: nil
+  attr :description, :string, default: nil
+  attr :class, :any, default: nil
+  attr :rest, :global
 
   def line_chart_multiple(assigns) do
-    data = assigns.data
-    height = assigns.height
+    if Enum.empty?(assigns.data) do
+      ~H|<.chart_empty empty_text={@empty_text} aria_label={@aria_label} class={@class} {@rest} />|
+    else
+      data = assigns.data
+      height = assigns.height
 
-    values =
-      Enum.flat_map(data, fn {_label, value1, value2} ->
-        [to_number(value1), to_number(value2)]
-      end)
+      values =
+        Enum.flat_map(data, fn {_label, value1, value2} ->
+          [to_number(value1), to_number(value2)]
+        end)
 
-    min_val = Enum.min(values, fn -> 0 end)
-    max_val = Enum.max(values, fn -> 1 end)
-    range = max_val - min_val
-    range = if range == 0, do: 1.0, else: range
-    count = length(data)
-    %{width: width, pl: pl, pr: pr, pt: pt, cw: cw, ch: ch} = H.chart_dimensions(height)
-    grid = horizontal_grid_lines(pt, ch, pl, width, pr)
+      min_val = Enum.min(values, fn -> 0 end)
+      max_val = Enum.max(values, fn -> 1 end)
+      range = max_val - min_val
+      range = if range == 0, do: 1.0, else: range
+      count = length(data)
+      %{width: width, pl: pl, pr: pr, pt: pt, cw: cw, ch: ch} = H.chart_dimensions(height)
+      grid = horizontal_grid_lines(pt, ch, pl, width, pr)
 
-    points1 =
-      data
-      |> Enum.with_index()
-      |> Enum.map(fn {{_label, value1, _value2}, index} ->
-        x = pl + index / max(count - 1, 1) * cw
-        y = pt + ch - (to_number(value1) - min_val) / range * ch
-        {r(x), r(y)}
-      end)
+      points1 =
+        data
+        |> Enum.with_index()
+        |> Enum.map(fn {{_label, value1, _value2}, index} ->
+          x = pl + index / max(count - 1, 1) * cw
+          y = pt + ch - (to_number(value1) - min_val) / range * ch
+          {r(x), r(y)}
+        end)
 
-    points2 =
-      data
-      |> Enum.with_index()
-      |> Enum.map(fn {{_label, _value1, value2}, index} ->
-        x = pl + index / max(count - 1, 1) * cw
-        y = pt + ch - (to_number(value2) - min_val) / range * ch
-        {r(x), r(y)}
-      end)
+      points2 =
+        data
+        |> Enum.with_index()
+        |> Enum.map(fn {{_label, _value1, value2}, index} ->
+          x = pl + index / max(count - 1, 1) * cw
+          y = pt + ch - (to_number(value2) - min_val) / range * ch
+          {r(x), r(y)}
+        end)
 
-    curve1 = catmull_rom_to_bezier_path(points1)
-    curve2 = catmull_rom_to_bezier_path(points2)
-    label_step = H.label_step(count)
+      curve1 = catmull_rom_to_bezier_path(points1)
+      curve2 = catmull_rom_to_bezier_path(points2)
+      label_step = H.label_step(count)
 
-    labels =
-      data
-      |> Enum.with_index()
-      |> Enum.map(fn {{label, _, _}, index} ->
-        x = pl + index / max(count - 1, 1) * cw
+      labels =
+        data
+        |> Enum.with_index()
+        |> Enum.map(fn {{label, _, _}, index} ->
+          x = pl + index / max(count - 1, 1) * cw
 
-        %{
-          label: H.short_label(label),
-          x: r(x),
-          show: rem(index, label_step) == 0 or index == count - 1
-        }
-      end)
+          %{
+            label: H.short_label(label),
+            x: r(x),
+            show: rem(index, label_step) == 0 or index == count - 1
+          }
+        end)
 
-    assigns =
-      assign(assigns,
-        svg_width: width,
-        chart_height: ch,
-        pt: pt,
-        grid: grid,
-        curve1: curve1,
-        curve2: curve2,
-        labels: labels
-      )
+      assigns =
+        assign(assigns,
+          svg_width: width,
+          chart_height: ch,
+          pt: pt,
+          grid: grid,
+          curve1: curve1,
+          curve2: curve2,
+          labels: labels,
+          chart_title: chart_label(assigns.aria_label, "Multi-series line chart"),
+          chart_description: chart_description(assigns.description)
+        )
 
-    ~H"""
-    <svg
-      data-exo="line-chart-multiple"
-      viewBox={"0 0 #{@svg_width} #{@height}"}
-      preserveAspectRatio="xMidYMid meet"
-      style="width:100%;"
-    >
-      <%= for {gy, x1, x2} <- @grid do %>
-        <line x1={x1} y1={gy} x2={x2} y2={gy} stroke="currentColor" stroke-opacity="0.1" />
-      <% end %>
-      <path
-        d={@curve1}
-        fill="none"
-        stroke={@color1}
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-      <path
-        d={@curve2}
-        fill="none"
-        stroke={@color2}
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-      <%= for lbl <- @labels do %>
-        <text
-          :if={lbl.show}
-          x={lbl.x}
-          y={@pt + @chart_height + 18}
-          text-anchor="middle"
-          fill="currentColor"
-          fill-opacity="0.45"
-          font-size="12"
-        >
-          {lbl.label}
-        </text>
-      <% end %>
-    </svg>
-    """
+      ~H"""
+      <svg
+        data-exo="line-chart-multiple"
+        role="img"
+        aria-label={@chart_title}
+        viewBox={"0 0 #{@svg_width} #{@height}"}
+        preserveAspectRatio="xMidYMid meet"
+        class={@class}
+        style="width:100%;"
+        {@rest}
+      >
+        <title>{@chart_title}</title>
+        <desc :if={@chart_description}>{@chart_description}</desc>
+        <%= for {gy, x1, x2} <- @grid do %>
+          <line x1={x1} y1={gy} x2={x2} y2={gy} stroke="currentColor" stroke-opacity="0.1" />
+        <% end %>
+        <path
+          d={@curve1}
+          fill="none"
+          stroke={@color1}
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d={@curve2}
+          fill="none"
+          stroke={@color2}
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <%= for lbl <- @labels do %>
+          <text
+            :if={lbl.show}
+            x={lbl.x}
+            y={@pt + @chart_height + 18}
+            text-anchor="middle"
+            fill="currentColor"
+            fill-opacity="0.45"
+            font-size="12"
+          >
+            {lbl.label}
+          </text>
+        <% end %>
+      </svg>
+      """
+    end
   end
 
   @doc "Renders a stacked area chart with two series and catmull-rom curves."
@@ -1004,127 +1138,144 @@ defmodule ExoUI.Charts.Cartesian do
   attr :color1, :string, default: "var(--exo-primary)"
   attr :color2, :string, default: "color-mix(in oklch, var(--exo-primary) 50%, transparent)"
   attr :id, :string, default: nil
+  attr :empty_text, :string, default: "No data"
+  attr :aria_label, :string, default: nil
+  attr :description, :string, default: nil
+  attr :class, :any, default: nil
+  attr :rest, :global
 
   def area_chart_stacked(assigns) do
     id = assigns[:id] || "area-stacked-#{:erlang.phash2(assigns.data)}"
     assigns = assign(assigns, :id, id)
 
-    data = assigns.data
-    height = assigns.height
+    if Enum.empty?(assigns.data) do
+      ~H|<.chart_empty empty_text={@empty_text} aria_label={@aria_label} class={@class} {@rest} />|
+    else
+      data = assigns.data
+      height = assigns.height
 
-    stacked_vals =
-      Enum.map(data, fn {_label, value1, value2} -> to_number(value1) + to_number(value2) end)
+      stacked_vals =
+        Enum.map(data, fn {_label, value1, value2} -> to_number(value1) + to_number(value2) end)
 
-    max_val = Enum.max(stacked_vals, fn -> 1 end) |> H.safe_max()
-    count = length(data)
-    %{width: width, pl: pl, pr: pr, pt: pt, cw: cw, ch: ch} = H.chart_dimensions(height)
-    baseline_y = r(pt + ch)
-    grid = horizontal_grid_lines(pt, ch, pl, width, pr)
+      max_val = Enum.max(stacked_vals, fn -> 1 end) |> H.safe_max()
+      count = length(data)
+      %{width: width, pl: pl, pr: pr, pt: pt, cw: cw, ch: ch} = H.chart_dimensions(height)
+      baseline_y = r(pt + ch)
+      grid = horizontal_grid_lines(pt, ch, pl, width, pr)
 
-    points1 =
-      data
-      |> Enum.with_index()
-      |> Enum.map(fn {{_label, value1, _value2}, index} ->
-        x = pl + index / max(count - 1, 1) * cw
-        y = pt + ch - to_number(value1) / max_val * ch
-        {r(x), r(y)}
-      end)
+      points1 =
+        data
+        |> Enum.with_index()
+        |> Enum.map(fn {{_label, value1, _value2}, index} ->
+          x = pl + index / max(count - 1, 1) * cw
+          y = pt + ch - to_number(value1) / max_val * ch
+          {r(x), r(y)}
+        end)
 
-    points2 =
-      data
-      |> Enum.with_index()
-      |> Enum.map(fn {{_label, value1, value2}, index} ->
-        x = pl + index / max(count - 1, 1) * cw
-        y = pt + ch - (to_number(value1) + to_number(value2)) / max_val * ch
-        {r(x), r(y)}
-      end)
+      points2 =
+        data
+        |> Enum.with_index()
+        |> Enum.map(fn {{_label, value1, value2}, index} ->
+          x = pl + index / max(count - 1, 1) * cw
+          y = pt + ch - (to_number(value1) + to_number(value2)) / max_val * ch
+          {r(x), r(y)}
+        end)
 
-    {first_x, _} = List.first(points1)
-    {last_x, _} = List.last(points1)
-    area1_path = catmull_rom_area_path(points1, baseline_y, first_x, last_x)
-    curve1_path = catmull_rom_to_bezier_path(points1)
-    area2_path = catmull_rom_area_path(points2, baseline_y, first_x, last_x)
-    curve2_path = catmull_rom_to_bezier_path(points2)
-    label_step = H.label_step(count)
+      {first_x, _} = List.first(points1)
+      {last_x, _} = List.last(points1)
+      area1_path = catmull_rom_area_path(points1, baseline_y, first_x, last_x)
+      curve1_path = catmull_rom_to_bezier_path(points1)
+      area2_path = catmull_rom_area_path(points2, baseline_y, first_x, last_x)
+      curve2_path = catmull_rom_to_bezier_path(points2)
+      label_step = H.label_step(count)
 
-    labels =
-      data
-      |> Enum.with_index()
-      |> Enum.map(fn {{label, _, _}, index} ->
-        x = pl + index / max(count - 1, 1) * cw
+      labels =
+        data
+        |> Enum.with_index()
+        |> Enum.map(fn {{label, _, _}, index} ->
+          x = pl + index / max(count - 1, 1) * cw
 
-        %{
-          label: H.short_label(label),
-          x: r(x),
-          show: rem(index, label_step) == 0 or index == count - 1
-        }
-      end)
+          %{
+            label: H.short_label(label),
+            x: r(x),
+            show: rem(index, label_step) == 0 or index == count - 1
+          }
+        end)
 
-    assigns =
-      assign(assigns,
-        svg_width: width,
-        chart_height: ch,
-        pt: pt,
-        grid: grid,
-        area1_path: area1_path,
-        curve1_path: curve1_path,
-        area2_path: area2_path,
-        curve2_path: curve2_path,
-        labels: labels
-      )
+      assigns =
+        assign(assigns,
+          svg_width: width,
+          chart_height: ch,
+          pt: pt,
+          grid: grid,
+          area1_path: area1_path,
+          curve1_path: curve1_path,
+          area2_path: area2_path,
+          curve2_path: curve2_path,
+          labels: labels,
+          chart_title: chart_label(assigns.aria_label, "Stacked area chart"),
+          chart_description: chart_description(assigns.description)
+        )
 
-    ~H"""
-    <svg
-      data-exo="area-chart-stacked"
-      viewBox={"0 0 #{@svg_width} #{@height}"}
-      preserveAspectRatio="xMidYMid meet"
-      style="width:100%;"
-    >
-      <defs>
-        <linearGradient id={"#{@id}-grad1"} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="5%" stop-color={@color1} stop-opacity="0.8" />
-          <stop offset="95%" stop-color={@color1} stop-opacity="0.1" />
-        </linearGradient>
-        <linearGradient id={"#{@id}-grad2"} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="5%" stop-color={@color2} stop-opacity="0.8" />
-          <stop offset="95%" stop-color={@color2} stop-opacity="0.1" />
-        </linearGradient>
-      </defs>
-      <%= for {gy, x1, x2} <- @grid do %>
-        <line x1={x1} y1={gy} x2={x2} y2={gy} stroke="currentColor" stroke-opacity="0.1" />
-      <% end %>
-      <path d={@area2_path} fill={"url(##{@id}-grad2)"} fill-opacity="0.4" />
-      <path
-        d={@curve2_path}
-        fill="none"
-        stroke={@color2}
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-      <path d={@area1_path} fill={"url(##{@id}-grad1)"} fill-opacity="0.4" />
-      <path
-        d={@curve1_path}
-        fill="none"
-        stroke={@color1}
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-      <%= for lbl <- @labels do %>
-        <text
-          :if={lbl.show}
-          x={lbl.x}
-          y={@pt + @chart_height + 18}
-          text-anchor="middle"
-          fill="currentColor"
-          fill-opacity="0.45"
-          font-size="12"
-        >
-          {lbl.label}
-        </text>
-      <% end %>
-    </svg>
-    """
+      ~H"""
+      <svg
+        data-exo="area-chart-stacked"
+        role="img"
+        aria-label={@chart_title}
+        viewBox={"0 0 #{@svg_width} #{@height}"}
+        preserveAspectRatio="xMidYMid meet"
+        class={@class}
+        style="width:100%;"
+        {@rest}
+      >
+        <title>{@chart_title}</title>
+        <desc :if={@chart_description}>{@chart_description}</desc>
+        <defs>
+          <linearGradient id={"#{@id}-grad1"} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stop-color={@color1} stop-opacity="0.8" />
+            <stop offset="95%" stop-color={@color1} stop-opacity="0.1" />
+          </linearGradient>
+          <linearGradient id={"#{@id}-grad2"} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stop-color={@color2} stop-opacity="0.8" />
+            <stop offset="95%" stop-color={@color2} stop-opacity="0.1" />
+          </linearGradient>
+        </defs>
+        <%= for {gy, x1, x2} <- @grid do %>
+          <line x1={x1} y1={gy} x2={x2} y2={gy} stroke="currentColor" stroke-opacity="0.1" />
+        <% end %>
+        <path d={@area2_path} fill={"url(##{@id}-grad2)"} fill-opacity="0.4" />
+        <path
+          d={@curve2_path}
+          fill="none"
+          stroke={@color2}
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path d={@area1_path} fill={"url(##{@id}-grad1)"} fill-opacity="0.4" />
+        <path
+          d={@curve1_path}
+          fill="none"
+          stroke={@color1}
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <%= for lbl <- @labels do %>
+          <text
+            :if={lbl.show}
+            x={lbl.x}
+            y={@pt + @chart_height + 18}
+            text-anchor="middle"
+            fill="currentColor"
+            fill-opacity="0.45"
+            font-size="12"
+          >
+            {lbl.label}
+          </text>
+        <% end %>
+      </svg>
+      """
+    end
   end
 end

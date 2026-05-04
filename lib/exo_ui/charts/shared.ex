@@ -4,6 +4,14 @@ defmodule ExoUI.Charts.Shared do
   # Injects shared numeric and SVG-path helpers into chart family modules.
   defmacro __using__(_opts) do
     quote do
+      defp chart_label(nil, fallback), do: fallback
+      defp chart_label("", fallback), do: fallback
+      defp chart_label(value, _fallback), do: value
+
+      defp chart_description(nil), do: nil
+      defp chart_description(""), do: nil
+      defp chart_description(value), do: value
+
       defp to_number(n) when is_float(n), do: n
       defp to_number(n) when is_integer(n), do: n * 1.0
       defp to_number(%{__struct__: Decimal} = d), do: apply(Decimal, :to_float, [d])

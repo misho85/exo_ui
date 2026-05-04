@@ -69,14 +69,34 @@
 
 /* SVG chart shared styles */
 :where([data-exo="bar-chart"]),
+:where([data-exo="bar-chart-label"]),
+:where([data-exo="bar-chart-multiple"]),
+:where([data-exo="bar-chart-negative"]),
 :where([data-exo="area-chart"]),
-:where([data-exo="horizontal-bar-chart"]),
-:where([data-exo="stacked-bar-chart"]) {
+:where([data-exo="area-chart-stacked"]),
+:where([data-exo="h-bar-chart"]),
+:where([data-exo="line-chart"]),
+:where([data-exo="line-chart-multiple"]),
+:where([data-exo="stacked-bar-chart"]),
+:where([data-exo="pie-chart"]),
+:where([data-exo="donut-chart"]),
+:where([data-exo="donut-chart-text"]),
+:where([data-exo="radar-chart"]),
+:where([data-exo="radial-chart"]) {
   font-family: var(--exo-font);
   color: var(--exo-foreground);
 }
 
 :where([data-exo="sparkline"]) {
   display: inline-block;
+  vertical-align: middle;
+}
+
+:where([data-exo="sparkline-empty"]) {
+  display: inline-flex;
+  align-items: center;
+  color: var(--exo-muted-foreground);
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-xs);
   vertical-align: middle;
 }
