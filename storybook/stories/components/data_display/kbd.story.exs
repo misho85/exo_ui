@@ -9,7 +9,7 @@ defmodule Storybook.Components.Kbd do
       <span>
         Press
         <ExoUI.Components.kbd>⌘</ExoUI.Components.kbd>
-        
+
         <ExoUI.Components.kbd>K</ExoUI.Components.kbd>
         to search
       </span>

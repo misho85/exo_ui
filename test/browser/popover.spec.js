@@ -4,7 +4,7 @@ const { expectPopoverState, gotoStory, story } = require("./helpers/storybook");
 
 test.describe("popover", () => {
   test("opens, closes, and keeps aria-expanded in sync", async ({ page }) => {
-    await gotoStory(page, "/components/popover");
+    await gotoStory(page, "/components/overlays/popover");
 
     const canvas = story(page);
     const trigger = canvas.locator("#pop-default-popover [data-exo=\"popover-trigger\"]");
@@ -26,7 +26,7 @@ test.describe("popover", () => {
   });
 
   test("updates aria-expanded when the popover closes via its close button", async ({ page }) => {
-    await gotoStory(page, "/components/popover");
+    await gotoStory(page, "/components/overlays/popover");
 
     const canvas = story(page);
     const trigger = canvas.locator("#pop-close-popover [data-exo=\"popover-trigger\"]");

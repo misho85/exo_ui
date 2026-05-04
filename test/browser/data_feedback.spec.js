@@ -4,7 +4,7 @@ const { expectAttribute, gotoStory, story } = require("./helpers/storybook");
 
 test.describe("data and feedback components", () => {
   test("date picker exposes calendar semantics, form value, and error links", async ({ page }) => {
-    await gotoStory(page, "/components/date_picker");
+    await gotoStory(page, "/components/forms/date_picker");
 
     const canvas = story(page);
     const invalidPicker = canvas.locator("#dp-error");
@@ -22,7 +22,7 @@ test.describe("data and feedback components", () => {
   });
 
   test("table renders caption, aligned cells, row labels, and empty state", async ({ page }) => {
-    await gotoStory(page, "/components/table");
+    await gotoStory(page, "/components/data_display/table");
 
     const canvas = story(page);
     const tableBody = canvas.locator("#users-table");
@@ -35,7 +35,7 @@ test.describe("data and feedback components", () => {
   });
 
   test("flash and toast notifications expose live-region roles and close controls", async ({ page }) => {
-    await gotoStory(page, "/components/flash");
+    await gotoStory(page, "/components/feedback/flash");
 
     const canvas = story(page);
     const success = canvas.locator('[data-exo="flash"][data-kind="success"]');
@@ -47,7 +47,7 @@ test.describe("data and feedback components", () => {
     await expectAttribute(error, "aria-live", "assertive");
     await expect(error.locator('[data-exo="flash-close"]')).toHaveAttribute("type", "button");
 
-    await gotoStory(page, "/components/toast_container");
+    await gotoStory(page, "/components/feedback/toast_container");
 
     const toastCanvas = story(page);
     const container = toastCanvas.locator("#toast-container");

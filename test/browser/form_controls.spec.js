@@ -4,7 +4,7 @@ const { expectAttribute, gotoStory, story } = require("./helpers/storybook");
 
 test.describe("form controls", () => {
   test("input and checkbox expose error descriptions to assistive tech", async ({ page }) => {
-    await gotoStory(page, "/components/input");
+    await gotoStory(page, "/components/forms/input");
 
     const canvas = story(page);
     const input = canvas.locator("[data-exo=\"input\"][name=\"email\"][aria-invalid=\"true\"]");
@@ -22,7 +22,7 @@ test.describe("form controls", () => {
   });
 
   test("grouped form controls expose invalid state and describedby links", async ({ page }) => {
-    await gotoStory(page, "/components/radio_group");
+    await gotoStory(page, "/components/forms/radio_group");
 
     const canvas = story(page);
     const group = canvas.locator("#frequency");
@@ -31,7 +31,7 @@ test.describe("form controls", () => {
     await expectAttribute(group, "aria-describedby", "frequency-description frequency-error");
     await expect(canvas.locator("#frequency-error")).toHaveAttribute("role", "alert");
 
-    await gotoStory(page, "/components/slider");
+    await gotoStory(page, "/components/forms/slider");
 
     const slider = story(page).locator("[data-exo=\"slider\"][name=\"threshold\"][aria-invalid=\"true\"]");
     const sliderId = await slider.getAttribute("id");
@@ -39,7 +39,7 @@ test.describe("form controls", () => {
     await expectAttribute(slider, "aria-invalid", "true");
     await expectAttribute(slider, "aria-describedby", `${sliderId}-description ${sliderId}-error`);
 
-    await gotoStory(page, "/components/file_input");
+    await gotoStory(page, "/components/forms/file_input");
 
     const file = story(page).locator("#required_upload");
     await expectAttribute(file, "aria-invalid", "true");
@@ -47,7 +47,7 @@ test.describe("form controls", () => {
   });
 
   test("select and combobox triggers expose description and error ids", async ({ page }) => {
-    await gotoStory(page, "/components/select");
+    await gotoStory(page, "/components/forms/select");
 
     const canvas = story(page);
     const selectTrigger = canvas.locator("#sel-err-select [data-exo-select=\"trigger\"]");
@@ -55,7 +55,7 @@ test.describe("form controls", () => {
     await expectAttribute(selectTrigger, "aria-invalid", "true");
     await expectAttribute(selectTrigger, "aria-describedby", "sel-err-description sel-err-error");
 
-    await gotoStory(page, "/components/combobox");
+    await gotoStory(page, "/components/forms/combobox");
 
     const comboboxTrigger = story(page).locator("#cb-error-combobox [data-exo-combobox=\"trigger\"]");
     await expectAttribute(comboboxTrigger, "aria-invalid", "true");

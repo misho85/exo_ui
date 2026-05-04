@@ -4,7 +4,7 @@ const { expectAttribute, expectFocused, gotoStory, story } = require("./helpers/
 
 test.describe("command palette", () => {
   test("opens with Ctrl+K, focuses the input, and closes with Escape", async ({ page }) => {
-    await gotoStory(page, "/components/command_palette");
+    await gotoStory(page, "/components/menus/command_palette");
 
     const canvas = story(page);
     const palette = canvas.locator("#cmd-demo");
@@ -29,7 +29,7 @@ test.describe("command palette", () => {
   });
 
   test("closes when the backdrop is clicked", async ({ page }) => {
-    await gotoStory(page, "/components/command_palette");
+    await gotoStory(page, "/components/menus/command_palette");
 
     const canvas = story(page);
     const palette = canvas.locator("#cmd-demo");
@@ -49,7 +49,7 @@ test.describe("command palette", () => {
   });
 
   test("filters items and selects the active command with Enter", async ({ page }) => {
-    await gotoStory(page, "/components/command_palette");
+    await gotoStory(page, "/components/menus/command_palette");
 
     const canvas = story(page);
     const palette = canvas.locator("#cmd-demo");
@@ -77,7 +77,7 @@ test.describe("command palette", () => {
   });
 
   test("shows the empty state when filtering has no matches", async ({ page }) => {
-    await gotoStory(page, "/components/command_palette");
+    await gotoStory(page, "/components/menus/command_palette");
 
     const canvas = story(page);
     const input = canvas.locator("#cmd-demo [data-exo=\"command-palette-input\"]");

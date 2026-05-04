@@ -35,7 +35,12 @@ defmodule Storybook.Components.Popover do
         <ExoUI.Components.popover id="pop-close">
           <:trigger>Open</:trigger>
           <p style="padding: 0.5rem 0.75rem;">Click the button below to close.</p>
-          <button type="button" popovertarget="pop-close" popovertargetaction="hide" style="margin-top: 0.5rem;">
+          <button
+            type="button"
+            popovertarget="pop-close"
+            popovertargetaction="hide"
+            style="margin-top: 0.5rem;"
+          >
             Close
           </button>
         </ExoUI.Components.popover>

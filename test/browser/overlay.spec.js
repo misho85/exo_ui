@@ -4,7 +4,7 @@ const { expectAttribute, expectFocused, gotoStory, story } = require("./helpers/
 
 test.describe("overlay dialogs", () => {
   test("modal closes with Escape and syncs closed state", async ({ page }) => {
-    await gotoStory(page, "/components/modal");
+    await gotoStory(page, "/components/overlays/modal");
 
     const canvas = story(page);
     const modal = canvas.locator('[data-exo="modal"]');
@@ -20,7 +20,7 @@ test.describe("overlay dialogs", () => {
   });
 
   test("sheet closes with Escape and restores focus to its trigger", async ({ page }) => {
-    await gotoStory(page, "/components/sheet");
+    await gotoStory(page, "/components/overlays/sheet");
 
     const canvas = story(page);
     const trigger = canvas.getByRole("button", { name: "Open right sheet" });
@@ -40,7 +40,7 @@ test.describe("overlay dialogs", () => {
   });
 
   test("drawer closes with Escape and restores focus to its trigger", async ({ page }) => {
-    await gotoStory(page, "/components/drawer");
+    await gotoStory(page, "/components/overlays/drawer");
 
     const canvas = story(page);
     const trigger = canvas.getByRole("button", { name: "Open Right Drawer" });

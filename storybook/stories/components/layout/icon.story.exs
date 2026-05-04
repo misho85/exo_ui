@@ -26,7 +26,9 @@ defmodule Storybook.Components.Icon do
           style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; width: 5rem;"
         >
           <ExoUI.Components.icon name={name} class="size-6" />
-          <span style="font-size: 0.65rem; color: var(--exo-muted-foreground); text-align: center; word-break: break-all;">{name}</span>
+          <span style="font-size: 0.65rem; color: var(--exo-muted-foreground); text-align: center; word-break: break-all;">
+            {name}
+          </span>
         </div>
       </div>
     </div>

@@ -4,7 +4,7 @@ const { expectAttribute, expectFocused, gotoStory, story } = require("./helpers/
 
 test.describe("content structure components", () => {
   test("carousel exposes slide controls and updates disabled navigation state", async ({ page }) => {
-    await gotoStory(page, "/components/carousel");
+    await gotoStory(page, "/components/layout/carousel");
 
     const canvas = story(page);
     const carousel = canvas.locator("#demo-carousel");
@@ -26,7 +26,7 @@ test.describe("content structure components", () => {
   });
 
   test("breadcrumb and timeline expose current item semantics", async ({ page }) => {
-    await gotoStory(page, "/components/breadcrumb");
+    await gotoStory(page, "/components/navigation/breadcrumb");
 
     const canvas = story(page);
     const docsBreadcrumb = canvas.locator('[aria-label="Docs breadcrumb"]');
@@ -40,7 +40,7 @@ test.describe("content structure components", () => {
       "page"
     );
 
-    await gotoStory(page, "/components/timeline");
+    await gotoStory(page, "/components/data_display/timeline");
 
     const timeline = story(page).locator('[data-exo="timeline"]');
     const currentEvent = timeline.locator('[data-exo="timeline-event"][aria-current="step"]');
@@ -51,7 +51,7 @@ test.describe("content structure components", () => {
   });
 
   test("scroll area viewport is focusable and labelled", async ({ page }) => {
-    await gotoStory(page, "/components/scroll_area");
+    await gotoStory(page, "/components/layout/scroll_area");
 
     const canvas = story(page);
     const scrollArea = canvas.locator("#vertical-scroll");

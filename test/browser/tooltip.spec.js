@@ -10,7 +10,7 @@ const {
 
 test.describe("tooltip", () => {
   test("opens on hover and closes on mouse leave", async ({ page }) => {
-    await gotoStory(page, "/components/tooltip");
+    await gotoStory(page, "/components/overlays/tooltip");
 
     const canvas = story(page);
     const anchor = canvas.locator("#tip-fast [data-exo=\"tooltip-anchor\"]");
@@ -30,7 +30,7 @@ test.describe("tooltip", () => {
   });
 
   test("opens on focus and closes on escape", async ({ page }) => {
-    await gotoStory(page, "/components/tooltip");
+    await gotoStory(page, "/components/overlays/tooltip");
 
     const canvas = story(page);
     const anchor = canvas.locator("#tip-fast [data-exo=\"tooltip-anchor\"]");

@@ -4,7 +4,7 @@ const { expectAttribute, gotoStory, story } = require("./helpers/storybook");
 
 test.describe("navigation and progress components", () => {
   test("tabs expose tablist semantics, active focus order, and disabled state", async ({ page }) => {
-    await gotoStory(page, "/components/tabs");
+    await gotoStory(page, "/components/navigation/tabs");
 
     const canvas = story(page);
     const tabs = canvas.locator('[data-exo="tabs"]');
@@ -20,7 +20,7 @@ test.describe("navigation and progress components", () => {
   });
 
   test("pagination exposes page labels, current page, and disabled controls", async ({ page }) => {
-    await gotoStory(page, "/components/pagination");
+    await gotoStory(page, "/components/navigation/pagination");
 
     const canvas = story(page);
     const firstPagination = canvas.locator('[data-exo="pagination"]').first();
@@ -41,7 +41,7 @@ test.describe("navigation and progress components", () => {
   });
 
   test("steps and wizard mark the current step for assistive tech", async ({ page }) => {
-    await gotoStory(page, "/components/steps");
+    await gotoStory(page, "/components/navigation/steps");
 
     const canvas = story(page);
     const currentStep = canvas.locator('[data-exo="step"][aria-current="step"]').first();
@@ -49,7 +49,7 @@ test.describe("navigation and progress components", () => {
     await expect(currentStep).toHaveAttribute("aria-label", "Step 2, Profile, current");
     await expect(currentStep.locator('[data-exo="step-description"]')).toHaveText("Add public profile data");
 
-    await gotoStory(page, "/components/wizard_sidebar");
+    await gotoStory(page, "/components/navigation/wizard_sidebar");
 
     const wizard = story(page).locator('[data-exo="wizard"]').first();
     const currentWizardStep = wizard.locator('[data-exo="wizard-step"][aria-current="step"]');
@@ -64,14 +64,14 @@ test.describe("navigation and progress components", () => {
   });
 
   test("progress components expose bounded values and accessible names", async ({ page }) => {
-    await gotoStory(page, "/components/progress");
+    await gotoStory(page, "/components/feedback/progress");
 
     const progress = story(page).locator('[data-exo="progress"]').first();
     await expect(progress).toHaveAttribute("aria-label", "Storage used");
     await expect(progress).toHaveAttribute("aria-valuenow", "65");
     await expect(progress).toHaveAttribute("aria-valuetext", "65%");
 
-    await gotoStory(page, "/components/radial_progress");
+    await gotoStory(page, "/components/feedback/radial_progress");
 
     const radial = story(page).locator('[data-exo="radial-progress"]').first();
     await expect(radial).toHaveAttribute("aria-label", "0 percent complete");

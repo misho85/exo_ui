@@ -11,7 +11,7 @@ const {
 
 test.describe("combobox", () => {
   test("filters client-side options and commits the selected value", async ({ page }) => {
-    await gotoStory(page, "/components/combobox");
+    await gotoStory(page, "/components/forms/combobox");
 
     const canvas = story(page);
     const trigger = canvas.locator("#cb-client-combobox [data-exo-combobox=\"trigger\"]");
@@ -40,7 +40,7 @@ test.describe("combobox", () => {
   });
 
   test("shows the empty state when client filtering removes every option", async ({ page }) => {
-    await gotoStory(page, "/components/combobox");
+    await gotoStory(page, "/components/forms/combobox");
 
     const canvas = story(page);
     const trigger = canvas.locator("#cb-empty-combobox [data-exo-combobox=\"trigger\"]");

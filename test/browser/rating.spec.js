@@ -4,7 +4,7 @@ const { gotoStory, story } = require("./helpers/storybook");
 
 test.describe("rating", () => {
   test("syncs clicked stars into the submitted hidden value", async ({ page }) => {
-    await gotoStory(page, "/components/rating");
+    await gotoStory(page, "/components/forms/rating");
 
     const canvas = story(page);
     const rating = canvas.locator("#rating-basic");

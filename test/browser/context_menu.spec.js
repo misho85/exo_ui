@@ -4,7 +4,7 @@ const { gotoStory, story } = require("./helpers/storybook");
 
 test.describe("context menu", () => {
   test("opens on right click and closes on outside click", async ({ page }) => {
-    await gotoStory(page, "/components/context_menu");
+    await gotoStory(page, "/components/menus/context_menu");
 
     const canvas = story(page);
     const root = canvas.locator("#ctx-demo");

@@ -4,7 +4,7 @@ const { expectAttribute, expectFocused, gotoStory, story } = require("./helpers/
 
 test.describe("menubar", () => {
   test("opens menus with pointer and closes with outside click", async ({ page }) => {
-    await gotoStory(page, "/components/menubar");
+    await gotoStory(page, "/components/menus/menubar");
 
     const canvas = story(page);
     const menubar = canvas.locator("#demo-menubar");
@@ -26,7 +26,7 @@ test.describe("menubar", () => {
   });
 
   test("supports trigger and menu keyboard navigation", async ({ page }) => {
-    await gotoStory(page, "/components/menubar");
+    await gotoStory(page, "/components/menus/menubar");
 
     const canvas = story(page);
     const file = canvas.locator("#demo-menubar-trigger-0");

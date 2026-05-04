@@ -15,7 +15,10 @@ defmodule Storybook.Components.Drawer do
           Open Right Drawer
         </ExoUI.Components.button>
 
-        <ExoUI.Components.button variant="outline" phx-click={ExoUI.Components.show_drawer("drawer-left")}>
+        <ExoUI.Components.button
+          variant="outline"
+          phx-click={ExoUI.Components.show_drawer("drawer-left")}
+        >
           Open Left Drawer
         </ExoUI.Components.button>
       </div>

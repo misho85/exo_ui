@@ -9,7 +9,7 @@ const {
 
 test.describe("select", () => {
   test("supports keyboard selection from the focused selected option", async ({ page }) => {
-    await gotoStory(page, "/components/select");
+    await gotoStory(page, "/components/forms/select");
 
     const canvas = story(page);
     const trigger = canvas.locator("#sel-value-select [data-exo-select=\"trigger\"]");
@@ -37,7 +37,7 @@ test.describe("select", () => {
   });
 
   test("ignores disabled options instead of committing them", async ({ page }) => {
-    await gotoStory(page, "/components/select");
+    await gotoStory(page, "/components/forms/select");
 
     const canvas = story(page);
     const trigger = canvas.locator("#sel-basic-select [data-exo-select=\"trigger\"]");

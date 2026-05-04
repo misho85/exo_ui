@@ -4,7 +4,7 @@ const { gotoStory, story, expectPopoverState } = require("./helpers/storybook");
 
 test.describe("dropdown menu", () => {
   test("opens with a button trigger without nested button markup", async ({ page }) => {
-    await gotoStory(page, "/components/dropdown");
+    await gotoStory(page, "/components/menus/dropdown");
 
     const canvas = story(page);
     const root = canvas.locator("#dd-basic-popover");

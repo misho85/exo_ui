@@ -3,6 +3,7 @@ defmodule Storybook.Components.Charts do
 
   def folder_name, do: "Charts"
   def folder_open?, do: false
+  def folder_index, do: 30
 
   def entry("overview"), do: [name: "Overview", index: 0]
   def entry("area_chart"), do: [name: "Area", index: 10]

@@ -4,7 +4,7 @@ const { expectAttribute, gotoStory, story } = require("./helpers/storybook");
 
 test.describe("hover card", () => {
   test("opens on hover and closes on mouse leave", async ({ page }) => {
-    await gotoStory(page, "/components/hover_card");
+    await gotoStory(page, "/components/overlays/hover_card");
 
     const canvas = story(page);
     const hoverCard = canvas.locator("#hc-demo");

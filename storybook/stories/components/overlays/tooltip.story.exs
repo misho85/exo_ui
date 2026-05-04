@@ -60,7 +60,12 @@ defmodule Storybook.Components.Tooltip do
 
       <div>
         <h3>Align start</h3>
-        <ExoUI.Components.tooltip id="tip-align-start" text="Aligned to start" side="bottom" align="start">
+        <ExoUI.Components.tooltip
+          id="tip-align-start"
+          text="Aligned to start"
+          side="bottom"
+          align="start"
+        >
           <ExoUI.Components.button>Align start</ExoUI.Components.button>
         </ExoUI.Components.tooltip>
       </div>
