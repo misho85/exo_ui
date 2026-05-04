@@ -1,43 +1,56 @@
 defmodule Storybook.Components.ScrollArea do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Scrollable container with custom scrollbar styling."
+  def function, do: &ExoUI.Components.Core.scroll_area/1
 
-  def render(assigns) do
-    ~H"""
-    <div style="padding: 1rem; display: grid; gap: 2rem; max-width: 560px;">
-      <section>
-        <h3 style="margin-bottom: 0.75rem; font-weight: 600;">Vertical scroll</h3>
-        <ExoUI.Components.scroll_area
-          id="vertical-scroll"
-          aria_label="Scrollable item list"
-          style="height: 200px; border: 1px solid var(--exo-border); border-radius: var(--exo-radius); padding: 1rem;"
-        >
-          <div :for={i <- 1..20}>
-            <p style="padding: 0.25rem 0; font-size: 0.875rem;">Item {i}</p>
-          </div>
-        </ExoUI.Components.scroll_area>
-      </section>
-
-      <section>
-        <h3 style="margin-bottom: 0.75rem; font-weight: 600;">Horizontal scroll</h3>
-        <ExoUI.Components.scroll_area
-          id="horizontal-scroll"
-          aria_label="Scrollable columns"
-          orientation="horizontal"
-          style="border: 1px solid var(--exo-border); border-radius: var(--exo-radius); padding: 1rem;"
-        >
-          <div style="display: flex; gap: 0.75rem; width: max-content;">
-            <div
-              :for={i <- 1..12}
-              style="min-width: 8rem; padding: 1rem; background: var(--exo-muted); border-radius: var(--exo-radius); text-align: center;"
-            >
-              Column {i}
-            </div>
-          </div>
-        </ExoUI.Components.scroll_area>
-      </section>
+  def template do
+    """
+    <div style="padding: 1rem; max-width: 35rem;" psb-code-hidden>
+      <.psb-variation/>
     </div>
     """
+  end
+
+  def variations do
+    [
+      %Variation{
+        id: :vertical,
+        attributes: %{
+          id: "vertical-scroll",
+          aria_label: "Scrollable item list",
+          style:
+            "height: 200px; border: 1px solid var(--exo-border); border-radius: var(--exo-radius); padding: 1rem;"
+        },
+        slots: [vertical_items()]
+      },
+      %Variation{
+        id: :horizontal,
+        attributes: %{
+          id: "horizontal-scroll",
+          aria_label: "Scrollable columns",
+          orientation: "horizontal",
+          style:
+            "border: 1px solid var(--exo-border); border-radius: var(--exo-radius); padding: 1rem;"
+        },
+        slots: [horizontal_items()]
+      }
+    ]
+  end
+
+  defp vertical_items do
+    1..20
+    |> Enum.map_join("", fn index ->
+      ~s|<p style="padding: 0.25rem 0; font-size: 0.875rem;">Item #{index}</p>|
+    end)
+  end
+
+  defp horizontal_items do
+    columns =
+      1..12
+      |> Enum.map_join("", fn index ->
+        ~s|<div style="min-width: 8rem; padding: 1rem; background: var(--exo-muted); border-radius: var(--exo-radius); text-align: center;">Column #{index}</div>|
+      end)
+
+    ~s|<div style="display: flex; gap: 0.75rem; width: max-content;">#{columns}</div>|
   end
 end

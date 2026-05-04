@@ -1,40 +1,34 @@
 defmodule Storybook.Components.Hero do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Hero section with title, subtitle, and action slots."
+  def function, do: &ExoUI.Components.DataDisplay.hero/1
 
-  def render(assigns) do
-    ~H"""
-    <div style="display: flex; flex-direction: column; gap: 3rem;">
-      <section>
-        <h3 style="margin-bottom: 0.75rem; font-weight: 600;">Title only</h3>
-        <ExoUI.Components.hero>
-          <:title>Welcome to ExoUI</:title>
-        </ExoUI.Components.hero>
-      </section>
-
-      <section>
-        <h3 style="margin-bottom: 0.75rem; font-weight: 600;">With subtitle</h3>
-        <ExoUI.Components.hero>
-          <:title>Build faster with ExoUI</:title>
-          <:subtitle>
-            Headless components for Phoenix LiveView. Zero CSS opinions, full accessibility.
-          </:subtitle>
-        </ExoUI.Components.hero>
-      </section>
-
-      <section>
-        <h3 style="margin-bottom: 0.75rem; font-weight: 600;">Full hero with actions</h3>
-        <ExoUI.Components.hero>
-          <:title>Ship your next project faster</:title>
-          <:subtitle>Production-ready components that work with any CSS framework.</:subtitle>
-          <:actions>
-            <ExoUI.Components.button variant="primary">Get Started</ExoUI.Components.button>
-            <ExoUI.Components.button variant="outline">Learn More</ExoUI.Components.button>
-          </:actions>
-        </ExoUI.Components.hero>
-      </section>
+  def template do
+    """
+    <div style="padding: 1rem; max-width: 54rem;" psb-code-hidden>
+      <.psb-variation/>
     </div>
     """
+  end
+
+  def variations do
+    [
+      %Variation{id: :title_only, slots: [~s|<:title>Welcome to ExoUI</:title>|]},
+      %Variation{
+        id: :with_subtitle,
+        slots: [
+          ~s|<:title>Build faster with ExoUI</:title>|,
+          ~s|<:subtitle>Headless components for Phoenix LiveView. Zero CSS opinions, full accessibility.</:subtitle>|
+        ]
+      },
+      %Variation{
+        id: :with_actions,
+        slots: [
+          ~s|<:title>Ship your next project faster</:title>|,
+          ~s|<:subtitle>Production-ready components that work with any CSS framework.</:subtitle>|,
+          ~s|<:actions><button data-exo="btn" data-variant="primary" data-size="md">Get Started</button><button data-exo="btn" data-variant="outline" data-size="md">Learn More</button></:actions>|
+        ]
+      }
+    ]
   end
 end

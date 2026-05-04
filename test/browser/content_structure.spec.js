@@ -61,8 +61,8 @@ test.describe("content structure components", () => {
     await gotoStory(page, "/components/layout/scroll_area");
 
     const canvas = story(page);
-    const scrollArea = canvas.locator("#vertical-scroll");
-    const viewport = canvas.locator("#vertical-scroll-viewport");
+    const scrollArea = canvas.getByRole("region", { name: "Scrollable item list" });
+    const viewport = scrollArea.locator('[data-exo="scroll-area-viewport"]');
 
     await expectAttribute(scrollArea, "role", "region");
     await expectAttribute(scrollArea, "aria-label", "Scrollable item list");

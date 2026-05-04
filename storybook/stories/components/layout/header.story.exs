@@ -1,28 +1,34 @@
 defmodule Storybook.Components.Header do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Page header with optional subtitle and actions."
+  def function, do: &ExoUI.Components.Core.header/1
 
-  def render(assigns) do
-    ~H"""
-    <div style="padding: 1rem; display: flex; flex-direction: column; gap: 2rem; max-width: 800px;">
-      <ExoUI.Components.header>
-        Dashboard
-      </ExoUI.Components.header>
-
-      <ExoUI.Components.header>
-        Users
-        <:subtitle>Manage your team members and their permissions.</:subtitle>
-      </ExoUI.Components.header>
-
-      <ExoUI.Components.header>
-        Projects
-        <:subtitle>All active projects.</:subtitle>
-        <:actions>
-          <ExoUI.Components.button variant="primary">New Project</ExoUI.Components.button>
-        </:actions>
-      </ExoUI.Components.header>
+  def template do
+    """
+    <div style="padding: 1rem; max-width: 48rem;" psb-code-hidden>
+      <.psb-variation/>
     </div>
     """
+  end
+
+  def variations do
+    [
+      %Variation{id: :title_only, slots: ["Dashboard"]},
+      %Variation{
+        id: :with_subtitle,
+        slots: [
+          "Users",
+          ~s|<:subtitle>Manage your team members and their permissions.</:subtitle>|
+        ]
+      },
+      %Variation{
+        id: :with_actions,
+        slots: [
+          "Projects",
+          ~s|<:subtitle>All active projects.</:subtitle>|,
+          ~s|<:actions><button data-exo="btn" data-variant="primary" data-size="md">New Project</button></:actions>|
+        ]
+      }
+    ]
   end
 end
