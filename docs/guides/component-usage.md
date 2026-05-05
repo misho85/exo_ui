@@ -8,6 +8,7 @@ templates.
 For full-page examples that combine multiple component families, see
 `docs/guides/app-shell-workflows.md`,
 `docs/guides/editable-record-workflows.md`,
+`docs/guides/bulk-action-workflows.md`,
 `docs/guides/action-form-recipes.md`,
 `docs/guides/table-overlay-menu-recipes.md`,
 `docs/guides/component-state-recipes.md`, and

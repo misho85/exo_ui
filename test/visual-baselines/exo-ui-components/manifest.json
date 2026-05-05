@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-05T11:17:09.964Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T11-14-10-108Z",
-  "count": 90,
+  "updatedAt": "2026-05-05T11:29:17.897Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T11-26-03-225Z",
+  "count": 91,
   "entries": [
     {
       "name": "actions/button",
@@ -245,7 +245,7 @@
       "dataExoCount": 238,
       "width": 1280,
       "height": 900,
-      "sha256": "931b7871966da19e9a6b5956d3be2da2c05539034d1c83f15bf3ac4984930821"
+      "sha256": "1cd90a08bfc4016d48b01ebceac41f186da3310fcb09bfa494d789c672afa1a7"
     },
     {
       "name": "data_display/kbd",
@@ -407,7 +407,7 @@
       "dataExoCount": 180,
       "width": 1280,
       "height": 900,
-      "sha256": "e1f0f47bb1e3023f49d8bf571f5a97a60440b3da1cf9dcde0cb97e81fed4ef5c"
+      "sha256": "2c102960e13bbd3bd9928ba9851d9631cffc7b1efc1a07d542f255687ec09292"
     },
     {
       "name": "forms/combobox_async",
@@ -452,7 +452,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "806104cf39b8aadc05bd41f25c1a38e5518de3731185bc0c73687ac13ed10df7"
+      "sha256": "2d3e0d0249e0f9dc94c9f5c1698598552f604724747208edee583db0cbcb6303"
     },
     {
       "name": "forms/form",
@@ -806,13 +806,22 @@
       "sha256": "4f50bdce9e3d427208c55afe7ef7ebca78a3920199276cc733f087803bba0a5f"
     },
     {
+      "name": "recipes/bulk_action_workflow",
+      "route": "/components/recipes/bulk_action_workflow",
+      "screenshot": "screenshots/recipes__bulk_action_workflow.png",
+      "dataExoCount": 78,
+      "width": 1280,
+      "height": 900,
+      "sha256": "25b43782a155efeb89183e483e9ddfbe986c953aee6719b21e99e2856d5dc51c"
+    },
+    {
       "name": "recipes/component_recipe_matrix",
       "route": "/components/recipes/component_recipe_matrix",
       "screenshot": "screenshots/recipes__component_recipe_matrix.png",
       "dataExoCount": 152,
       "width": 1280,
       "height": 900,
-      "sha256": "557ede4ebc484203fa8aa289a052a905d25252dd06618d124f56b4da11f43c30"
+      "sha256": "1a58632102ba810e0a39e8eb351c38291c92cf763a3dcaf7108eac51cd704d5b"
     }
   ]
 }
