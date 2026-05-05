@@ -108,6 +108,15 @@ async function uncheckByLabel(page, name) {
   );
 }
 
+async function chooseSelectOption(page, selectId, value) {
+  const trigger = page.locator(`#story-live #${selectId}-select [data-exo-select="trigger"]`);
+  const option = page.locator(`#story-live #${selectId} [data-exo="select-option"][data-value="${value}"]`);
+
+  if (!(await safe(trigger, (node) => node.click({ timeout: 1500 })))) return false;
+  await page.waitForTimeout(150);
+  return safe(option, (node) => node.click({ timeout: 1500 }));
+}
+
 async function hoverFirst(page, selector) {
   return safe(page.locator(selector), (node) => node.hover({ timeout: 1500 }));
 }
@@ -236,6 +245,18 @@ async function componentDemo(page, name) {
       await checkByLabel(page, "I confirm that required fields are accurate");
       await page.waitForTimeout(300);
       await clickButton(page, "Save input record");
+      await page.waitForTimeout(350);
+      break;
+    case "select_recipes":
+      await clickButton(page, "Clear required selections");
+      await page.waitForTimeout(300);
+      await chooseSelectOption(page, "select-recipe-status", "blocked");
+      await page.waitForTimeout(250);
+      await chooseSelectOption(page, "select-recipe-priority", "high");
+      await page.waitForTimeout(250);
+      await chooseSelectOption(page, "select-recipe-owner", "support");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Save select record");
       await page.waitForTimeout(350);
       break;
     case "dashboard_drilldown_workflow":

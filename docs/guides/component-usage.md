@@ -8,6 +8,7 @@ templates.
 For full-page examples that combine multiple component families, see
 `docs/guides/button-recipes.md`,
 `docs/guides/input-recipes.md`,
+`docs/guides/select-recipes.md`,
 `docs/guides/app-shell-workflows.md`,
 `docs/guides/editable-record-workflows.md`,
 `docs/guides/bulk-action-workflows.md`,
@@ -364,6 +365,9 @@ disabled options, and field integration.
   <:option value="deleted" disabled>Deleted</:option>
 </.select>
 ```
+
+For prompt validation, grouped options, icons, disabled options, and
+server-owned select state, see `docs/guides/select-recipes.md`.
 
 ### Combobox
 
