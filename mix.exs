@@ -31,8 +31,8 @@ defmodule ExoUI.MixProject do
       {:phoenix_html, "~> 4.3"},
       {:phoenix_live_view, "~> 1.1"},
       {:gettext, "~> 1.0", optional: true},
+      {:jason, "~> 1.4"},
       {:floki, "~> 0.37", only: :test},
-      {:jason, "~> 1.4", only: :test},
       {:ex_doc, "~> 0.40", only: :dev, runtime: false}
     ]
   end

@@ -419,6 +419,7 @@ defmodule ExoUI.Components.Overlay do
       aria-hidden={to_string(!@show)}
       inert={!@show}
       phx-hook="ExoOverlay"
+      phx-mounted={@show && show_drawer(@id)}
       class={@class}
       {@rest}
     >

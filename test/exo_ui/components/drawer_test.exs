@@ -29,6 +29,8 @@ defmodule ExoUI.Components.DrawerTest do
     assigns = %{}
     html = rendered_to_string(~H|<.drawer id="d1" show={true}>Content</.drawer>|)
     assert html =~ ~s(data-state="open")
+    assert html =~ ~s(phx-mounted=)
+    assert html =~ "focus_first"
   end
 
   test "renders drawer with right side by default" do

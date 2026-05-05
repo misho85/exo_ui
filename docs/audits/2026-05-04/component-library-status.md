@@ -63,6 +63,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - The remaining aggregate routes, `Card` and `Charts overview`, are now PhoenixStorybook examples instead of page-mode stories. They still get screenshot/video capture, but they no longer hide as component-story gaps because the real components already have separate component-mode stories.
 - A central component usage reference now covers the current Core, Form, Overlay/Menu, Feedback, Data Display, Chart, and Layout public surface with Phoenix/HEEx copy-paste examples, setup notes, a11y expectations, and the remaining API parity caveats.
 - `show_modal/1` and `hide_modal/1` are now public overlay helpers, and the compatibility facade also exposes modal, drawer, sheet, and command palette show/hide helpers. Modal and confirm-modal Storybook examples now demonstrate opening from a trigger instead of relying on pre-opened markup.
+- Initially open drawers now run the same mounted focus command pattern as modal and sheet, and `jason` is a runtime dependency because LiveView JS attributes require JSON encoding outside the test environment.
 
 ## Comparison vs shadcn/daisyUI
 
