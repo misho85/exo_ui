@@ -86,6 +86,10 @@ async function clickFirst(page, selector) {
   return safe(page.locator(selector), (node) => node.click({ timeout: 1500 }));
 }
 
+async function clickButton(page, name) {
+  return safe(page.getByRole("button", { name }), (node) => node.click({ timeout: 1500 }));
+}
+
 async function hoverFirst(page, selector) {
   return safe(page.locator(selector), (node) => node.hover({ timeout: 1500 }));
 }
@@ -195,6 +199,14 @@ async function componentDemo(page, name) {
     case "confirm_modal":
     case "modal":
       await openOverlayIfClosed(page, '[data-exo="modal"]', '#story-live button, #story-live [role="button"]');
+      await page.waitForTimeout(400);
+      break;
+    case "overlay_stack":
+      await clickButton(page, "Open stacked overlay flow");
+      await page.waitForTimeout(250);
+      await clickButton(page, "Open audit sheet");
+      await page.waitForTimeout(250);
+      await clickButton(page, "Open stacked drawer");
       await page.waitForTimeout(400);
       break;
     case "menubar":

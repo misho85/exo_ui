@@ -2214,12 +2214,22 @@
     },
     _syncStacking(roots) {
       const next = new Set(roots);
+      const topRoot = roots[roots.length - 1] || null;
       roots.forEach((root, index) => {
         if (!this.rootStyleState.has(root)) {
-          this.rootStyleState.set(root, { zIndex: root.style.zIndex });
+          this.rootStyleState.set(root, {
+            zIndex: root.style.zIndex,
+            inert: root.inert,
+            ariaHidden: root.getAttribute("aria-hidden")
+          });
         }
         root.style.zIndex = String(1e3 + index);
         root.dataset.overlayStackIndex = String(index + 1);
+        if (root === topRoot) {
+          this._restoreRootVisibility(root);
+        } else {
+          this._coverRoot(root);
+        }
       });
       for (const root of this.stackedRoots) {
         if (next.has(root)) continue;
@@ -2227,10 +2237,27 @@
       }
       this.stackedRoots = next;
     },
+    _coverRoot(root) {
+      root.inert = true;
+      root.setAttribute("aria-hidden", "true");
+      root.dataset.overlayCovered = "true";
+    },
+    _restoreRootVisibility(root) {
+      const original = this.rootStyleState.get(root);
+      if (!original) return;
+      root.inert = original.inert;
+      if (original.ariaHidden === null) {
+        root.removeAttribute("aria-hidden");
+      } else {
+        root.setAttribute("aria-hidden", original.ariaHidden);
+      }
+      delete root.dataset.overlayCovered;
+    },
     _restoreStacking(root) {
       const original = this.rootStyleState.get(root);
       if (!original) return;
       root.style.zIndex = original.zIndex;
+      this._restoreRootVisibility(root);
       delete root.dataset.overlayStackIndex;
       this.rootStyleState.delete(root);
     },
@@ -2345,9 +2372,9 @@
       this._previousFocus = this._isRestoreTarget(previousFocus) ? previousFocus : null;
       this.el.removeAttribute("inert");
       this.el.setAttribute("aria-hidden", "false");
+      overlayRegistry.register(this);
       requestAnimationFrame(() => {
         if (!this._isOpenActive || !this._isOpen()) return;
-        overlayRegistry.register(this);
         const target = this._firstFocusable() || this._panel;
         target?.focus?.({ preventScroll: true });
       });

@@ -636,6 +636,34 @@ Sheets can open from any edge. Use them for filters, editors, or mobile panels.
 </.sheet>
 ```
 
+### Stacked Overlays
+
+Modal, sheet, and drawer roots share the same overlay registry. When one opens
+another, only the topmost overlay remains interactive; lower overlays stay
+visible but become inert and `aria-hidden` until they return to the top.
+
+```heex
+<.button phx-click={show_modal("review-modal")}>Review deployment</.button>
+
+<.modal id="review-modal">
+  <:title>Review deployment</:title>
+  <p>Review the release before opening secondary panels.</p>
+  <:actions>
+    <.button variant="outline" phx-click={show_sheet("audit-sheet")}>
+      Open audit sheet
+    </.button>
+  </:actions>
+</.modal>
+
+<.sheet id="audit-sheet" side="right">
+  <:title>Audit trail</:title>
+  <p>Audit details stay above the modal until the sheet closes.</p>
+  <:footer>
+    <.button phx-click={hide_sheet("audit-sheet")}>Done</.button>
+  </:footer>
+</.sheet>
+```
+
 ### Hover Card
 
 Use for richer preview content on hover/focus.
@@ -1186,8 +1214,10 @@ ExoUI now has Storybook and visual capture coverage for the public component
 surface. The main remaining shadcn/daisyUI-style parity gaps are:
 
 - Modal can be opened with public JS helpers or parent LiveView state; flows
-  that must validate on the server before closing still need explicit event
-  handling.
+  that must validate on the server before closing can use
+  `close_on_confirm={false}` and close later from LiveView.
+- Modal, sheet, and drawer stacking is browser-tested, including lower overlay
+  inerting while another overlay is topmost.
 - `input type="select"` and `dropdown/1` are legacy compatibility paths. Prefer
   `select/1` and `dropdown_menu/1`.
 - Advanced composition patterns such as Radix-style `asChild` are not part of

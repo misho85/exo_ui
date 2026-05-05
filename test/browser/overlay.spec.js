@@ -218,6 +218,59 @@ test.describe("overlay dialogs", () => {
     await expectFocused(leftTrigger);
   });
 
+  test("cross-type stacked overlays only expose the topmost dialog", async ({ page }) => {
+    await gotoStory(page, "/components/overlays/overlay_stack");
+
+    const canvas = story(page);
+    const trigger = canvas.getByRole("button", { name: "Open stacked overlay flow" });
+    const modal = canvas.locator("#overlay-stack-modal");
+    const sheet = canvas.locator("#overlay-stack-sheet");
+    const drawer = canvas.locator("#overlay-stack-drawer");
+    const openSheetButton = modal.getByRole("button", { name: "Open audit sheet" });
+    const openDrawerButton = sheet.getByRole("button", { name: "Open stacked drawer" });
+
+    await trigger.click();
+    await expectAttribute(modal, "data-state", "open");
+    await expect(modal).toHaveAttribute("aria-hidden", "false");
+    await expectWithinInert(modal, false);
+
+    await openSheetButton.click();
+    await expectAttribute(sheet, "data-state", "open");
+    await expectAttribute(modal, "data-overlay-covered", "true");
+    await expect(modal).toHaveAttribute("aria-hidden", "true");
+    await expectWithinInert(modal, true);
+    await expect(sheet).toHaveAttribute("aria-hidden", "false");
+    await expectWithinInert(sheet, false);
+    await expectFocused(openDrawerButton);
+
+    await openDrawerButton.click();
+    await expectAttribute(drawer, "data-state", "open");
+    await expectAttribute(sheet, "data-overlay-covered", "true");
+    await expectWithinInert(sheet, true);
+    await expect(drawer).toHaveAttribute("aria-hidden", "false");
+    await expectWithinInert(drawer, false);
+
+    await page.keyboard.press("Escape");
+    await expectAttribute(drawer, "data-state", "closed");
+    await expectAttribute(sheet, "data-state", "open");
+    await expect(sheet).toHaveAttribute("aria-hidden", "false");
+    await expect(sheet).not.toHaveAttribute("data-overlay-covered", "true");
+    await expectWithinInert(sheet, false);
+    await expectFocused(openDrawerButton);
+
+    await page.keyboard.press("Escape");
+    await expectAttribute(sheet, "data-state", "closed");
+    await expectAttribute(modal, "data-state", "open");
+    await expect(modal).toHaveAttribute("aria-hidden", "false");
+    await expect(modal).not.toHaveAttribute("data-overlay-covered", "true");
+    await expectWithinInert(modal, false);
+    await expectFocused(openSheetButton);
+
+    await page.keyboard.press("Escape");
+    await expectAttribute(modal, "data-state", "closed");
+    await expectFocused(trigger);
+  });
+
   test("drawer traps focus, closes with Escape, and restores focus to its trigger", async ({ page }) => {
     await gotoStory(page, "/components/overlays/drawer");
 
