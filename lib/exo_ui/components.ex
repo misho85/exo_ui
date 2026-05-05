@@ -65,12 +65,36 @@ defmodule ExoUI.Components do
   defdelegate context_menu(assigns), to: ExoUI.Components.Overlay
   defdelegate command_palette(assigns), to: ExoUI.Components.Overlay
   defdelegate menubar(assigns), to: ExoUI.Components.Overlay
+  defdelegate show_modal(id), to: ExoUI.Components.Overlay
+
+  def hide_modal(js_or_id, id \\ nil) do
+    if id,
+      do: ExoUI.Components.Overlay.hide_modal(js_or_id, id),
+      else: ExoUI.Components.Overlay.hide_modal(js_or_id)
+  end
+
   defdelegate show_drawer(id), to: ExoUI.Components.Overlay
 
   def hide_drawer(js_or_id, id \\ nil) do
     if id,
       do: ExoUI.Components.Overlay.hide_drawer(js_or_id, id),
       else: ExoUI.Components.Overlay.hide_drawer(js_or_id)
+  end
+
+  defdelegate show_sheet(id), to: ExoUI.Components.Overlay
+
+  def hide_sheet(js_or_id, id \\ nil) do
+    if id,
+      do: ExoUI.Components.Overlay.hide_sheet(js_or_id, id),
+      else: ExoUI.Components.Overlay.hide_sheet(js_or_id)
+  end
+
+  defdelegate show_command_palette(id), to: ExoUI.Components.Overlay
+
+  def hide_command_palette(js_or_id, id \\ nil) do
+    if id,
+      do: ExoUI.Components.Overlay.hide_command_palette(js_or_id, id),
+      else: ExoUI.Components.Overlay.hide_command_palette(js_or_id)
   end
 
   # Feedback

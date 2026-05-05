@@ -3,6 +3,7 @@ defmodule ExoUI.Components.ModalTest do
   import Phoenix.LiveViewTest
   import Phoenix.Component
   import ExoUI.Components
+  alias Phoenix.LiveView.JS
 
   test "renders modal with data-exo attributes" do
     assigns = %{}
@@ -66,5 +67,42 @@ defmodule ExoUI.Components.ModalTest do
     assert html =~ "Are you sure?"
     assert html =~ "Confirm"
     assert html =~ "Cancel"
+  end
+
+  test "modal JS helpers are public and target the modal contract" do
+    assert %JS{
+             ops: [
+               ["set_attr", %{to: "#test-modal", attr: ["data-state", "open"]}],
+               ["set_attr", %{to: "#test-modal", attr: ["aria-hidden", "false"]}],
+               ["remove_attr", %{to: "#test-modal", attr: "inert"}],
+               ["show", %{to: "#test-modal"}],
+               ["focus_first", %{to: "#test-modal [data-exo=\"modal-content\"]"}]
+             ]
+           } = show_modal("test-modal")
+
+    assert %JS{
+             ops: [
+               ["set_attr", %{to: "#test-modal", attr: ["data-state", "closed"]}],
+               ["set_attr", %{to: "#test-modal", attr: ["aria-hidden", "true"]}],
+               ["set_attr", %{to: "#test-modal", attr: ["inert", "true"]}],
+               ["hide", %{to: "#test-modal"}],
+               ["pop_focus", %{}]
+             ]
+           } = hide_modal("test-modal")
+  end
+
+  test "component facade exposes overlay JS helpers" do
+    assert %JS{} = ExoUI.Components.show_modal("modal")
+    assert %JS{} = ExoUI.Components.hide_modal("modal")
+    assert %JS{} = ExoUI.Components.hide_modal(JS.push("closed"), "modal")
+    assert %JS{} = ExoUI.Components.show_drawer("drawer")
+    assert %JS{} = ExoUI.Components.hide_drawer("drawer")
+    assert %JS{} = ExoUI.Components.hide_drawer(JS.push("closed"), "drawer")
+    assert %JS{} = ExoUI.Components.show_sheet("sheet")
+    assert %JS{} = ExoUI.Components.hide_sheet("sheet")
+    assert %JS{} = ExoUI.Components.hide_sheet(JS.push("closed"), "sheet")
+    assert %JS{} = ExoUI.Components.show_command_palette("command")
+    assert %JS{} = ExoUI.Components.hide_command_palette("command")
+    assert %JS{} = ExoUI.Components.hide_command_palette(JS.push("closed"), "command")
   end
 end

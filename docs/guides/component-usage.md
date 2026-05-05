@@ -471,22 +471,24 @@ config :exo_ui, :translate_function, {MyAppWeb.CoreComponents, :translate_error}
 
 ### Modal
 
-Use modal state from the LiveView. Provide a title, or pass `label` when there
-is no visible title.
+Use `show_modal/1` and `hide_modal/1` for client-side open/close commands, or
+drive `show` from LiveView state when the server owns the lifecycle. Provide a
+title, or pass `label` when there is no visible title.
 
 ```heex
-<.button phx-click="open-invite-modal">Invite member</.button>
+<.button phx-click={show_modal("invite-modal")}>Invite member</.button>
 
 <.modal
   id="invite-modal"
-  show={@invite_modal_open?}
   on_cancel={JS.push("close-invite-modal")}
 >
   <:title>Invite member</:title>
   <p>Send an invitation to this workspace.</p>
   <:actions>
-    <.button variant="ghost" phx-click="close-invite-modal">Cancel</.button>
-    <.button phx-click="send-invite">Send invite</.button>
+    <.button variant="ghost" phx-click={hide_modal("invite-modal")}>Cancel</.button>
+    <.button phx-click={JS.push("send-invite") |> hide_modal("invite-modal")}>
+      Send invite
+    </.button>
   </:actions>
 </.modal>
 ```
@@ -1168,8 +1170,9 @@ be used in custom sidebar markup.
 ExoUI now has Storybook and visual capture coverage for the public component
 surface. The main remaining shadcn/daisyUI-style parity gaps are:
 
-- Modal open/close is state-driven by the parent LiveView; public JS helpers
-  currently exist for drawer, sheet, and command palette, but not modal.
+- Modal can be opened with public JS helpers or parent LiveView state; flows
+  that must validate on the server before closing still need explicit event
+  handling.
 - `input type="select"` and `dropdown/1` are legacy compatibility paths. Prefer
   `select/1` and `dropdown_menu/1`.
 - Advanced composition patterns such as Radix-style `asChild` are not part of

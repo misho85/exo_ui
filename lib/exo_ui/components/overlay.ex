@@ -93,7 +93,8 @@ defmodule ExoUI.Components.Overlay do
     """
   end
 
-  defp show_modal(id) do
+  @doc "Shows a modal by ID."
+  def show_modal(id) do
     %Phoenix.LiveView.JS{}
     |> Phoenix.LiveView.JS.set_attribute({"data-state", "open"}, to: "##{id}")
     |> Phoenix.LiveView.JS.set_attribute({"aria-hidden", "false"}, to: "##{id}")
@@ -102,7 +103,8 @@ defmodule ExoUI.Components.Overlay do
     |> Phoenix.LiveView.JS.focus_first(to: "##{id} [data-exo=\"modal-content\"]")
   end
 
-  defp hide_modal(js \\ %Phoenix.LiveView.JS{}, id) do
+  @doc "Hides a modal by ID."
+  def hide_modal(js \\ %Phoenix.LiveView.JS{}, id) do
     js
     |> Phoenix.LiveView.JS.set_attribute({"data-state", "closed"}, to: "##{id}")
     |> Phoenix.LiveView.JS.set_attribute({"aria-hidden", "true"}, to: "##{id}")

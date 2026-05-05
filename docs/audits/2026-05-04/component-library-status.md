@@ -16,9 +16,9 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Storybook story types | 81 component stories, 1 live component story, 2 aggregate example stories, 0 component/layout page-mode stories |
 | Playwright component capture | 84 Storybook routes captured |
 | Capture artifacts | 84 screenshots, 84 WebM videos, 84 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-05T04-52-29-037Z/viewer.html` |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-05T05-16-18-914Z/viewer.html` |
 | Browser suite | 61 Playwright tests passing |
-| ExUnit suite | 496 tests passing |
+| ExUnit suite | 498 tests passing |
 | Visual regression | 84 committed screenshot baselines with pixel-diff checking |
 | Usage documentation | Central copy-paste reference added at `docs/guides/component-usage.md` |
 
@@ -62,6 +62,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `SidebarItem` now renders real Lucide SVG icons instead of showing icon names or emoji as visible text, with CSS sizing and ExUnit coverage for the icon slot.
 - The remaining aggregate routes, `Card` and `Charts overview`, are now PhoenixStorybook examples instead of page-mode stories. They still get screenshot/video capture, but they no longer hide as component-story gaps because the real components already have separate component-mode stories.
 - A central component usage reference now covers the current Core, Form, Overlay/Menu, Feedback, Data Display, Chart, and Layout public surface with Phoenix/HEEx copy-paste examples, setup notes, a11y expectations, and the remaining API parity caveats.
+- `show_modal/1` and `hide_modal/1` are now public overlay helpers, and the compatibility facade also exposes modal, drawer, sheet, and command palette show/hide helpers. Modal and confirm-modal Storybook examples now demonstrate opening from a trigger instead of relying on pre-opened markup.
 
 ## Comparison vs shadcn/daisyUI
 
@@ -70,7 +71,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Component stories | Broad Storybook route coverage exists; all real component stories are component/live-component stories, and aggregate demos are explicit examples | No component/layout page-mode stories remain |
 | Theming | Token-driven CSS with light/dark support, reduced-motion guard, semantic elevation/backdrop tokens, and browser checks against hardcoded component backdrops | Needs docs for token customization patterns and more component-specific state tokens |
 | Forms | Phoenix FormField integration is now strong across most controls, select/combobox expose active-descendant keyboard state, and combobox empty/loading states announce changes politely, including an async LiveComponent server-filter story | Component-mode controls should expose more attrs/slots directly in PhoenixStorybook playgrounds |
-| Overlays/menus | Browser-tested popover, dropdown, context menu, menubar, modal/sheet/drawer focus traps, topmost Escape/backdrop handling, outside inerting, scroll lock, stacking order, and focus restore | Richer nested overlay content examples still need deeper Radix/shadcn parity checks |
+| Overlays/menus | Browser-tested popover, dropdown, context menu, menubar, modal/sheet/drawer focus traps, topmost Escape/backdrop handling, outside inerting, scroll lock, stacking order, focus restore, and public show/hide helpers for modal/drawer/sheet/command palette | Richer nested overlay content examples still need deeper Radix/shadcn parity checks |
 | Keyboard support | Covered for major actions, menus, select/combobox, rating, tabs, and date picker grid movement | Date picker month changes still depend on the parent LiveView handling prev/next events |
 | Visual proof | Automated screenshots and videos for 84 routes, committed visual baselines, a CI-friendly diff command, and GitHub Actions wiring | Needs review tuning once real PR diffs start producing visual changes |
 | Composability | Slots and `data-exo` styling are consistent | No shadcn-style `asChild`/polymorphic root pattern for advanced composition |
@@ -84,12 +85,12 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 
 ## Verification used
 
-- `mix test` -> 496 tests, 0 failures.
+- `mix test` -> 498 tests, 0 failures.
 - `bun run build:all`.
 - `mix compile --warnings-as-errors` in `storybook`.
 - `bun run test:browser` -> 61 tests, 0 failures.
-- `bun run capture:components` -> 84 entries, 0 failed, 84 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T04-52-29-037Z`.
+- `bun run capture:components` -> 84 entries, 0 failed, 84 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T05-16-18-914Z`.
 - `bun run capture:validate` -> 84 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after moving aggregate `Card` and `Charts overview` routes to PhoenixStorybook examples.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after adding public modal helpers and trigger-driven modal examples.
 - `bun run visual:check` -> 84 current screenshots matched the committed baseline.
 - Documentation-only update added `docs/guides/component-usage.md` and linked it from README.

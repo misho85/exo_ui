@@ -5,7 +5,7 @@ defmodule Storybook.Components.ConfirmModal do
 
   def template do
     """
-    <div style="padding: 2rem; min-height: 420px;" psb-code-hidden>
+    <div style="padding: 2rem; min-height: 420px; display: flex; flex-direction: column; gap: 1rem;" psb-code-hidden>
       <.psb-variation/>
     </div>
     """
@@ -15,8 +15,9 @@ defmodule Storybook.Components.ConfirmModal do
     [
       %Variation{
         id: :delete_project,
+        template: confirm_template("Open confirm modal"),
         attributes: %{
-          show: true,
+          show: false,
           title: "Delete project",
           message:
             "This action cannot be undone. The project and all related records will be removed.",
@@ -26,5 +27,16 @@ defmodule Storybook.Components.ConfirmModal do
         }
       }
     ]
+  end
+
+  defp confirm_template(label) do
+    """
+    <div style="display: flex; flex-direction: column; gap: 1rem;" psb-code-hidden>
+      <ExoUI.Components.button variant="danger" phx-click={ExoUI.Components.Overlay.show_modal(":variation_id")}>
+        #{label}
+      </ExoUI.Components.button>
+      <.psb-variation/>
+    </div>
+    """
   end
 end

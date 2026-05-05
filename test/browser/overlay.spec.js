@@ -34,6 +34,7 @@ test.describe("overlay dialogs", () => {
     await gotoStory(page, "/components/overlays/modal");
 
     const canvas = story(page);
+    const trigger = canvas.getByRole("button", { name: "Open modal" }).first();
     const modal = canvas.locator("#modal-single-default");
     const labelledModal = canvas.locator("#modal-single-labelled-without-title");
     const closedModal = canvas.locator("#modal-single-closed");
@@ -43,6 +44,8 @@ test.describe("overlay dialogs", () => {
     const modalId = await modal.getAttribute("id");
 
     await expectAttribute(modal, "data-ready", "true");
+    await expectAttribute(modal, "data-state", "closed");
+    await trigger.click();
     await expectAttribute(modal, "data-state", "open");
     await expect(dialog).toHaveAttribute("aria-labelledby", `${modalId}-title`);
     await expect(dialog).toHaveAttribute("aria-describedby", `${modalId}-body`);
@@ -66,6 +69,7 @@ test.describe("overlay dialogs", () => {
     await expectAttribute(modal, "data-state", "closed");
     await expect(modal).toHaveAttribute("aria-hidden", "true");
     await expect(modal).toHaveAttribute("inert", "true");
+    await expectFocused(trigger);
   });
 
   test("sheet traps focus, closes with Escape, and restores focus to its trigger", async ({ page }) => {
