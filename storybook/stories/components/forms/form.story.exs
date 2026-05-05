@@ -1,5 +1,6 @@
 defmodule Storybook.Components.Form do
   use PhoenixStorybook.Story, :component
+  use Phoenix.Component
 
   def function, do: &__MODULE__.exo_form/1
 
@@ -18,6 +19,13 @@ defmodule Storybook.Components.Form do
     ]
   end
 
+  attr :for, :any, required: true, doc: "Form data or form struct."
+  attr :as, :any, default: nil, doc: "Optional form name."
+  attr :class, :any, default: nil
+  attr :rest, :global
+  slot :inner_block, required: true, doc: "Form fields and actions."
+
+  @doc "Renders the ExoUI form wrapper for Storybook without colliding with Phoenix.Component.form/1."
   def exo_form(assigns), do: ExoUI.Components.Form.form(assigns)
 
   def template do

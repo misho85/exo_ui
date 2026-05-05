@@ -7,17 +7,18 @@ test.describe("content structure components", () => {
     await gotoStory(page, "/components/layout/carousel");
 
     const canvas = story(page);
-    const carousel = canvas.locator("#demo-carousel");
-    const singleCarousel = canvas.locator("#single-carousel");
-    const noControlsCarousel = canvas.locator("#no-controls-carousel");
-    const viewport = carousel.locator("#demo-carousel-viewport");
+    const carouselId = "carousel-single-product-highlights";
+    const carousel = canvas.locator(`#${carouselId}`);
+    const singleCarousel = canvas.locator("#carousel-single-single-slide");
+    const noControlsCarousel = canvas.locator("#carousel-single-without-controls");
+    const viewport = carousel.locator(`#${carouselId}-viewport`);
     const prev = carousel.locator('[data-exo="carousel-prev"]');
     const next = carousel.locator('[data-exo="carousel-next"]');
 
     await expectAttribute(carousel, "aria-label", "Product highlights");
     await expectAttribute(viewport, "aria-live", "polite");
-    await expect(carousel.locator("#demo-carousel-slide-1")).toHaveAttribute("aria-label", "Campaign overview");
-    await expect(prev).toHaveAttribute("aria-controls", "demo-carousel-viewport");
+    await expect(carousel.locator(`#${carouselId}-slide-1`)).toHaveAttribute("aria-label", "Campaign overview");
+    await expect(prev).toHaveAttribute("aria-controls", `${carouselId}-viewport`);
     await expect(prev).toHaveAttribute("aria-disabled", "true");
 
     await next.click();
