@@ -296,6 +296,18 @@ async function componentDemo(page, name) {
       await clickButton(page, "Save combobox record");
       await page.waitForTimeout(350);
       break;
+    case "table_recipes":
+      await clickFirst(page, '#story-live #table-recipe-northstar [data-exo="table-cell"]');
+      await page.waitForTimeout(250);
+      await clickButton(page, "Review Northstar CRM");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Blocked rows");
+      await page.waitForTimeout(250);
+      await clickButton(page, "Escalate Helio Labs");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Empty state");
+      await page.waitForTimeout(350);
+      break;
     case "dashboard_drilldown_workflow":
       await clickButton(page, "At risk");
       await page.waitForTimeout(300);

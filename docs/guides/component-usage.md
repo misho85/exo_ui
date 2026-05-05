@@ -10,6 +10,7 @@ For full-page examples that combine multiple component families, see
 `docs/guides/input-recipes.md`,
 `docs/guides/select-recipes.md`,
 `docs/guides/combobox-recipes.md`,
+`docs/guides/table-recipes.md`,
 `docs/guides/app-shell-workflows.md`,
 `docs/guides/editable-record-workflows.md`,
 `docs/guides/bulk-action-workflows.md`,
@@ -972,6 +973,9 @@ Use with lists or LiveView streams. Pass `row_id` for stable DOM IDs and
   <:empty>No users found.</:empty>
 </.table>
 ```
+
+For captions, row click state, action slots, aligned numeric cells, and empty
+states, see `docs/guides/table-recipes.md`.
 
 ### List
 
