@@ -13,6 +13,7 @@ For full-page examples that combine multiple component families, see
 `docs/guides/table-recipes.md`,
 `docs/guides/modal-recipes.md`,
 `docs/guides/drawer-recipes.md`,
+`docs/guides/command-palette-recipes.md`,
 `docs/guides/app-shell-workflows.md`,
 `docs/guides/editable-record-workflows.md`,
 `docs/guides/bulk-action-workflows.md`,
@@ -829,6 +830,10 @@ palette should only open from your own trigger:
   <:item label="Run import" value="import" />
 </.command_palette>
 ```
+
+For trigger and shortcut opening, filtering, empty states, disabled items,
+manual-only palettes, and non-closing commands, see
+`docs/guides/command-palette-recipes.md`.
 
 For local command surfaces opened from another overlay, keep the palette root as
 a sibling of the sheet/drawer roots and let command items open the next overlay:

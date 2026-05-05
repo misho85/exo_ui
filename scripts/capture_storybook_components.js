@@ -350,6 +350,33 @@ async function componentDemo(page, name) {
       await checkByLabel(page, "Include archived accounts");
       await page.waitForTimeout(300);
       break;
+    case "command_palette_recipes":
+      await clickButton(page, "Open command palette");
+      await page.waitForTimeout(300);
+      await safe(
+        page.locator('#story-live #command-recipe-primary [data-exo="command-palette-input"]'),
+        (node) => node.fill("risk", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await page.keyboard.press("Enter");
+      await page.waitForTimeout(350);
+      await clickButton(page, "Open manual commands");
+      await page.waitForTimeout(300);
+      await safe(
+        page.locator('#story-live #command-recipe-manual [data-exo="command-palette-input"]'),
+        (node) => node.fill("preview", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await page.keyboard.press("Enter");
+      await page.waitForTimeout(350);
+      await safe(
+        page.locator('#story-live #command-recipe-manual [data-exo="command-palette-input"]'),
+        (node) => node.fill("apply", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await page.keyboard.press("Enter");
+      await page.waitForTimeout(400);
+      break;
     case "dashboard_drilldown_workflow":
       await clickButton(page, "At risk");
       await page.waitForTimeout(300);
