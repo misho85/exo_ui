@@ -1,21 +1,26 @@
 defmodule Storybook.Components.HoverCard do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Card that appears on hover."
+  def function, do: &ExoUI.Components.Overlay.hover_card/1
 
-  def render(assigns) do
-    ~H"""
-    <div style="padding: 4rem 1rem;">
-      <ExoUI.Components.hover_card id="hc-demo">
-        <:trigger>
-          <a href="#" style="text-decoration: underline; font-weight: 500;">Hover me</a>
-        </:trigger>
-        <p style="font-weight: 600; margin-bottom: 0.5rem;">Hover Card</p>
-        <p style="color: var(--exo-muted-foreground);">
-          This content appears when you hover over the trigger element.
-        </p>
-      </ExoUI.Components.hover_card>
+  def template do
+    """
+    <div style="padding: 4rem 1rem;" psb-code-hidden>
+      <.psb-variation/>
     </div>
     """
+  end
+
+  def variations do
+    [
+      %Variation{
+        id: :default,
+        slots: [
+          ~s|<:trigger><a href="#" style="text-decoration: underline; font-weight: 500;">Hover me</a></:trigger>|,
+          ~s|<p style="font-weight: 600; margin-bottom: 0.5rem;">Hover Card</p>|,
+          ~s|<p style="color: var(--exo-muted-foreground);">This content appears when you hover over the trigger element.</p>|
+        ]
+      }
+    ]
   end
 end

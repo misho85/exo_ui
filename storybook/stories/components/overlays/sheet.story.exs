@@ -1,62 +1,66 @@
 defmodule Storybook.Components.Sheet do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Slide-out panel from the edge of the screen."
+  def function, do: &ExoUI.Components.Overlay.sheet/1
 
-  def render(assigns) do
-    ~H"""
-    <div style="display: flex; gap: 1rem; padding: 1rem; flex-wrap: wrap;">
-      <ExoUI.Components.button phx-click={ExoUI.Components.Overlay.show_sheet("sheet-right")}>
-        Open right sheet
-      </ExoUI.Components.button>
-      <ExoUI.Components.button
-        variant="outline"
-        phx-click={ExoUI.Components.Overlay.show_sheet("sheet-left")}
-      >
-        Open left sheet
-      </ExoUI.Components.button>
-      <ExoUI.Components.button
-        variant="secondary"
-        phx-click={ExoUI.Components.Overlay.show_sheet("sheet-top")}
-      >
-        Open top sheet
-      </ExoUI.Components.button>
-      <ExoUI.Components.button
-        variant="ghost"
-        phx-click={ExoUI.Components.Overlay.show_sheet("sheet-bottom")}
-      >
-        Open bottom sheet
-      </ExoUI.Components.button>
+  def template do
+    """
+    <div style="display: flex; flex-direction: column; gap: 1rem; padding: 1rem;" psb-code-hidden>
+      <.psb-variation/>
     </div>
+    """
+  end
 
-    <ExoUI.Components.sheet id="sheet-right">
-      <:title>Sheet title</:title>
-      <p>Sheet content goes here.</p>
-      <:footer>
-        <button
-          data-exo="btn"
-          data-variant="outline"
-          phx-click={ExoUI.Components.Overlay.hide_sheet("sheet-right")}
-        >
-          Cancel
-        </button>
-        <button data-exo="btn">Save</button>
-      </:footer>
-    </ExoUI.Components.sheet>
+  def variations do
+    [
+      %Variation{
+        id: :right,
+        template: sheet_template("Open right sheet"),
+        slots: [
+          ~s|<:title>Sheet title</:title>|,
+          ~s|<p>Sheet content goes here.</p>|,
+          ~s|<:footer><button data-exo="btn" data-variant="outline" phx-click={ExoUI.Components.Overlay.hide_sheet("sheet-single-right")}>Cancel</button><button data-exo="btn">Save</button></:footer>|
+        ]
+      },
+      %Variation{
+        id: :left,
+        template: sheet_template("Open left sheet", "outline"),
+        attributes: %{side: "left"},
+        slots: [
+          ~s|<:title>Left sheet</:title>|,
+          ~s|<p>Content from the left side.</p>|
+        ]
+      },
+      %Variation{
+        id: :top,
+        template: sheet_template("Open top sheet", "secondary"),
+        attributes: %{side: "top"},
+        slots: [
+          ~s|<:title>Top sheet</:title>|,
+          ~s|<p>Compact sheet for command palettes or global search.</p>|
+        ]
+      },
+      %Variation{
+        id: :bottom,
+        template: sheet_template("Open bottom sheet", "ghost"),
+        attributes: %{side: "bottom", label: "Mobile actions"},
+        slots: [
+          ~s|<p>Bottom sheet without a visible title uses aria-label.</p>|
+        ]
+      }
+    ]
+  end
 
-    <ExoUI.Components.sheet id="sheet-left" side="left">
-      <:title>Left sheet</:title>
-      <p>Content from the left side.</p>
-    </ExoUI.Components.sheet>
+  defp sheet_template(label, variant \\ nil) do
+    variant_attr = if variant, do: ~s| variant="#{variant}"|, else: ""
 
-    <ExoUI.Components.sheet id="sheet-top" side="top">
-      <:title>Top sheet</:title>
-      <p>Compact sheet for command palettes or global search.</p>
-    </ExoUI.Components.sheet>
-
-    <ExoUI.Components.sheet id="sheet-bottom" side="bottom" label="Mobile actions">
-      <p>Bottom sheet without a visible title uses aria-label.</p>
-    </ExoUI.Components.sheet>
+    """
+    <div style="display: flex; flex-direction: column; gap: 1rem;" psb-code-hidden>
+      <ExoUI.Components.button#{variant_attr} phx-click={ExoUI.Components.Overlay.show_sheet(":variation_id")}>
+        #{label}
+      </ExoUI.Components.button>
+      <.psb-variation/>
+    </div>
     """
   end
 end

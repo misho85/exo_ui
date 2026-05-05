@@ -73,15 +73,15 @@ test.describe("overlay dialogs", () => {
 
     const canvas = story(page);
     const trigger = canvas.locator("button", { hasText: "Open right sheet" }).first();
-    const sheet = canvas.locator("#sheet-right");
-    const topSheet = canvas.locator("#sheet-top");
-    const bottomSheet = canvas.locator("#sheet-bottom");
+    const sheet = canvas.locator("#sheet-single-right");
+    const topSheet = canvas.locator("#sheet-single-top");
+    const bottomSheet = canvas.locator("#sheet-single-bottom");
     const dialog = sheet.locator('[data-exo="sheet-content"]');
     const originalHtmlOverflow = await page.evaluate(() => document.documentElement.style.overflow);
 
     await expectAttribute(sheet, "data-ready", "true");
-    await expect(dialog).toHaveAttribute("aria-labelledby", "sheet-right-title");
-    await expect(dialog).toHaveAttribute("aria-describedby", "sheet-right-body");
+    await expect(dialog).toHaveAttribute("aria-labelledby", "sheet-single-right-title");
+    await expect(dialog).toHaveAttribute("aria-describedby", "sheet-single-right-body");
     await expect(topSheet).toHaveAttribute("data-side", "top");
     await expect(bottomSheet).toHaveAttribute("data-side", "bottom");
     await expect(bottomSheet.locator('[data-exo="sheet-content"]')).toHaveAttribute(
@@ -123,8 +123,8 @@ test.describe("overlay dialogs", () => {
 
     const canvas = story(page);
     const trigger = canvas.locator("button", { hasText: "Open right sheet" }).first();
-    const rightSheet = canvas.locator("#sheet-right");
-    const leftSheet = canvas.locator("#sheet-left");
+    const rightSheet = canvas.locator("#sheet-single-right");
+    const leftSheet = canvas.locator("#sheet-single-left");
     const originalHtmlOverflow = await page.evaluate(() => document.documentElement.style.overflow);
 
     await trigger.click();
@@ -154,8 +154,8 @@ test.describe("overlay dialogs", () => {
 
     const canvas = story(page);
     const leftTrigger = canvas.locator("button", { hasText: "Open left sheet" }).first();
-    const leftSheet = canvas.locator("#sheet-left");
-    const rightSheet = canvas.locator("#sheet-right");
+    const leftSheet = canvas.locator("#sheet-single-left");
+    const rightSheet = canvas.locator("#sheet-single-right");
     const originalHtmlOverflow = await page.evaluate(() => document.documentElement.style.overflow);
 
     await leftTrigger.click();
@@ -168,7 +168,7 @@ test.describe("overlay dialogs", () => {
     await expect
       .poll(async () =>
         rightSheet.evaluate((right) => {
-          const left = document.querySelector("#sheet-left");
+          const left = document.querySelector("#sheet-single-left");
           return Number(right.style.zIndex) > Number(left?.style.zIndex || 0);
         })
       )
@@ -192,13 +192,13 @@ test.describe("overlay dialogs", () => {
 
     const canvas = story(page);
     const trigger = canvas.locator("button", { hasText: "Open Right Drawer" }).first();
-    const drawer = canvas.locator("#drawer-right");
-    const labelledDrawer = canvas.locator("#drawer-labelled");
+    const drawer = canvas.locator("#drawer-single-right");
+    const labelledDrawer = canvas.locator("#drawer-single-labelled");
     const dialog = drawer.locator('[data-exo="drawer-content"]');
 
     await expectAttribute(drawer, "data-ready", "true");
-    await expect(dialog).toHaveAttribute("aria-labelledby", "drawer-right-title");
-    await expect(dialog).toHaveAttribute("aria-describedby", "drawer-right-body");
+    await expect(dialog).toHaveAttribute("aria-labelledby", "drawer-single-right-title");
+    await expect(dialog).toHaveAttribute("aria-describedby", "drawer-single-right-body");
     await expect(labelledDrawer.locator('[data-exo="drawer-content"]')).toHaveAttribute(
       "aria-label",
       "Filters drawer"

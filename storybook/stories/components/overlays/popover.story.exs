@@ -1,51 +1,49 @@
 defmodule Storybook.Components.Popover do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Base floating container using native HTML Popover API."
+  def function, do: &ExoUI.Components.Overlay.popover/1
 
-  def render(assigns) do
-    ~H"""
-    <div style="display: flex; flex-direction: column; gap: 3rem; padding: 2rem;">
-      <div>
-        <h3>Default (bottom center)</h3>
-        <ExoUI.Components.popover id="pop-default">
-          <:trigger>Open popover</:trigger>
-          <p style="padding: 0.5rem 0.75rem;">Popover content. Click outside to dismiss.</p>
-        </ExoUI.Components.popover>
-      </div>
-
-      <div>
-        <h3>Top</h3>
-        <ExoUI.Components.popover id="pop-top" side="top">
-          <:trigger>Open top</:trigger>
-          <p style="padding: 0.5rem 0.75rem;">This appears above the trigger.</p>
-        </ExoUI.Components.popover>
-      </div>
-
-      <div>
-        <h3>Right</h3>
-        <ExoUI.Components.popover id="pop-right" side="right">
-          <:trigger>Open right</:trigger>
-          <p style="padding: 0.5rem 0.75rem;">This appears to the right.</p>
-        </ExoUI.Components.popover>
-      </div>
-
-      <div>
-        <h3>With close button</h3>
-        <ExoUI.Components.popover id="pop-close">
-          <:trigger>Open</:trigger>
-          <p style="padding: 0.5rem 0.75rem;">Click the button below to close.</p>
-          <button
-            type="button"
-            popovertarget="pop-close"
-            popovertargetaction="hide"
-            style="margin-top: 0.5rem;"
-          >
-            Close
-          </button>
-        </ExoUI.Components.popover>
-      </div>
+  def template do
+    """
+    <div style="display: flex; flex-direction: column; gap: 3rem; padding: 2rem;" psb-code-hidden>
+      <.psb-variation/>
     </div>
     """
+  end
+
+  def variations do
+    [
+      %Variation{
+        id: :default,
+        slots: [
+          ~s|<:trigger>Open popover</:trigger>|,
+          ~s|<p style="padding: 0.5rem 0.75rem;">Popover content. Click outside to dismiss.</p>|
+        ]
+      },
+      %Variation{
+        id: :top,
+        attributes: %{side: "top"},
+        slots: [
+          ~s|<:trigger>Open top</:trigger>|,
+          ~s|<p style="padding: 0.5rem 0.75rem;">This appears above the trigger.</p>|
+        ]
+      },
+      %Variation{
+        id: :right,
+        attributes: %{side: "right"},
+        slots: [
+          ~s|<:trigger>Open right</:trigger>|,
+          ~s|<p style="padding: 0.5rem 0.75rem;">This appears to the right.</p>|
+        ]
+      },
+      %Variation{
+        id: :with_close_button,
+        slots: [
+          ~s|<:trigger>Open</:trigger>|,
+          ~s|<p style="padding: 0.5rem 0.75rem;">Click the button below to close.</p>|,
+          ~s|<button type="button" popovertarget="popover-single-with-close-button" popovertargetaction="hide" style="margin-top: 0.5rem;">Close</button>|
+        ]
+      }
+    ]
   end
 end

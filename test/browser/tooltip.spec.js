@@ -13,8 +13,8 @@ test.describe("tooltip", () => {
     await gotoStory(page, "/components/overlays/tooltip");
 
     const canvas = story(page);
-    const anchor = canvas.locator("#tip-fast [data-exo=\"tooltip-anchor\"]");
-    const content = canvas.locator("#tip-fast-content");
+    const anchor = canvas.locator('#tooltip-single-fast-delay [data-exo="tooltip-anchor"]');
+    const content = canvas.locator("#tooltip-single-fast-delay-content");
 
     await expectAttribute(content, "popover", "manual");
     await expectPopoverState(content, false);
@@ -33,8 +33,8 @@ test.describe("tooltip", () => {
     await gotoStory(page, "/components/overlays/tooltip");
 
     const canvas = story(page);
-    const anchor = canvas.locator("#tip-fast [data-exo=\"tooltip-anchor\"]");
-    const content = canvas.locator("#tip-fast-content");
+    const anchor = canvas.locator('#tooltip-single-fast-delay [data-exo="tooltip-anchor"]');
+    const content = canvas.locator("#tooltip-single-fast-delay-content");
 
     await expectAttribute(content, "popover", "manual");
     await anchor.focus();

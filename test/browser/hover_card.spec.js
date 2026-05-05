@@ -7,7 +7,7 @@ test.describe("hover card", () => {
     await gotoStory(page, "/components/overlays/hover_card");
 
     const canvas = story(page);
-    const hoverCard = canvas.locator("#hc-demo");
+    const hoverCard = canvas.locator("#hover-card-single-default");
     const trigger = hoverCard.locator('[data-exo="hover-card-trigger"]');
     const content = hoverCard.locator('[data-exo="hover-card-content"]');
 
