@@ -7,6 +7,7 @@ templates.
 
 For full-page examples that combine multiple component families, see
 `docs/guides/button-recipes.md`,
+`docs/guides/input-recipes.md`,
 `docs/guides/app-shell-workflows.md`,
 `docs/guides/editable-record-workflows.md`,
 `docs/guides/bulk-action-workflows.md`,
@@ -332,6 +333,9 @@ Native select through `input/1` is kept for compatibility:
   options={[{"Draft", "draft"}, {"Published", "published"}]}
 />
 ```
+
+For validation, textarea limits, checkbox requirements, disabled/readonly
+behavior, and submit safety patterns, see `docs/guides/input-recipes.md`.
 
 ### Toggle
 

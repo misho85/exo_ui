@@ -90,6 +90,24 @@ async function clickButton(page, name) {
   return safe(page.getByRole("button", { name }), (node) => node.click({ timeout: 1500 }));
 }
 
+async function fillByLabel(page, name, value) {
+  return safe(page.getByLabel(name), (node) => node.fill(value, { timeout: 1500 }));
+}
+
+async function checkByLabel(page, name) {
+  return (
+    (await safe(page.getByLabel(name), (node) => node.check({ timeout: 1500, force: true }))) ||
+    safe(page.getByText(name, { exact: true }), (node) => node.click({ timeout: 1500 }))
+  );
+}
+
+async function uncheckByLabel(page, name) {
+  return (
+    (await safe(page.getByLabel(name), (node) => node.uncheck({ timeout: 1500, force: true }))) ||
+    safe(page.getByText(name, { exact: true }), (node) => node.click({ timeout: 1500 }))
+  );
+}
+
 async function hoverFirst(page, selector) {
   return safe(page.locator(selector), (node) => node.hover({ timeout: 1500 }));
 }
@@ -200,6 +218,24 @@ async function componentDemo(page, name) {
       await clickButton(page, "Delete draft");
       await page.waitForTimeout(300);
       await clickButton(page, "Confirm delete");
+      await page.waitForTimeout(350);
+      break;
+    case "input_recipes":
+      await fillByLabel(page, "Work email", "bad-email");
+      await page.waitForTimeout(250);
+      await uncheckByLabel(page, "I confirm that required fields are accurate");
+      await page.waitForTimeout(250);
+      await fillByLabel(
+        page,
+        "Reviewer notes",
+        "This note is intentionally too long for the recipe guard so the textarea can expose an aria-describedby error while preserving the description."
+      );
+      await page.waitForTimeout(300);
+      await fillByLabel(page, "Work email", "lead@example.com");
+      await fillByLabel(page, "Reviewer notes", "Ready for the next review.");
+      await checkByLabel(page, "I confirm that required fields are accurate");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Save input record");
       await page.waitForTimeout(350);
       break;
     case "dashboard_drilldown_workflow":
