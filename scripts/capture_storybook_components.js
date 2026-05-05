@@ -266,6 +266,28 @@ async function componentDemo(page, name) {
       await clickButton(page, "Next page");
       await page.waitForTimeout(400);
       break;
+    case "import_export_workflow":
+      await safe(page.locator('#story-live #import-export-file'), (node) =>
+        node.setInputFiles({
+          name: "accounts.csv",
+          mimeType: "text/csv",
+          buffer: Buffer.from("account,owner,amount\\nNorthstar,Iva,18000\\n")
+        })
+      );
+      await page.waitForTimeout(250);
+      await clickButton(page, "Review sample import");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Validate import");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Commit import");
+      await page.waitForTimeout(300);
+      await safe(page.locator('#story-live #export-format'), (node) =>
+        node.selectOption("json", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await clickButton(page, "Prepare export");
+      await page.waitForTimeout(400);
+      break;
     case "saved_filters_workflow":
       await safe(page.locator('#story-live #saved-filter-query'), (node) =>
         node.fill("north", { timeout: 1500 })
