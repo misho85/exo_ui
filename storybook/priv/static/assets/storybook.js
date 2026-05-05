@@ -237,8 +237,7 @@
     _ensureListener() {
       if (this.listenerBound) return;
       this._onKey = (e) => {
-        if (!((e.metaKey || e.ctrlKey) && e.key === "k")) return;
-        const target = this.stack[this.stack.length - 1];
+        const target = [...this.stack].reverse().find((hook) => hook?._matchesShortcut?.(e));
         if (!target || !target._toggle) return;
         e.preventDefault();
         target._toggle();
@@ -265,6 +264,7 @@
       this.list = this.el.querySelector('[data-exo="command-palette-list"]');
       this.empty = this.el.querySelector('[data-exo="command-palette-empty"]');
       this.items = Array.from(this.el.querySelectorAll('[data-exo="command-palette-item"]'));
+      this.shortcut = (this.el.dataset.shortcut || "").trim().toLowerCase();
       this.activeIndex = -1;
       if (this.list && !this.list.id) this.list.id = `${this.el.id}-list`;
       this.items.forEach((item, index) => {
@@ -384,6 +384,27 @@
     _isDisabled(item) {
       return item.disabled || item.dataset.disabled === "true" || item.getAttribute("aria-disabled") === "true";
     },
+    _matchesShortcut(event) {
+      if (!this.shortcut) return false;
+      return this.shortcut.split(",").map((combo) => combo.trim()).filter(Boolean).some((combo) => this._matchesShortcutCombo(event, combo));
+    },
+    _matchesShortcutCombo(event, combo) {
+      const tokens = combo.split("+").map((token) => token.trim().toLowerCase()).filter(Boolean);
+      const modifiers = ["mod", "cmd", "command", "meta", "ctrl", "control", "alt", "option", "shift"];
+      const key = tokens.find((token) => !modifiers.includes(token));
+      if (!key || event.key.toLowerCase() !== key) return false;
+      const wantsMod = tokens.includes("mod");
+      const wantsMeta = tokens.some((token) => ["cmd", "command", "meta"].includes(token));
+      const wantsCtrl = tokens.some((token) => ["ctrl", "control"].includes(token));
+      const wantsAlt = tokens.some((token) => ["alt", "option"].includes(token));
+      const wantsShift = tokens.includes("shift");
+      if (wantsMod && !(event.metaKey || event.ctrlKey)) return false;
+      if (!wantsMod && event.metaKey !== wantsMeta) return false;
+      if (!wantsMod && event.ctrlKey !== wantsCtrl) return false;
+      if (event.altKey !== wantsAlt) return false;
+      if (event.shiftKey !== wantsShift) return false;
+      return true;
+    },
     _visibleItems() {
       return this.items.filter((item) => !item.hidden && !this._isDisabled(item));
     },
@@ -453,6 +474,7 @@
       this.list = null;
       this.empty = null;
       this.items = [];
+      this.shortcut = "";
       this.activeIndex = -1;
       this._onKey = null;
       this._onInput = null;

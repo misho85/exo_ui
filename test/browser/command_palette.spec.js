@@ -28,6 +28,34 @@ test.describe("command palette", () => {
     await expect(input).toHaveValue("");
   });
 
+  test("matches custom shortcuts without letting manual palettes intercept them", async ({ page }) => {
+    await gotoStory(page, "/components/menus/command_palette");
+
+    const canvas = story(page);
+    const defaultPalette = canvas.locator("#command-palette-single-default");
+    const customPalette = canvas.locator("#command-palette-single-custom-shortcut");
+    const manualPalette = canvas.locator("#command-palette-single-manual-only");
+    const customInput = customPalette.locator('[data-exo="command-palette-input"]');
+
+    await expectAttribute(defaultPalette, "data-state", "closed");
+    await expectAttribute(customPalette, "data-state", "closed");
+    await expectAttribute(manualPalette, "data-state", "closed");
+
+    await page.keyboard.press("Control+j");
+
+    await expectAttribute(customPalette, "data-state", "open");
+    await expectAttribute(defaultPalette, "data-state", "closed");
+    await expectAttribute(manualPalette, "data-state", "closed");
+    await expectFocused(customInput);
+
+    await page.keyboard.press("Escape");
+    await expectAttribute(customPalette, "data-state", "closed");
+
+    await page.keyboard.press("Control+k");
+    await expectAttribute(defaultPalette, "data-state", "open");
+    await expectAttribute(manualPalette, "data-state", "closed");
+  });
+
   test("closes when the backdrop is clicked", async ({ page }) => {
     await gotoStory(page, "/components/menus/command_palette");
 

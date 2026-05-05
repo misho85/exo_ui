@@ -5,10 +5,10 @@ defmodule Storybook.Components.CommandPalette do
 
   def template do
     """
-    <div style="padding: 1rem;" psb-code-hidden>
-      <p style="font-size: 0.875rem; color: var(--exo-muted-foreground); margin-bottom: 1rem;">
-        Press <kbd style="padding: 0.125rem 0.375rem; border: 1px solid var(--exo-border); border-radius: 4px; font-size: 0.75rem;">Cmd+K</kbd> to open
-      </p>
+    <div style="padding: 1rem; min-height: 520px; display: flex; flex-direction: column; gap: 1rem;" psb-code-hidden>
+      <ExoUI.Components.button phx-click={ExoUI.Components.Overlay.show_command_palette(":variation_id")}>
+        Open command palette
+      </ExoUI.Components.button>
       <.psb-variation/>
     </div>
     """
@@ -23,6 +23,29 @@ defmodule Storybook.Components.CommandPalette do
           ~s|<:item label="Go to settings" value="settings" shortcut="S" />|,
           ~s|<:item label="Open command reference" value="reference" shortcut="R" />|,
           ~s|<:item label="Disabled command" value="disabled" disabled />|
+        ]
+      },
+      %Variation{
+        id: :custom_shortcut,
+        attributes: %{
+          placeholder: "Jump to...",
+          shortcut: "ctrl+j"
+        },
+        slots: [
+          ~s|<:item label="Jump to dashboard" value="dashboard" shortcut="D" />|,
+          ~s|<:item label="Jump to projects" value="projects" shortcut="P" />|,
+          ~s|<:item label="Jump to settings" value="settings" shortcut="S" />|
+        ]
+      },
+      %Variation{
+        id: :manual_only,
+        attributes: %{
+          placeholder: "Manual commands...",
+          shortcut: nil
+        },
+        slots: [
+          ~s|<:item label="Run import" value="import" shortcut="I" />|,
+          ~s|<:item label="Run export" value="export" shortcut="E" />|
         ]
       }
     ]

@@ -698,19 +698,34 @@ Use for right-click menus over a specific region.
 
 ### Command Palette
 
-Use for global search/action surfaces. It can be opened through Cmd/Ctrl+K by
-the hook or with the public `show_command_palette/1` helper.
+Use for global search/action surfaces. It can be opened through the configured
+keyboard shortcut or with the public `show_command_palette/1` helper. The
+default shortcut is `mod+k`, which maps to Cmd+K on macOS and Ctrl+K elsewhere.
 
 ```heex
 <.button variant="outline" phx-click={show_command_palette("global-command")}>
   Search
 </.button>
 
-<.command_palette id="global-command" placeholder="Search commands...">
+<.command_palette id="global-command" placeholder="Search commands..." shortcut="mod+k">
   <:item label="Projects" value="projects" shortcut="G P" click="goto-projects" />
   <:item label="New project" value="new-project" shortcut="N P" click="new-project" />
   <:item label="Billing settings" value="billing" click="goto-billing" />
   <:empty>No matching commands.</:empty>
+</.command_palette>
+```
+
+Use a custom shortcut for local command surfaces, or `shortcut={nil}` when the
+palette should only open from your own trigger:
+
+```heex
+<.command_palette id="project-jump" shortcut="ctrl+j" placeholder="Jump to...">
+  <:item label="Jump to dashboard" value="dashboard" />
+  <:item label="Jump to projects" value="projects" />
+</.command_palette>
+
+<.command_palette id="manual-command" shortcut={nil}>
+  <:item label="Run import" value="import" />
 </.command_palette>
 ```
 
@@ -1218,6 +1233,8 @@ surface. The main remaining shadcn/daisyUI-style parity gaps are:
   `close_on_confirm={false}` and close later from LiveView.
 - Modal, sheet, and drawer stacking is browser-tested, including lower overlay
   inerting while another overlay is topmost.
+- Command palette shortcuts are configurable; use `shortcut={nil}` for
+  manual-only palettes when the host app owns keyboard routing.
 - `input type="select"` and `dropdown/1` are legacy compatibility paths. Prefer
   `select/1` and `dropdown_menu/1`.
 - Advanced composition patterns such as Radix-style `asChild` are not part of

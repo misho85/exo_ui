@@ -650,6 +650,7 @@ defmodule ExoUI.Components.Overlay do
   attr :id, :string, required: true
   attr :placeholder, :string, default: "Search..."
   attr :label, :string, default: "Command palette"
+  attr :shortcut, :string, default: "mod+k"
   attr :empty_label, :string, default: "No results found."
   attr :class, :any, default: nil
   attr :rest, :global
@@ -675,6 +676,7 @@ defmodule ExoUI.Components.Overlay do
       phx-hook="ExoCommandPalette"
       class={@class}
       aria-hidden="true"
+      data-shortcut={@shortcut}
       {@rest}
     >
       <div data-exo="command-palette-backdrop" />
