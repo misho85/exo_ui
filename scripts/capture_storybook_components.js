@@ -117,6 +117,31 @@ async function chooseSelectOption(page, selectId, value) {
   return safe(option, (node) => node.click({ timeout: 1500 }));
 }
 
+async function chooseComboboxOption(page, comboboxId, query, value, trigger = "button") {
+  const hook = page.locator(`#story-live #${comboboxId}-combobox`);
+  const opener =
+    trigger === "input"
+      ? hook.locator('[data-exo-combobox="input-trigger"]')
+      : hook.locator('[data-exo-combobox="trigger"]');
+  const popover = page.locator(`#story-live #${comboboxId}`);
+  const search =
+    trigger === "input" ? opener : popover.locator('[data-exo="combobox-search"]');
+  const option = popover.locator(
+    `[data-exo="combobox-option"][data-value="${value}"]`
+  );
+
+  if (trigger === "input") {
+    if (!(await safe(opener, (node) => node.focus({ timeout: 1500 })))) return false;
+  } else if (!(await safe(opener, (node) => node.click({ timeout: 1500 })))) {
+    return false;
+  }
+
+  await page.waitForTimeout(150);
+  await safe(search, (node) => node.fill(query, { timeout: 1500 }));
+  await page.waitForTimeout(250);
+  return safe(option, (node) => node.click({ timeout: 1500 }));
+}
+
 async function hoverFirst(page, selector) {
   return safe(page.locator(selector), (node) => node.hover({ timeout: 1500 }));
 }
@@ -257,6 +282,18 @@ async function componentDemo(page, name) {
       await chooseSelectOption(page, "select-recipe-owner", "support");
       await page.waitForTimeout(300);
       await clickButton(page, "Save select record");
+      await page.waitForTimeout(350);
+      break;
+    case "combobox_recipes":
+      await clickButton(page, "Clear required comboboxes");
+      await page.waitForTimeout(300);
+      await chooseComboboxOption(page, "combobox-recipe-assignee", "nik", "nikola");
+      await page.waitForTimeout(300);
+      await chooseComboboxOption(page, "combobox-recipe-remote", "maria", "maria");
+      await page.waitForTimeout(350);
+      await chooseComboboxOption(page, "combobox-recipe-city", "bel", "bg", "input");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Save combobox record");
       await page.waitForTimeout(350);
       break;
     case "dashboard_drilldown_workflow":

@@ -9,6 +9,7 @@ For full-page examples that combine multiple component families, see
 `docs/guides/button-recipes.md`,
 `docs/guides/input-recipes.md`,
 `docs/guides/select-recipes.md`,
+`docs/guides/combobox-recipes.md`,
 `docs/guides/app-shell-workflows.md`,
 `docs/guides/editable-record-workflows.md`,
 `docs/guides/bulk-action-workflows.md`,
@@ -390,7 +391,9 @@ enough for static option lists.
 ```
 
 For server-filtered LiveViews and LiveComponents, use the dedicated guide:
-[Combobox Usage](combobox.md).
+[Combobox Usage](combobox.md). For client/server recipe patterns, clearable
+values, input triggers, creatable rows, and disabled option safety, see
+`docs/guides/combobox-recipes.md`.
 
 ### Radio Group
 
