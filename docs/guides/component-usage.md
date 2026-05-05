@@ -778,6 +778,43 @@ palette should only open from your own trigger:
 </.command_palette>
 ```
 
+For local command surfaces opened from another overlay, keep the palette root as
+a sibling of the sheet/drawer roots and let command items open the next overlay:
+
+```heex
+<.sheet id="filters-sheet" side="right">
+  <:title>Segment filters</:title>
+  <.input id="segment-query" name="filters[query]" label="Search segment" />
+  <.button type="button" phx-click={show_command_palette("filter-command")}>
+    Open filter commands
+  </.button>
+</.sheet>
+
+<.command_palette id="filter-command" shortcut="ctrl+shift+p">
+  <:item
+    label="Open risk drawer"
+    value="risk-drawer"
+    click={show_drawer("risk-filter-drawer")}
+  />
+</.command_palette>
+
+<.drawer id="risk-filter-drawer" side="right">
+  <:title>Risk filters</:title>
+  <.input id="risk-owner" name="filters[risk_owner]" label="Risk owner" />
+  <.button type="button" variant="danger" phx-click={show_modal("archive-segment")}>
+    Archive segment
+  </.button>
+</.drawer>
+
+<.confirm_modal
+  id="archive-segment"
+  title="Archive filtered segment"
+  message="The server validates the active filter set before closing."
+  confirm_text="Validate archive"
+  close_on_confirm={false}
+/>
+```
+
 ### Menubar
 
 Use for app-style horizontal menus.

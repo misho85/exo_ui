@@ -72,6 +72,66 @@ test.describe("command palette", () => {
     await expectFocused(trigger);
   });
 
+  test("can launch from a sheet, open a drawer command, and guard destructive actions", async ({
+    page
+  }) => {
+    await gotoStory(page, "/components/menus/command_surface_stack");
+
+    const canvas = story(page);
+    const trigger = canvas.getByRole("button", { name: "Open command surface" });
+    const sheet = canvas.locator("#command-surface-sheet");
+    const palette = canvas.locator("#command-surface-palette");
+    const drawer = canvas.locator("#command-surface-drawer");
+    const confirm = canvas.locator("#command-surface-confirm");
+    const openCommands = sheet.getByRole("button", { name: "Open filter commands" });
+    const paletteInput = palette.locator('[data-exo="command-palette-input"]');
+    const riskDrawerItem = palette.locator('[data-exo="command-palette-item"][data-value="risk-drawer"]');
+    const drawerClose = drawer.locator('[data-exo="drawer-close"]');
+    const archiveButton = drawer.getByRole("button", { name: "Archive segment" });
+    const validateArchive = confirm.getByRole("button", { name: "Validate archive" });
+
+    await trigger.click();
+    await expectAttribute(sheet, "data-state", "open");
+    await expect(sheet).toHaveAttribute("aria-hidden", "false");
+    await expectWithinInert(sheet, false);
+    await expectWithinInert(palette, false);
+
+    await openCommands.click();
+    await expectAttribute(palette, "data-state", "open");
+    await expect(palette).toHaveAttribute("aria-hidden", "false");
+    await expectAttribute(sheet, "data-overlay-covered", "true");
+    await expectWithinInert(sheet, true);
+    await expectFocused(paletteInput);
+
+    await paletteInput.fill("risk");
+    await expect(riskDrawerItem).toBeVisible();
+    await expect(riskDrawerItem).toHaveAttribute("data-active", "true");
+    await paletteInput.press("Enter");
+
+    await expectAttribute(palette, "data-state", "closed");
+    await expectAttribute(drawer, "data-state", "open");
+    await expectAttribute(sheet, "data-overlay-covered", "true");
+    await expectWithinInert(sheet, true);
+    await expect(drawer).toHaveAttribute("aria-hidden", "false");
+    await expectWithinInert(drawer, false);
+    await expectFocused(drawerClose);
+
+    await archiveButton.click();
+    await expectAttribute(confirm, "data-state", "open");
+    await expectAttribute(drawer, "data-overlay-covered", "true");
+    await expectWithinInert(drawer, true);
+
+    await validateArchive.click();
+    await expectAttribute(confirm, "data-state", "open");
+
+    await page.keyboard.press("Escape");
+    await expectAttribute(confirm, "data-state", "closed");
+    await expectAttribute(drawer, "data-state", "open");
+    await expect(drawer).not.toHaveAttribute("data-overlay-covered", "true");
+    await expectWithinInert(drawer, false);
+    await expectFocused(archiveButton);
+  });
+
   test("matches custom shortcuts without letting manual palettes intercept them", async ({ page }) => {
     await gotoStory(page, "/components/menus/command_palette");
 

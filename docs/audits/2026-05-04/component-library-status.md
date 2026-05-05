@@ -13,13 +13,13 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | --- | --- |
 | Public components | 61 public component delegates audited from `lib/exo_ui/components.ex` |
 | Missing Storybook stories | 0 public components missing a story |
-| Storybook story types | 81 component stories, 1 live component story, 3 aggregate example stories, 0 component/layout page-mode stories |
-| Playwright component capture | 85 Storybook routes captured |
-| Capture artifacts | 85 screenshots, 85 WebM videos, 85 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-05T07-31-40-752Z/viewer.html` |
-| Browser suite | 65 Playwright tests passing |
+| Storybook story types | 81 component stories, 1 live component story, 4 aggregate example stories, 0 component/layout page-mode stories |
+| Playwright component capture | 86 Storybook routes captured |
+| Capture artifacts | 86 screenshots, 86 WebM videos, 86 MP4 videos |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-05T07-43-25-154Z/viewer.html` |
+| Browser suite | 66 Playwright tests passing |
 | ExUnit suite | 502 tests passing |
-| Visual regression | 85 committed screenshot baselines with pixel-diff checking |
+| Visual regression | 86 committed screenshot baselines with pixel-diff checking |
 | Usage documentation | Central copy-paste reference added at `docs/guides/component-usage.md` |
 
 ## What improved
@@ -73,6 +73,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - Overlay focus scheduling no longer overwrites focus when a user tabs into an opening panel before the deferred first-focus frame runs, which closes a race in stacked modal/sheet/drawer flows with form-heavy content.
 - The Overlay Stack example now includes a validation-error field and a destructive rollback confirm modal opened from inside the stacked drawer. Browser coverage verifies `aria-invalid`, field error rendering, topmost confirm interactivity, lower drawer inerting, `close_on_confirm={false}`, Escape close order, and focus restoration back to the rollback trigger.
 - The capture demo for `Overlay Stack` now records the full modal -> sheet -> drawer -> destructive confirm path, including the guarded confirm action that stays open after "Validate rollback".
+- Closed overlay roots, including command palettes, are no longer inerted just because another overlay is active. This lets a sheet safely launch a hidden command palette root as the next topmost overlay.
+- `Command Surface Stack` is now a Storybook example route and browser-tested recipe for sheet -> command palette -> drawer -> guarded confirm flows. The capture video records command search, Enter selection, drawer opening, and a confirm action that stays open for server validation.
 
 ## Comparison vs shadcn/daisyUI
 
@@ -81,16 +83,16 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Component stories | Broad Storybook route coverage exists; all real component stories are component/live-component stories, and aggregate demos are explicit examples | No component/layout page-mode stories remain |
 | Theming | Token-driven CSS with light/dark support, reduced-motion guard, semantic elevation/backdrop tokens, and browser checks against hardcoded component backdrops | Needs docs for token customization patterns and more component-specific state tokens |
 | Forms | Phoenix FormField integration is now strong across most controls, select/combobox expose active-descendant keyboard state, and combobox empty/loading states announce changes politely, including an async LiveComponent server-filter story | Component-mode controls should expose more attrs/slots directly in PhoenixStorybook playgrounds |
-| Overlays/menus | Browser-tested popover, dropdown, context menu, menubar, modal/confirm-modal/sheet/drawer focus traps, command palette trigger open/focus trap/focus restore, shared overlay registry participation, topmost Escape/backdrop handling, outside inerting, scroll lock, same-type and cross-type stacking order, lower-overlay inerting, focus restore, long-form stacked drawer scrolling, stacked validation errors, destructive confirm flows inside stacked overlays, public show/hide helpers for modal/drawer/sheet/command palette, configurable command palette shortcuts, and guarded confirm actions that can stay open for server validation | More command-surface recipes still need deeper Radix/shadcn parity checks |
+| Overlays/menus | Browser-tested popover, dropdown, context menu, menubar, modal/confirm-modal/sheet/drawer focus traps, command palette trigger open/focus trap/focus restore, shared overlay registry participation, topmost Escape/backdrop handling, outside inerting, scroll lock, same-type and cross-type stacking order, lower-overlay inerting, focus restore, long-form stacked drawer scrolling, stacked validation errors, command-surface stacks, destructive confirm flows inside stacked overlays, public show/hide helpers for modal/drawer/sheet/command palette, configurable command palette shortcuts, and guarded confirm actions that can stay open for server validation | Needs more production-form recipes and app-shell examples, but the core overlay/menu interaction parity is much closer |
 | Keyboard support | Covered for major actions, menus, select/combobox, rating, tabs, and date picker grid movement | Date picker month changes still depend on the parent LiveView handling prev/next events |
-| Visual proof | Automated screenshots and videos for 85 routes, committed visual baselines, a CI-friendly diff command, and GitHub Actions wiring | Needs review tuning once real PR diffs start producing visual changes |
+| Visual proof | Automated screenshots and videos for 86 routes, committed visual baselines, a CI-friendly diff command, and GitHub Actions wiring | Needs review tuning once real PR diffs start producing visual changes |
 | Composability | Slots and `data-exo` styling are consistent | No shadcn-style `asChild`/polymorphic root pattern for advanced composition |
 | Usage docs | Central copy-paste usage reference exists for the current public component surface | Still needs richer per-component edge-case pages for variants, long content, and recipes |
 
 ## Remaining priorities
 
-1. Continue overlay parity work with command-surface recipes that combine command palette, drawer/sheet filters, and guarded actions.
-2. Expand the new component usage reference into per-component recipe pages: disabled states, validation errors, long content, dark mode, and richer keyboard/a11y notes.
+1. Expand the new component usage reference into per-component recipe pages: disabled states, validation errors, long content, dark mode, and richer keyboard/a11y notes.
+2. Add more production-form and app-shell examples that combine forms, menus, tables, and overlays in one workflow.
 3. Tune visual diff thresholds after the first few CI runs if Linux font rendering causes expected drift.
 
 ## Verification used
@@ -98,9 +100,9 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `mix test` -> 502 tests, 0 failures.
 - `mix assets.build` in `storybook` -> regenerated `priv/static/assets/storybook.js`.
 - `mix compile --warnings-as-errors` in `storybook`.
-- `bun run test:browser` -> 65 tests, 0 failures.
-- `bun run capture:components` -> 85 entries, 0 failed, 85 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T07-31-40-752Z`.
-- `bun run capture:validate` -> 85 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after expanding the Overlay Stack form recipe.
-- `bun run visual:check` -> 85 current screenshots matched the committed baseline.
-- `docs/guides/component-usage.md` now includes a stacked sheet-to-drawer long-form recipe with validation-error and destructive confirm examples.
+- `bun run test:browser` -> 66 tests, 0 failures.
+- `bun run capture:components` -> 86 entries, 0 failed, 86 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T07-43-25-154Z`.
+- `bun run capture:validate` -> 86 entries with non-empty screenshot, WebM, and MP4 files.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after expanding Overlay Stack and adding Command Surface Stack.
+- `bun run visual:check` -> 86 current screenshots matched the committed baseline.
+- `docs/guides/component-usage.md` now includes a stacked sheet-to-drawer long-form recipe with validation-error/destructive confirm examples and a sheet-launched command palette recipe.

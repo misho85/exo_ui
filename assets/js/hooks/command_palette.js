@@ -252,7 +252,9 @@ const ExoCommandPalette = {
     this._previousFocus = null
 
     requestAnimationFrame(() => {
-      if (target && target.isConnected) target.focus({ preventScroll: true })
+      if (target && target.isConnected && !target.closest("[hidden],[inert]")) {
+        target.focus({ preventScroll: true })
+      }
     })
   },
 

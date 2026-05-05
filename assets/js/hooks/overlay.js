@@ -118,13 +118,8 @@ const overlayRegistry = {
   _canInert(element, roots) {
     if (element === document.body || element === document.documentElement) return false
     if (element.matches('script,style,link,template')) return false
-    if (element.matches('[phx-hook="ExoOverlay"]') && this._elementIsOpenOverlay(element)) return false
+    if (element.matches('[phx-hook="ExoOverlay"],[phx-hook="ExoCommandPalette"]')) return false
     return roots.every((root) => !element.contains(root))
-  },
-
-  _elementIsOpenOverlay(element) {
-    if (element.dataset.state) return element.dataset.state === 'open'
-    return element.classList.contains('open') && !element.hidden
   },
 
   _applyInert(element) {
