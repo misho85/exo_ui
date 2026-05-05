@@ -446,6 +446,37 @@ async function componentDemo(page, name) {
       await clickButton(page, "Resolve incident");
       await page.waitForTimeout(400);
       break;
+    case "release_readiness_workflow":
+      await clickButton(page, "Prepare launch");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Launch release");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Keep reviewing");
+      await page.waitForTimeout(250);
+      await clickButton(page, "Open release commands");
+      await page.waitForTimeout(300);
+      await safe(
+        page.locator('#story-live #release-command [data-exo="command-palette-input"]'),
+        (node) => node.fill("engineering", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await page.keyboard.press("Enter");
+      await page.waitForTimeout(350);
+      await clickButton(page, "Review Migration smoke test");
+      await page.waitForTimeout(350);
+      await clickButton(page, "Approve check");
+      await page.waitForTimeout(250);
+      await fillByLabel(page, "Review note", "Smoke test reviewed and approved.");
+      await page.waitForTimeout(250);
+      await safe(page.locator('#story-live #release-reviewer'), (node) =>
+        node.selectOption("engineering-lead", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await clickButton(page, "Approve check");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Close review");
+      await page.waitForTimeout(300);
+      break;
     case "dashboard_drilldown_workflow":
       await clickButton(page, "At risk");
       await page.waitForTimeout(300);
