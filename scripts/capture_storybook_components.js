@@ -326,6 +326,30 @@ async function componentDemo(page, name) {
       await clickButton(page, "Validate archive");
       await page.waitForTimeout(400);
       break;
+    case "drawer_recipes":
+      await clickButton(page, "Open review drawer");
+      await page.waitForTimeout(300);
+      await fillByLabel(page, "Account owner", "");
+      await page.waitForTimeout(250);
+      await clickButton(page, "Save drawer review");
+      await page.waitForTimeout(350);
+      await fillByLabel(page, "Account owner", "Mina");
+      await page.waitForTimeout(250);
+      await clickButton(page, "Save drawer review");
+      await page.waitForTimeout(350);
+      await clickButton(page, "Open navigation drawer");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Open billing queue");
+      await page.waitForTimeout(350);
+      await clickButton(page, "Open filter drawer");
+      await page.waitForTimeout(300);
+      await safe(page.locator('#story-live #drawer-recipe-segment'), (node) =>
+        node.selectOption("enterprise", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await checkByLabel(page, "Include archived accounts");
+      await page.waitForTimeout(300);
+      break;
     case "dashboard_drilldown_workflow":
       await clickButton(page, "At risk");
       await page.waitForTimeout(300);

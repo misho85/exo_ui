@@ -12,6 +12,7 @@ For full-page examples that combine multiple component families, see
 `docs/guides/combobox-recipes.md`,
 `docs/guides/table-recipes.md`,
 `docs/guides/modal-recipes.md`,
+`docs/guides/drawer-recipes.md`,
 `docs/guides/app-shell-workflows.md`,
 `docs/guides/editable-record-workflows.md`,
 `docs/guides/bulk-action-workflows.md`,
@@ -663,6 +664,9 @@ Drawers slide from the left or right edge and expose public `show_drawer/1` and
   <p>Use drawers for secondary task panels.</p>
 </.drawer>
 ```
+
+For right/left drawers, labelled titleless drawers, long body scrolling, and
+validation that keeps a drawer open, see `docs/guides/drawer-recipes.md`.
 
 ### Sheet
 
