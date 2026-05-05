@@ -190,6 +190,19 @@ async function componentDemo(page, name) {
       await clickButton(page, "Clear filters");
       await page.waitForTimeout(350);
       break;
+    case "dashboard_drilldown_workflow":
+      await clickButton(page, "At risk");
+      await page.waitForTimeout(300);
+      await safe(
+        page.locator('#story-live #dashboard-account-northstar').getByRole("button", {
+          name: "Open details"
+        }),
+        (node) => node.click({ timeout: 1500 })
+      );
+      await page.waitForTimeout(350);
+      await clickButton(page, "Mark reviewed");
+      await page.waitForTimeout(350);
+      break;
     case "carousel":
       await clickFirst(page, '#story-live [data-exo="carousel-next"]');
       await page.waitForTimeout(500);

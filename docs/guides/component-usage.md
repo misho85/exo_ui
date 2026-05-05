@@ -10,6 +10,7 @@ For full-page examples that combine multiple component families, see
 `docs/guides/editable-record-workflows.md`,
 `docs/guides/bulk-action-workflows.md`,
 `docs/guides/bulk-edit-workflows.md`,
+`docs/guides/dashboard-drilldown-workflows.md`,
 `docs/guides/data-table-workflows.md`,
 `docs/guides/import-export-workflows.md`,
 `docs/guides/async-save-workflows.md`,
