@@ -507,6 +507,8 @@
       overlayRegistry.register(this);
       requestAnimationFrame(() => {
         if (!this._isOpenActive || !this._isOpen()) return;
+        const active2 = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        if (active2 && active2 !== this._panel && this._panel.contains(active2)) return;
         const target = this._firstFocusable() || this._panel;
         target?.focus?.({ preventScroll: true });
       });

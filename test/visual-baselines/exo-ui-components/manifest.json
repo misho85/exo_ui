@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-05T06:48:08.772Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T06-41-21-843Z",
+  "updatedAt": "2026-05-05T07:19:25.311Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T07-15-06-534Z",
   "count": 85,
   "entries": [
     {
@@ -128,7 +128,7 @@
       "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "22682ecb0493e78c7f9aefc7b412dd52982d98cf0ae9703ee2bc0d7eaf36b072"
+      "sha256": "32819b3b958a54ca8a4fafa712941c4771c3db2ea26bbf0a6d32de2a4f2bae2d"
     },
     {
       "name": "charts/line_chart",
@@ -272,7 +272,7 @@
       "dataExoCount": 23,
       "width": 1280,
       "height": 900,
-      "sha256": "dc55a8a970afd539f1002269c288f732399b4eb1be76d57a1b2883eb924e3f00"
+      "sha256": "5b7c0803b2bcb78de4bf6051d83632ddf647a6d672e50206158fa40f0a1de020"
     },
     {
       "name": "data_display/table",
@@ -281,7 +281,7 @@
       "dataExoCount": 59,
       "width": 1280,
       "height": 900,
-      "sha256": "4f0934ab72f01aabd9104b76385e304ff01946d074856024baba3260773995a7"
+      "sha256": "2f33292ef469d5bb3a302149b5ca6d875ceb86c0f034f1883fe4f16f23db3817"
     },
     {
       "name": "data_display/timeline",
@@ -371,7 +371,7 @@
       "dataExoCount": 22,
       "width": 1280,
       "height": 900,
-      "sha256": "c39b5699198809c5cb15015e21fcf94aff364497c08c5d8242fea6fa3cd16c66"
+      "sha256": "ac5d0d5b7974af11b99d94f50e174a1a9b119275437c6cbcec9e92514966625c"
     },
     {
       "name": "feedback/spinner",
@@ -380,7 +380,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "956a81a225abeed2fa224b493beac8b4d5feef497fbbd66414ea00e52d1ca0f0"
+      "sha256": "4b0e3020d82e8bda8e49145bfd491bfca1c53d8727b454791dadbcce52ac992d"
     },
     {
       "name": "feedback/toast_container",
@@ -389,7 +389,7 @@
       "dataExoCount": 26,
       "width": 1280,
       "height": 900,
-      "sha256": "a2e326c50bc4d189de8190239c4673e6e48c296ba4c1cec15794402e6331b678"
+      "sha256": "8e75db0984bf294e6820425a458bd45ccf96245a401df1be9e0cd8513b5afff8"
     },
     {
       "name": "forms/combobox",
@@ -398,7 +398,7 @@
       "dataExoCount": 180,
       "width": 1280,
       "height": 900,
-      "sha256": "9145c18d0d194f49880de5a8800647d37e56ad778dc40f326a2f6abe0372157a"
+      "sha256": "8b8a0f5ed8fbf8e36aa0708b79fdecf4eb608e19bc90375de5aded97198f06b2"
     },
     {
       "name": "forms/combobox_async",
@@ -704,7 +704,7 @@
       "dataExoCount": 22,
       "width": 1280,
       "height": 900,
-      "sha256": "67fb8e8884dca2a8201a8954b40777f6922ef1133697a478a4dbf0d58d1b6818"
+      "sha256": "aac3fc6f92ee74a7d5c019ef78a271a94c9bcac820558e67ae997cbd47557419"
     },
     {
       "name": "overlays/drawer",
@@ -737,10 +737,10 @@
       "name": "overlays/overlay_stack",
       "route": "/components/overlays/overlay_stack",
       "screenshot": "screenshots/overlays__overlay_stack.png",
-      "dataExoCount": 32,
+      "dataExoCount": 59,
       "width": 1280,
       "height": 900,
-      "sha256": "82b028c12d1b714a80be98c178a00b96c1d5fc8ba0f44083893c68d1b23e455d"
+      "sha256": "5f367371b79682b367879055e09ae133e718de61c094f8f60325e464a04d44cc"
     },
     {
       "name": "overlays/popover",

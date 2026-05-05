@@ -228,6 +228,9 @@ test.describe("overlay dialogs", () => {
     const drawer = canvas.locator("#overlay-stack-drawer");
     const openSheetButton = modal.getByRole("button", { name: "Open audit sheet" });
     const openDrawerButton = sheet.getByRole("button", { name: "Open stacked drawer" });
+    const drawerBody = drawer.locator('[data-exo="drawer-body"]');
+    const drawerCloseButton = drawer.locator('[data-exo="drawer-close"]');
+    const releaseName = drawer.getByLabel("Release name");
 
     await trigger.click();
     await expectAttribute(modal, "data-state", "open");
@@ -249,6 +252,22 @@ test.describe("overlay dialogs", () => {
     await expectWithinInert(sheet, true);
     await expect(drawer).toHaveAttribute("aria-hidden", "false");
     await expectWithinInert(drawer, false);
+    await expectFocused(drawerCloseButton);
+
+    await page.keyboard.press("Tab");
+    await expectFocused(releaseName);
+    await releaseName.fill("Staged launch review");
+    await expect(releaseName).toHaveValue("Staged launch review");
+
+    await expect
+      .poll(async () =>
+        drawerBody.evaluate((node) => node.scrollHeight > node.clientHeight)
+      )
+      .toBe(true);
+    await drawerBody.evaluate((node) => {
+      node.scrollTop = node.scrollHeight;
+    });
+    await expect.poll(async () => drawerBody.evaluate((node) => node.scrollTop)).toBeGreaterThan(0);
 
     await page.keyboard.press("Escape");
     await expectAttribute(drawer, "data-state", "closed");

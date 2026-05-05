@@ -357,6 +357,9 @@ const ExoOverlay = {
     requestAnimationFrame(() => {
       if (!this._isOpenActive || !this._isOpen()) return
 
+      const active = document.activeElement instanceof HTMLElement ? document.activeElement : null
+      if (active && active !== this._panel && this._panel.contains(active)) return
+
       const target = this._firstFocusable() || this._panel
       target?.focus?.({ preventScroll: true })
     })

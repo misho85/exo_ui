@@ -664,6 +664,33 @@ visible but become inert and `aria-hidden` until they return to the top.
 </.sheet>
 ```
 
+For deeper workflows, put the editing form in the topmost overlay. The overlay
+registry keeps the modal and sheet visible but inert, while the drawer body owns
+scroll for long content.
+
+```heex
+<.sheet id="audit-sheet" side="right">
+  <:title>Audit trail</:title>
+  <.button variant="outline" phx-click={show_drawer("review-drawer")}>
+    Open review form
+  </.button>
+</.sheet>
+
+<.drawer id="review-drawer" side="right">
+  <:title>Review notes</:title>
+  <.input id="release-name" name="release[name]" label="Release name" />
+  <.input id="release-notes" name="release[notes]" type="textarea" label="Notes" rows="5" />
+  <fieldset>
+    <legend>Long review checklist</legend>
+    <label :for={index <- 1..12}>
+      <input type="checkbox" name={"release[check_#{index}]"} />
+      Checkpoint {index}
+    </label>
+  </fieldset>
+  <.button type="button" phx-click={hide_drawer("review-drawer")}>Save review</.button>
+</.drawer>
+```
+
 ### Hover Card
 
 Use for richer preview content on hover/focus.

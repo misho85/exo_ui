@@ -64,6 +64,14 @@ defmodule Storybook.Components.OverlayStack do
             The sheet becomes the top overlay. The modal remains visible but is inert until
             this sheet closes.
           </p>
+          <div
+            aria-label="Audit summary"
+            style="display: grid; gap: 0.5rem; padding: 0.75rem; border: 1px solid var(--exo-border); border-radius: var(--exo-radius); background: var(--exo-muted);"
+          >
+            <strong style="color: var(--exo-foreground);">Preflight checks</strong>
+            <span>3 reviewers assigned</span>
+            <span>2 blocking risks still need owner sign-off</span>
+          </div>
           <ExoUI.Components.button
             variant="outline"
             phx-click={ExoUI.Components.Overlay.show_drawer("overlay-stack-drawer")}
@@ -83,16 +91,74 @@ defmodule Storybook.Components.OverlayStack do
 
       <ExoUI.Components.Overlay.drawer id="overlay-stack-drawer" side="right">
         <:title>Review notes</:title>
-        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
           <p>
-            This drawer is now the only interactive overlay. Escape closes it before returning
-            focus to the sheet.
+            This drawer is now the only interactive overlay. It contains a long form so the
+            drawer body, not the document, owns scrolling while the overlay stack is active.
           </p>
-          <ExoUI.Components.button phx-click={
-            ExoUI.Components.Overlay.hide_drawer("overlay-stack-drawer")
-          }>
-            Close drawer
-          </ExoUI.Components.button>
+          <form
+            id="overlay-stack-release-form"
+            data-exo="form"
+            aria-label="Release review form"
+            style="display: flex; flex-direction: column; gap: 1rem;"
+          >
+            <ExoUI.Components.Form.input
+              id="overlay-stack-release-name"
+              name="release[name]"
+              label="Release name"
+              value="Verified production rollout"
+              description="Used in audit exports and approval notifications."
+            />
+            <ExoUI.Components.Form.input
+              id="overlay-stack-release-owner"
+              name="release[owner]"
+              label="Release owner"
+              value="Mina"
+            />
+            <ExoUI.Components.Form.input
+              id="overlay-stack-release-notes"
+              name="release[notes]"
+              type="textarea"
+              rows="5"
+              label="Review notes"
+              value="Confirm deployment windows, rollback owners, and customer-facing copy before closing the workflow."
+            />
+            <fieldset
+              data-exo="overlay-stack-checklist"
+              style="display: grid; gap: 0.75rem; border: 1px solid var(--exo-border); border-radius: var(--exo-radius); padding: 1rem; margin: 0;"
+            >
+              <legend style="padding: 0 0.25rem; color: var(--exo-foreground); font-weight: 600;">
+                Long review checklist
+              </legend>
+              <label
+                :for={index <- 1..14}
+                style="display: flex; align-items: flex-start; gap: 0.5rem;"
+              >
+                <input
+                  id={"overlay-stack-check-#{index}"}
+                  name={"release[check_#{index}]"}
+                  type="checkbox"
+                  data-exo="checkbox"
+                  value="true"
+                />
+                <span>
+                  Checkpoint {index}: verify owner, rollback path, and customer impact notes.
+                </span>
+              </label>
+            </fieldset>
+            <div style="position: sticky; bottom: -1.5rem; display: flex; justify-content: flex-end; gap: 0.5rem; padding: 1rem 0 0; background: var(--exo-background); border-top: 1px solid var(--exo-border);">
+              <ExoUI.Components.button
+                type="button"
+                variant="ghost"
+                phx-click={ExoUI.Components.Overlay.hide_drawer("overlay-stack-drawer")}
+              >
+                Cancel review
+              </ExoUI.Components.button>
+              <ExoUI.Components.button type="button">
+                Save review
+              </ExoUI.Components.button>
+            </div>
+          </form>
         </div>
       </ExoUI.Components.Overlay.drawer>
     </div>
