@@ -13,10 +13,10 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | --- | --- |
 | Public components | 61 public component delegates audited from `lib/exo_ui/components.ex` |
 | Missing Storybook stories | 0 public components missing a story |
-| Component-mode stories | 81 component stories, 1 live component story, 2 aggregate page-mode stories left (`Card`, `Charts overview`) |
+| Storybook story types | 81 component stories, 1 live component story, 2 aggregate example stories, 0 component/layout page-mode stories |
 | Playwright component capture | 84 Storybook routes captured |
 | Capture artifacts | 84 screenshots, 84 WebM videos, 84 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-05T03-42-28-153Z/viewer.html` |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-05T04-52-29-037Z/viewer.html` |
 | Browser suite | 61 Playwright tests passing |
 | ExUnit suite | 496 tests passing |
 | Visual regression | 84 committed screenshot baselines with pixel-diff checking |
@@ -59,12 +59,13 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `ContentCard`, `StatCard`, and `MetricCard` now have direct browser coverage for header/body rendering, action/trailing slots, trend direction states, and body-only/minimal variants.
 - `SidebarLayout` is now a component-mode Storybook story using a one-column preview so the app-shell layout is inspectable without being squeezed by the source panel.
 - `SidebarItem` now renders real Lucide SVG icons instead of showing icon names or emoji as visible text, with CSS sizing and ExUnit coverage for the icon slot.
+- The remaining aggregate routes, `Card` and `Charts overview`, are now PhoenixStorybook examples instead of page-mode stories. They still get screenshot/video capture, but they no longer hide as component-story gaps because the real components already have separate component-mode stories.
 
 ## Comparison vs shadcn/daisyUI
 
 | Capability | ExoUI now | Gap vs shadcn/daisyUI |
 | --- | --- | --- |
-| Component stories | Broad Storybook route coverage exists, and all real component examples are now component/live-component stories | Only 2 aggregate overview pages remain as page routes because they are documentation/index compositions rather than single component playgrounds |
+| Component stories | Broad Storybook route coverage exists; all real component stories are component/live-component stories, and aggregate demos are explicit examples | No component/layout page-mode stories remain |
 | Theming | Token-driven CSS with light/dark support, reduced-motion guard, semantic elevation/backdrop tokens, and browser checks against hardcoded component backdrops | Needs docs for token customization patterns and more component-specific state tokens |
 | Forms | Phoenix FormField integration is now strong across most controls, select/combobox expose active-descendant keyboard state, and combobox empty/loading states announce changes politely, including an async LiveComponent server-filter story | Component-mode controls should expose more attrs/slots directly in PhoenixStorybook playgrounds |
 | Overlays/menus | Browser-tested popover, dropdown, context menu, menubar, modal/sheet/drawer focus traps, topmost Escape/backdrop handling, outside inerting, scroll lock, stacking order, and focus restore | Richer nested overlay content examples still need deeper Radix/shadcn parity checks |
@@ -74,10 +75,9 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 
 ## Remaining priorities
 
-1. Decide whether to keep the remaining 2 aggregate overview pages (`Card`, `Charts overview`) as page routes or replace them with documentation/index routes; all real component stories are now component-mode or live-component-mode.
-2. Continue overlay parity work with richer nested overlay content examples and cross-type modal/sheet/drawer stacking.
-3. Add docs that show copy-paste Phoenix usage for every component: basic, disabled, error, long content, dark mode, and keyboard/a11y notes.
-4. Tune visual diff thresholds after the first few CI runs if Linux font rendering causes expected drift.
+1. Continue overlay parity work with richer nested overlay content examples and cross-type modal/sheet/drawer stacking.
+2. Add docs that show copy-paste Phoenix usage for every component: basic, disabled, error, long content, dark mode, and keyboard/a11y notes.
+3. Tune visual diff thresholds after the first few CI runs if Linux font rendering causes expected drift.
 
 ## Verification used
 
@@ -85,7 +85,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `bun run build:all`.
 - `mix compile --warnings-as-errors` in `storybook`.
 - `bun run test:browser` -> 61 tests, 0 failures.
-- `bun run capture:components` -> 84 entries, 0 failed, 84 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T03-42-28-153Z`.
+- `bun run capture:components` -> 84 entries, 0 failed, 84 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T04-52-29-037Z`.
 - `bun run capture:validate` -> 84 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after converting `SidebarLayout` to component-mode and replacing text icons with SVG icons.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after moving aggregate `Card` and `Charts overview` routes to PhoenixStorybook examples.
 - `bun run visual:check` -> 84 current screenshots matched the committed baseline.

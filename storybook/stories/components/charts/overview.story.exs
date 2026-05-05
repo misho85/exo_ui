@@ -1,8 +1,9 @@
 defmodule Storybook.Components.Charts.Overview do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :example
 
   def doc, do: "SVG chart components styled after shadcn/ui."
 
+  @impl true
   def render(assigns) do
     monthly = [
       {"January", 4200},

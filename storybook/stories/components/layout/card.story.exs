@@ -1,8 +1,9 @@
 defmodule Storybook.Components.Card do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :example
 
   def doc, do: "Card components: content_card, stat_card, metric_card."
 
+  @impl true
   def render(assigns) do
     ~H"""
     <div style="padding: 1rem; display: flex; flex-direction: column; gap: 2rem;">

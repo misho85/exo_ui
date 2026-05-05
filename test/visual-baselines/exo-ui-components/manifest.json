@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-05T03:45:43.228Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T03-42-28-153Z",
+  "updatedAt": "2026-05-05T04:56:42.924Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T04-52-29-037Z",
   "count": 84,
   "entries": [
     {
@@ -155,7 +155,7 @@
       "dataExoCount": 81,
       "width": 1280,
       "height": 900,
-      "sha256": "591ae0e2b94ef9f3564333d85cc2717a373203f14f1df19dbc408c1ead1e6ade"
+      "sha256": "edd390e5e43bf997e577d574e2b51ae739b5231dfb1b136a8ec6c85f56f40db1"
     },
     {
       "name": "charts/pie_chart",
@@ -380,7 +380,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "7bc30fec0e16ff78a26f2484e0569d5b7e334654ef173d55137fcb40d8d26a37"
+      "sha256": "f0751e0af1298956be080d1cb56ca0792004507f56cdb96fd6d07d3bcc27e1a8"
     },
     {
       "name": "feedback/toast_container",
@@ -398,7 +398,7 @@
       "dataExoCount": 180,
       "width": 1280,
       "height": 900,
-      "sha256": "6f6d9773bdfaf4d859d9dee857613bf6506b2800fb9009d51094428d5e0f291f"
+      "sha256": "8b8a0f5ed8fbf8e36aa0708b79fdecf4eb608e19bc90375de5aded97198f06b2"
     },
     {
       "name": "forms/combobox_async",
@@ -434,7 +434,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "73151a0633f87684b06584d7435a837f4beaaed2c8d42df97da697217e60706e"
+      "sha256": "b6a525e6ad3fc87300e2d51cf27a0a1e171dbbea40130316e38899c55b573e6f"
     },
     {
       "name": "forms/form",
@@ -479,7 +479,7 @@
       "dataExoCount": 105,
       "width": 1280,
       "height": 900,
-      "sha256": "905dbd67ba410bbe6dbeeaba7335c99342f5908e0f7d17fc116e3e771d2974c1"
+      "sha256": "468cad1b18ee25ca1d0974cdf41024562ba081a47cf19edef565aaabddae8e32"
     },
     {
       "name": "forms/slider",
@@ -506,7 +506,7 @@
       "dataExoCount": 55,
       "width": 1280,
       "height": 900,
-      "sha256": "1c190da81ba8dd87cda44a2d1894252c33f9ba1c96c058ba74591b8ec6997054"
+      "sha256": "ec4de7a9aa74b6714fdf7100bcebb6b9b8a1f25bcc237490132f3d62cb20702d"
     },
     {
       "name": "layout/carousel",
