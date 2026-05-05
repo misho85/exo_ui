@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-05T01:03:17.501Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T00-59-46-775Z",
+  "updatedAt": "2026-05-05T01:27:54.407Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T01-24-54-252Z",
   "count": 84,
   "entries": [
     {
@@ -44,109 +44,109 @@
       "name": "charts/area_chart",
       "route": "/components/charts/area_chart",
       "screenshot": "screenshots/charts__area_chart.png",
-      "dataExoCount": 5,
+      "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "9fa8d359c4b6a925f9778215dede4acc9f71e2193aef8672783fb003b386c61c"
+      "sha256": "bac50aa296168a927c825250416e0e2b86ea82eed3094f72146ddf135177515d"
     },
     {
       "name": "charts/area_chart_stacked",
       "route": "/components/charts/area_chart_stacked",
       "screenshot": "screenshots/charts__area_chart_stacked.png",
-      "dataExoCount": 5,
+      "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "d6c0f829a8428861fc51a235b84b2470fb30109d6d3fcc2d4843d95ebe1045db"
+      "sha256": "c77fd5be85a732b128bf10682142e28fbccf83b54feca49b955b659f96779035"
     },
     {
       "name": "charts/bar_charts/bar_chart",
       "route": "/components/charts/bar_charts/bar_chart",
       "screenshot": "screenshots/charts__bar_charts__bar_chart.png",
-      "dataExoCount": 5,
+      "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "74acd8dc1d06c0c1807d8908bda21ac69d9617f34ee198a3daaeb2f88432a05e"
+      "sha256": "3bf8d2e560164b45cc8e068d27bc4f7db6f1d2c00bacdc86e4cc77779fde5032"
     },
     {
       "name": "charts/bar_charts/bar_chart_label",
       "route": "/components/charts/bar_charts/bar_chart_label",
       "screenshot": "screenshots/charts__bar_charts__bar_chart_label.png",
-      "dataExoCount": 5,
+      "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "b7abb13504ea025fca76385ef6a8ab2ffd63dd024f053f710779745b488d24c1"
+      "sha256": "1036e60485f123768fa3fcc61826ae7bfb432c17e997a2d61482aad780fdf3a1"
     },
     {
       "name": "charts/bar_charts/bar_chart_multiple",
       "route": "/components/charts/bar_charts/bar_chart_multiple",
       "screenshot": "screenshots/charts__bar_charts__bar_chart_multiple.png",
-      "dataExoCount": 5,
+      "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "6ab2060e5c6015dced295f92eb737d340c309853d4c9d1a4b77297821f74611f"
+      "sha256": "e950f85472e3c9fb0d95d5e3d4df697eefaf68177fd39dbb6bccdb7f91a7e665"
     },
     {
       "name": "charts/bar_charts/bar_chart_negative",
       "route": "/components/charts/bar_charts/bar_chart_negative",
       "screenshot": "screenshots/charts__bar_charts__bar_chart_negative.png",
-      "dataExoCount": 5,
+      "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "544c1cda1bc1974f663028aa1ef12fa3c7f072fcb005b8297873a40a1d309627"
+      "sha256": "d14174993f647be1ac2f014579e1ea74376366e5bdd1eac3e3ba0701f00c5f80"
     },
     {
       "name": "charts/bar_charts/horizontal_bar_chart",
       "route": "/components/charts/bar_charts/horizontal_bar_chart",
       "screenshot": "screenshots/charts__bar_charts__horizontal_bar_chart.png",
-      "dataExoCount": 5,
+      "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "3dfebe89a895e12cca766d57c15d5706f6a1300359e543715048e37a903ccb96"
+      "sha256": "ca727860b81d176c6ab3887128ba90c1b2fbfb8e4321e14a3b96ae4f52d9a7cc"
     },
     {
       "name": "charts/bar_charts/stacked_bar_chart",
       "route": "/components/charts/bar_charts/stacked_bar_chart",
       "screenshot": "screenshots/charts__bar_charts__stacked_bar_chart.png",
-      "dataExoCount": 5,
+      "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "9a0aeeae1d9c3eafee996cb96b7dddf391d9159292ee5818538ea9b62cf8db27"
+      "sha256": "879f6a328f1a3b96f90e2b692a1df7173cc7177d7c0edb29947c51f52bed7792"
     },
     {
       "name": "charts/donut_chart",
       "route": "/components/charts/donut_chart",
       "screenshot": "screenshots/charts__donut_chart.png",
-      "dataExoCount": 5,
+      "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "f4096f77a13c2d672a2caf14503e8098b3dfc3111138ff50a653f9f95c99e552"
+      "sha256": "285a91ce07939d654dc763ec8e30a33c94e11e72f1cf9c68746af4b0501c85f5"
     },
     {
       "name": "charts/donut_chart_text",
       "route": "/components/charts/donut_chart_text",
       "screenshot": "screenshots/charts__donut_chart_text.png",
-      "dataExoCount": 5,
+      "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "77674956b13d1a1e4625dbc27c14ed44ed5ad8e1d79f072aa09456c7566a72e3"
+      "sha256": "32819b3b958a54ca8a4fafa712941c4771c3db2ea26bbf0a6d32de2a4f2bae2d"
     },
     {
       "name": "charts/line_chart",
       "route": "/components/charts/line_chart",
       "screenshot": "screenshots/charts__line_chart.png",
-      "dataExoCount": 5,
+      "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "e21a03cf77416632db8ddf01a5b2ff84c3798d3858fbe3502a04c86e4e09f212"
+      "sha256": "f3bbea66af799940784d57c6f4bcb57c7bb3bd2d48d118b5d0c3949f3adb803c"
     },
     {
       "name": "charts/line_chart_multiple",
       "route": "/components/charts/line_chart_multiple",
       "screenshot": "screenshots/charts__line_chart_multiple.png",
-      "dataExoCount": 5,
+      "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "00f3a2b8d86c36edd39d37df3881c5753b4d68a296d0fbc4159409665c3f88c1"
+      "sha256": "a61a2c94410d0991deb99fdccc34e95533adf1ccbece990608a6c346bbba7745"
     },
     {
       "name": "charts/overview",
@@ -161,10 +161,10 @@
       "name": "charts/pie_chart",
       "route": "/components/charts/pie_chart",
       "screenshot": "screenshots/charts__pie_chart.png",
-      "dataExoCount": 5,
+      "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "165a3333e185c84d6b8da8b676f63305b3a4f616624d1cd77a662c4f4e575155"
+      "sha256": "1d70a7b87a2f3c2d729cd7846feafcc2ad5af356374c78b8263a9c5033bc7e2b"
     },
     {
       "name": "charts/progress_bar",
@@ -179,28 +179,28 @@
       "name": "charts/radar_chart",
       "route": "/components/charts/radar_chart",
       "screenshot": "screenshots/charts__radar_chart.png",
-      "dataExoCount": 5,
+      "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "29f046386c36fedced052916a58c4b75d3cd61a9099872a0d38bb4d4ac5653ea"
+      "sha256": "46aa54b6d0e68579b1559eb627c8ef95ed45a18f9c79af3044112f9ec9d5837c"
     },
     {
       "name": "charts/radial_chart",
       "route": "/components/charts/radial_chart",
       "screenshot": "screenshots/charts__radial_chart.png",
-      "dataExoCount": 5,
+      "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "134d74f09b4549cd347f6b468530191b2e5ca33f946085f8da727875f32f927a"
+      "sha256": "b48eba5316a57e8d3f50d5c4c8153786b511f42ceb0a2614602dddff5f3f6b45"
     },
     {
       "name": "charts/sparkline",
       "route": "/components/charts/sparkline",
       "screenshot": "screenshots/charts__sparkline.png",
-      "dataExoCount": 3,
+      "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "aedee6f47f38f26532d37fa9d193d7999f1e8f21ea3f48a7f55442d22facb965"
+      "sha256": "0c6651eb8ad03bd95ce41724a33f75717ab6d03cb792b0db4506c0927d384a58"
     },
     {
       "name": "charts/trend_badge",
@@ -209,7 +209,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "36ddb0abdf26ed7110133e6e3f48e35871c6536c019fa600bb4715528bc3fed1"
+      "sha256": "e61f71938fc91b1c4f53f2e726cbb02d17815cf717975121eb1277f117d50e1e"
     },
     {
       "name": "data_display/avatar",
@@ -380,7 +380,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "97d77c4fdfd61b176ad102d19ef6c8de83310fa57699642c23290e99d17539a3"
+      "sha256": "a9ed93cc1d9e00025b328f2e8ec045cb6ae8d87a599344062901cbf4a2208837"
     },
     {
       "name": "feedback/toast_container",
@@ -398,7 +398,7 @@
       "dataExoCount": 180,
       "width": 1280,
       "height": 900,
-      "sha256": "0f4e2ae9f466bbbd8af0bf410d98c440c834333037291c0e048e7805811fd33a"
+      "sha256": "89e905033e1812ca2acc8c0a3b730427394bffaa56a809f1a7dc1bae772c036b"
     },
     {
       "name": "forms/combobox_async",
@@ -470,7 +470,7 @@
       "dataExoCount": 62,
       "width": 1280,
       "height": 900,
-      "sha256": "d88d59c4bee403dfbc1a4f967d0f9eff012f9777c136be03522264286b5a5c36"
+      "sha256": "91906c63dcebbcacf978b0d91b56088b651757feb2feead533c52d7c8c8ebe43"
     },
     {
       "name": "forms/select",
@@ -587,7 +587,7 @@
       "dataExoCount": 54,
       "width": 1280,
       "height": 900,
-      "sha256": "4cc1c75f7e88179acf9e1f4af8e81d683db9ba042e8acf0684025f3e32fd3f3b"
+      "sha256": "7c4c6866d8c3e46f1f4de38c2b72b3624e935ccd552abcf9f6b48f76d837e3d2"
     },
     {
       "name": "menus/command_palette",

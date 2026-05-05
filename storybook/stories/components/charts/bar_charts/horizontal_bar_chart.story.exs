@@ -1,19 +1,10 @@
 defmodule Storybook.Components.Charts.HorizontalBarChart do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Horizontal bar chart for category comparison."
+  def function, do: &ExoUI.Charts.horizontal_bar_chart/1
 
-  def render(assigns) do
-    assigns =
-      assign(assigns, :data, [
-        {"Chrome", 275},
-        {"Safari", 200},
-        {"Firefox", 187},
-        {"Edge", 173},
-        {"Other", 90}
-      ])
-
-    ~H"""
+  def template do
+    """
     <div style="padding: 1rem; max-width: 620px;">
       <div data-exo="card">
         <div data-exo="card-header">
@@ -23,10 +14,27 @@ defmodule Storybook.Components.Charts.HorizontalBarChart do
           </p>
         </div>
         <div data-exo="card-body">
-          <ExoUI.Charts.horizontal_bar_chart data={@data} height={260} />
+          <.psb-variation/>
         </div>
       </div>
     </div>
     """
+  end
+
+  def variations do
+    [
+      %Variation{id: :browser_share, attributes: %{data: browser_data(), height: 260}},
+      %Variation{id: :empty, attributes: %{data: [], height: 260, empty_text: "No browser data"}}
+    ]
+  end
+
+  defp browser_data do
+    [
+      {"Chrome", 275},
+      {"Safari", 200},
+      {"Firefox", 187},
+      {"Edge", 173},
+      {"Other", 90}
+    ]
   end
 end

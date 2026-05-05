@@ -1,20 +1,10 @@
 defmodule Storybook.Components.Charts.BarChartNegative do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Vertical bar chart with positive and negative values."
+  def function, do: &ExoUI.Charts.bar_chart_negative/1
 
-  def render(assigns) do
-    assigns =
-      assign(assigns, :data, [
-        {"January", 4200},
-        {"February", -3800},
-        {"March", 5100},
-        {"April", -2300},
-        {"May", 6700},
-        {"June", -1900}
-      ])
-
-    ~H"""
+  def template do
+    """
     <div style="padding: 1rem; max-width: 620px;">
       <div data-exo="card">
         <div data-exo="card-header">
@@ -24,10 +14,28 @@ defmodule Storybook.Components.Charts.BarChartNegative do
           </p>
         </div>
         <div data-exo="card-body">
-          <ExoUI.Charts.bar_chart_negative data={@data} height={260} />
+          <.psb-variation/>
         </div>
       </div>
     </div>
     """
+  end
+
+  def variations do
+    [
+      %Variation{id: :variance, attributes: %{data: variance_data(), height: 260}},
+      %Variation{id: :empty, attributes: %{data: [], height: 260, empty_text: "No variance data"}}
+    ]
+  end
+
+  defp variance_data do
+    [
+      {"January", 4200},
+      {"February", -3800},
+      {"March", 5100},
+      {"April", -2300},
+      {"May", 6700},
+      {"June", -1900}
+    ]
   end
 end

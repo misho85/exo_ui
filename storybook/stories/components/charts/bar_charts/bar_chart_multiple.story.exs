@@ -1,20 +1,10 @@
 defmodule Storybook.Components.Charts.BarChartMultiple do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Grouped vertical bar chart for two numeric series."
+  def function, do: &ExoUI.Charts.bar_chart_multiple/1
 
-  def render(assigns) do
-    assigns =
-      assign(assigns, :data, [
-        {"January", 4200, 2400},
-        {"February", 5800, 3200},
-        {"March", 5100, 2900},
-        {"April", 7300, 4100},
-        {"May", 6700, 3800},
-        {"June", 8900, 4800}
-      ])
-
-    ~H"""
+  def template do
+    """
     <div style="padding: 1rem; max-width: 620px;">
       <div data-exo="card">
         <div data-exo="card-header">
@@ -24,10 +14,28 @@ defmodule Storybook.Components.Charts.BarChartMultiple do
           </p>
         </div>
         <div data-exo="card-body">
-          <ExoUI.Charts.bar_chart_multiple data={@data} height={260} />
+          <.psb-variation/>
         </div>
       </div>
     </div>
     """
+  end
+
+  def variations do
+    [
+      %Variation{id: :devices, attributes: %{data: device_data(), height: 260}},
+      %Variation{id: :empty, attributes: %{data: [], height: 260, empty_text: "No device data"}}
+    ]
+  end
+
+  defp device_data do
+    [
+      {"January", 4200, 2400},
+      {"February", 5800, 3200},
+      {"March", 5100, 2900},
+      {"April", 7300, 4100},
+      {"May", 6700, 3800},
+      {"June", 8900, 4800}
+    ]
   end
 end

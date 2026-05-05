@@ -306,11 +306,11 @@ const ExoOverlay = {
 
     this.el.removeAttribute('inert')
     this.el.setAttribute('aria-hidden', 'false')
+    overlayRegistry.register(this)
 
     requestAnimationFrame(() => {
       if (!this._isOpenActive || !this._isOpen()) return
 
-      overlayRegistry.register(this)
       const target = this._firstFocusable() || this._panel
       target?.focus?.({ preventScroll: true })
     })

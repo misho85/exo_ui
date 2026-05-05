@@ -1,20 +1,10 @@
 defmodule Storybook.Components.Charts.RadarChart do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Radar chart for cyclical category comparison."
+  def function, do: &ExoUI.Charts.radar_chart/1
 
-  def render(assigns) do
-    assigns =
-      assign(assigns, :data, [
-        {"January", 186},
-        {"February", 305},
-        {"March", 237},
-        {"April", 273},
-        {"May", 209},
-        {"June", 214}
-      ])
-
-    ~H"""
+  def template do
+    """
     <div style="padding: 1rem; max-width: 520px;">
       <div data-exo="card">
         <div data-exo="card-header">
@@ -24,10 +14,28 @@ defmodule Storybook.Components.Charts.RadarChart do
           </p>
         </div>
         <div data-exo="card-body" style="display: flex; justify-content: center;">
-          <ExoUI.Charts.radar_chart data={@data} size={280} />
+          <.psb-variation/>
         </div>
       </div>
     </div>
     """
+  end
+
+  def variations do
+    [
+      %Variation{id: :activity, attributes: %{data: monthly_data(), size: 280}},
+      %Variation{id: :empty, attributes: %{data: [], size: 280, empty_text: "No activity data"}}
+    ]
+  end
+
+  defp monthly_data do
+    [
+      {"January", 186},
+      {"February", 305},
+      {"March", 237},
+      {"April", 273},
+      {"May", 209},
+      {"June", 214}
+    ]
   end
 end

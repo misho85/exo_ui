@@ -24,6 +24,9 @@ async function openSheetFromDom(sheet) {
     node.style.display = "block";
     node.classList.add("open");
   });
+
+  await expect(sheet).toHaveAttribute("data-overlay-stack-index", /\d+/);
+  await sheet.locator('[data-exo="sheet-content"] button:not([disabled])').first().focus();
 }
 
 test.describe("overlay dialogs", () => {
