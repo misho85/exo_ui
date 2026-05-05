@@ -746,7 +746,11 @@ defmodule ExoUI.Components.Overlay do
 
   @doc "Shows a command palette."
   def show_command_palette(id) do
-    Phoenix.LiveView.JS.show(to: "##{id}")
+    Phoenix.LiveView.JS.set_attribute(%Phoenix.LiveView.JS{}, {"data-state", "open"},
+      to: "##{id}"
+    )
+    |> Phoenix.LiveView.JS.set_attribute({"aria-hidden", "false"}, to: "##{id}")
+    |> Phoenix.LiveView.JS.show(to: "##{id}")
     |> Phoenix.LiveView.JS.add_class("open", to: "##{id}")
     |> Phoenix.LiveView.JS.focus(to: "##{id} [data-exo=\"command-palette-input\"]")
   end
@@ -754,6 +758,8 @@ defmodule ExoUI.Components.Overlay do
   @doc "Hides a command palette."
   def hide_command_palette(js \\ %Phoenix.LiveView.JS{}, id) do
     js
+    |> Phoenix.LiveView.JS.set_attribute({"data-state", "closed"}, to: "##{id}")
+    |> Phoenix.LiveView.JS.set_attribute({"aria-hidden", "true"}, to: "##{id}")
     |> Phoenix.LiveView.JS.remove_class("open", to: "##{id}")
     |> Phoenix.LiveView.JS.hide(to: "##{id}", transition: {"", "", ""}, time: 150)
   end

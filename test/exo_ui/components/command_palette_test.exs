@@ -1,5 +1,6 @@
 defmodule ExoUI.Components.CommandPaletteTest do
   use ExUnit.Case, async: true
+  alias Phoenix.LiveView.JS
   import Phoenix.LiveViewTest
   import Phoenix.Component
   import ExoUI.Components
@@ -73,5 +74,26 @@ defmodule ExoUI.Components.CommandPaletteTest do
 
     assert custom_html =~ ~s(data-shortcut="ctrl+j")
     refute manual_html =~ "data-shortcut"
+  end
+
+  test "public JS helpers keep state attributes in sync" do
+    assert %JS{
+             ops: [
+               ["set_attr", %{to: "#cmd", attr: ["data-state", "open"]}],
+               ["set_attr", %{to: "#cmd", attr: ["aria-hidden", "false"]}],
+               ["show", %{to: "#cmd"}],
+               ["add_class", %{to: "#cmd", names: ["open"]}],
+               ["focus", %{to: "#cmd [data-exo=\"command-palette-input\"]"}]
+             ]
+           } = show_command_palette("cmd")
+
+    assert %JS{
+             ops: [
+               ["set_attr", %{to: "#cmd", attr: ["data-state", "closed"]}],
+               ["set_attr", %{to: "#cmd", attr: ["aria-hidden", "true"]}],
+               ["remove_class", %{to: "#cmd", names: ["open"]}],
+               ["hide", %{to: "#cmd"}]
+             ]
+           } = hide_command_palette("cmd")
   end
 end

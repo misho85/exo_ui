@@ -1,3 +1,13 @@
+const focusableSelector = [
+  'a[href]',
+  'button:not([disabled])',
+  'input:not([disabled]):not([type="hidden"])',
+  'select:not([disabled])',
+  'textarea:not([disabled])',
+  '[tabindex]:not([tabindex="-1"])',
+  '[contenteditable="true"]'
+].join(',')
+
 const PaletteRegistry = {
   stack: [],
   listenerBound: false,
@@ -38,8 +48,16 @@ const ExoCommandPalette = {
   },
 
   _bind() {
-    this._unbind()
+    const wasOpen = this._isOpenActive || false
+    const previousFocus = this._previousFocus || null
+    const pendingInvoker = this._pendingInvoker || null
+
+    this._unbind({ preserveState: true })
+    this._isOpenActive = wasOpen
+    this._previousFocus = previousFocus
+    this._pendingInvoker = pendingInvoker
     this.backdrop = this.el.querySelector('[data-exo="command-palette-backdrop"]')
+    this.dialog = this.el.querySelector('[data-exo="command-palette-dialog"]')
     this.input = this.el.querySelector('[data-exo="command-palette-input"]')
     this.list = this.el.querySelector('[data-exo="command-palette-list"]')
     this.empty = this.el.querySelector('[data-exo="command-palette-empty"]')
@@ -70,43 +88,12 @@ const ExoCommandPalette = {
       if (this.list) this.input.setAttribute("aria-controls", this.list.id)
     }
 
-    const isOpen = () => this.el.classList.contains("open")
-    const syncState = () => {
-      this.el.dataset.state = isOpen() ? "open" : "closed"
-      this.el.setAttribute("aria-hidden", isOpen() ? "false" : "true")
-      if (this.input) this.input.setAttribute("aria-expanded", isOpen() ? "true" : "false")
-    }
-
-    this._open = () => {
-      this.el.style.display = "block"
-      this.el.classList.add("open")
-      syncState()
-      this._filter()
-      requestAnimationFrame(() => {
-        if (this.input) this.input.focus()
-      })
-    }
-
-    this._close = () => {
-      this.el.classList.remove("open")
-      this.el.style.display = "none"
-      syncState()
-      if (this.input) this.input.value = ""
-      this.items.forEach((item) => {
-        item.hidden = false
-        this._setItemActive(item, false)
-      })
-      if (this.empty) this.empty.hidden = true
-      this.activeIndex = -1
-      this._syncActiveDescendant()
-    }
-
-    syncState()
-    if (!isOpen()) this.el.style.display = "none"
+    this._syncOpenState({ restoreFocus: false })
+    if (!this._isOpen()) this.el.style.display = "none"
     if (this.empty) this.empty.hidden = true
     this.el.dataset.ready = "true"
 
-    this._toggle = () => (isOpen() ? this._close() : this._open())
+    this._toggle = () => (this._isOpen() ? this._close() : this._open())
     PaletteRegistry.register(this)
 
     this._onKey = (e) => {
@@ -115,7 +102,7 @@ const ExoCommandPalette = {
         return
       }
 
-      if (!isOpen()) return
+      if (!this._isOpen()) return
 
       if (e.key === "ArrowDown") {
         e.preventDefault()
@@ -149,8 +136,23 @@ const ExoCommandPalette = {
           item.click()
         }
       }
+
+      if (e.key === "Tab") {
+        this._trapFocus(e)
+      }
     }
     this.el.addEventListener("keydown", this._onKey)
+
+    this._onDocumentPointerdown = (e) => this._rememberInvoker(e)
+    this._onDocumentClick = (e) => this._rememberInvoker(e)
+    document.addEventListener("pointerdown", this._onDocumentPointerdown, true)
+    document.addEventListener("click", this._onDocumentClick, true)
+
+    this._observer = new MutationObserver(() => this._syncOpenState())
+    this._observer.observe(this.el, {
+      attributes: true,
+      attributeFilter: ["class", "style", "hidden", "aria-hidden", "data-state"]
+    })
 
     this._onInput = () => this._filter()
     if (this.input) this.input.addEventListener("input", this._onInput)
@@ -178,6 +180,141 @@ const ExoCommandPalette = {
     if (this.backdrop) {
       this._onBackdrop = () => this._close()
       this.backdrop.addEventListener("click", this._onBackdrop)
+    }
+  },
+
+  _isOpen() {
+    return this.el.classList.contains("open") && this.el.style.display !== "none" && !this.el.hidden
+  },
+
+  _open() {
+    this.el.style.display = "block"
+    this.el.hidden = false
+    this.el.classList.add("open")
+    this._syncOpenState()
+  },
+
+  _close() {
+    this.el.classList.remove("open")
+    this.el.style.display = "none"
+    this._syncOpenState()
+  },
+
+  _syncOpenState(options = {}) {
+    const open = this._isOpen()
+    const state = open ? "open" : "closed"
+    const hidden = open ? "false" : "true"
+    const expanded = open ? "true" : "false"
+
+    if (this.el.dataset.state !== state) this.el.dataset.state = state
+    if (this.el.getAttribute("aria-hidden") !== hidden) this.el.setAttribute("aria-hidden", hidden)
+    if (this.input && this.input.getAttribute("aria-expanded") !== expanded) {
+      this.input.setAttribute("aria-expanded", expanded)
+    }
+
+    if (open && !this._isOpenActive) {
+      this._activate(options)
+    } else if (!open && this._isOpenActive) {
+      this._deactivate(options)
+    }
+  },
+
+  _activate() {
+    this._isOpenActive = true
+
+    const active = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    const previousFocus = this._isRestoreTarget(this._pendingInvoker)
+      ? this._pendingInvoker
+      : active
+
+    this._pendingInvoker = null
+    this._previousFocus = this._isRestoreTarget(previousFocus) ? previousFocus : null
+    this._filter()
+
+    requestAnimationFrame(() => {
+      if (!this._isOpenActive || !this._isOpen()) return
+      this.input?.focus?.({ preventScroll: true })
+    })
+  },
+
+  _deactivate(options = {}) {
+    this._isOpenActive = false
+    this._reset()
+
+    if (options.restoreFocus === false) return
+
+    const target = this._previousFocus
+    this._previousFocus = null
+
+    requestAnimationFrame(() => {
+      if (target && target.isConnected) target.focus({ preventScroll: true })
+    })
+  },
+
+  _reset() {
+    if (this.input) this.input.value = ""
+    this.items.forEach((item) => {
+      item.hidden = false
+      this._setItemActive(item, false)
+    })
+    if (this.empty) this.empty.hidden = true
+    this.activeIndex = -1
+    this._syncActiveDescendant()
+  },
+
+  _rememberInvoker(event) {
+    if (this._isOpen()) return
+
+    const target = event.target instanceof Element
+      ? event.target.closest(focusableSelector)
+      : null
+
+    if (this._isRestoreTarget(target)) this._pendingInvoker = target
+  },
+
+  _isRestoreTarget(element) {
+    if (!(element instanceof HTMLElement)) return false
+    if (!element.isConnected || this.el.contains(element)) return false
+    if (element.closest("[hidden],[inert]")) return false
+    if (element.hasAttribute("disabled") || element.getAttribute("aria-disabled") === "true") return false
+    if (!element.matches(focusableSelector)) return false
+    return true
+  },
+
+  _focusables() {
+    if (!this.dialog) return []
+
+    return Array.from(this.dialog.querySelectorAll(focusableSelector)).filter((element) => {
+      if (!(element instanceof HTMLElement)) return false
+      if (element.hidden || element.getAttribute("aria-hidden") === "true") return false
+      if (element.closest("[hidden],[inert]")) return false
+      if (element.tabIndex < 0) return false
+      return Boolean(element.offsetWidth || element.offsetHeight || element.getClientRects().length)
+    })
+  },
+
+  _trapFocus(event) {
+    const focusables = this._focusables()
+
+    if (focusables.length === 0) {
+      event.preventDefault()
+      this.dialog?.focus?.({ preventScroll: true })
+      return
+    }
+
+    const first = focusables[0]
+    const last = focusables[focusables.length - 1]
+    const active = document.activeElement
+
+    if (event.shiftKey && (active === first || !this.dialog.contains(active))) {
+      event.preventDefault()
+      last.focus({ preventScroll: true })
+      return
+    }
+
+    if (!event.shiftKey && active === last) {
+      event.preventDefault()
+      first.focus({ preventScroll: true })
     }
   },
 
@@ -283,9 +420,12 @@ const ExoCommandPalette = {
     }
   },
 
-  _unbind() {
-    PaletteRegistry.unregister(this)
+  _unbind(options = {}) {
+    if (!options.preserveState) PaletteRegistry.unregister(this)
     if (this._onKey) this.el.removeEventListener("keydown", this._onKey)
+    if (this._onDocumentPointerdown) document.removeEventListener("pointerdown", this._onDocumentPointerdown, true)
+    if (this._onDocumentClick) document.removeEventListener("click", this._onDocumentClick, true)
+    if (this._observer) this._observer.disconnect()
     if (this.input && this._onInput) this.input.removeEventListener("input", this._onInput)
     if (this._onItemPointerMove) this.el.removeEventListener("pointermove", this._onItemPointerMove)
     if (this._onItemClick) this.el.removeEventListener("click", this._onItemClick)
@@ -294,6 +434,7 @@ const ExoCommandPalette = {
     }
     delete this.el.dataset.ready
     this.backdrop = null
+    this.dialog = null
     this.input = null
     this.list = null
     this.empty = null
@@ -301,13 +442,20 @@ const ExoCommandPalette = {
     this.shortcut = ""
     this.activeIndex = -1
     this._onKey = null
+    this._onDocumentPointerdown = null
+    this._onDocumentClick = null
+    this._observer = null
     this._onInput = null
     this._onItemPointerMove = null
     this._onItemClick = null
     this._onBackdrop = null
-    this._open = null
-    this._close = null
     this._toggle = null
+
+    if (!options.preserveState) {
+      this._isOpenActive = false
+      this._previousFocus = null
+      this._pendingInvoker = null
+    }
   }
 }
 

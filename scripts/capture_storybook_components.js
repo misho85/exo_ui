@@ -154,7 +154,7 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(900);
       break;
     case "command_palette":
-      await page.keyboard.press(process.platform === "darwin" ? "Meta+K" : "Control+K");
+      await clickButton(page, "Open command palette");
       await page.waitForTimeout(400);
       await safe(page.locator('#story-live [data-exo="command-palette-input"]'), (node) =>
         node.fill("settings", { timeout: 1500 })

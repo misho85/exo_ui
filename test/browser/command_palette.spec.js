@@ -28,6 +28,30 @@ test.describe("command palette", () => {
     await expect(input).toHaveValue("");
   });
 
+  test("opens from a trigger, traps focus, and restores focus on close", async ({ page }) => {
+    await gotoStory(page, "/components/menus/command_palette");
+
+    const canvas = story(page);
+    const trigger = canvas.getByRole("button", { name: "Open command palette" }).first();
+    const palette = canvas.locator("#command-palette-single-default");
+    const input = palette.locator('[data-exo="command-palette-input"]');
+
+    await expectAttribute(palette, "data-state", "closed");
+    await trigger.click();
+
+    await expectAttribute(palette, "data-state", "open");
+    await expect(palette).toHaveAttribute("aria-hidden", "false");
+    await expectFocused(input);
+
+    await page.keyboard.press("Tab");
+    await expectFocused(input);
+
+    await page.keyboard.press("Escape");
+    await expectAttribute(palette, "data-state", "closed");
+    await expect(palette).toHaveAttribute("aria-hidden", "true");
+    await expectFocused(trigger);
+  });
+
   test("matches custom shortcuts without letting manual palettes intercept them", async ({ page }) => {
     await gotoStory(page, "/components/menus/command_palette");
 

@@ -701,6 +701,8 @@ Use for right-click menus over a specific region.
 Use for global search/action surfaces. It can be opened through the configured
 keyboard shortcut or with the public `show_command_palette/1` helper. The
 default shortcut is `mod+k`, which maps to Cmd+K on macOS and Ctrl+K elsewhere.
+When opened from a trigger, the hook keeps focus inside the dialog and restores
+focus to the trigger after Escape, backdrop click, or command selection closes it.
 
 ```heex
 <.button variant="outline" phx-click={show_command_palette("global-command")}>
@@ -1234,7 +1236,8 @@ surface. The main remaining shadcn/daisyUI-style parity gaps are:
 - Modal, sheet, and drawer stacking is browser-tested, including lower overlay
   inerting while another overlay is topmost.
 - Command palette shortcuts are configurable; use `shortcut={nil}` for
-  manual-only palettes when the host app owns keyboard routing.
+  manual-only palettes when the host app owns keyboard routing. Trigger-driven
+  palettes restore focus to their opener on close.
 - `input type="select"` and `dropdown/1` are legacy compatibility paths. Prefer
   `select/1` and `dropdown_menu/1`.
 - Advanced composition patterns such as Radix-style `asChild` are not part of
