@@ -12,12 +12,13 @@ test.describe("select", () => {
     await gotoStory(page, "/components/forms/select");
 
     const canvas = story(page);
-    const trigger = canvas.locator("#sel-value-select [data-exo-select=\"trigger\"]");
-    const selectedOption = canvas.locator("#sel-value [data-exo=\"select-option\"][data-selected]");
-    const nextOption = canvas.locator("#sel-value [data-exo=\"select-option\"][data-value=\"inactive\"]");
+    const selectId = "select-single-with-value";
+    const trigger = canvas.locator(`#${selectId}-select [data-exo-select="trigger"]`);
+    const selectedOption = canvas.locator(`#${selectId} [data-exo="select-option"][data-selected]`);
+    const nextOption = canvas.locator(`#${selectId} [data-exo="select-option"][data-value="inactive"]`);
     const value = canvas.locator("input[name=\"status\"]");
-    const popover = canvas.locator("#sel-value");
-    const listbox = canvas.locator("#sel-value-listbox");
+    const popover = canvas.locator(`#${selectId}`);
+    const listbox = canvas.locator(`#${selectId}-listbox`);
 
     await trigger.click();
 
@@ -45,9 +46,10 @@ test.describe("select", () => {
     await gotoStory(page, "/components/forms/select");
 
     const canvas = story(page);
-    const trigger = canvas.locator("#sel-basic-select [data-exo-select=\"trigger\"]");
-    const popover = canvas.locator("#sel-basic");
-    const disabledOption = canvas.locator("#sel-basic [data-exo=\"select-option\"][data-value=\"date\"]");
+    const selectId = "select-single-basic";
+    const trigger = canvas.locator(`#${selectId}-select [data-exo-select="trigger"]`);
+    const popover = canvas.locator(`#${selectId}`);
+    const disabledOption = canvas.locator(`#${selectId} [data-exo="select-option"][data-value="date"]`);
     const value = canvas.locator("input[name=\"fruit\"]");
 
     await trigger.click();

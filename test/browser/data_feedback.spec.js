@@ -7,16 +7,26 @@ test.describe("data and feedback components", () => {
     await gotoStory(page, "/components/forms/date_picker");
 
     const canvas = story(page);
-    const invalidPicker = canvas.locator("#dp-error");
-    const selectedPicker = canvas.locator("#dp-selected");
-    const keyboardPicker = canvas.locator("#dp-keyboard");
+    const invalidPicker = canvas.locator("#date-picker-single-with-error");
+    const selectedPicker = canvas.locator("#date-picker-single-selected");
+    const keyboardPicker = canvas.locator("#date-picker-single-keyboard-navigation");
 
     await expectAttribute(selectedPicker, "data-ready", "");
     await expectAttribute(invalidPicker, "role", "group");
     await expectAttribute(invalidPicker, "aria-invalid", "true");
-    await expectAttribute(invalidPicker, "aria-describedby", "dp-error-description dp-error-error");
-    await expect(invalidPicker.locator('[role="grid"]')).toHaveAttribute("aria-labelledby", "dp-error-month");
-    await expect(invalidPicker.locator("#dp-error-error")).toHaveAttribute("role", "alert");
+    await expectAttribute(
+      invalidPicker,
+      "aria-describedby",
+      "date-picker-single-with-error-description date-picker-single-with-error-error"
+    );
+    await expect(invalidPicker.locator('[role="grid"]')).toHaveAttribute(
+      "aria-labelledby",
+      "date-picker-single-with-error-month"
+    );
+    await expect(invalidPicker.locator("#date-picker-single-with-error-error")).toHaveAttribute(
+      "role",
+      "alert"
+    );
 
     const selectedValue = await selectedPicker.locator('input[name="departure"]').inputValue();
     await expect(selectedPicker.locator(`[data-exo="date-picker-day"][aria-selected="true"]`)).toHaveCount(1);

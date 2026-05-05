@@ -25,13 +25,20 @@ test.describe("form controls", () => {
     await gotoStory(page, "/components/forms/radio_group");
 
     const canvas = story(page);
-    const group = canvas.locator("#frequency");
+    const group = canvas.locator("#radio-group-single-invalid-frequency");
 
     await expectAttribute(group, "aria-invalid", "true");
-    await expectAttribute(group, "aria-describedby", "frequency-description frequency-error");
-    await expect(canvas.locator("#frequency-error")).toHaveAttribute("role", "alert");
-    await expect(canvas.locator("#delivery-pickup")).toBeDisabled();
-    await expect(canvas.locator("#locked_plan")).toHaveAttribute("disabled", "");
+    await expectAttribute(
+      group,
+      "aria-describedby",
+      "radio-group-single-invalid-frequency-description radio-group-single-invalid-frequency-error"
+    );
+    await expect(canvas.locator("#radio-group-single-invalid-frequency-error")).toHaveAttribute(
+      "role",
+      "alert"
+    );
+    await expect(canvas.locator("#radio-group-single-slot-items-pickup")).toBeDisabled();
+    await expect(canvas.locator("#radio-group-single-disabled")).toHaveAttribute("disabled", "");
 
     await gotoStory(page, "/components/forms/fieldset");
 
@@ -62,15 +69,25 @@ test.describe("form controls", () => {
     await gotoStory(page, "/components/forms/select");
 
     const canvas = story(page);
-    const selectTrigger = canvas.locator("#sel-err-select [data-exo-select=\"trigger\"]");
+    const selectTrigger = canvas.locator("#select-single-with-errors-select [data-exo-select=\"trigger\"]");
 
     await expectAttribute(selectTrigger, "aria-invalid", "true");
-    await expectAttribute(selectTrigger, "aria-describedby", "sel-err-description sel-err-error");
+    await expectAttribute(
+      selectTrigger,
+      "aria-describedby",
+      "select-single-with-errors-description select-single-with-errors-error"
+    );
 
     await gotoStory(page, "/components/forms/combobox");
 
-    const comboboxTrigger = story(page).locator("#cb-error-combobox [data-exo-combobox=\"trigger\"]");
+    const comboboxTrigger = story(page).locator(
+      "#combobox-single-with-errors-combobox [data-exo-combobox=\"trigger\"]"
+    );
     await expectAttribute(comboboxTrigger, "aria-invalid", "true");
-    await expectAttribute(comboboxTrigger, "aria-describedby", "cb-error-description cb-error-error");
+    await expectAttribute(
+      comboboxTrigger,
+      "aria-describedby",
+      "combobox-single-with-errors-description combobox-single-with-errors-error"
+    );
   });
 });

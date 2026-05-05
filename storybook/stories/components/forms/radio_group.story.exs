@@ -1,52 +1,80 @@
 defmodule Storybook.Components.RadioGroup do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Radio button group for single-choice selection."
+  def function, do: &ExoUI.Components.Form.radio_group/1
 
-  def render(assigns) do
-    ~H"""
-    <div style="padding: 1rem; display: flex; flex-direction: column; gap: 2rem; max-width: 320px;">
-      <ExoUI.Components.radio_group
-        name="plan"
-        label="Select a plan"
-        description="Choose the subscription tier for this workspace."
-        value="pro"
-        options={[{"Free", "free"}, {"Pro", "pro"}, {"Enterprise", "enterprise"}]}
-      />
-
-      <ExoUI.Components.radio_group
-        name="priority"
-        label="Priority"
-        value="medium"
-        options={[{"Low", "low"}, {"Medium", "medium"}, {"High", "high"}, {"Critical", "critical"}]}
-      />
-
-      <ExoUI.Components.radio_group
-        name="frequency"
-        label="Billing frequency"
-        description="Required before checkout."
-        errors={["choose a billing frequency"]}
-        options={[{"Monthly", "monthly"}, {"Yearly", "yearly"}]}
-      />
-
-      <ExoUI.Components.radio_group
-        name="delivery"
-        label="Delivery method"
-        value="standard"
-      >
-        <:item value="standard">Standard delivery</:item>
-        <:item value="express">Express delivery</:item>
-        <:item value="pickup" disabled>Pickup unavailable</:item>
-      </ExoUI.Components.radio_group>
-
-      <ExoUI.Components.radio_group
-        name="locked_plan"
-        label="Locked selection"
-        value="enterprise"
-        disabled
-        options={[{"Team", "team"}, {"Enterprise", "enterprise"}]}
-      />
+  def template do
+    """
+    <div style="padding: 1rem; display: flex; flex-direction: column; gap: 2rem; max-width: 320px;" psb-code-hidden>
+      <.psb-variation/>
     </div>
     """
   end
+
+  def variations do
+    [
+      {"plan",
+       %Variation{
+         id: :plan,
+         attributes: %{
+           name: "plan",
+           label: "Select a plan",
+           description: "Choose the subscription tier for this workspace.",
+           value: "pro",
+           options: [{"Free", "free"}, {"Pro", "pro"}, {"Enterprise", "enterprise"}]
+         }
+       }},
+      {"priority",
+       %Variation{
+         id: :priority,
+         attributes: %{
+           name: "priority",
+           label: "Priority",
+           value: "medium",
+           options: [
+             {"Low", "low"},
+             {"Medium", "medium"},
+             {"High", "high"},
+             {"Critical", "critical"}
+           ]
+         }
+       }},
+      {"frequency",
+       %Variation{
+         id: :invalid_frequency,
+         attributes: %{
+           name: "frequency",
+           label: "Billing frequency",
+           description: "Required before checkout.",
+           errors: ["choose a billing frequency"],
+           options: [{"Monthly", "monthly"}, {"Yearly", "yearly"}]
+         }
+       }},
+      {"delivery",
+       %Variation{
+         id: :slot_items,
+         attributes: %{name: "delivery", label: "Delivery method", value: "standard"},
+         slots: [
+           ~s|<:item value="standard">Standard delivery</:item>|,
+           ~s|<:item value="express">Express delivery</:item>|,
+           ~s|<:item value="pickup" disabled>Pickup unavailable</:item>|
+         ]
+       }},
+      {"locked_plan",
+       %Variation{
+         id: :disabled,
+         attributes: %{
+           name: "locked_plan",
+           label: "Locked selection",
+           value: "enterprise",
+           disabled: true,
+           options: [{"Team", "team"}, {"Enterprise", "enterprise"}]
+         }
+       }}
+    ]
+    |> without_legacy_dom_ids()
+  end
+
+  defp without_legacy_dom_ids(variations),
+    do: Enum.map(variations, fn {_dom_id, variation} -> variation end)
 end

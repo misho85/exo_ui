@@ -13,10 +13,10 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | --- | --- |
 | Public components | 61 public component delegates audited from `lib/exo_ui/components.ex` |
 | Missing Storybook stories | 0 public components missing a story |
-| Component-mode stories | 62 component stories, 1 live component story, 20 page-mode stories still to convert |
+| Component-mode stories | 67 component stories, 1 live component story, 15 page-mode stories still to convert |
 | Playwright component capture | 84 Storybook routes captured |
 | Capture artifacts | 84 screenshots, 84 WebM videos, 84 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-05T01-24-54-252Z/viewer.html` |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-05T01-52-01-188Z/viewer.html` |
 | Browser suite | 60 Playwright tests passing |
 | ExUnit suite | 496 tests passing after combobox server-filter changes |
 | Visual regression | 84 committed screenshot baselines with pixel-diff checking |
@@ -50,6 +50,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - Chart stories are now mostly component-mode: sparkline/trend badge plus radial, pie/donut, bar, line, area, and radar variants expose data, dimensions, colors, legends, and empty states as PhoenixStorybook attrs.
 - `ExoUI.Charts` now keeps its public facade while exposing Phoenix component `attr` metadata directly on the public wrapper functions, so Storybook can load chart controls without delegating through metadata-blind `defdelegate` functions.
 - Overlay stacking now registers opening overlays synchronously before focus scheduling, which removes the race where a fast Escape event could close the previous sheet instead of the topmost sheet.
+- `Select`, `Combobox`, `DatePicker`, `RadioGroup`, and `Form` are now component-mode stories with generated PhoenixStorybook DOM IDs, exposed playground attributes/slots, refreshed browser selectors, and validated screenshot/video output. The `Form` story uses a Storybook-only wrapper to avoid the real `form/1` name collision with `Phoenix.Component.form/1` while still rendering `ExoUI.Components.Form.form/1`.
 
 ## Comparison vs shadcn/daisyUI
 
@@ -65,7 +66,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 
 ## Remaining priorities
 
-1. Continue converting the remaining 20 page-mode Storybook examples to component-mode stories where PhoenixStorybook can expose attrs, slots, playground controls, and source examples.
+1. Continue converting the remaining 15 page-mode Storybook examples to component-mode stories where PhoenixStorybook can expose attrs, slots, playground controls, and source examples.
 2. Continue overlay parity work with richer nested overlay content examples and cross-type modal/sheet/drawer stacking.
 3. Add docs that show copy-paste Phoenix usage for every component: basic, disabled, error, long content, dark mode, and keyboard/a11y notes.
 4. Tune visual diff thresholds after the first few CI runs if Linux font rendering causes expected drift.
@@ -76,7 +77,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `bun run build:all`.
 - `mix compile --warnings-as-errors` in `storybook`.
 - `bun run test:browser` -> 60 tests, 0 failures.
-- `bun run capture:components` -> 84 entries, 0 failed, 84 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T01-24-54-252Z`.
+- `bun run capture:components` -> 84 entries, 0 failed, 84 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T01-52-01-188Z`.
 - `bun run capture:validate` -> 84 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after converting chart stories to component-mode layouts.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after converting form stories to component-mode layouts.
 - `bun run visual:check` -> 84 current screenshots matched the committed baseline.

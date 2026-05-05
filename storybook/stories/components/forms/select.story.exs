@@ -1,92 +1,111 @@
 defmodule Storybook.Components.Select do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Custom select component built on native popover. Replaces native <select>."
+  def function, do: &ExoUI.Components.Form.select/1
 
-  def render(assigns) do
-    ~H"""
-    <div style="display: flex; flex-direction: column; gap: 3rem; padding: 2rem; max-width: 20rem;">
-      <div>
-        <h3>Basic</h3>
-        <ExoUI.Components.select id="sel-basic" name="fruit" prompt="Select a fruit">
-          <:option value="apple">Apple</:option>
-          <:option value="banana">Banana</:option>
-          <:option value="cherry">Cherry</:option>
-          <:option value="date" disabled>Date (sold out)</:option>
-        </ExoUI.Components.select>
-      </div>
-
-      <div>
-        <h3>With value selected</h3>
-        <ExoUI.Components.select id="sel-value" name="status" value="active" label="Status">
-          <:option value="active">Active</:option>
-          <:option value="inactive">Inactive</:option>
-          <:option value="archived">Archived</:option>
-        </ExoUI.Components.select>
-      </div>
-
-      <div>
-        <h3>With groups</h3>
-        <ExoUI.Components.select id="sel-groups" name="role" label="Role" prompt="Choose role">
-          <:option value="super_admin" group="Admin">Super Admin</:option>
-          <:option value="admin" group="Admin">Admin</:option>
-          <:option value="editor" group="User">Editor</:option>
-          <:option value="viewer" group="User">Viewer</:option>
-        </ExoUI.Components.select>
-      </div>
-
-      <div>
-        <h3>With icons</h3>
-        <ExoUI.Components.select id="sel-icons" name="priority" value="medium" label="Priority">
-          <:option value="low" icon="arrow-down">Low</:option>
-          <:option value="medium" icon="minus">Medium</:option>
-          <:option value="high" icon="arrow-up">High</:option>
-        </ExoUI.Components.select>
-      </div>
-
-      <div>
-        <h3>With description</h3>
-        <ExoUI.Components.select
-          id="sel-desc"
-          name="category"
-          label="Category"
-          description="Choose the primary category for this item"
-          prompt="Select..."
-        >
-          <:option value="tech">Technology</:option>
-          <:option value="science">Science</:option>
-          <:option value="art">Art</:option>
-        </ExoUI.Components.select>
-      </div>
-
-      <div>
-        <h3>Disabled</h3>
-        <ExoUI.Components.select
-          id="sel-disabled"
-          name="locked"
-          label="Locked field"
-          disabled
-          prompt="Cannot select"
-        >
-          <:option value="a">Option A</:option>
-          <:option value="b">Option B</:option>
-        </ExoUI.Components.select>
-      </div>
-
-      <div>
-        <h3>With errors</h3>
-        <ExoUI.Components.select
-          id="sel-err"
-          name="x"
-          label="Required field"
-          description="The form cannot be submitted without this value."
-          errors={["can't be blank"]}
-          prompt="Select..."
-        >
-          <:option value="a">Option A</:option>
-        </ExoUI.Components.select>
-      </div>
+  def template do
+    """
+    <div style="display: flex; flex-direction: column; gap: 2rem; padding: 1rem; max-width: 20rem;" psb-code-hidden>
+      <.psb-variation/>
     </div>
     """
   end
+
+  def variations do
+    [
+      {"sel-basic",
+       %Variation{
+         id: :basic,
+         attributes: %{name: "fruit", prompt: "Select a fruit"},
+         slots: [
+           ~s|<:option value="apple">Apple</:option>|,
+           ~s|<:option value="banana">Banana</:option>|,
+           ~s|<:option value="cherry">Cherry</:option>|,
+           ~s|<:option value="date" disabled>Date (sold out)</:option>|
+         ]
+       }},
+      {"sel-value",
+       %Variation{
+         id: :with_value,
+         attributes: %{name: "status", value: "active", label: "Status"},
+         slots: [
+           ~s|<:option value="active">Active</:option>|,
+           ~s|<:option value="inactive">Inactive</:option>|,
+           ~s|<:option value="archived">Archived</:option>|
+         ]
+       }},
+      {"sel-groups",
+       %Variation{
+         id: :with_groups,
+         attributes: %{
+           name: "role",
+           label: "Role",
+           prompt: "Choose role"
+         },
+         slots: [
+           ~s|<:option value="super_admin" group="Admin">Super Admin</:option>|,
+           ~s|<:option value="admin" group="Admin">Admin</:option>|,
+           ~s|<:option value="editor" group="User">Editor</:option>|,
+           ~s|<:option value="viewer" group="User">Viewer</:option>|
+         ]
+       }},
+      {"sel-icons",
+       %Variation{
+         id: :with_icons,
+         attributes: %{name: "priority", value: "medium", label: "Priority"},
+         slots: [
+           ~s|<:option value="low" icon="arrow-down">Low</:option>|,
+           ~s|<:option value="medium" icon="minus">Medium</:option>|,
+           ~s|<:option value="high" icon="arrow-up">High</:option>|
+         ]
+       }},
+      {"sel-desc",
+       %Variation{
+         id: :with_description,
+         attributes: %{
+           name: "category",
+           label: "Category",
+           description: "Choose the primary category for this item",
+           prompt: "Select..."
+         },
+         slots: [
+           ~s|<:option value="tech">Technology</:option>|,
+           ~s|<:option value="science">Science</:option>|,
+           ~s|<:option value="art">Art</:option>|
+         ]
+       }},
+      {"sel-disabled",
+       %Variation{
+         id: :disabled,
+         attributes: %{
+           name: "locked",
+           label: "Locked field",
+           disabled: true,
+           prompt: "Cannot select"
+         },
+         slots: [
+           ~s|<:option value="a">Option A</:option>|,
+           ~s|<:option value="b">Option B</:option>|
+         ]
+       }},
+      {"sel-err",
+       %Variation{
+         id: :with_errors,
+         attributes: %{
+           name: "x",
+           label: "Required field",
+           description: "The form cannot be submitted without this value.",
+           errors: ["can't be blank"],
+           prompt: "Select..."
+         },
+         slots: [
+           ~s|<:option value="a">Option A</:option>|
+         ]
+       }}
+    ]
+    |> without_legacy_dom_ids()
+  end
+
+  defp without_legacy_dom_ids(variations),
+    do: Enum.map(variations, fn {_dom_id, variation} -> variation end)
 end

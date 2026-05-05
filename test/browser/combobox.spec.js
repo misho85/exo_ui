@@ -14,14 +14,15 @@ test.describe("combobox", () => {
     await gotoStory(page, "/components/forms/combobox");
 
     const canvas = story(page);
-    const root = canvas.locator("#cb-client-combobox");
+    const comboboxId = "combobox-single-client-filter";
+    const root = canvas.locator(`#${comboboxId}-combobox`);
     const trigger = root.locator("[data-exo-combobox=\"trigger\"]");
-    const popover = canvas.locator("#cb-client");
-    const search = canvas.locator("#cb-client [data-exo=\"combobox-search\"]");
-    const listbox = canvas.locator("#cb-client-listbox");
-    const status = canvas.locator("#cb-client-status");
-    const croatia = canvas.locator("#cb-client [data-exo=\"combobox-option\"][data-value=\"hr\"]");
-    const serbia = canvas.locator("#cb-client [data-exo=\"combobox-option\"][data-value=\"rs\"]");
+    const popover = canvas.locator(`#${comboboxId}`);
+    const search = canvas.locator(`#${comboboxId} [data-exo="combobox-search"]`);
+    const listbox = canvas.locator(`#${comboboxId}-listbox`);
+    const status = canvas.locator(`#${comboboxId}-status`);
+    const croatia = canvas.locator(`#${comboboxId} [data-exo="combobox-option"][data-value="hr"]`);
+    const serbia = canvas.locator(`#${comboboxId} [data-exo="combobox-option"][data-value="rs"]`);
     const value = canvas.locator("input[name=\"country\"]");
 
     await expectAttribute(root, "data-ready", "");
@@ -52,12 +53,13 @@ test.describe("combobox", () => {
     await gotoStory(page, "/components/forms/combobox");
 
     const canvas = story(page);
-    const root = canvas.locator("#cb-empty-combobox");
+    const comboboxId = "combobox-single-empty-state";
+    const root = canvas.locator(`#${comboboxId}-combobox`);
     const trigger = root.locator("[data-exo-combobox=\"trigger\"]");
-    const popover = canvas.locator("#cb-empty");
-    const search = canvas.locator("#cb-empty [data-exo=\"combobox-search\"]");
-    const empty = canvas.locator("#cb-empty [data-exo=\"combobox-empty\"]");
-    const status = canvas.locator("#cb-empty-status");
+    const popover = canvas.locator(`#${comboboxId}`);
+    const search = canvas.locator(`#${comboboxId} [data-exo="combobox-search"]`);
+    const empty = canvas.locator(`#${comboboxId} [data-exo="combobox-empty"]`);
+    const status = canvas.locator(`#${comboboxId}-status`);
 
     await expectAttribute(root, "data-ready", "");
     await expectAttribute(search, "aria-expanded", "false");
@@ -80,11 +82,12 @@ test.describe("combobox", () => {
     await gotoStory(page, "/components/forms/combobox");
 
     const canvas = story(page);
-    const grouped = canvas.locator("#cb-grouped-combobox");
+    const groupedId = "combobox-single-grouped-options";
+    const grouped = canvas.locator(`#${groupedId}-combobox`);
     const clear = grouped.locator("[data-exo=\"combobox-clear\"]");
     const groupedValue = canvas.locator("input[name=\"assignee\"]");
-    const selected = canvas.locator("#cb-grouped [data-exo=\"combobox-option\"][data-value=\"maria\"]");
-    const disabledOption = canvas.locator("#cb-grouped [data-exo=\"combobox-option\"][data-value=\"stefan\"]");
+    const selected = canvas.locator(`#${groupedId} [data-exo="combobox-option"][data-value="maria"]`);
+    const disabledOption = canvas.locator(`#${groupedId} [data-exo="combobox-option"][data-value="stefan"]`);
 
     await expectAttribute(grouped, "data-ready", "");
     await expect(selected).toHaveAttribute("aria-selected", "true");
@@ -92,11 +95,12 @@ test.describe("combobox", () => {
     await clear.click();
     await expect(groupedValue).toHaveValue("");
 
-    const creatable = canvas.locator("#cb-creatable-combobox");
+    const creatableId = "combobox-single-creatable";
+    const creatable = canvas.locator(`#${creatableId}-combobox`);
     const creatableTrigger = creatable.locator("[data-exo-combobox=\"trigger\"]");
-    const creatablePopover = canvas.locator("#cb-creatable");
-    const creatableSearch = canvas.locator("#cb-creatable [data-exo=\"combobox-search\"]");
-    const createRow = canvas.locator("#cb-creatable [data-exo=\"combobox-create\"]");
+    const creatablePopover = canvas.locator(`#${creatableId}`);
+    const creatableSearch = canvas.locator(`#${creatableId} [data-exo="combobox-search"]`);
+    const createRow = canvas.locator(`#${creatableId} [data-exo="combobox-create"]`);
 
     await expectAttribute(creatable, "data-ready", "");
     await creatableTrigger.click();
@@ -107,17 +111,18 @@ test.describe("combobox", () => {
 
     await page.keyboard.press("Escape");
 
-    const loading = canvas.locator("#cb-loading-combobox");
+    const loadingId = "combobox-single-loading";
+    const loading = canvas.locator(`#${loadingId}-combobox`);
     const loadingTrigger = loading.locator("[data-exo-combobox=\"trigger\"]");
-    const loadingPopover = canvas.locator("#cb-loading");
+    const loadingPopover = canvas.locator(`#${loadingId}`);
     await expectAttribute(loading, "data-ready", "");
     await loadingTrigger.click();
     await expectPopoverState(loadingPopover, true);
-    await expect(canvas.locator("#cb-loading [data-exo=\"combobox-loading\"]")).toBeVisible();
-    await expect(canvas.locator("#cb-loading-listbox")).toHaveAttribute("aria-busy", "true");
-    await expect(canvas.locator("#cb-loading-status")).toHaveText("Loading results");
+    await expect(canvas.locator(`#${loadingId} [data-exo="combobox-loading"]`)).toBeVisible();
+    await expect(canvas.locator(`#${loadingId}-listbox`)).toHaveAttribute("aria-busy", "true");
+    await expect(canvas.locator(`#${loadingId}-status`)).toHaveText("Loading results");
 
-    const disabledTrigger = canvas.locator("#cb-disabled-combobox [data-exo-combobox=\"trigger\"]");
+    const disabledTrigger = canvas.locator("#combobox-single-disabled-combobox [data-exo-combobox=\"trigger\"]");
     await expect(disabledTrigger).toBeDisabled();
     await expect(canvas.locator("input[name=\"locked_owner\"]")).toHaveValue("ops");
   });

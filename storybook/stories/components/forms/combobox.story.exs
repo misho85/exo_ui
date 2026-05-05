@@ -1,161 +1,166 @@
 defmodule Storybook.Components.Combobox do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc do
+  def function, do: &ExoUI.Components.Form.combobox/1
+
+  def template do
     """
-    Searchable select with client or server-side filtering.
-
-    Keyboard model: open the button trigger with pointer or keyboard, type in the search input to filter client-side options, use ArrowUp/ArrowDown/Home/End to move the active option while focus remains on the input, press Enter to commit the active option, and press Escape to close. Empty and loading states are announced through a polite live region.
-    """
-  end
-
-  def render(assigns) do
-    ~H"""
-    <div style="display: flex; flex-direction: column; gap: 3rem; padding: 2rem; max-width: 20rem;">
-      <div>
-        <h3>Client-side filter</h3>
-        <ExoUI.Components.combobox
-          id="cb-client"
-          name="country"
-          filter="client"
-          prompt="Search countries..."
-        >
-          <:option value="rs">Serbia</:option>
-          <:option value="hr">Croatia</:option>
-          <:option value="ba">Bosnia &amp; Herzegovina</:option>
-          <:option value="me">Montenegro</:option>
-          <:option value="si">Slovenia</:option>
-          <:option value="mk">North Macedonia</:option>
-        </ExoUI.Components.combobox>
-      </div>
-
-      <div>
-        <h3>With value selected</h3>
-        <ExoUI.Components.combobox
-          id="cb-selected"
-          name="lang"
-          value="elixir"
-          label="Language"
-          description="Choose the primary implementation language."
-          filter="client"
-          prompt="Search..."
-        >
-          <:option value="elixir">Elixir</:option>
-          <:option value="rust">Rust</:option>
-          <:option value="go">Go</:option>
-          <:option value="python">Python</:option>
-        </ExoUI.Components.combobox>
-      </div>
-
-      <div>
-        <h3>Input trigger (autocomplete)</h3>
-        <ExoUI.Components.combobox
-          id="cb-input"
-          name="city"
-          trigger="input"
-          filter="client"
-          prompt="Type a city..."
-        >
-          <:option value="bg">Belgrade</:option>
-          <:option value="zg">Zagreb</:option>
-          <:option value="sa">Sarajevo</:option>
-          <:option value="lj">Ljubljana</:option>
-        </ExoUI.Components.combobox>
-      </div>
-
-      <div>
-        <h3>Grouped options</h3>
-        <ExoUI.Components.combobox
-          id="cb-grouped"
-          name="assignee"
-          label="Assignee"
-          value="maria"
-          filter="client"
-          prompt="Find a person..."
-        >
-          <:option value="ana" group="Design">Ana Markovic</:option>
-          <:option value="maria" group="Design">Maria Ilic</:option>
-          <:option value="nikola" group="Engineering">Nikola Petrovic</:option>
-          <:option value="stefan" group="Engineering" disabled>Stefan unavailable</:option>
-        </ExoUI.Components.combobox>
-      </div>
-
-      <div>
-        <h3>With empty state</h3>
-        <ExoUI.Components.combobox
-          id="cb-empty"
-          name="x"
-          label="Result"
-          description="Type a query to filter client-side options."
-          filter="client"
-          prompt="Search (try 'zzz')..."
-        >
-          <:option value="a">Alpha</:option>
-          <:option value="b">Beta</:option>
-          <:empty>No results found</:empty>
-        </ExoUI.Components.combobox>
-      </div>
-
-      <div>
-        <h3>Creatable result</h3>
-        <ExoUI.Components.combobox
-          id="cb-creatable"
-          name="tag"
-          label="Tag"
-          filter="client"
-          creatable
-          prompt="Search or create tag..."
-        >
-          <:option value="bug">Bug</:option>
-          <:option value="feature">Feature</:option>
-          <:option value="docs">Docs</:option>
-        </ExoUI.Components.combobox>
-      </div>
-
-      <div>
-        <h3>Loading</h3>
-        <ExoUI.Components.combobox
-          id="cb-loading"
-          name="remote_user"
-          label="Remote user"
-          loading
-          prompt="Search directory..."
-        >
-          <:empty>Type to search users</:empty>
-        </ExoUI.Components.combobox>
-      </div>
-
-      <div>
-        <h3>Disabled</h3>
-        <ExoUI.Components.combobox
-          id="cb-disabled"
-          name="locked_owner"
-          value="ops"
-          label="Locked owner"
-          disabled
-          prompt="Owner cannot be changed"
-        >
-          <:option value="ops">Operations</:option>
-          <:option value="support">Support</:option>
-        </ExoUI.Components.combobox>
-      </div>
-
-      <div>
-        <h3>With errors</h3>
-        <ExoUI.Components.combobox
-          id="cb-error"
-          name="team"
-          label="Team"
-          description="Required for routing ownership."
-          errors={["can't be blank"]}
-          filter="client"
-          prompt="Choose a team..."
-        >
-          <:option value="design">Design</:option>
-          <:option value="engineering">Engineering</:option>
-        </ExoUI.Components.combobox>
-      </div>
+    <div style="display: flex; flex-direction: column; gap: 2rem; padding: 1rem; max-width: 20rem;" psb-code-hidden>
+      <.psb-variation/>
     </div>
     """
   end
+
+  def variations do
+    [
+      {"cb-client",
+       %Variation{
+         id: :client_filter,
+         attributes: %{
+           name: "country",
+           filter: "client",
+           prompt: "Search countries..."
+         },
+         slots: [
+           ~s|<:option value="rs">Serbia</:option>|,
+           ~s|<:option value="hr">Croatia</:option>|,
+           ~s|<:option value="ba">Bosnia &amp; Herzegovina</:option>|,
+           ~s|<:option value="me">Montenegro</:option>|,
+           ~s|<:option value="si">Slovenia</:option>|,
+           ~s|<:option value="mk">North Macedonia</:option>|
+         ]
+       }},
+      {"cb-selected",
+       %Variation{
+         id: :with_value,
+         attributes: %{
+           name: "lang",
+           value: "elixir",
+           label: "Language",
+           description: "Choose the primary implementation language.",
+           filter: "client",
+           prompt: "Search..."
+         },
+         slots: [
+           ~s|<:option value="elixir">Elixir</:option>|,
+           ~s|<:option value="rust">Rust</:option>|,
+           ~s|<:option value="go">Go</:option>|,
+           ~s|<:option value="python">Python</:option>|
+         ]
+       }},
+      {"cb-input",
+       %Variation{
+         id: :input_trigger,
+         attributes: %{
+           name: "city",
+           trigger: "input",
+           filter: "client",
+           prompt: "Type a city..."
+         },
+         slots: [
+           ~s|<:option value="bg">Belgrade</:option>|,
+           ~s|<:option value="zg">Zagreb</:option>|,
+           ~s|<:option value="sa">Sarajevo</:option>|,
+           ~s|<:option value="lj">Ljubljana</:option>|
+         ]
+       }},
+      {"cb-grouped",
+       %Variation{
+         id: :grouped_options,
+         attributes: %{
+           name: "assignee",
+           label: "Assignee",
+           value: "maria",
+           filter: "client",
+           prompt: "Find a person..."
+         },
+         slots: [
+           ~s|<:option value="ana" group="Design">Ana Markovic</:option>|,
+           ~s|<:option value="maria" group="Design">Maria Ilic</:option>|,
+           ~s|<:option value="nikola" group="Engineering">Nikola Petrovic</:option>|,
+           ~s|<:option value="stefan" group="Engineering" disabled>Stefan unavailable</:option>|
+         ]
+       }},
+      {"cb-empty",
+       %Variation{
+         id: :empty_state,
+         attributes: %{
+           name: "x",
+           label: "Result",
+           description: "Type a query to filter client-side options.",
+           filter: "client",
+           prompt: "Search (try 'zzz')..."
+         },
+         slots: [
+           ~s|<:option value="a">Alpha</:option>|,
+           ~s|<:option value="b">Beta</:option>|,
+           ~s|<:empty>No results found</:empty>|
+         ]
+       }},
+      {"cb-creatable",
+       %Variation{
+         id: :creatable,
+         attributes: %{
+           name: "tag",
+           label: "Tag",
+           filter: "client",
+           creatable: true,
+           prompt: "Search or create tag..."
+         },
+         slots: [
+           ~s|<:option value="bug">Bug</:option>|,
+           ~s|<:option value="feature">Feature</:option>|,
+           ~s|<:option value="docs">Docs</:option>|
+         ]
+       }},
+      {"cb-loading",
+       %Variation{
+         id: :loading,
+         attributes: %{
+           name: "remote_user",
+           label: "Remote user",
+           loading: true,
+           prompt: "Search directory..."
+         },
+         slots: [
+           ~s|<:empty>Type to search users</:empty>|
+         ]
+       }},
+      {"cb-disabled",
+       %Variation{
+         id: :disabled,
+         attributes: %{
+           name: "locked_owner",
+           value: "ops",
+           label: "Locked owner",
+           disabled: true,
+           prompt: "Owner cannot be changed"
+         },
+         slots: [
+           ~s|<:option value="ops">Operations</:option>|,
+           ~s|<:option value="support">Support</:option>|
+         ]
+       }},
+      {"cb-error",
+       %Variation{
+         id: :with_errors,
+         attributes: %{
+           name: "team",
+           label: "Team",
+           description: "Required for routing ownership.",
+           errors: ["can't be blank"],
+           filter: "client",
+           prompt: "Choose a team..."
+         },
+         slots: [
+           ~s|<:option value="design">Design</:option>|,
+           ~s|<:option value="engineering">Engineering</:option>|
+         ]
+       }}
+    ]
+    |> without_legacy_dom_ids()
+  end
+
+  defp without_legacy_dom_ids(variations),
+    do: Enum.map(variations, fn {_dom_id, variation} -> variation end)
 end
