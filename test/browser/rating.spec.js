@@ -7,13 +7,14 @@ test.describe("rating", () => {
     await gotoStory(page, "/components/forms/rating");
 
     const canvas = story(page);
-    const rating = canvas.locator("#rating-basic");
+    const rating = canvas.getByRole("radiogroup", { name: "Product rating" });
     const hidden = rating.locator('[data-exo="rating-value"]');
+    const ratingId = await rating.getAttribute("id");
 
     await expect(rating).toHaveAttribute("data-ready", "");
     await expect(rating).toHaveAttribute("role", "radiogroup");
-    await expect(rating).toHaveAttribute("aria-labelledby", "rating-basic-label");
-    await expect(rating).toHaveAttribute("aria-describedby", "rating-basic-description");
+    await expect(rating).toHaveAttribute("aria-labelledby", `${ratingId}-label`);
+    await expect(rating).toHaveAttribute("aria-describedby", `${ratingId}-description`);
     await expect(hidden).toHaveValue("3");
 
     await rating.locator('[data-exo="rating-star"]').nth(4).click();
@@ -33,12 +34,14 @@ test.describe("rating", () => {
       )
       .toBe("solid");
 
-    const errorRating = canvas.locator("#rating-error");
+    const errorRating = canvas.getByRole("radiogroup", { name: "Support rating" });
+    const errorRatingId = await errorRating.getAttribute("id");
+
     await expect(errorRating).toHaveAttribute("aria-invalid", "true");
     await expect(errorRating).toHaveAttribute(
       "aria-describedby",
-      "rating-error-description rating-error-error"
+      `${errorRatingId}-description ${errorRatingId}-error`
     );
-    await expect(canvas.locator("#rating-error-error")).toHaveAttribute("role", "alert");
+    await expect(canvas.locator(`#${errorRatingId}-error`)).toHaveAttribute("role", "alert");
   });
 });

@@ -34,7 +34,7 @@ test.describe("core action components", () => {
     await gotoStory(page, "/components/actions/theme_toggle");
 
     const canvas = story(page);
-    const toggle = canvas.locator('[data-exo="theme-toggle"]');
+    const toggle = canvas.getByRole("group", { name: "Theme" });
     const dark = toggle.getByRole("button", { name: "Dark theme" });
 
     await expect(toggle).toHaveAttribute("data-ready", "");
@@ -51,7 +51,7 @@ test.describe("core action components", () => {
     page.on("pageerror", (err) => errors.push(err.message));
     await gotoStory(page, "/components/actions/theme_toggle");
 
-    const toggle = story(page).locator('[data-exo="theme-toggle"]');
+    const toggle = story(page).getByRole("group", { name: "Theme" });
     const dark = toggle.getByRole("button", { name: "Dark theme" });
 
     await expect(toggle).toHaveAttribute("data-ready", "");

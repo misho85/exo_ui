@@ -51,9 +51,11 @@ test.describe("form controls", () => {
 
     await gotoStory(page, "/components/forms/file_input");
 
-    const file = story(page).locator("#required_upload");
+    const file = story(page).locator('[data-exo="file-input"][name="required_upload"]');
+    const fileId = await file.getAttribute("id");
+
     await expectAttribute(file, "aria-invalid", "true");
-    await expectAttribute(file, "aria-describedby", "required_upload-description required_upload-error");
+    await expectAttribute(file, "aria-describedby", `${fileId}-description ${fileId}-error`);
   });
 
   test("select and combobox triggers expose description and error ids", async ({ page }) => {

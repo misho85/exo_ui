@@ -2181,7 +2181,12 @@
     _canInert(element, roots) {
       if (element === document.body || element === document.documentElement) return false;
       if (element.matches("script,style,link,template")) return false;
+      if (element.matches('[phx-hook="ExoOverlay"]') && this._elementIsOpenOverlay(element)) return false;
       return roots.every((root) => !element.contains(root));
+    },
+    _elementIsOpenOverlay(element) {
+      if (element.dataset.state) return element.dataset.state === "open";
+      return element.classList.contains("open") && !element.hidden;
     },
     _applyInert(element) {
       if (!this.originalState.has(element)) {
@@ -2342,9 +2347,9 @@
       this.el.setAttribute("aria-hidden", "false");
       requestAnimationFrame(() => {
         if (!this._isOpenActive || !this._isOpen()) return;
+        overlayRegistry.register(this);
         const target = this._firstFocusable() || this._panel;
         target?.focus?.({ preventScroll: true });
-        overlayRegistry.register(this);
       });
     },
     _deactivate() {

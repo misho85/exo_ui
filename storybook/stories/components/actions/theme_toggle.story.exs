@@ -1,16 +1,26 @@
 defmodule Storybook.Components.ThemeToggle do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Three-way theme toggle: light / dark / system. Requires ExoThemeToggle JS hook."
+  def function, do: &ExoUI.Components.Core.theme_toggle/1
 
-  def render(assigns) do
-    ~H"""
-    <div style="padding: 2rem; display: flex; gap: 2rem; align-items: center; flex-wrap: wrap;">
-      <ExoUI.Components.theme_toggle id="theme-toggle-demo" />
+  def template do
+    """
+    <div style="padding: 2rem; display: flex; gap: 2rem; align-items: center; flex-wrap: wrap;" psb-code-hidden>
+      <.psb-variation/>
       <span style="font-size: 0.875rem; color: var(--exo-muted-foreground);">
-        Note: requires ExoThemeToggle hook to be wired up in app.js
+        Requires the ExoThemeToggle hook to be wired up in app.js.
       </span>
     </div>
     """
+  end
+
+  def variations do
+    [
+      %Variation{id: :default, attributes: %{id: "theme-toggle-demo"}},
+      %Variation{
+        id: :custom_label,
+        attributes: %{id: "theme-toggle-settings", aria_label: "Appearance"}
+      }
+    ]
   end
 end

@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-05T00:31:05.437Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T00-27-32-703Z",
+  "updatedAt": "2026-05-05T00:46:35.459Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T00-43-47-207Z",
   "count": 84,
   "entries": [
     {
@@ -26,10 +26,10 @@
       "name": "actions/theme_toggle",
       "route": "/components/actions/theme_toggle",
       "screenshot": "screenshots/actions__theme_toggle.png",
-      "dataExoCount": 4,
+      "dataExoCount": 8,
       "width": 1280,
       "height": 900,
-      "sha256": "4dbdd1f75ae4f5e51de9c4877f5acb90f155fd4c8e022170d3e6461479a0bdb4"
+      "sha256": "dabeebff0cc6056eec806df96f87a0295a6aa95c2a438e3b39b54dd5a1c60ac6"
     },
     {
       "name": "actions/toggle",
@@ -380,7 +380,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "eb49c1df77579840ddc6904bb813aa70531f88aaef278b5271e889f2f39e47f5"
+      "sha256": "88df45293a7e2f53f577c6f9a4716692c65fd05f43d9dfc8a73d762ee8ec6bff"
     },
     {
       "name": "feedback/toast_container",
@@ -425,7 +425,7 @@
       "dataExoCount": 27,
       "width": 1280,
       "height": 900,
-      "sha256": "1707355c5d2b86f522d606452b606c9c997e146bae96c27936b96577416bc116"
+      "sha256": "8f77eb9544389d53471a79cbc5801ba5b00ff62e65d14dffadfe838004c4ea47"
     },
     {
       "name": "forms/file_input",
@@ -434,7 +434,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "4db9b542e3005274d60637137a27ce0d63aa57d1cf324f556220d2f24b4d83ca"
+      "sha256": "b6a525e6ad3fc87300e2d51cf27a0a1e171dbbea40130316e38899c55b573e6f"
     },
     {
       "name": "forms/form",
@@ -470,7 +470,7 @@
       "dataExoCount": 62,
       "width": 1280,
       "height": 900,
-      "sha256": "709c004540b70a215f7c894a2c5a847cc74621cc6f41dadfc0260b72aac4adda"
+      "sha256": "91906c63dcebbcacf978b0d91b56088b651757feb2feead533c52d7c8c8ebe43"
     },
     {
       "name": "forms/select",
