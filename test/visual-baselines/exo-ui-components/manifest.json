@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-05T00:46:35.459Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T00-43-47-207Z",
+  "updatedAt": "2026-05-05T00:55:40.786Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T00-53-05-736Z",
   "count": 84,
   "entries": [
     {
@@ -224,10 +224,10 @@
       "name": "data_display/chat_bubble",
       "route": "/components/data_display/chat_bubble",
       "screenshot": "screenshots/data_display__chat_bubble.png",
-      "dataExoCount": 31,
+      "dataExoCount": 18,
       "width": 1280,
       "height": 900,
-      "sha256": "04c5a9edbb428fddbe4ba79ac4600d335a9756bc02a217942fd93b5e9639e2d1"
+      "sha256": "802cc7e2768f973ac9de5905429e515a59935f649a930858891f8ccb78c77c93"
     },
     {
       "name": "data_display/content_card",
@@ -254,7 +254,7 @@
       "dataExoCount": 16,
       "width": 1280,
       "height": 900,
-      "sha256": "2fd06eb15900a212f9394d30dccac15919c2693634dc9722b8c4c750ce50c658"
+      "sha256": "ffc6bae0a3417b3732a745dd519a22c41f40b954d7384fede34c59de8ed06613"
     },
     {
       "name": "data_display/metric_card",
@@ -281,7 +281,7 @@
       "dataExoCount": 59,
       "width": 1280,
       "height": 900,
-      "sha256": "1f6c3b5df7a4e19b93144cc72fd9fa43b0708a34c06dea7b02f2d0503182645f"
+      "sha256": "2f33292ef469d5bb3a302149b5ca6d875ceb86c0f034f1883fe4f16f23db3817"
     },
     {
       "name": "data_display/timeline",
@@ -380,7 +380,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "88df45293a7e2f53f577c6f9a4716692c65fd05f43d9dfc8a73d762ee8ec6bff"
+      "sha256": "1a26b6362f18a60f7888e4fa01b835a4c4533f09560f96f8a8a5814494db4273"
     },
     {
       "name": "feedback/toast_container",
@@ -434,7 +434,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "b6a525e6ad3fc87300e2d51cf27a0a1e171dbbea40130316e38899c55b573e6f"
+      "sha256": "73151a0633f87684b06584d7435a837f4beaaed2c8d42df97da697217e60706e"
     },
     {
       "name": "forms/form",

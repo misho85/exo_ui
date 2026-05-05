@@ -54,12 +54,12 @@ test.describe("data and feedback components", () => {
     await gotoStory(page, "/components/data_display/table");
 
     const canvas = story(page);
-    const tableBody = canvas.locator("#users-table");
-    const emptyTable = canvas.locator("#empty-users-table");
+    const table = canvas.getByRole("table", { name: "Team members and access levels" });
+    const emptyTable = canvas.getByRole("table", { name: "Archived members" });
 
     await expect(canvas.locator('[data-exo="table-caption"]').first()).toHaveText("Team members and access levels");
     await expect(canvas.locator('[data-exo="table-head-cell"][data-align="center"]').first()).toHaveText("Status");
-    await expect(tableBody.locator('[data-exo="table-row"][aria-label="Open Alice Smith"]')).toHaveCount(1);
+    await expect(table.locator('[data-exo="table-row"][aria-label="Open Alice Smith"]')).toHaveCount(1);
     await expect(emptyTable.locator('[data-exo="table-empty"]')).toContainText("No archived members.");
   });
 

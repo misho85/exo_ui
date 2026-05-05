@@ -1,10 +1,43 @@
 defmodule Storybook.Components.Table do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Data table with columns and optional action column."
+  def function, do: &ExoUI.Components.DataDisplay.table/1
 
-  def render(assigns) do
-    users = [
+  def template do
+    """
+    <div style="padding: 1rem; display: grid; gap: 2rem;">
+      <.psb-variation/>
+    </div>
+    """
+  end
+
+  def variations do
+    [
+      %Variation{
+        id: :users,
+        attributes: %{
+          id: "users-table",
+          rows: users(),
+          row_id: {:eval, "&Storybook.Components.Table.row_id/1"},
+          caption: "Team members and access levels",
+          row_label: {:eval, "&Storybook.Components.Table.row_label/1"}
+        },
+        slots: user_table_slots()
+      },
+      %Variation{
+        id: :empty,
+        attributes: %{id: "empty-users-table", rows: [], caption: "Archived members"},
+        slots: [
+          ~s|<:col label="Name">Name</:col>|,
+          ~s|<:col label="Email">Email</:col>|,
+          ~s|<:empty>No archived members.</:empty>|
+        ]
+      }
+    ]
+  end
+
+  defp users do
+    [
       %{id: 1, name: "Alice Smith", email: "alice@example.com", role: "Admin", status: "Active"},
       %{id: 2, name: "Bob Jones", email: "bob@example.com", role: "Editor", status: "Active"},
       %{
@@ -16,55 +49,19 @@ defmodule Storybook.Components.Table do
       },
       %{id: 4, name: "Diana Prince", email: "diana@example.com", role: "Editor", status: "Active"}
     ]
+  end
 
-    assigns = assign(assigns, :users, users)
+  def row_id(user), do: "user-#{user.id}"
 
-    ~H"""
-    <div style="padding: 1rem; display: grid; gap: 2rem;">
-      <section>
-        <p style="margin-bottom: 0.5rem; font-size: 0.875rem; color: var(--exo-muted-foreground);">
-          With caption, actions and aligned cells
-        </p>
-        <ExoUI.Components.table
-          id="users-table"
-          rows={@users}
-          row_id={fn u -> "user-#{u.id}" end}
-          caption="Team members and access levels"
-          row_label={fn u -> "Open #{u.name}" end}
-        >
-          <:col :let={u} label="Name">{u.name}</:col>
-          <:col :let={u} label="Email">{u.email}</:col>
-          <:col :let={u} label="Role">
-            <ExoUI.Components.badge variant={if u.role == "Admin", do: "primary", else: "secondary"}>
-              {u.role}
-            </ExoUI.Components.badge>
-          </:col>
-          <:col :let={u} label="Status" align="center">
-            <ExoUI.Components.badge variant={
-              if u.status == "Active", do: "success", else: "secondary"
-            }>
-              {u.status}
-            </ExoUI.Components.badge>
-          </:col>
-          <:action :let={u}>
-            <ExoUI.Components.button size="sm" variant="ghost">{u.name} →</ExoUI.Components.button>
-          </:action>
-        </ExoUI.Components.table>
-      </section>
+  def row_label(user), do: "Open #{user.name}"
 
-      <section>
-        <p style="margin-bottom: 0.5rem; font-size: 0.875rem; color: var(--exo-muted-foreground);">
-          Empty state
-        </p>
-        <ExoUI.Components.table id="empty-users-table" rows={[]} caption="Archived members">
-          <:col label="Name">Name</:col>
-          <:col label="Email">Email</:col>
-          <:empty>
-            No archived members.
-          </:empty>
-        </ExoUI.Components.table>
-      </section>
-    </div>
-    """
+  defp user_table_slots do
+    [
+      ~s|<:col :let={user} label="Name">{user.name}</:col>|,
+      ~s|<:col :let={user} label="Email">{user.email}</:col>|,
+      ~s|<:col :let={user} label="Role"><ExoUI.Components.badge variant={if user.role == "Admin", do: "primary", else: "secondary"}>{user.role}</ExoUI.Components.badge></:col>|,
+      ~s|<:col :let={user} label="Status" align="center"><ExoUI.Components.badge variant={if user.status == "Active", do: "success", else: "secondary"}>{user.status}</ExoUI.Components.badge></:col>|,
+      ~s|<:action :let={user}><ExoUI.Components.button size="sm" variant="ghost">{user.name} →</ExoUI.Components.button></:action>|
+    ]
   end
 end

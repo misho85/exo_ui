@@ -1,19 +1,28 @@
 defmodule Storybook.Components.List do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Definition-style list with label/value rows."
+  def function, do: &ExoUI.Components.DataDisplay.list/1
 
-  def render(assigns) do
-    ~H"""
+  def template do
+    """
     <div style="padding: 1rem; max-width: 480px;">
-      <ExoUI.Components.list>
-        <:item title="Full name">Alice Smith</:item>
-        <:item title="Email">alice@example.com</:item>
-        <:item title="Role">Administrator</:item>
-        <:item title="Status">Active</:item>
-        <:item title="Created">January 1, 2025</:item>
-      </ExoUI.Components.list>
+      <.psb-variation/>
     </div>
     """
+  end
+
+  def variations do
+    [
+      %Variation{
+        id: :profile,
+        slots: [
+          ~s|<:item title="Full name">Alice Smith</:item>|,
+          ~s|<:item title="Email">alice@example.com</:item>|,
+          ~s|<:item title="Role">Administrator</:item>|,
+          ~s|<:item title="Status">Active</:item>|,
+          ~s|<:item title="Created">January 1, 2025</:item>|
+        ]
+      }
+    ]
   end
 end
