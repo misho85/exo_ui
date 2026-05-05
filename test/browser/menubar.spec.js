@@ -7,9 +7,9 @@ test.describe("menubar", () => {
     await gotoStory(page, "/components/menus/menubar");
 
     const canvas = story(page);
-    const menubar = canvas.locator("#demo-menubar");
-    const file = canvas.locator("#demo-menubar-trigger-0");
-    const fileMenu = canvas.locator("#demo-menubar-content-0");
+    const menubar = canvas.locator("#menubar-single-default");
+    const file = canvas.locator("#menubar-single-default-trigger-0");
+    const fileMenu = canvas.locator("#menubar-single-default-content-0");
 
     await expectAttribute(menubar, "data-ready", "true");
     await expect(fileMenu).toBeHidden();
@@ -29,15 +29,15 @@ test.describe("menubar", () => {
     await gotoStory(page, "/components/menus/menubar");
 
     const canvas = story(page);
-    const file = canvas.locator("#demo-menubar-trigger-0");
-    const edit = canvas.locator("#demo-menubar-trigger-1");
-    const fileMenu = canvas.locator("#demo-menubar-content-0");
-    const editMenu = canvas.locator("#demo-menubar-content-1");
+    const file = canvas.locator("#menubar-single-default-trigger-0");
+    const edit = canvas.locator("#menubar-single-default-trigger-1");
+    const fileMenu = canvas.locator("#menubar-single-default-content-0");
+    const editMenu = canvas.locator("#menubar-single-default-content-1");
     const newFile = fileMenu.getByRole("menuitem", { name: "New File" });
     const save = fileMenu.getByRole("menuitem", { name: "Save" });
     const undo = editMenu.getByRole("menuitem", { name: "Undo" });
 
-    await expectAttribute(canvas.locator("#demo-menubar"), "data-ready", "true");
+    await expectAttribute(canvas.locator("#menubar-single-default"), "data-ready", "true");
     await file.focus();
     await expectFocused(file);
 

@@ -7,12 +7,12 @@ test.describe("context menu", () => {
     await gotoStory(page, "/components/menus/context_menu");
 
     const canvas = story(page);
-    const root = canvas.locator("#ctx-demo");
-    const trigger = canvas.locator("#ctx-demo [data-exo=\"context-menu-trigger\"]");
-    const menu = canvas.locator("#ctx-demo [data-exo=\"context-menu-content\"]");
+    const root = canvas.locator("#context-menu-single-default");
+    const trigger = canvas.locator('#context-menu-single-default [data-exo="context-menu-trigger"]');
+    const menu = canvas.locator('#context-menu-single-default [data-exo="context-menu-content"]');
 
     await expect(root).toHaveAttribute("data-ready", "");
-    await expect(trigger).toHaveAttribute("aria-controls", "ctx-demo-content");
+    await expect(trigger).toHaveAttribute("aria-controls", "context-menu-single-default-content");
     await expect(menu).not.toHaveAttribute("data-open", "");
     await expect(menu.locator('[data-exo="context-menu-item"]')).toHaveCount(4);
 
@@ -30,9 +30,9 @@ test.describe("context menu", () => {
     await gotoStory(page, "/components/menus/context_menu");
 
     const canvas = story(page);
-    const root = canvas.locator("#ctx-demo");
-    const trigger = canvas.locator("#ctx-demo [data-exo=\"context-menu-trigger\"]");
-    const menu = canvas.locator("#ctx-demo [data-exo=\"context-menu-content\"]");
+    const root = canvas.locator("#context-menu-single-default");
+    const trigger = canvas.locator('#context-menu-single-default [data-exo="context-menu-trigger"]');
+    const menu = canvas.locator('#context-menu-single-default [data-exo="context-menu-content"]');
     const copy = menu.getByRole("menuitem", { name: "Copy" });
     const paste = menu.getByRole("menuitem", { name: "Paste" });
     const del = menu.getByRole("menuitem", { name: "Delete" });

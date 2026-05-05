@@ -7,8 +7,8 @@ test.describe("command palette", () => {
     await gotoStory(page, "/components/menus/command_palette");
 
     const canvas = story(page);
-    const palette = canvas.locator("#cmd-demo");
-    const input = canvas.locator("#cmd-demo [data-exo=\"command-palette-input\"]");
+    const palette = canvas.locator("#command-palette-single-default");
+    const input = canvas.locator('#command-palette-single-default [data-exo="command-palette-input"]');
 
     await expectAttribute(palette, "data-state", "closed");
     await expect(palette).toBeHidden();
@@ -32,8 +32,8 @@ test.describe("command palette", () => {
     await gotoStory(page, "/components/menus/command_palette");
 
     const canvas = story(page);
-    const palette = canvas.locator("#cmd-demo");
-    const backdrop = canvas.locator("#cmd-demo [data-exo=\"command-palette-backdrop\"]");
+    const palette = canvas.locator("#command-palette-single-default");
+    const backdrop = canvas.locator('#command-palette-single-default [data-exo="command-palette-backdrop"]');
 
     await expectAttribute(palette, "data-state", "closed");
     await expect(palette).toBeHidden();
@@ -52,11 +52,13 @@ test.describe("command palette", () => {
     await gotoStory(page, "/components/menus/command_palette");
 
     const canvas = story(page);
-    const palette = canvas.locator("#cmd-demo");
-    const input = canvas.locator("#cmd-demo [data-exo=\"command-palette-input\"]");
-    const docs = canvas.locator("#cmd-demo [data-exo=\"command-palette-item\"][data-value=\"docs\"]");
-    const settings = canvas.locator("#cmd-demo [data-exo=\"command-palette-item\"][data-value=\"settings\"]");
-    const empty = canvas.locator("#cmd-demo [data-exo=\"command-palette-empty\"]");
+    const palette = canvas.locator("#command-palette-single-default");
+    const input = canvas.locator('#command-palette-single-default [data-exo="command-palette-input"]');
+    const docs = canvas.locator('#command-palette-single-default [data-exo="command-palette-item"][data-value="docs"]');
+    const settings = canvas.locator(
+      '#command-palette-single-default [data-exo="command-palette-item"][data-value="settings"]'
+    );
+    const empty = canvas.locator('#command-palette-single-default [data-exo="command-palette-empty"]');
 
     await expectAttribute(palette, "data-ready", "true");
     await expectAttribute(palette, "data-state", "closed");
@@ -80,10 +82,10 @@ test.describe("command palette", () => {
     await gotoStory(page, "/components/menus/command_palette");
 
     const canvas = story(page);
-    const input = canvas.locator("#cmd-demo [data-exo=\"command-palette-input\"]");
-    const empty = canvas.locator("#cmd-demo [data-exo=\"command-palette-empty\"]");
+    const input = canvas.locator('#command-palette-single-default [data-exo="command-palette-input"]');
+    const empty = canvas.locator('#command-palette-single-default [data-exo="command-palette-empty"]');
 
-    await expectAttribute(canvas.locator("#cmd-demo"), "data-ready", "true");
+    await expectAttribute(canvas.locator("#command-palette-single-default"), "data-ready", "true");
     await page.keyboard.press("Control+k");
     await input.fill("nope");
 

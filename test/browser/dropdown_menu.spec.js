@@ -12,9 +12,9 @@ test.describe("dropdown menu", () => {
     await gotoStory(page, "/components/menus/dropdown");
 
     const canvas = story(page);
-    const root = canvas.locator("#dd-basic-popover");
+    const root = canvas.locator("#dropdown-single-basic-popover");
     const triggerButton = root.locator('[data-exo="popover-trigger"] [data-exo="btn"]');
-    const popover = page.locator("#dd-basic");
+    const popover = page.locator("#dropdown-single-basic");
 
     await expect(root.locator("button button")).toHaveCount(0);
     await expect(root).toHaveAttribute("data-ready", "");
@@ -42,9 +42,9 @@ test.describe("dropdown menu", () => {
     await gotoStory(page, "/components/menus/dropdown");
 
     const canvas = story(page);
-    const root = canvas.locator("#dd-links-popover");
+    const root = canvas.locator("#dropdown-single-link-items-popover");
     const triggerButton = root.locator('[data-exo="popover-trigger"] [data-exo="btn"]');
-    const popover = page.locator("#dd-links");
+    const popover = page.locator("#dropdown-single-link-items");
     const home = popover.getByRole("menuitem", { name: /Home/ });
     const settings = popover.getByRole("menuitem", { name: /Settings/ });
     const billing = popover.getByRole("menuitem", { name: /Billing/ });
