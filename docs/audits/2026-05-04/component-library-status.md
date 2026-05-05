@@ -17,7 +17,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Playwright component capture | 84 Storybook routes captured |
 | Capture artifacts | 84 screenshots, 84 WebM videos, 84 MP4 videos |
 | Latest capture | `output/playwright/exo-ui-components/2026-05-05T02-26-29-505Z/viewer.html` |
-| Browser suite | 60 Playwright tests passing |
+| Browser suite | 61 Playwright tests passing |
 | ExUnit suite | 496 tests passing after combobox server-filter changes |
 | Visual regression | 84 committed screenshot baselines with pixel-diff checking |
 
@@ -54,6 +54,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `Carousel` and `Pagination` are now component-mode stories with playground-ready attrs/slots, generated Storybook IDs, updated browser selectors, and refreshed screenshot/video baselines.
 - Menu stories are now component-mode: `Dropdown`, `DropdownMenu`, `ContextMenu`, `CommandPalette`, and `Menubar` expose real attrs/slots in PhoenixStorybook, use generated Storybook IDs, and keep keyboard/focus browser coverage against the generated DOM.
 - Overlay stories are now component-mode: `Popover`, `Tooltip`, `HoverCard`, `ConfirmModal`, `Drawer`, and `Sheet` expose generated Storybook IDs, attrs/slots, source examples, and browser-tested trigger templates for opening/closing sheet and drawer variations.
+- `ContentCard`, `StatCard`, and `MetricCard` now have direct browser coverage for header/body rendering, action/trailing slots, trend direction states, and body-only/minimal variants.
 
 ## Comparison vs shadcn/daisyUI
 
@@ -79,7 +80,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `mix test` -> 496 tests, 0 failures.
 - `bun run build:all`.
 - `mix compile --warnings-as-errors` in `storybook`.
-- `bun run test:browser` -> 60 tests, 0 failures.
+- `bun run test:browser` -> 61 tests, 0 failures.
 - `bun run capture:components` -> 84 entries, 0 failed, 84 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T02-26-29-505Z`.
 - `bun run capture:validate` -> 84 entries with non-empty screenshot, WebM, and MP4 files.
 - `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after converting overlay stories to component-mode layouts.

@@ -84,6 +84,49 @@ test.describe("data and feedback components", () => {
     await expect(list.locator('dd[data-exo="list-content"]').first()).toHaveText("Alice Smith");
   });
 
+  test("card components expose header, body, trend, and trailing slots", async ({ page }) => {
+    await gotoStory(page, "/components/data_display/content_card");
+
+    const canvas = story(page);
+    const overview = canvas.locator("#content-card-single-overview");
+    const withAction = canvas.locator("#content-card-single-with-action");
+    const bodyOnly = canvas.locator("#content-card-single-body-only");
+
+    await expect(overview.locator('[data-exo="card-title"]')).toHaveText("Overview");
+    await expect(overview.locator('[data-exo="card-body"]')).toContainText(
+      "A simple card for grouping related text or controls."
+    );
+    await expect(withAction.locator('[data-exo="card-action"] [data-exo="btn"]')).toHaveText("View");
+    await expect(bodyOnly.locator('[data-exo="card-header"]')).toHaveCount(0);
+    await expect(bodyOnly.locator('[data-exo="card-body"]')).toHaveText(
+      "A compact body-only card without a header."
+    );
+
+    await gotoStory(page, "/components/data_display/stat_card");
+
+    const statCanvas = story(page);
+    const positiveStat = statCanvas.locator("#stat-card-single-positive-trend");
+    const negativeStat = statCanvas.locator("#stat-card-single-negative-trend");
+    const minimalStat = statCanvas.locator("#stat-card-single-minimal");
+
+    await expect(positiveStat.locator('[data-exo="stat-card-label"]')).toHaveText("Total users");
+    await expect(positiveStat.locator('[data-exo="stat-card-value"]')).toHaveText("12,481");
+    await expect(positiveStat.locator('[data-exo="stat-card-trend"]')).toHaveAttribute("data-direction", "up");
+    await expect(negativeStat.locator('[data-exo="stat-card-trend"]')).toHaveAttribute("data-direction", "down");
+    await expect(minimalStat.locator('[data-exo="stat-card-bottom"]')).toHaveCount(0);
+
+    await gotoStory(page, "/components/data_display/metric_card");
+
+    const metricCanvas = story(page);
+    const defaultMetric = metricCanvas.locator("#metric-card-single-default");
+    const trailingMetric = metricCanvas.locator("#metric-card-single-with-trailing");
+
+    await expect(defaultMetric.locator('[data-exo="metric-card-label"]')).toHaveText("Conversion rate");
+    await expect(defaultMetric.locator('[data-exo="metric-card-subtitle"]')).toHaveText("From 1,240 sessions");
+    await expect(trailingMetric.locator('[data-exo="badge"]')).toHaveAttribute("data-variant", "success");
+    await expect(trailingMetric.locator('[data-exo="metric-card-value"]')).toHaveText("$87.50");
+  });
+
   test("flash and toast notifications expose live-region roles and close controls", async ({ page }) => {
     await gotoStory(page, "/components/feedback/flash");
 
