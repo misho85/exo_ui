@@ -250,6 +250,22 @@ async function componentDemo(page, name) {
       await clickButton(page, "Validate archive");
       await page.waitForTimeout(400);
       break;
+    case "data_table_workflow":
+      await safe(page.locator('#story-live #data-table-segment'), (node) =>
+        node.selectOption("emea", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await safe(page.locator('#story-live #data-table-sort'), (node) =>
+        node.selectOption("risk_desc", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await safe(page.locator('#story-live #data-table-page-size'), (node) =>
+        node.selectOption("2", { timeout: 1500 })
+      );
+      await page.waitForTimeout(300);
+      await clickButton(page, "Next page");
+      await page.waitForTimeout(400);
+      break;
     case "saved_filters_workflow":
       await safe(page.locator('#story-live #saved-filter-query'), (node) =>
         node.fill("north", { timeout: 1500 })
