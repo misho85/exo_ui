@@ -679,6 +679,12 @@ scroll for long content.
 <.drawer id="review-drawer" side="right">
   <:title>Review notes</:title>
   <.input id="release-name" name="release[name]" label="Release name" />
+  <.input
+    id="risk-owner"
+    name="release[risk_owner]"
+    label="Risk owner"
+    errors={["Risk owner is required before rollback approval."]}
+  />
   <.input id="release-notes" name="release[notes]" type="textarea" label="Notes" rows="5" />
   <fieldset>
     <legend>Long review checklist</legend>
@@ -687,8 +693,22 @@ scroll for long content.
       Checkpoint {index}
     </label>
   </fieldset>
+  <.button type="button" variant="danger" phx-click={show_modal("rollback-confirm")}>
+    Request rollback
+  </.button>
   <.button type="button" phx-click={hide_drawer("review-drawer")}>Save review</.button>
 </.drawer>
+
+<.confirm_modal
+  id="rollback-confirm"
+  title="Rollback deployment"
+  message="The rollback request stays open until server-side validation succeeds."
+  confirm_text="Validate rollback"
+  cancel_text="Keep reviewing"
+  variant="danger"
+  close_on_confirm={false}
+  on_confirm={JS.push("validate-rollback")}
+/>
 ```
 
 ### Hover Card

@@ -116,6 +116,14 @@ defmodule Storybook.Components.OverlayStack do
               value="Mina"
             />
             <ExoUI.Components.Form.input
+              id="overlay-stack-risk-owner"
+              name="release[risk_owner]"
+              label="Risk owner"
+              value=""
+              errors={["Risk owner is required before rollback approval."]}
+              description="Required for destructive rollback approval."
+            />
+            <ExoUI.Components.Form.input
               id="overlay-stack-release-notes"
               name="release[notes]"
               type="textarea"
@@ -154,6 +162,13 @@ defmodule Storybook.Components.OverlayStack do
               >
                 Cancel review
               </ExoUI.Components.button>
+              <ExoUI.Components.button
+                type="button"
+                variant="danger"
+                phx-click={ExoUI.Components.Overlay.show_modal("overlay-stack-rollback-confirm")}
+              >
+                Request rollback
+              </ExoUI.Components.button>
               <ExoUI.Components.button type="button">
                 Save review
               </ExoUI.Components.button>
@@ -161,6 +176,16 @@ defmodule Storybook.Components.OverlayStack do
           </form>
         </div>
       </ExoUI.Components.Overlay.drawer>
+
+      <ExoUI.Components.Overlay.confirm_modal
+        id="overlay-stack-rollback-confirm"
+        title="Rollback deployment"
+        message="This rollback request stays open until server-side validation succeeds."
+        confirm_text="Validate rollback"
+        cancel_text="Keep reviewing"
+        variant="danger"
+        close_on_confirm={false}
+      />
     </div>
     """
   end

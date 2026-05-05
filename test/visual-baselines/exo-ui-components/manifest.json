@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-05T07:19:25.311Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T07-15-06-534Z",
+  "updatedAt": "2026-05-05T07:34:21.111Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T07-31-40-752Z",
   "count": 85,
   "entries": [
     {
@@ -380,7 +380,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "4b0e3020d82e8bda8e49145bfd491bfca1c53d8727b454791dadbcce52ac992d"
+      "sha256": "7af6389191c07d13fd902452995d6db31f5dab10c81f9122fa738db29703ae0f"
     },
     {
       "name": "feedback/toast_container",
@@ -398,7 +398,7 @@
       "dataExoCount": 180,
       "width": 1280,
       "height": 900,
-      "sha256": "8b8a0f5ed8fbf8e36aa0708b79fdecf4eb608e19bc90375de5aded97198f06b2"
+      "sha256": "6f6d9773bdfaf4d859d9dee857613bf6506b2800fb9009d51094428d5e0f291f"
     },
     {
       "name": "forms/combobox_async",
@@ -737,10 +737,10 @@
       "name": "overlays/overlay_stack",
       "route": "/components/overlays/overlay_stack",
       "screenshot": "screenshots/overlays__overlay_stack.png",
-      "dataExoCount": 59,
+      "dataExoCount": 75,
       "width": 1280,
       "height": 900,
-      "sha256": "5f367371b79682b367879055e09ae133e718de61c094f8f60325e464a04d44cc"
+      "sha256": "8ccbde8ca51f78ddbad1a08fb3410131210b52527d7223370ec9682907e9a445"
     },
     {
       "name": "overlays/popover",

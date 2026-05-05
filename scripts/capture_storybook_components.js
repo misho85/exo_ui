@@ -207,6 +207,10 @@ async function componentDemo(page, name) {
       await clickButton(page, "Open audit sheet");
       await page.waitForTimeout(250);
       await clickButton(page, "Open stacked drawer");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Request rollback");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Validate rollback");
       await page.waitForTimeout(400);
       break;
     case "menubar":

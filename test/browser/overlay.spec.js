@@ -231,6 +231,11 @@ test.describe("overlay dialogs", () => {
     const drawerBody = drawer.locator('[data-exo="drawer-body"]');
     const drawerCloseButton = drawer.locator('[data-exo="drawer-close"]');
     const releaseName = drawer.getByLabel("Release name");
+    const riskOwner = drawer.getByLabel("Risk owner");
+    const rollbackButton = drawer.getByRole("button", { name: "Request rollback" });
+    const rollbackConfirm = canvas.locator("#overlay-stack-rollback-confirm");
+    const rollbackConfirmClose = rollbackConfirm.locator('[data-exo="modal-close"]');
+    const validateRollback = rollbackConfirm.getByRole("button", { name: "Validate rollback" });
 
     await trigger.click();
     await expectAttribute(modal, "data-state", "open");
@@ -258,6 +263,10 @@ test.describe("overlay dialogs", () => {
     await expectFocused(releaseName);
     await releaseName.fill("Staged launch review");
     await expect(releaseName).toHaveValue("Staged launch review");
+    await expect(riskOwner).toHaveAttribute("aria-invalid", "true");
+    await expect(drawer.locator('[data-exo="field-error"]')).toContainText(
+      "Risk owner is required"
+    );
 
     await expect
       .poll(async () =>
@@ -268,6 +277,24 @@ test.describe("overlay dialogs", () => {
       node.scrollTop = node.scrollHeight;
     });
     await expect.poll(async () => drawerBody.evaluate((node) => node.scrollTop)).toBeGreaterThan(0);
+
+    await rollbackButton.click();
+    await expectAttribute(rollbackConfirm, "data-state", "open");
+    await expectAttribute(drawer, "data-overlay-covered", "true");
+    await expectWithinInert(drawer, true);
+    await expect(rollbackConfirm).toHaveAttribute("aria-hidden", "false");
+    await expectWithinInert(rollbackConfirm, false);
+    await expectFocused(rollbackConfirmClose);
+
+    await validateRollback.click();
+    await expectAttribute(rollbackConfirm, "data-state", "open");
+
+    await page.keyboard.press("Escape");
+    await expectAttribute(rollbackConfirm, "data-state", "closed");
+    await expectAttribute(drawer, "data-state", "open");
+    await expect(drawer).not.toHaveAttribute("data-overlay-covered", "true");
+    await expectWithinInert(drawer, false);
+    await expectFocused(rollbackButton);
 
     await page.keyboard.press("Escape");
     await expectAttribute(drawer, "data-state", "closed");
