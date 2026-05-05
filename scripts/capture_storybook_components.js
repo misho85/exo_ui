@@ -170,6 +170,26 @@ async function componentDemo(page, name) {
       await clickButton(page, "Validate bulk archive");
       await page.waitForTimeout(400);
       break;
+    case "bulk_edit_workflow":
+      await safe(page.locator('#story-live #bulk-edit-status-filter'), (node) =>
+        node.selectOption("needs_review", { timeout: 1500 })
+      );
+      await page.waitForTimeout(300);
+      await clickButton(page, "Select filtered");
+      await page.waitForTimeout(300);
+      await safe(page.locator('#story-live #bulk-edit-owner'), (node) =>
+        node.selectOption("Mina", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await safe(page.locator('#story-live #bulk-edit-status'), (node) =>
+        node.selectOption("ready", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await clickButton(page, "Apply bulk edit");
+      await page.waitForTimeout(450);
+      await clickButton(page, "Clear filters");
+      await page.waitForTimeout(350);
+      break;
     case "carousel":
       await clickFirst(page, '#story-live [data-exo="carousel-next"]');
       await page.waitForTimeout(500);
