@@ -12,8 +12,9 @@ defmodule Storybook.Components.Forms do
   def entry("combobox"), do: [name: "Combobox", index: 4]
   def entry("combobox_async"), do: [name: "Combobox Async", index: 5]
   def entry("date_picker"), do: [name: "Date Picker", index: 6]
-  def entry("file_input"), do: [name: "File Input", index: 7]
-  def entry("radio_group"), do: [name: "Radio Group", index: 8]
-  def entry("rating"), do: [name: "Rating", index: 9]
-  def entry("slider"), do: [name: "Slider", index: 10]
+  def entry("date_picker_controlled"), do: [name: "Date Picker Controlled", index: 7]
+  def entry("file_input"), do: [name: "File Input", index: 8]
+  def entry("radio_group"), do: [name: "Radio Group", index: 9]
+  def entry("rating"), do: [name: "Rating", index: 10]
+  def entry("slider"), do: [name: "Slider", index: 11]
 end

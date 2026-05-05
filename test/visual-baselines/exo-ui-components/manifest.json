@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-05T08:33:26.387Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T08-28-56-862Z",
-  "count": 87,
+  "updatedAt": "2026-05-05T09:13:13.465Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T09-09-28-370Z",
+  "count": 89,
   "entries": [
     {
       "name": "actions/button",
@@ -218,7 +218,7 @@
       "dataExoCount": 16,
       "width": 1280,
       "height": 900,
-      "sha256": "e29337509dd36a6d5aec01ae4790b3c3a082c1ae756e266a813f715a7938eb7c"
+      "sha256": "5e540760875c37781bc6ffc9ab423a7db43b9ce1229064ded79540647f791f8b"
     },
     {
       "name": "data_display/chat_bubble",
@@ -227,7 +227,7 @@
       "dataExoCount": 18,
       "width": 1280,
       "height": 900,
-      "sha256": "802cc7e2768f973ac9de5905429e515a59935f649a930858891f8ccb78c77c93"
+      "sha256": "6a75643b9400d75f5dcd860d89ffe0e7a88093d620cdcfb19cf875b1f41d4647"
     },
     {
       "name": "data_display/content_card",
@@ -236,7 +236,16 @@
       "dataExoCount": 12,
       "width": 1280,
       "height": 900,
-      "sha256": "fc81ec1b169b2764f8417f3c6351f3ab3a04d8beaf9ccd4c8c31a27509f872cf"
+      "sha256": "5d72e9349ea54da1bf76f82964ee4ca9a223ba4ce3ff309694b48b412b3da993"
+    },
+    {
+      "name": "data_display/editable_record_workflow",
+      "route": "/components/data_display/editable_record_workflow",
+      "screenshot": "screenshots/data_display__editable_record_workflow.png",
+      "dataExoCount": 238,
+      "width": 1280,
+      "height": 900,
+      "sha256": "0ba06b95dbc52521046aa34c95265b9fc2a526abbea4dcca4f6cb147c74238c8"
     },
     {
       "name": "data_display/kbd",
@@ -245,7 +254,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "2c8c38742f7d5d4f4f084c12dc1cf6c03396174178f54790baa16c9d27397236"
+      "sha256": "36a6e3c16bd4dc8b6af678c2fb09c95070370dbc2de5b92ef2fc0d809abfeea2"
     },
     {
       "name": "data_display/list",
@@ -254,7 +263,7 @@
       "dataExoCount": 16,
       "width": 1280,
       "height": 900,
-      "sha256": "ffc6bae0a3417b3732a745dd519a22c41f40b954d7384fede34c59de8ed06613"
+      "sha256": "1e21870da5eb807eb0ebe86a39c7e5a6e3c58d36e5a94cf98773b49d0e1c525e"
     },
     {
       "name": "data_display/metric_card",
@@ -263,7 +272,7 @@
       "dataExoCount": 11,
       "width": 1280,
       "height": 900,
-      "sha256": "4a752807003e8e1fe486523c26a57a194c52aa6843cbdb62f50b141fe3f34414"
+      "sha256": "63e9949bf7052e173e0dfd2b72d550c49bbdfe85eee0da9cbaa68972483110e3"
     },
     {
       "name": "data_display/stat_card",
@@ -272,7 +281,7 @@
       "dataExoCount": 23,
       "width": 1280,
       "height": 900,
-      "sha256": "5b7c0803b2bcb78de4bf6051d83632ddf647a6d672e50206158fa40f0a1de020"
+      "sha256": "c1a158373537510007bf432c81dc22d03a4f9b1e1a73f9576614b288e068524d"
     },
     {
       "name": "data_display/table",
@@ -281,7 +290,7 @@
       "dataExoCount": 59,
       "width": 1280,
       "height": 900,
-      "sha256": "2f33292ef469d5bb3a302149b5ca6d875ceb86c0f034f1883fe4f16f23db3817"
+      "sha256": "741eef6db65548bda0be7782baf0561cd8c35d34ebec891ea4cfa76877942eeb"
     },
     {
       "name": "data_display/timeline",
@@ -290,7 +299,7 @@
       "dataExoCount": 44,
       "width": 1280,
       "height": 900,
-      "sha256": "b2d39517a8c8a02c722ce09675106209700084d555dbe4e146d817b0006b3283"
+      "sha256": "ac3a4ef48869ba87a669ad2e23b18e965d0623a819accf1efd04ad0fadd5d52f"
     },
     {
       "name": "feedback/alert",
@@ -380,7 +389,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "4218f2d90b4573ed92466351692c81ee8adff672b8848897e7b15a76bf7c3021"
+      "sha256": "993d49e590aa3de1ba9a3079b79fb0815d9434033eef2944bda218c2be08c38f"
     },
     {
       "name": "feedback/toast_container",
@@ -398,7 +407,7 @@
       "dataExoCount": 180,
       "width": 1280,
       "height": 900,
-      "sha256": "8b8a0f5ed8fbf8e36aa0708b79fdecf4eb608e19bc90375de5aded97198f06b2"
+      "sha256": "a53759545610b0e2ac770101d3de5fd4b584c85906c443473d50b7935b65b310"
     },
     {
       "name": "forms/combobox_async",
@@ -407,7 +416,7 @@
       "dataExoCount": 18,
       "width": 1280,
       "height": 900,
-      "sha256": "8450e991d2b8cee88cf2683b2e60a0cff888fdd9daed81961fd3417c24178626"
+      "sha256": "b7ab2694f603c3acc8c5aaf71c303292a56bcad13d12e9ed3771d3c06363ec29"
     },
     {
       "name": "forms/date_picker",
@@ -416,7 +425,16 @@
       "dataExoCount": 451,
       "width": 1280,
       "height": 900,
-      "sha256": "47582e241de537b705c757cf4e53f86e9bd00ca113686c03a4dafae3d53cdc36"
+      "sha256": "6f5318e75934820b4980a50ffbb1580dd82e7fc77656cca69b45d382dd216524"
+    },
+    {
+      "name": "forms/date_picker_controlled",
+      "route": "/components/forms/date_picker_controlled",
+      "screenshot": "screenshots/forms__date_picker_controlled.png",
+      "dataExoCount": 67,
+      "width": 1280,
+      "height": 900,
+      "sha256": "d6edce00d0ae08f8b597087e5a583564d9f98b50abc45796e5b34ad84a5f54ae"
     },
     {
       "name": "forms/fieldset",
@@ -425,7 +443,7 @@
       "dataExoCount": 27,
       "width": 1280,
       "height": 900,
-      "sha256": "8f77eb9544389d53471a79cbc5801ba5b00ff62e65d14dffadfe838004c4ea47"
+      "sha256": "5aa6e934934479a6bec6e7aa9a91a1a787ce830659213756e39034a3b58a0522"
     },
     {
       "name": "forms/file_input",
@@ -434,7 +452,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "73151a0633f87684b06584d7435a837f4beaaed2c8d42df97da697217e60706e"
+      "sha256": "79903451cb4587af295ef523e784518a5a659b9f69235ce454d06c4a4b31ed6a"
     },
     {
       "name": "forms/form",
@@ -443,7 +461,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "abfdfcf7870d1ed5df470f709da80a223830dbf1a857b9fe2f19a0dc29063e14"
+      "sha256": "c6ca61767f9050b32fd45c9fc97d222f408f80ca6f04e09df5e24ea83e036f37"
     },
     {
       "name": "forms/input",
@@ -452,7 +470,7 @@
       "dataExoCount": 33,
       "width": 1280,
       "height": 900,
-      "sha256": "18951a52e753b16e9010f19fef01fd572db4ae6d335c1276c9f42106ecd7b09f"
+      "sha256": "00c267688569c1e0f4c4830ea0af47659c36ad113202543cb3340dbb3e388ad0"
     },
     {
       "name": "forms/radio_group",
@@ -461,7 +479,7 @@
       "dataExoCount": 55,
       "width": 1280,
       "height": 900,
-      "sha256": "a0bd852f2d88108d87b3839ac76ebe6a735cd0d31fdc9e3d32ab911c887ea898"
+      "sha256": "51138bf687b868a50e9ac287468168a70c40695b41893a9546117e429099125f"
     },
     {
       "name": "forms/rating",
@@ -470,7 +488,7 @@
       "dataExoCount": 62,
       "width": 1280,
       "height": 900,
-      "sha256": "91906c63dcebbcacf978b0d91b56088b651757feb2feead533c52d7c8c8ebe43"
+      "sha256": "708ab9b8fd7c19a9db3a6b1c68fad9b590c659607427dea30eafe392c271419b"
     },
     {
       "name": "forms/select",
@@ -479,7 +497,7 @@
       "dataExoCount": 105,
       "width": 1280,
       "height": 900,
-      "sha256": "905dbd67ba410bbe6dbeeaba7335c99342f5908e0f7d17fc116e3e771d2974c1"
+      "sha256": "f9c459dbb8c5c0b1607b2bf6d84372deef1fd1eefb47bb3a83686182a893e5c3"
     },
     {
       "name": "forms/slider",
@@ -488,7 +506,7 @@
       "dataExoCount": 21,
       "width": 1280,
       "height": 900,
-      "sha256": "7e01740a4fbfc715329ba57a0f9af8ffd9a1bf967f5f39939fcf66851d5366ae"
+      "sha256": "9e0f721ad95d62520e7cf7c2831f96312afcc02adb97084222a485bbe293ac42"
     },
     {
       "name": "layout/accordion",
@@ -722,7 +740,7 @@
       "dataExoCount": 22,
       "width": 1280,
       "height": 900,
-      "sha256": "ba13584ea836ef45a3909436a1a966936f6ae6dad5a1805ca1fe98b160973acf"
+      "sha256": "fd23e331b496a5e0ce36dc8883b2d25db5abed6143131884bc12d8c2122742ba"
     },
     {
       "name": "overlays/drawer",

@@ -112,6 +112,22 @@ defmodule ExoUI.Components.DatePickerTest do
     assert html =~ ~s(data-available)
   end
 
+  test "renders LiveView target for parent-controlled events" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H|<.date_picker
+  id="dp"
+  current_month="2026-03-01"
+  target="#calendar-owner"
+/>|)
+
+    assert html =~ ~s(phx-target="#calendar-owner")
+    assert html =~ ~s(phx-click="prev-month")
+    assert html =~ ~s(phx-click="next-month")
+    assert html =~ ~s(phx-click="select-date")
+  end
+
   test "renders date picker with field struct" do
     assigns = %{form: Phoenix.Component.to_form(%{"departure" => "2026-03-15"})}
 

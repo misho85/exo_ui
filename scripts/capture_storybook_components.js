@@ -19,7 +19,7 @@ const STORY_ROOTS = [
 const OUT_ROOT = path.join(ROOT, "output", "playwright", "exo-ui-components");
 const BASE_URL = process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:4100";
 const NAVIGATION_TIMEOUT = Number.parseInt(process.env.CAPTURE_NAVIGATION_TIMEOUT || "30000", 10);
-const STORY_READY_TIMEOUT = Number.parseInt(process.env.CAPTURE_STORY_READY_TIMEOUT || "15000", 10);
+const STORY_READY_TIMEOUT = Number.parseInt(process.env.CAPTURE_STORY_READY_TIMEOUT || "30000", 10);
 
 function timestamp() {
   return new Date().toISOString().replace(/[:.]/g, "-");
@@ -208,11 +208,43 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(250);
       await clickFirst(page, '#story-live [data-exo="date-picker-day"]:not([disabled])');
       break;
+    case "date_picker_controlled":
+      await clickButton(page, "Next month");
+      await page.waitForTimeout(350);
+      await clickFirst(
+        page,
+        '#story-live [data-exo="date-picker-day"][phx-value-date="2026-04-12"]'
+      );
+      await page.waitForTimeout(300);
+      break;
     case "dropdown":
     case "dropdown_menu":
       await clickFirst(page, '#story-live [data-exo="popover-trigger"]');
       await page.waitForTimeout(400);
       await page.keyboard.press("Escape");
+      break;
+    case "editable_record_workflow":
+      await clickButton(page, "Open record commands");
+      await page.waitForTimeout(350);
+      await safe(page.locator('#story-live [data-exo="command-palette-input"]'), (node) =>
+        node.fill("northstar", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await page.keyboard.press("Enter");
+      await page.waitForTimeout(450);
+      await clickButton(page, "Save record");
+      await page.waitForTimeout(350);
+      await clickButton(page, "Next month");
+      await page.waitForTimeout(300);
+      await clickFirst(
+        page,
+        '#story-live [data-exo="date-picker-day"][phx-value-date="2026-08-12"]'
+      );
+      await page.waitForTimeout(300);
+      await clickButton(page, "Delete record");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Validate delete");
+      await page.waitForTimeout(400);
       break;
     case "form":
       await focusFirst(page, '#story-live [data-exo="input"]');

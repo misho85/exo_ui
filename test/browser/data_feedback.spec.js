@@ -1,6 +1,12 @@
 const { test, expect } = require("@playwright/test");
 
-const { expectAttribute, expectFocused, gotoStory, story } = require("./helpers/storybook");
+const {
+  expectAttribute,
+  expectFocused,
+  expectPopoverState,
+  gotoStory,
+  story
+} = require("./helpers/storybook");
 
 test.describe("data and feedback components", () => {
   test("date picker exposes calendar semantics, form value, and error links", async ({ page }) => {
@@ -58,6 +64,99 @@ test.describe("data and feedback components", () => {
 
     await page.keyboard.press("ArrowUp");
     await expectFocused(day16);
+  });
+
+  test("controlled date picker updates month and selected date through LiveComponent events", async ({ page }) => {
+    await gotoStory(page, "/components/forms/date_picker_controlled");
+
+    const canvas = story(page);
+    const picker = canvas.locator("#controlled-booking-date");
+    const state = canvas.locator("#controlled-date-picker-state");
+    const next = picker.getByRole("button", { name: "Next month" });
+    const previous = picker.getByRole("button", { name: "Previous month" });
+
+    await expectAttribute(picker, "data-ready", "");
+    await expect(picker.locator('[data-exo="date-picker-month"]')).toHaveText("March 2026");
+    await expect(state).toHaveAttribute("data-month", "2026-03-01");
+    await expect(state).toHaveAttribute("data-selected", "2026-03-15");
+
+    await next.click();
+    await expect(picker.locator('[data-exo="date-picker-month"]')).toHaveText("April 2026");
+    await expect(state).toHaveAttribute("data-month", "2026-04-01");
+
+    await picker.locator('[data-exo="date-picker-day"][phx-value-date="2026-04-12"]').click();
+    await expect(state).toHaveAttribute("data-selected", "2026-04-12");
+    await expect(picker.locator('input[name="booking[date]"]')).toHaveValue("2026-04-12");
+
+    await previous.click();
+    await expect(picker.locator('[data-exo="date-picker-month"]')).toHaveText("March 2026");
+  });
+
+  test("editable record workflow combines table menus, command search, drawer validation, dates, and guarded delete", async ({
+    page
+  }) => {
+    await gotoStory(page, "/components/data_display/editable_record_workflow");
+
+    const canvas = story(page);
+    const root = canvas.locator('[data-exo="editable-record-workflow"]');
+    const state = canvas.locator("#editable-record-state");
+    const acmeActions = canvas.getByRole("button", { name: "Actions for Acme Corp" });
+    const acmeMenu = canvas.locator("#editable-record-actions-acme");
+    const command = canvas.locator("#editable-record-command");
+    const commandInput = command.locator('[data-exo="command-palette-input"]');
+    const drawer = canvas.locator("#editable-record-drawer");
+    const confirm = canvas.locator("#editable-record-delete-confirm");
+    const owner = drawer.getByLabel("Owner");
+    const renewal = drawer.locator("#editable-record-renewal");
+
+    await expect(root.locator("#editable-records-table [data-exo=\"table-row\"]")).toHaveCount(3);
+    await expect(root.getByRole("cell", { name: "Unassigned" })).toBeVisible();
+
+    await acmeActions.click();
+    await expectPopoverState(acmeMenu, true);
+    await expect(canvas.getByRole("menuitem", { name: "Edit record" })).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expectPopoverState(acmeMenu, false);
+
+    await canvas.getByRole("button", { name: "Open record commands" }).click();
+    await expectAttribute(command, "data-state", "open");
+    await commandInput.fill("northstar");
+    await expect(
+      command.locator('[data-exo="command-palette-item"][data-value="edit-northstar"]')
+    ).toHaveAttribute("data-active", "true");
+    await commandInput.press("Enter");
+
+    await expectAttribute(drawer, "data-state", "open");
+    await expect(state).toHaveAttribute("data-selected", "northstar");
+    await expect(owner).toHaveValue("");
+
+    await drawer.getByRole("button", { name: "Save record" }).click();
+    await expect(state).toHaveAttribute("data-save-state", "blocked");
+    await expect(owner).toHaveAttribute("aria-invalid", "true");
+    await expect(drawer.locator('[data-exo="field-error"]')).toContainText(
+      "Owner is required before saving"
+    );
+
+    await owner.fill("Lena");
+    await expect(state).toHaveAttribute("data-save-state", "dirty");
+    await drawer.getByRole("button", { name: "Next month" }).click();
+    await expect(renewal.locator('[data-exo="date-picker-month"]')).toHaveText("August 2026");
+    await renewal.locator('[data-exo="date-picker-day"][phx-value-date="2026-08-12"]').click();
+    await expect(renewal.locator('input[name="record[renewal_date]"]')).toHaveValue("2026-08-12");
+
+    await drawer.getByRole("button", { name: "Save record" }).click();
+    await expect(state).toHaveAttribute("data-save-state", "saved");
+    await expect(root.locator("#editable-record-northstar [data-exo=\"editable-owner\"]")).toHaveText(
+      "Lena"
+    );
+
+    await drawer.getByRole("button", { name: "Delete record" }).click();
+    await expectAttribute(confirm, "data-state", "open");
+    await confirm.getByRole("button", { name: "Validate delete" }).click();
+    await expectAttribute(confirm, "data-state", "open");
+    await expect(canvas.locator("#editable-record-delete-error")).toContainText(
+      "Cannot delete an active renewal record"
+    );
   });
 
   test("table renders caption, aligned cells, row labels, and empty state", async ({ page }) => {

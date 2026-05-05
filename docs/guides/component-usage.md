@@ -6,7 +6,10 @@ while this file shows how components should be used in real Phoenix LiveView
 templates.
 
 For full-page examples that combine multiple component families, see
-`docs/guides/app-shell-workflows.md`.
+`docs/guides/app-shell-workflows.md`,
+`docs/guides/editable-record-workflows.md`,
+`docs/guides/component-state-recipes.md`, and
+`docs/guides/theme-tokens.md`.
 
 ## Setup
 
@@ -402,7 +405,9 @@ Use for numeric ranges.
 ### Date Picker
 
 The component renders the calendar grid. The parent LiveView owns month changes
-and selected date changes through events.
+and selected date changes through events. Use `target={@myself}` inside a
+LiveComponent; omit `target` in a regular LiveView unless you are routing the
+event to a specific component.
 
 ```heex
 <.date_picker
@@ -416,12 +421,21 @@ and selected date changes through events.
   on_select="select-due-date"
   on_prev_month="previous-calendar-month"
   on_next_month="next-calendar-month"
+  target={@myself}
 />
 ```
 
 ```elixir
 def handle_event("select-due-date", %{"date" => date}, socket) do
   {:noreply, assign(socket, selected_date: Date.from_iso8601!(date))}
+end
+
+def handle_event("previous-calendar-month", _params, socket) do
+  {:noreply, update(socket, :calendar_month, &previous_month/1)}
+end
+
+def handle_event("next-calendar-month", _params, socket) do
+  {:noreply, update(socket, :calendar_month, &next_month/1)}
 end
 ```
 

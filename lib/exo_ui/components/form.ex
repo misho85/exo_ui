@@ -942,6 +942,7 @@ defmodule ExoUI.Components.Form do
   attr :on_select, :string, default: "select-date"
   attr :on_prev_month, :string, default: "prev-month"
   attr :on_next_month, :string, default: "next-month"
+  attr :target, :any, default: nil, doc: "optional LiveView target for date select/month events"
   attr :name, :string, default: nil
   attr :label, :string, default: nil
   attr :description, :string, default: nil
@@ -1033,6 +1034,7 @@ defmodule ExoUI.Components.Form do
             data-exo="date-picker-nav"
             aria-label="Previous month"
             phx-click={@on_prev_month}
+            phx-target={@target}
             disabled={!@can_prev || @disabled}
             data-disabled={(!@can_prev || @disabled) && ""}
           >
@@ -1046,6 +1048,7 @@ defmodule ExoUI.Components.Form do
             data-exo="date-picker-nav"
             aria-label="Next month"
             phx-click={@on_next_month}
+            phx-target={@target}
             disabled={!@can_next || @disabled}
             data-disabled={(!@can_next || @disabled) && ""}
           >
@@ -1101,6 +1104,7 @@ defmodule ExoUI.Components.Form do
                 aria-disabled={to_string(is_disabled)}
                 tabindex={date_tabindex(is_selected, is_today, in_month, is_disabled)}
                 phx-click={unless(is_disabled, do: @on_select)}
+                phx-target={@target}
                 phx-value-date={Date.to_iso8601(day)}
                 disabled={is_disabled}
               >
