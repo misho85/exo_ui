@@ -13,13 +13,13 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | --- | --- |
 | Public components | 61 public component delegates audited from `lib/exo_ui/components.ex` |
 | Missing Storybook stories | 0 public components missing a story |
-| Storybook story types | 81 component stories, 3 live component stories, 5 aggregate example stories, 0 component/layout page-mode stories |
-| Playwright component capture | 89 Storybook routes captured |
-| Capture artifacts | 89 screenshots, 89 WebM videos, 89 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-05T09-09-28-370Z/viewer.html` |
-| Browser suite | 69 Playwright tests passing |
+| Storybook story types | 81 component stories, 3 live component stories, 6 aggregate example stories, 0 component/layout page-mode stories |
+| Playwright component capture | 90 Storybook routes captured |
+| Capture artifacts | 90 screenshots, 90 WebM videos, 90 MP4 videos |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-05T11-14-10-108Z/viewer.html` |
+| Browser suite | 70 Playwright tests passing |
 | ExUnit suite | 503 tests passing |
-| Visual regression | 89 committed screenshot baselines with pixel-diff checking |
+| Visual regression | 90 committed screenshot baselines with pixel-diff checking |
 | Usage documentation | Central copy-paste reference added at `docs/guides/component-usage.md` |
 
 ## What improved
@@ -81,6 +81,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `Editable Record Workflow` is now a live Storybook route combining table rows, dropdown row actions, command palette search, drawer-hosted form validation, parent-controlled date picker month navigation, saved row updates, and guarded delete confirmation.
 - `docs/guides/editable-record-workflows.md`, `docs/guides/component-state-recipes.md`, and `docs/guides/theme-tokens.md` now document production recipes for editable records, disabled/error/loading/long-content states, and safe token customization.
 - The capture workflow default LiveView readiness timeout is now 30s, reducing false failures on slower Storybook routes while keeping the timeout configurable through `CAPTURE_STORY_READY_TIMEOUT`.
+- `Component Recipe Matrix` is now an executable Storybook recipe route covering action states, invalid/disabled form states, select wiring, table rows, empty table state, row dropdown actions, command palette search, drawer validation, and guarded confirm behavior in one page.
+- `docs/guides/action-form-recipes.md` and `docs/guides/table-overlay-menu-recipes.md` now document the same state and workflow recipes as copy-paste references.
 
 ## Comparison vs shadcn/daisyUI
 
@@ -91,9 +93,9 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Forms | Phoenix FormField integration is now strong across most controls, select/combobox expose active-descendant keyboard state, and combobox empty/loading states announce changes politely, including an async LiveComponent server-filter story | Component-mode controls should expose more attrs/slots directly in PhoenixStorybook playgrounds |
 | Overlays/menus | Browser-tested popover, dropdown, context menu, menubar, modal/confirm-modal/sheet/drawer focus traps, command palette trigger open/focus trap/focus restore, shared overlay registry participation, topmost Escape/backdrop handling, outside inerting, scroll lock, same-type and cross-type stacking order, lower-overlay inerting, focus restore, long-form stacked drawer scrolling, stacked validation errors, command-surface stacks, destructive confirm flows inside stacked overlays, public show/hide helpers for modal/drawer/sheet/command palette, configurable command palette shortcuts, app-shell recipes, editable-record recipes, and guarded confirm actions that can stay open for server validation | Needs more real-app recipes over time, but the core overlay/menu interaction parity is much closer |
 | Keyboard support | Covered for major actions, menus, select/combobox, rating, tabs, date picker grid movement, and parent-controlled date picker month changes | Needs broader multi-screen workflow shortcuts once app-level navigation examples grow |
-| Visual proof | Automated screenshots and videos for 89 routes, committed visual baselines, a CI-friendly diff command, and GitHub Actions wiring | Needs review tuning once real PR diffs start producing visual changes |
+| Visual proof | Automated screenshots and videos for 90 routes, committed visual baselines, a CI-friendly diff command, and GitHub Actions wiring | Needs review tuning once real PR diffs start producing visual changes |
 | Composability | Slots and `data-exo` styling are consistent | No shadcn-style `asChild`/polymorphic root pattern for advanced composition |
-| Usage docs | Central copy-paste usage reference exists for the current public component surface, plus app-shell, editable-record, component-state, token, and combobox recipes | Still needs more narrow per-component pages for the highest-traffic primitives |
+| Usage docs | Central copy-paste usage reference exists for the current public component surface, plus app-shell, editable-record, action/form, table/overlay/menu, component-state, token, and combobox recipes | Still needs more narrow per-component pages for the highest-traffic primitives |
 
 ## Remaining priorities
 
@@ -105,9 +107,9 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 
 - `mix test` -> 503 tests, 0 failures.
 - `mix compile --warnings-as-errors` in `storybook`.
-- `bun run test:browser` -> 69 tests, 0 failures.
-- `bun run capture:components` -> 89 entries, 0 failed, 89 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T09-09-28-370Z`.
-- `bun run capture:validate` -> 89 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after adding Date Picker Controlled and Editable Record Workflow.
-- `bun run visual:check` -> 89 current screenshots matched the committed baseline.
-- `docs/guides/component-usage.md` now links to app-shell, editable-record, component-state, and token guides.
+- `bun run test:browser` -> 70 tests, 0 failures.
+- `bun run capture:components` -> 90 entries, 0 failed, 90 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T11-14-10-108Z`.
+- `bun run capture:validate` -> 90 entries with non-empty screenshot, WebM, and MP4 files.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after adding Component Recipe Matrix.
+- `bun run visual:check` -> 90 current screenshots matched the committed baseline.
+- `docs/guides/component-usage.md` now links to app-shell, editable-record, action/form, table/overlay/menu, component-state, and token guides.

@@ -289,6 +289,20 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(400);
       await page.keyboard.press("Escape");
       break;
+    case "component_recipe_matrix":
+      await clickButton(page, "Open command palette");
+      await page.waitForTimeout(350);
+      await safe(page.locator('#story-live [data-exo="command-palette-input"]'), (node) =>
+        node.fill("drawer", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await page.keyboard.press("Enter");
+      await page.waitForTimeout(400);
+      await clickButton(page, "Open confirm modal");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Validate recipe");
+      await page.waitForTimeout(400);
+      break;
     case "rating":
       await clickFirst(page, '#story-live [data-exo="rating-star"] >> nth=4');
       break;
