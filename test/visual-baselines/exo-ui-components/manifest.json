@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-05T00:21:41.929Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T00-17-27-969Z",
+  "updatedAt": "2026-05-05T00:31:05.437Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T00-27-32-703Z",
   "count": 84,
   "entries": [
     {
@@ -11,7 +11,7 @@
       "dataExoCount": 11,
       "width": 1280,
       "height": 900,
-      "sha256": "2c3090644276879ff74b0e4fdd655be1338734be4be2a44e5d31ff8dc070d02d"
+      "sha256": "1636a1b4def513248283645b2e0eabb9018c8d378a50f79d0e7cffbae8bc99c5"
     },
     {
       "name": "actions/swap",
@@ -20,7 +20,7 @@
       "dataExoCount": 12,
       "width": 1280,
       "height": 900,
-      "sha256": "aa2eb2b24727d9e204e1378a7f715b3e7ccf5aac3725cee3cca9af31b1fc6b7e"
+      "sha256": "322a0004eb2ac1163143c0a18df69041a488411b848a8ba5e65c892427a68719"
     },
     {
       "name": "actions/theme_toggle",
@@ -380,7 +380,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "0dc79fcd8b4c2ed4a7a4665e5b20bd94e15fcac909435910dcc6c3457cc0239b"
+      "sha256": "eb49c1df77579840ddc6904bb813aa70531f88aaef278b5271e889f2f39e47f5"
     },
     {
       "name": "feedback/toast_container",
@@ -443,7 +443,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "12507ebeb162371344f834fd3e3671daae8c4b454c355197ce2bb806d9f35568"
+      "sha256": "aea1f0f9c5e8ae4cec8dc008f91e20b1be3d5b78c61f8f85069549013d411800"
     },
     {
       "name": "forms/input",
@@ -641,7 +641,7 @@
       "dataExoCount": 36,
       "width": 1280,
       "height": 900,
-      "sha256": "cef442607a092cfb5314668fad7c3721498ae32cae6d91508cd6cd698190b6ac"
+      "sha256": "a39cd58ed36c52dd37499f5d4c1f651ae744bb68f63df0c0e13c5d67d9e7e0b6"
     },
     {
       "name": "navigation/breadcrumb",
@@ -656,10 +656,10 @@
       "name": "navigation/navbar",
       "route": "/components/navigation/navbar",
       "screenshot": "screenshots/navigation__navbar.png",
-      "dataExoCount": 11,
+      "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "f9f725f2e9d5ff06f4b13051d786417d93b48ab7e58f5bd02f256cc6d639c391"
+      "sha256": "4187a9bf3f7764590ec27b435b7301d5fcdf2610e565f56aa0205c54c5135cf9"
     },
     {
       "name": "navigation/pagination",
@@ -686,7 +686,7 @@
       "dataExoCount": 22,
       "width": 1280,
       "height": 900,
-      "sha256": "76fe22b9de174d1835b1c2188a5a736a946b8fd1c8c76825915991fc46375f12"
+      "sha256": "4395a176d59f142cebb9595f723e42887717d17b93c0d35eccfa95cb9e02b496"
     },
     {
       "name": "navigation/wizard_sidebar",
@@ -695,7 +695,7 @@
       "dataExoCount": 35,
       "width": 1280,
       "height": 900,
-      "sha256": "f42be3e932195ffe6f2c66cbf7dacc6ffad745adb98db2ce5fa29a44893ee979"
+      "sha256": "13a2c8c46c6ab1a922e3b6fb39063a65015eed07c3ebd273a9904e84ab1d464b"
     },
     {
       "name": "overlays/confirm_modal",

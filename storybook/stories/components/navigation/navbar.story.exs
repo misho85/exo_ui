@@ -1,45 +1,34 @@
 defmodule Storybook.Components.Navbar do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Top navigation bar with brand, center content, and end content slots."
+  def function, do: &ExoUI.Components.Core.navbar/1
 
-  def render(assigns) do
-    ~H"""
-    <div style="display: flex; flex-direction: column; gap: 2rem;">
-      <section>
-        <h3 style="margin-bottom: 0.75rem; font-weight: 600;">Basic</h3>
-        <ExoUI.Components.navbar>
-          <:brand>MyApp</:brand>
-        </ExoUI.Components.navbar>
-      </section>
-
-      <section>
-        <h3 style="margin-bottom: 0.75rem; font-weight: 600;">With center navigation</h3>
-        <ExoUI.Components.navbar>
-          <:brand>MyApp</:brand>
-          <:center>
-            <a href="#">Home</a>
-            <a href="#">About</a>
-            <a href="#">Contact</a>
-          </:center>
-        </ExoUI.Components.navbar>
-      </section>
-
-      <section>
-        <h3 style="margin-bottom: 0.75rem; font-weight: 600;">Full</h3>
-        <ExoUI.Components.navbar>
-          <:brand>MyApp</:brand>
-          <:center>
-            <a href="#">Dashboard</a>
-            <a href="#">Projects</a>
-            <a href="#">Team</a>
-          </:center>
-          <:end_content>
-            <ExoUI.Components.avatar name="John Doe" size="sm" />
-          </:end_content>
-        </ExoUI.Components.navbar>
-      </section>
+  def template do
+    """
+    <div style="padding: 1rem; max-width: 48rem;" psb-code-hidden>
+      <.psb-variation/>
     </div>
     """
+  end
+
+  def variations do
+    [
+      %Variation{id: :basic, slots: [~s|<:brand>MyApp</:brand>|]},
+      %Variation{
+        id: :with_center,
+        slots: [
+          ~s|<:brand>MyApp</:brand>|,
+          ~s|<:center><a href="#">Home</a><a href="#">About</a><a href="#">Contact</a></:center>|
+        ]
+      },
+      %Variation{
+        id: :full,
+        slots: [
+          ~s|<:brand>MyApp</:brand>|,
+          ~s|<:center><a href="#">Dashboard</a><a href="#">Projects</a><a href="#">Team</a></:center>|,
+          ~s|<:end_content><span data-exo="avatar" data-size="sm">JD</span></:end_content>|
+        ]
+      }
+    ]
   end
 end

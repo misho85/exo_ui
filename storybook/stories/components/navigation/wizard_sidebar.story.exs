@@ -1,37 +1,43 @@
 defmodule Storybook.Components.WizardSidebar do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Step-by-step wizard sidebar navigation."
+  def function, do: &ExoUI.Components.DataDisplay.wizard_sidebar/1
 
-  def render(assigns) do
-    ~H"""
-    <div style="padding: 1rem; display: flex; gap: 3rem; flex-wrap: wrap;">
-      <div>
-        <p style="margin-bottom: 1rem; font-size: 0.875rem; color: var(--exo-muted-foreground);">
-          Step 2 of 4
-        </p>
-        <ExoUI.Components.wizard_sidebar
-          aria_label="Checkout progress"
-          steps={[
-            %{id: "account", label: "Account details", status: :completed},
-            %{id: "profile", label: "Profile info", status: :current},
-            %{id: "billing", label: "Billing", status: :pending},
-            %{id: "review", label: "Review & submit", status: :pending}
-          ]}
-        />
-      </div>
-
-      <div>
-        <p style="margin-bottom: 1rem; font-size: 0.875rem; color: var(--exo-muted-foreground);">
-          All completed
-        </p>
-        <ExoUI.Components.wizard_sidebar steps={[
-          %{id: "step1", label: "Step one", status: :completed},
-          %{id: "step2", label: "Step two", status: :completed},
-          %{id: "step3", label: "Step three", status: :completed}
-        ]} />
-      </div>
+  def template do
+    """
+    <div style="padding: 1rem; max-width: 24rem;" psb-code-hidden>
+      <.psb-variation/>
     </div>
     """
+  end
+
+  def variations do
+    [
+      %Variation{
+        id: :checkout,
+        attributes: %{aria_label: "Checkout progress", steps: checkout_steps()}
+      },
+      %Variation{
+        id: :completed,
+        attributes: %{steps: completed_steps()}
+      }
+    ]
+  end
+
+  defp checkout_steps do
+    [
+      %{id: "account", label: "Account details", status: :completed},
+      %{id: "profile", label: "Profile info", status: :current},
+      %{id: "billing", label: "Billing", status: :pending},
+      %{id: "review", label: "Review & submit", status: :pending}
+    ]
+  end
+
+  defp completed_steps do
+    [
+      %{id: "step1", label: "Step one", status: :completed},
+      %{id: "step2", label: "Step two", status: :completed},
+      %{id: "step3", label: "Step three", status: :completed}
+    ]
   end
 end

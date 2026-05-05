@@ -1,41 +1,52 @@
 defmodule Storybook.Components.BottomNav do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Mobile bottom navigation bar with icon items."
+  def function, do: &ExoUI.Components.Core.bottom_nav/1
 
-  def render(assigns) do
-    ~H"""
-    <div style="display: flex; flex-direction: column; gap: 3rem; max-width: 400px;">
-      <section>
-        <h3 style="margin-bottom: 0.75rem; font-weight: 600;">Basic</h3>
-        <ExoUI.Components.bottom_nav>
-          <:item label="Home" href="#" active={true}>Home</:item>
-          <:item label="Search" href="#">Search</:item>
-          <:item label="Profile" href="#">Profile</:item>
-        </ExoUI.Components.bottom_nav>
-      </section>
-
-      <section>
-        <h3 style="margin-bottom: 0.75rem; font-weight: 600;">With icons</h3>
-        <ExoUI.Components.bottom_nav>
-          <:item label="Home" icon="house" href="#" active={true}>Home</:item>
-          <:item label="Explore" icon="search" href="#">Explore</:item>
-          <:item label="Inbox" icon="inbox" href="#">Inbox</:item>
-          <:item label="Account" icon="user" href="#">Account</:item>
-        </ExoUI.Components.bottom_nav>
-      </section>
-
-      <section>
-        <h3 style="margin-bottom: 0.75rem; font-weight: 600;">Five item app nav</h3>
-        <ExoUI.Components.bottom_nav aria-label="Main app navigation">
-          <:item label="Home" icon="house" href="#" active={true}>Home</:item>
-          <:item label="Search" icon="search" href="#">Search</:item>
-          <:item label="Create" icon="circle-plus" href="#">Create</:item>
-          <:item label="Activity" icon="bell" href="#">Activity</:item>
-          <:item label="Profile" icon="user" href="#">Profile</:item>
-        </ExoUI.Components.bottom_nav>
-      </section>
+  def template do
+    """
+    <div style="padding: 1rem; max-width: 25rem;" psb-code-hidden>
+      <.psb-variation/>
     </div>
     """
+  end
+
+  def variations do
+    [
+      %Variation{id: :basic, slots: basic_items()},
+      %Variation{id: :with_icons, slots: icon_items()},
+      %Variation{
+        id: :app_nav,
+        attributes: %{"aria-label" => "Main app navigation"},
+        slots: app_items()
+      }
+    ]
+  end
+
+  defp basic_items do
+    [
+      ~s|<:item label="Home" href="#" active>Home</:item>|,
+      ~s|<:item label="Search" href="#">Search</:item>|,
+      ~s|<:item label="Profile" href="#">Profile</:item>|
+    ]
+  end
+
+  defp icon_items do
+    [
+      ~s|<:item label="Home" icon="house" href="#" active>Home</:item>|,
+      ~s|<:item label="Explore" icon="search" href="#">Explore</:item>|,
+      ~s|<:item label="Inbox" icon="inbox" href="#">Inbox</:item>|,
+      ~s|<:item label="Account" icon="user" href="#">Account</:item>|
+    ]
+  end
+
+  defp app_items do
+    [
+      ~s|<:item label="Home" icon="house" href="#" active>Home</:item>|,
+      ~s|<:item label="Search" icon="search" href="#">Search</:item>|,
+      ~s|<:item label="Create" icon="circle-plus" href="#">Create</:item>|,
+      ~s|<:item label="Activity" icon="bell" href="#">Activity</:item>|,
+      ~s|<:item label="Profile" icon="user" href="#">Profile</:item>|
+    ]
   end
 end
