@@ -230,6 +230,26 @@ async function componentDemo(page, name) {
       await clickButton(page, "Validate archive");
       await page.waitForTimeout(400);
       break;
+    case "saved_filters_workflow":
+      await safe(page.locator('#story-live #saved-filter-query'), (node) =>
+        node.fill("north", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await safe(page.locator('#story-live #saved-filter-status'), (node) =>
+        node.selectOption("blocked", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await safe(page.locator('#story-live #saved-filter-owner'), (node) =>
+        node.selectOption("unassigned", { timeout: 1500 })
+      );
+      await page.waitForTimeout(300);
+      await clickButton(page, "Save current filter");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Clear filters");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Saved: north");
+      await page.waitForTimeout(400);
+      break;
     case "context_menu": {
       const trigger = page.locator('#story-live [data-exo="context-menu-trigger"]').first();
       if ((await trigger.count()) > 0) {

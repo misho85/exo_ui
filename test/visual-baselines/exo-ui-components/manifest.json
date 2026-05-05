@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-05T13:16:03.444Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T13-12-52-433Z",
-  "count": 93,
+  "updatedAt": "2026-05-05T13:31:54.223Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T13-26-16-849Z",
+  "count": 94,
   "entries": [
     {
       "name": "actions/button",
@@ -389,7 +389,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "bef3fa755e6a876f1c3064b393c1b232568204aa85e8949d44baf24614f30dc7"
+      "sha256": "71c3764b46fd01cd5714fb4b82bfce66dcac7b7f5d644b797329efcd548925e8"
     },
     {
       "name": "feedback/toast_container",
@@ -407,7 +407,7 @@
       "dataExoCount": 180,
       "width": 1280,
       "height": 900,
-      "sha256": "2c102960e13bbd3bd9928ba9851d9631cffc7b1efc1a07d542f255687ec09292"
+      "sha256": "e1f0f47bb1e3023f49d8bf571f5a97a60440b3da1cf9dcde0cb97e81fed4ef5c"
     },
     {
       "name": "forms/combobox_async",
@@ -812,7 +812,7 @@
       "dataExoCount": 49,
       "width": 1280,
       "height": 900,
-      "sha256": "6a76c93508f020edb19ad83813d32c2e059e12a7d12ec06a3db3e3483e2118a0"
+      "sha256": "78bb9936f35638bc45a639ab5d84332c8fe7931220e2907d63d9bd79ededbda7"
     },
     {
       "name": "recipes/bulk_action_workflow",
@@ -821,7 +821,7 @@
       "dataExoCount": 78,
       "width": 1280,
       "height": 900,
-      "sha256": "297f55f1357d8b14e441bb36ec260572b00b30d96cf01bbbd3bfcef9d0229222"
+      "sha256": "ad62293a95cdb30b8ed163642575e8d76136c6df1568e4c31e5b38ff682758e6"
     },
     {
       "name": "recipes/command_routing_workflow",
@@ -830,7 +830,7 @@
       "dataExoCount": 73,
       "width": 1280,
       "height": 900,
-      "sha256": "9c4ac359842aed14190939941d874eef07900634e0c6024c2521f7c54d2ecde4"
+      "sha256": "436f2c497c5aef51f7dc640bb2ee53492e44dec5209aebc33e0703046db13a17"
     },
     {
       "name": "recipes/component_recipe_matrix",
@@ -839,7 +839,16 @@
       "dataExoCount": 152,
       "width": 1280,
       "height": 900,
-      "sha256": "0c0ac2a320c4dab10652a61046588777a0004061c1f8bd3965259347c381ce08"
+      "sha256": "7af0237618420a25573300dbb7e7f0c0ebaeda75e0b65225130a7fe7d2b17dd3"
+    },
+    {
+      "name": "recipes/saved_filters_workflow",
+      "route": "/components/recipes/saved_filters_workflow",
+      "screenshot": "screenshots/recipes__saved_filters_workflow.png",
+      "dataExoCount": 74,
+      "width": 1280,
+      "height": 900,
+      "sha256": "2910da947ae216e21f5a1be2e723ea9b479aacf2f13266399d1cadf7d3ab0da5"
     }
   ]
 }
