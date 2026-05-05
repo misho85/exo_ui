@@ -13,13 +13,13 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | --- | --- |
 | Public components | 61 public component delegates audited from `lib/exo_ui/components.ex` |
 | Missing Storybook stories | 0 public components missing a story |
-| Storybook story types | 81 component stories, 12 live component stories, 6 aggregate example stories, 0 component/layout page-mode stories |
-| Playwright component capture | 99 Storybook routes captured |
-| Capture artifacts | 99 screenshots, 99 WebM videos, 99 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-05T15-38-47-563Z/viewer.html` |
-| Browser suite | 79 Playwright tests passing |
+| Storybook story types | 81 component stories, 13 live component stories, 6 aggregate example stories, 0 component/layout page-mode stories |
+| Playwright component capture | 100 Storybook routes captured |
+| Capture artifacts | 100 screenshots, 100 WebM videos, 100 MP4 videos |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-05T16-18-17-214Z/viewer.html` |
+| Browser suite | 80 Playwright tests passing |
 | ExUnit suite | 503 tests passing |
-| Visual regression | 99 committed screenshot baselines with pixel-diff checking |
+| Visual regression | 100 committed screenshot baselines with pixel-diff checking |
 | Usage documentation | Central copy-paste reference added at `docs/guides/component-usage.md` |
 
 ## What improved
@@ -101,6 +101,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `docs/guides/role-operations-workflows.md` now documents the same role queue -> lane filter -> task drawer pattern as a copy-paste production recipe.
 - `Saved Filters Workflow` is now a live Storybook recipe route covering server-owned table filters, saved views, clear/apply flows, active saved-view state, empty-table-safe rendering, row-count status updates, and persisted filter controls.
 - `docs/guides/saved-filter-workflows.md` now documents the same saved table filter pattern as a copy-paste production recipe.
+- `Button Recipes` is now a live Storybook recipe route covering variants, size composition, disabled link safety, loading/save state, destructive confirmation, reset state, and live status text.
+- `docs/guides/button-recipes.md` now documents loading, disabled-link, icon, and destructive-confirm button patterns.
 
 ## Comparison vs shadcn/daisyUI
 
@@ -111,13 +113,13 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Forms | Phoenix FormField integration is now strong across most controls, select/combobox expose active-descendant keyboard state, combobox empty/loading states announce changes politely, and async save, saved-filter, and bulk-edit success paths have live recipe coverage | Component-mode controls should expose more attrs/slots directly in PhoenixStorybook playgrounds |
 | Overlays/menus | Browser-tested popover, dropdown, context menu, menubar, modal/confirm-modal/sheet/drawer focus traps, command palette trigger open/focus trap/focus restore, shared overlay registry participation, topmost Escape/backdrop handling, outside inerting, scroll lock, same-type and cross-type stacking order, lower-overlay inerting, focus restore, long-form stacked drawer scrolling, stacked validation errors, command-surface stacks, destructive confirm flows inside stacked overlays, public show/hide helpers for modal/drawer/sheet/command palette, configurable command palette shortcuts, app-shell recipes, editable-record recipes, command-routing recipes, and guarded confirm actions that can stay open for server validation | Needs more real-app recipes over time, but the core overlay/menu interaction parity is much closer |
 | Keyboard support | Covered for major actions, menus, select/combobox, rating, tabs, date picker grid movement, parent-controlled date picker month changes, and command palette driven multi-screen routing | Needs broader app-level shortcut recipes as more production shells are added |
-| Visual proof | Automated screenshots and videos for 99 routes, committed visual baselines, a CI-friendly diff command, and GitHub Actions wiring | Needs review tuning once real PR diffs start producing visual changes |
+| Visual proof | Automated screenshots and videos for 100 routes, committed visual baselines, a CI-friendly diff command, and GitHub Actions wiring | Needs review tuning once real PR diffs start producing visual changes |
 | Composability | Slots and `data-exo` styling are consistent | No shadcn-style `asChild`/polymorphic root pattern for advanced composition |
-| Usage docs | Central copy-paste usage reference exists for the current public component surface, plus app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, async-save, saved-filter, command-routing, role-operations, action/form, table/overlay/menu, component-state, token, and combobox recipes | Still needs more narrow per-component pages for the highest-traffic primitives |
+| Usage docs | Central copy-paste usage reference exists for the current public component surface, plus button, app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, async-save, saved-filter, command-routing, role-operations, action/form, table/overlay/menu, component-state, token, and combobox recipes | Still needs more narrow per-component pages for the highest-traffic primitives |
 
 ## Remaining priorities
 
-1. Keep expanding narrow per-component recipe pages for the highest-traffic primitives: button, input, select, combobox, table, modal, drawer, command palette, and date picker.
+1. Keep expanding narrow per-component recipe pages for the highest-traffic primitives: input, select, combobox, table, modal, drawer, command palette, and date picker.
 2. Add more app-level workflow examples over time, especially production navigation shells and role-specific operations variants for concrete product domains.
 3. Tune visual diff thresholds after the first few CI runs if Linux font rendering causes expected drift.
 
@@ -125,9 +127,9 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 
 - `mix test` -> 503 tests, 0 failures.
 - `mix compile --warnings-as-errors` in `storybook`.
-- `bun run test:browser` -> 79 tests, 0 failures.
-- `bun run capture:components` -> 99 entries, 0 failed, 99 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T15-38-47-563Z`.
-- `bun run capture:validate` -> 99 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after adding Role Operations Workflow.
-- `bun run visual:check` -> 99 current screenshots matched the committed baseline.
-- `docs/guides/component-usage.md` now links to app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, import-export, async-save, command-routing, role-operations, saved-filter, action/form, table/overlay/menu, component-state, and token guides.
+- `bun run test:browser` -> 80 tests, 0 failures.
+- `bun run capture:components` -> 100 entries, 0 failed, 100 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T16-18-17-214Z`.
+- `bun run capture:validate` -> 100 entries with non-empty screenshot, WebM, and MP4 files.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after adding Button Recipes.
+- `bun run visual:check` -> 100 current screenshots matched the committed baseline.
+- `docs/guides/component-usage.md` now links to button, app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, import-export, async-save, command-routing, role-operations, saved-filter, action/form, table/overlay/menu, component-state, and token guides.

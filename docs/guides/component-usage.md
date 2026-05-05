@@ -6,6 +6,7 @@ while this file shows how components should be used in real Phoenix LiveView
 templates.
 
 For full-page examples that combine multiple component families, see
+`docs/guides/button-recipes.md`,
 `docs/guides/app-shell-workflows.md`,
 `docs/guides/editable-record-workflows.md`,
 `docs/guides/bulk-action-workflows.md`,
@@ -94,6 +95,9 @@ are `xs`, `sm`, `md`, and `lg`; current theme variants include default,
 <.button variant="danger" size="sm" disabled>Delete</.button>
 <.button navigate={~p"/projects/new"}>New project</.button>
 ```
+
+For loading, disabled-link, icon, and destructive-confirm patterns, see
+`docs/guides/button-recipes.md`.
 
 ### Badge
 

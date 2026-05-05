@@ -190,6 +190,18 @@ async function componentDemo(page, name) {
       await clickButton(page, "Clear filters");
       await page.waitForTimeout(350);
       break;
+    case "button_recipes":
+      await clickButton(page, "Use Danger");
+      await page.waitForTimeout(250);
+      await clickButton(page, "Save draft");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Finish save");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Delete draft");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Confirm delete");
+      await page.waitForTimeout(350);
+      break;
     case "dashboard_drilldown_workflow":
       await clickButton(page, "At risk");
       await page.waitForTimeout(300);
