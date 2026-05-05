@@ -146,6 +146,14 @@ async function componentDemo(page, name) {
       await clickButton(page, "Validate archive");
       await page.waitForTimeout(400);
       break;
+    case "async_save_workflow":
+      await safe(page.locator('#story-live #async-save-title'), (node) =>
+        node.fill("Launch checklist v2", { timeout: 1500 })
+      );
+      await page.waitForTimeout(300);
+      await clickButton(page, "Save changes");
+      await page.waitForTimeout(900);
+      break;
     case "bulk_action_workflow":
       await safe(page.locator('#story-live #bulk-filter-query'), (node) =>
         node.fill("north", { timeout: 1500 })
