@@ -183,7 +183,8 @@ available:
 - `ExoUI.Layouts`
 
 Component-specific copy-paste notes live under `docs/guides/`, including the
-targetable server-filter [combobox guide](docs/guides/combobox.md) and the
+[component usage reference](docs/guides/component-usage.md), the targetable
+server-filter [combobox guide](docs/guides/combobox.md), and the
 [visual regression workflow](docs/guides/visual-regression.md).
 
 ## Theme And CSS Modes

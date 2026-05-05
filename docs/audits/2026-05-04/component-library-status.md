@@ -20,6 +20,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Browser suite | 61 Playwright tests passing |
 | ExUnit suite | 496 tests passing |
 | Visual regression | 84 committed screenshot baselines with pixel-diff checking |
+| Usage documentation | Central copy-paste reference added at `docs/guides/component-usage.md` |
 
 ## What improved
 
@@ -60,6 +61,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `SidebarLayout` is now a component-mode Storybook story using a one-column preview so the app-shell layout is inspectable without being squeezed by the source panel.
 - `SidebarItem` now renders real Lucide SVG icons instead of showing icon names or emoji as visible text, with CSS sizing and ExUnit coverage for the icon slot.
 - The remaining aggregate routes, `Card` and `Charts overview`, are now PhoenixStorybook examples instead of page-mode stories. They still get screenshot/video capture, but they no longer hide as component-story gaps because the real components already have separate component-mode stories.
+- A central component usage reference now covers the current Core, Form, Overlay/Menu, Feedback, Data Display, Chart, and Layout public surface with Phoenix/HEEx copy-paste examples, setup notes, a11y expectations, and the remaining API parity caveats.
 
 ## Comparison vs shadcn/daisyUI
 
@@ -72,11 +74,12 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Keyboard support | Covered for major actions, menus, select/combobox, rating, tabs, and date picker grid movement | Date picker month changes still depend on the parent LiveView handling prev/next events |
 | Visual proof | Automated screenshots and videos for 84 routes, committed visual baselines, a CI-friendly diff command, and GitHub Actions wiring | Needs review tuning once real PR diffs start producing visual changes |
 | Composability | Slots and `data-exo` styling are consistent | No shadcn-style `asChild`/polymorphic root pattern for advanced composition |
+| Usage docs | Central copy-paste usage reference exists for the current public component surface | Still needs richer per-component edge-case pages for variants, long content, and recipes |
 
 ## Remaining priorities
 
 1. Continue overlay parity work with richer nested overlay content examples and cross-type modal/sheet/drawer stacking.
-2. Add docs that show copy-paste Phoenix usage for every component: basic, disabled, error, long content, dark mode, and keyboard/a11y notes.
+2. Expand the new component usage reference into per-component recipe pages: disabled states, validation errors, long content, dark mode, and richer keyboard/a11y notes.
 3. Tune visual diff thresholds after the first few CI runs if Linux font rendering causes expected drift.
 
 ## Verification used
@@ -89,3 +92,4 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `bun run capture:validate` -> 84 entries with non-empty screenshot, WebM, and MP4 files.
 - `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after moving aggregate `Card` and `Charts overview` routes to PhoenixStorybook examples.
 - `bun run visual:check` -> 84 current screenshots matched the committed baseline.
+- Documentation-only update added `docs/guides/component-usage.md` and linked it from README.
