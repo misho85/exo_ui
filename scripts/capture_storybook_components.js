@@ -377,6 +377,21 @@ async function componentDemo(page, name) {
       await page.keyboard.press("Enter");
       await page.waitForTimeout(400);
       break;
+    case "date_picker_recipes":
+      await clickFirst(page, '#story-live #date-recipe-booking-date [aria-label="Next month"]');
+      await page.waitForTimeout(350);
+      await clickFirst(
+        page,
+        '#story-live #date-recipe-booking-date [data-exo="date-picker-day"][phx-value-date="2026-04-12"]'
+      );
+      await page.waitForTimeout(300);
+      await clickButton(page, "Save booking date");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Clear booking date");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Save booking date");
+      await page.waitForTimeout(400);
+      break;
     case "dashboard_drilldown_workflow":
       await clickButton(page, "At risk");
       await page.waitForTimeout(300);

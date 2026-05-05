@@ -14,6 +14,7 @@ For full-page examples that combine multiple component families, see
 `docs/guides/modal-recipes.md`,
 `docs/guides/drawer-recipes.md`,
 `docs/guides/command-palette-recipes.md`,
+`docs/guides/date-picker-recipes.md`,
 `docs/guides/app-shell-workflows.md`,
 `docs/guides/editable-record-workflows.md`,
 `docs/guides/bulk-action-workflows.md`,
@@ -468,6 +469,9 @@ def handle_event("next-calendar-month", _params, socket) do
   {:noreply, update(socket, :calendar_month, &next_month/1)}
 end
 ```
+
+For form submission, validation errors, available-day markers, disabled
+calendars, and keyboard coverage, see `docs/guides/date-picker-recipes.md`.
 
 ### Rating
 
