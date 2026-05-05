@@ -90,7 +90,7 @@ test.describe("data and feedback components", () => {
     await gotoStory(page, "/components/feedback/toast_container");
 
     const toastCanvas = story(page);
-    const container = toastCanvas.locator("#toast-container");
+    const container = toastCanvas.locator('[data-exo="toast-container"][data-placement="bottom-right"]');
     const errorToast = toastCanvas.locator("#toast-3");
 
     await expectAttribute(container, "data-placement", "bottom-right");

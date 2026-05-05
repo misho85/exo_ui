@@ -13,10 +13,10 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | --- | --- |
 | Public components | 61 public component delegates audited from `lib/exo_ui/components.ex` |
 | Missing Storybook stories | 0 public components missing a story |
-| Component-mode stories | 42 component stories, 1 live component story, 40 page-mode stories still to convert |
+| Component-mode stories | 45 component stories, 1 live component story, 37 page-mode stories still to convert |
 | Playwright component capture | 84 Storybook routes captured |
 | Capture artifacts | 84 screenshots, 84 WebM videos, 84 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-05T00-53-05-736Z/viewer.html` |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-05T00-59-46-775Z/viewer.html` |
 | Browser suite | 60 Playwright tests passing |
 | ExUnit suite | 496 tests passing after combobox server-filter changes |
 | Visual regression | 84 committed screenshot baselines with pixel-diff checking |
@@ -46,6 +46,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `ThemeToggle`, `Fieldset`, `FileInput`, and `Rating` are now component-mode stories with real PhoenixStorybook attrs/variations instead of page-only examples; their browser tests now target accessible roles, names, and generated Storybook IDs.
 - Overlay stacking is more robust when a second modal/sheet/drawer-style overlay opens programmatically while another overlay is already active; the registry no longer inert-hides an overlay root that is already opening, and focus now moves after the overlay is registered as topmost.
 - `ChatBubble`, `List`, and `Table` are now component-mode stories. The table story keeps real row slots and function attrs via `{:eval, ...}` helpers so row IDs and ARIA row labels still render in the actual Storybook DOM.
+- `Flash`, `FlashGroup`, and `ToastContainer` are now component-mode stories, keeping role/live-region coverage while exposing placements, close labels, flash maps, and toast data as Storybook attrs.
 
 ## Comparison vs shadcn/daisyUI
 
@@ -61,7 +62,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 
 ## Remaining priorities
 
-1. Continue converting the remaining 40 page-mode Storybook examples to component-mode stories where PhoenixStorybook can expose attrs, slots, playground controls, and source examples.
+1. Continue converting the remaining 37 page-mode Storybook examples to component-mode stories where PhoenixStorybook can expose attrs, slots, playground controls, and source examples.
 2. Continue overlay parity work with richer nested overlay content examples and cross-type modal/sheet/drawer stacking.
 3. Add docs that show copy-paste Phoenix usage for every component: basic, disabled, error, long content, dark mode, and keyboard/a11y notes.
 4. Tune visual diff thresholds after the first few CI runs if Linux font rendering causes expected drift.
@@ -72,6 +73,6 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `bun run build:all`.
 - `mix compile --warnings-as-errors` in `storybook`.
 - `bun run test:browser` -> 60 tests, 0 failures.
-- `bun run capture:components` -> 84 entries, 0 failed, 84 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T00-53-05-736Z`.
+- `bun run capture:components` -> 84 entries, 0 failed, 84 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T00-59-46-775Z`.
 - `bun run capture:validate` -> 84 entries with non-empty screenshot, WebM, and MP4 files.
 - `bun run visual:check` -> 84 current screenshots matched the committed baseline.

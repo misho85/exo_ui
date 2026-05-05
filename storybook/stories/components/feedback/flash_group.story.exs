@@ -1,19 +1,37 @@
 defmodule Storybook.Components.FlashGroup do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Flash group that renders info, error, and LiveView connection state messages."
+  def function, do: &ExoUI.Components.Feedback.flash_group/1
 
-  def render(assigns) do
-    assigns =
-      assign(assigns, :flash, %{
-        "info" => "Profile saved successfully.",
-        "error" => "Could not sync the latest changes."
-      })
-
-    ~H"""
+  def template do
+    """
     <div style="padding: 1rem; min-height: 260px;">
-      <ExoUI.Components.flash_group flash={@flash} />
+      <.psb-variation/>
     </div>
     """
+  end
+
+  def variations do
+    [
+      %Variation{
+        id: :with_messages,
+        attributes: %{
+          id: "flash-group-demo",
+          flash: %{
+            "info" => "Profile saved successfully.",
+            "error" => "Could not sync the latest changes."
+          }
+        }
+      },
+      %Variation{
+        id: :custom_connection_messages,
+        attributes: %{
+          id: "flash-group-custom",
+          flash: %{},
+          disconnect_msg: "Trying to reconnect...",
+          reconnect_msg: "Connection is still unavailable."
+        }
+      }
+    ]
   end
 end

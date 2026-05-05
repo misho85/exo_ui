@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-05T00:55:40.786Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T00-53-05-736Z",
+  "updatedAt": "2026-05-05T01:03:17.501Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T00-59-46-775Z",
   "count": 84,
   "entries": [
     {
@@ -326,16 +326,16 @@
       "dataExoCount": 20,
       "width": 1280,
       "height": 900,
-      "sha256": "6af2e796b7327d765569a163c5b2ad6c3afccda9927c86cf536a61f47198665f"
+      "sha256": "200218fe8b28fe72c5533699d458dcdd3e0fb9c67a770c624fcfe79570be0da6"
     },
     {
       "name": "feedback/flash_group",
       "route": "/components/feedback/flash_group",
       "screenshot": "screenshots/feedback__flash_group.png",
-      "dataExoCount": 21,
+      "dataExoCount": 32,
       "width": 1280,
       "height": 900,
-      "sha256": "72c01f123b5dec56ca362cc5ef99b1c4fbcf914d0e7691349dd7286f7c592133"
+      "sha256": "cee1f9024637f1c084067714429b2901225ee73adbadb4145f7a30ea6279602f"
     },
     {
       "name": "feedback/indicator",
@@ -380,7 +380,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "1a26b6362f18a60f7888e4fa01b835a4c4533f09560f96f8a8a5814494db4273"
+      "sha256": "97d77c4fdfd61b176ad102d19ef6c8de83310fa57699642c23290e99d17539a3"
     },
     {
       "name": "feedback/toast_container",
@@ -389,7 +389,7 @@
       "dataExoCount": 26,
       "width": 1280,
       "height": 900,
-      "sha256": "b5df48ff43192b03fd22ba38d9070021d156d6f3b89adc6823f47a4dc27558e2"
+      "sha256": "8e75db0984bf294e6820425a458bd45ccf96245a401df1be9e0cd8513b5afff8"
     },
     {
       "name": "forms/combobox",
@@ -398,7 +398,7 @@
       "dataExoCount": 180,
       "width": 1280,
       "height": 900,
-      "sha256": "89e905033e1812ca2acc8c0a3b730427394bffaa56a809f1a7dc1bae772c036b"
+      "sha256": "0f4e2ae9f466bbbd8af0bf410d98c440c834333037291c0e048e7805811fd33a"
     },
     {
       "name": "forms/combobox_async",
@@ -470,7 +470,7 @@
       "dataExoCount": 62,
       "width": 1280,
       "height": 900,
-      "sha256": "91906c63dcebbcacf978b0d91b56088b651757feb2feead533c52d7c8c8ebe43"
+      "sha256": "d88d59c4bee403dfbc1a4f967d0f9eff012f9777c136be03522264286b5a5c36"
     },
     {
       "name": "forms/select",
@@ -497,7 +497,7 @@
       "dataExoCount": 96,
       "width": 1280,
       "height": 900,
-      "sha256": "223f7c24025d1dd5a41b1eba29d9e3f931ff01690725671b43413c2ac0ef851f"
+      "sha256": "7e055881668dc3b7fd0487cb71d26b67d621e63d4c8abb8e7dc077b1df56ef9b"
     },
     {
       "name": "layout/card",
@@ -587,7 +587,7 @@
       "dataExoCount": 54,
       "width": 1280,
       "height": 900,
-      "sha256": "7c4c6866d8c3e46f1f4de38c2b72b3624e935ccd552abcf9f6b48f76d837e3d2"
+      "sha256": "4cc1c75f7e88179acf9e1f4af8e81d683db9ba042e8acf0684025f3e32fd3f3b"
     },
     {
       "name": "menus/command_palette",
