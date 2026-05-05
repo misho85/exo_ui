@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-05T05:20:12.105Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T05-16-18-914Z",
+  "updatedAt": "2026-05-05T05:42:26.093Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T05-38-33-420Z",
   "count": 84,
   "entries": [
     {
@@ -380,7 +380,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "bfc0d3fc73e502825915d9459a06444bd9326fd4fc3457aca5b25baa7168d912"
+      "sha256": "5be9c52c4144e8d616350448f44b15e61132c2eeed8e86a7cf49bc14eb1a4f20"
     },
     {
       "name": "feedback/toast_container",
@@ -398,7 +398,7 @@
       "dataExoCount": 180,
       "width": 1280,
       "height": 900,
-      "sha256": "8b8a0f5ed8fbf8e36aa0708b79fdecf4eb608e19bc90375de5aded97198f06b2"
+      "sha256": "6f6d9773bdfaf4d859d9dee857613bf6506b2800fb9009d51094428d5e0f291f"
     },
     {
       "name": "forms/combobox_async",
@@ -434,7 +434,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "73151a0633f87684b06584d7435a837f4beaaed2c8d42df97da697217e60706e"
+      "sha256": "b6a525e6ad3fc87300e2d51cf27a0a1e171dbbea40130316e38899c55b573e6f"
     },
     {
       "name": "forms/form",
@@ -701,10 +701,10 @@
       "name": "overlays/confirm_modal",
       "route": "/components/overlays/confirm_modal",
       "screenshot": "screenshots/overlays__confirm_modal.png",
-      "dataExoCount": 11,
+      "dataExoCount": 22,
       "width": 1280,
       "height": 900,
-      "sha256": "2b584a2255f288ee6c28c1f44653cffcbfa8e06efa323ef4fa860a80ddaef94a"
+      "sha256": "bf8c58804b1400f093180ebaaa6099baeeae966a6b4d1bbbad2a8ce1fe98cc34"
     },
     {
       "name": "overlays/drawer",

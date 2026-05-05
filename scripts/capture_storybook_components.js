@@ -192,6 +192,7 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(300);
       await clickFirst(page, '#story-live [data-exo="sidebar-hamburger"]');
       break;
+    case "confirm_modal":
     case "modal":
       await openOverlayIfClosed(page, '[data-exo="modal"]', '#story-live button, #story-live [role="button"]');
       await page.waitForTimeout(400);

@@ -511,6 +511,21 @@ Use for destructive or irreversible confirmation flows.
 />
 ```
 
+When the server must validate before closing, keep the confirm action open and
+close it later from the LiveView:
+
+```heex
+<.confirm_modal
+  id="archive-project"
+  show={@archive_modal_open?}
+  title="Archive project"
+  message="The archive request will be validated before the dialog closes."
+  confirm_text="Validate archive"
+  close_on_confirm={false}
+  on_confirm={JS.push("validate-archive")}
+/>
+```
+
 ### Popover
 
 Use for anchored non-modal content. The browser Popover API and ExoUI hooks

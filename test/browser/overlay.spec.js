@@ -30,6 +30,33 @@ async function openSheetFromDom(sheet) {
 }
 
 test.describe("overlay dialogs", () => {
+  test("confirm modal opens from a trigger and can keep confirm action open", async ({ page }) => {
+    await gotoStory(page, "/components/overlays/confirm_modal");
+
+    const canvas = story(page);
+    const defaultTrigger = canvas.getByRole("button", { name: "Open confirm modal" });
+    const guardedTrigger = canvas.getByRole("button", { name: "Open guarded confirm" });
+    const defaultModal = canvas.locator('[data-exo="modal"]').first();
+    const guardedModal = canvas.locator('[data-exo="modal"]').nth(1);
+
+    await expectAttribute(defaultModal, "data-state", "closed");
+    await defaultTrigger.click();
+    await expectAttribute(defaultModal, "data-state", "open");
+    await expect(defaultModal.locator('[data-exo="modal-content"]')).toHaveAttribute(
+      "role",
+      "alertdialog"
+    );
+
+    await defaultModal.getByRole("button", { name: "Cancel" }).click();
+    await expectAttribute(defaultModal, "data-state", "closed");
+    await expectFocused(defaultTrigger);
+
+    await guardedTrigger.click();
+    await expectAttribute(guardedModal, "data-state", "open");
+    await guardedModal.getByRole("button", { name: "Validate archive" }).click();
+    await expectAttribute(guardedModal, "data-state", "open");
+  });
+
   test("modal traps keyboard focus and closes with Escape", async ({ page }) => {
     await gotoStory(page, "/components/overlays/modal");
 

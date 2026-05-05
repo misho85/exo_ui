@@ -13,6 +13,7 @@ defmodule ExoUI.Components.Overlay do
   attr :role, :string, values: ~w(dialog alertdialog), default: "dialog"
   attr :label, :string, default: "Dialog"
   attr :on_cancel, Phoenix.LiveView.JS, default: %Phoenix.LiveView.JS{}
+  attr :close_on_cancel, :boolean, default: true
   attr :class, :any, default: nil
   attr :rest, :global
   slot :title
@@ -33,7 +34,7 @@ defmodule ExoUI.Components.Overlay do
       class={@class}
       {@rest}
     >
-      <div data-exo="modal-backdrop" phx-click={@on_cancel |> hide_modal(@id)} />
+      <div data-exo="modal-backdrop" phx-click={maybe_hide_modal(@on_cancel, @id, @close_on_cancel)} />
       <div
         data-exo="modal-content"
         role={@role}
@@ -50,7 +51,7 @@ defmodule ExoUI.Components.Overlay do
           <button
             type="button"
             data-exo="modal-close"
-            phx-click={@on_cancel |> hide_modal(@id)}
+            phx-click={maybe_hide_modal(@on_cancel, @id, @close_on_cancel)}
             aria-label="Close"
           >
             ✕
@@ -77,15 +78,25 @@ defmodule ExoUI.Components.Overlay do
   attr :variant, :string, default: "danger"
   attr :on_confirm, Phoenix.LiveView.JS, default: %Phoenix.LiveView.JS{}
   attr :on_cancel, Phoenix.LiveView.JS, default: %Phoenix.LiveView.JS{}
+  attr :close_on_confirm, :boolean, default: true
+  attr :close_on_cancel, :boolean, default: true
 
   def confirm_modal(assigns) do
     ~H"""
-    <.modal id={@id} show={@show} role="alertdialog" on_cancel={@on_cancel}>
+    <.modal
+      id={@id}
+      show={@show}
+      role="alertdialog"
+      on_cancel={@on_cancel}
+      close_on_cancel={@close_on_cancel}
+    >
       <:title>{@title}</:title>
       <p>{@message}</p>
       <:actions>
-        <.button variant="ghost" phx-click={@on_cancel |> hide_modal(@id)}>{@cancel_text}</.button>
-        <.button variant={@variant} phx-click={@on_confirm |> hide_modal(@id)}>
+        <.button variant="ghost" phx-click={maybe_hide_modal(@on_cancel, @id, @close_on_cancel)}>
+          {@cancel_text}
+        </.button>
+        <.button variant={@variant} phx-click={maybe_hide_modal(@on_confirm, @id, @close_on_confirm)}>
           {@confirm_text}
         </.button>
       </:actions>
@@ -112,6 +123,9 @@ defmodule ExoUI.Components.Overlay do
     |> Phoenix.LiveView.JS.hide(to: "##{id}")
     |> Phoenix.LiveView.JS.pop_focus()
   end
+
+  defp maybe_hide_modal(js, id, true), do: hide_modal(js, id)
+  defp maybe_hide_modal(js, _id, false), do: js
 
   @doc "Renders a popover anchored to a trigger element using the Popover API."
   attr :id, :string, required: true

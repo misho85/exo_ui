@@ -69,6 +69,49 @@ defmodule ExoUI.Components.ModalTest do
     assert html =~ "Cancel"
   end
 
+  test "modal can leave cancel handling open to the caller" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.modal id="custom-cancel" on_cancel={JS.push("modal-cancelled")} close_on_cancel={false}>
+        Content
+      </.modal>
+      """)
+
+    {:ok, tree} = Floki.parse_fragment(html)
+    [close_button] = Floki.find(tree, ~s([data-exo="modal-close"]))
+    click = close_button |> Floki.attribute("phx-click") |> List.first()
+
+    assert click =~ "modal-cancelled"
+    refute click =~ "data-state"
+    refute click =~ "aria-hidden"
+    refute click =~ "inert"
+  end
+
+  test "confirm modal can keep confirm action open for server validation" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.confirm_modal
+        id="confirm"
+        message="Validate first?"
+        close_on_confirm={false}
+        on_confirm={JS.push("validate-delete")}
+      />
+      """)
+
+    {:ok, tree} = Floki.parse_fragment(html)
+    [_cancel, confirm] = Floki.find(tree, ~s([data-exo="btn"]))
+    click = confirm |> Floki.attribute("phx-click") |> List.first()
+
+    assert click =~ "validate-delete"
+    refute click =~ "data-state"
+    refute click =~ "aria-hidden"
+    refute click =~ "inert"
+  end
+
   test "modal JS helpers are public and target the modal contract" do
     assert %JS{
              ops: [

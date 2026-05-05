@@ -1,5 +1,6 @@
 defmodule Storybook.Components.ConfirmModal do
   use PhoenixStorybook.Story, :component
+  alias Phoenix.LiveView.JS
 
   def function, do: &ExoUI.Components.Overlay.confirm_modal/1
 
@@ -25,14 +26,29 @@ defmodule Storybook.Components.ConfirmModal do
           confirm_text: "Delete",
           variant: "danger"
         }
+      },
+      %Variation{
+        id: :server_validated,
+        template: confirm_template("Open guarded confirm", "outline"),
+        attributes: %{
+          show: false,
+          title: "Archive workspace",
+          message:
+            "The confirm action pushes an event and stays open so the server can validate before closing.",
+          cancel_text: "Cancel",
+          confirm_text: "Validate archive",
+          variant: "danger",
+          close_on_confirm: false,
+          on_confirm: JS.push("validate-archive")
+        }
       }
     ]
   end
 
-  defp confirm_template(label) do
+  defp confirm_template(label, variant \\ "danger") do
     """
     <div style="display: flex; flex-direction: column; gap: 1rem;" psb-code-hidden>
-      <ExoUI.Components.button variant="danger" phx-click={ExoUI.Components.Overlay.show_modal(":variation_id")}>
+      <ExoUI.Components.button variant="#{variant}" phx-click={ExoUI.Components.Overlay.show_modal(":variation_id")}>
         #{label}
       </ExoUI.Components.button>
       <.psb-variation/>
