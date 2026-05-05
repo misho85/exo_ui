@@ -140,7 +140,7 @@ defmodule ExoUI.Charts.Primitives do
 
       assigns = assign(assigns, id: id, line_points: line_points, area_points: area_points)
       chart_title = chart_label(assigns.aria_label, "Sparkline chart")
-      chart_description = chart_description(assigns.description)
+      chart_description = chart_description(assigns.description, assigns.data)
 
       assigns =
         assign(assigns, chart_title: chart_title, chart_description: chart_description)

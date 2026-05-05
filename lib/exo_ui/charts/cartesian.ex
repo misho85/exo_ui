@@ -87,7 +87,7 @@ defmodule ExoUI.Charts.Cartesian do
           bar_count: bar_count,
           bw: bw,
           chart_title: chart_label(assigns.aria_label, "Bar chart"),
-          chart_description: chart_description(assigns.description)
+          chart_description: chart_description(assigns.description, data)
         )
 
       ~H"""
@@ -188,7 +188,7 @@ defmodule ExoUI.Charts.Cartesian do
           total_height: total_height,
           label_width: label_width,
           chart_title: chart_label(assigns.aria_label, "Horizontal bar chart"),
-          chart_description: chart_description(assigns.description)
+          chart_description: chart_description(assigns.description, data)
         )
 
       ~H"""
@@ -300,7 +300,7 @@ defmodule ExoUI.Charts.Cartesian do
           area_path: area_path,
           labels: labels,
           chart_title: chart_label(assigns.aria_label, "Area chart"),
-          chart_description: chart_description(assigns.description)
+          chart_description: chart_description(assigns.description, data)
         )
 
       ~H"""
@@ -450,7 +450,7 @@ defmodule ExoUI.Charts.Cartesian do
           legend: legend,
           legend_start: legend_start,
           chart_title: chart_label(assigns.aria_label, "Stacked bar chart"),
-          chart_description: chart_description(assigns.description)
+          chart_description: chart_description(assigns.description, data)
         )
 
       ~H"""
@@ -612,7 +612,7 @@ defmodule ExoUI.Charts.Cartesian do
           label_step: label_step,
           bar_count: count,
           chart_title: chart_label(assigns.aria_label, "Grouped bar chart"),
-          chart_description: chart_description(assigns.description)
+          chart_description: chart_description(assigns.description, data)
         )
 
       ~H"""
@@ -718,7 +718,7 @@ defmodule ExoUI.Charts.Cartesian do
           bar_count: count,
           bw: bw,
           chart_title: chart_label(assigns.aria_label, "Bar chart with labels"),
-          chart_description: chart_description(assigns.description)
+          chart_description: chart_description(assigns.description, data)
         )
 
       ~H"""
@@ -844,7 +844,7 @@ defmodule ExoUI.Charts.Cartesian do
           grid: grid,
           bw: bw,
           chart_title: chart_label(assigns.aria_label, "Positive and negative bar chart"),
-          chart_description: chart_description(assigns.description)
+          chart_description: chart_description(assigns.description, data)
         )
 
       ~H"""
@@ -958,7 +958,7 @@ defmodule ExoUI.Charts.Cartesian do
           curve_path: curve_path,
           labels: labels,
           chart_title: chart_label(assigns.aria_label, "Line chart"),
-          chart_description: chart_description(assigns.description)
+          chart_description: chart_description(assigns.description, data)
         )
 
       ~H"""
@@ -1079,7 +1079,7 @@ defmodule ExoUI.Charts.Cartesian do
           curve2: curve2,
           labels: labels,
           chart_title: chart_label(assigns.aria_label, "Multi-series line chart"),
-          chart_description: chart_description(assigns.description)
+          chart_description: chart_description(assigns.description, data)
         )
 
       ~H"""
@@ -1214,7 +1214,7 @@ defmodule ExoUI.Charts.Cartesian do
           curve2_path: curve2_path,
           labels: labels,
           chart_title: chart_label(assigns.aria_label, "Stacked area chart"),
-          chart_description: chart_description(assigns.description)
+          chart_description: chart_description(assigns.description, data)
         )
 
       ~H"""

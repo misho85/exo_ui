@@ -8,9 +8,58 @@ defmodule ExoUI.Charts.Shared do
       defp chart_label("", fallback), do: fallback
       defp chart_label(value, _fallback), do: value
 
-      defp chart_description(nil), do: nil
-      defp chart_description(""), do: nil
-      defp chart_description(value), do: value
+      defp chart_description(nil, data), do: chart_data_summary(data)
+      defp chart_description("", data), do: chart_data_summary(data)
+      defp chart_description(value, _data), do: value
+
+      defp chart_data_summary(data) when is_list(data) do
+        entries =
+          data
+          |> Enum.take(6)
+          |> Enum.map(&chart_data_entry_summary/1)
+          |> Enum.reject(&is_nil/1)
+
+        cond do
+          entries == [] ->
+            nil
+
+          length(data) > 6 ->
+            Enum.join(entries, "; ") <> "; and #{length(data) - 6} more."
+
+          true ->
+            Enum.join(entries, "; ") <> "."
+        end
+      end
+
+      defp chart_data_summary(_data), do: nil
+
+      defp chart_data_entry_summary({label, values}) when is_map(values) do
+        values =
+          values
+          |> Enum.map(fn {series, value} -> "#{series} #{format_tooltip(value)}" end)
+          |> Enum.join(", ")
+
+        "#{label}: #{values}"
+      end
+
+      defp chart_data_entry_summary({label, value}) do
+        "#{label}: #{format_tooltip(value)}"
+      end
+
+      defp chart_data_entry_summary({label, first, second}) do
+        if chart_numeric?(second) do
+          "#{label}: #{format_tooltip(first)} and #{format_tooltip(second)}"
+        else
+          "#{label}: #{format_tooltip(first)}"
+        end
+      end
+
+      defp chart_data_entry_summary(value) when is_number(value), do: format_tooltip(value)
+      defp chart_data_entry_summary(_value), do: nil
+
+      defp chart_numeric?(value) when is_integer(value) or is_float(value), do: true
+      defp chart_numeric?(%{__struct__: Decimal}), do: true
+      defp chart_numeric?(_value), do: false
 
       defp to_number(n) when is_float(n), do: n
       defp to_number(n) when is_integer(n), do: n * 1.0

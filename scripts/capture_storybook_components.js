@@ -94,6 +94,14 @@ async function focusFirst(page, selector) {
   return safe(page.locator(selector), (node) => node.focus({ timeout: 1500 }));
 }
 
+async function waitForLiveView(page) {
+  await page.waitForFunction(
+    () => document.querySelector("[data-phx-main]")?.classList.contains("phx-connected"),
+    null,
+    { timeout: STORY_READY_TIMEOUT }
+  );
+}
+
 async function openOverlayIfClosed(page, overlaySelector, triggerSelector) {
   const overlay = page.locator(`#story-live ${overlaySelector}`).first();
 
@@ -284,6 +292,7 @@ async function captureComponent(browser, runDir, story) {
       timeout: NAVIGATION_TIMEOUT
     });
     await page.locator("#story-live").waitFor({ state: "visible", timeout: STORY_READY_TIMEOUT });
+    await waitForLiveView(page);
     await componentDemo(page, name);
     dataExoCount = await page.locator("#story-live [data-exo]").count();
     await page.screenshot({ path: screenshotPath, fullPage: true });

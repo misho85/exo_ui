@@ -9,6 +9,8 @@ test.describe("chart components", () => {
     await expect(chart).toHaveAttribute("role", "img");
     await expect(chart).toHaveAttribute("aria-label", "Bar chart");
     await expect(chart.locator("title").first()).toHaveText("Bar chart");
+    await expect(chart.locator("desc").first()).toContainText("January: 4.2K");
+    await expect(chart.locator("desc").first()).toContainText("June: 8.9K");
   });
 
   test("radial charts expose accessible SVG semantics", async ({ page }) => {
@@ -18,6 +20,8 @@ test.describe("chart components", () => {
     await expect(chart).toHaveAttribute("role", "img");
     await expect(chart).toHaveAttribute("aria-label", "Donut chart");
     await expect(chart.locator("title").first()).toHaveText("Donut chart");
+    await expect(chart.locator("desc").first()).toContainText("Chrome: 275");
+    await expect(chart.locator("desc").first()).toContainText("Other: 90");
   });
 
   test("sparkline and trend badge expose accessible names", async ({ page }) => {
@@ -28,6 +32,8 @@ test.describe("chart components", () => {
       "role",
       "img"
     );
+    await expect(story(page).locator('[data-exo="sparkline"] desc').first()).toContainText("42; 58");
+    await expect(story(page).locator('[data-exo="sparkline"] desc').first()).toContainText("more.");
     await expect(story(page).locator('[data-exo="trend-badge"]').first()).toHaveAttribute(
       "aria-label",
       "Up 14.3%"

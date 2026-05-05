@@ -45,7 +45,7 @@ defmodule ExoUI.Charts.Radial do
       radius = size / 2 - 4
       slices = build_pie_slices(data, total, cx, cy, radius, radius)
       chart_title = chart_label(assigns.aria_label, "Pie chart")
-      chart_description = chart_description(assigns.description)
+      chart_description = chart_description(assigns.description, data)
 
       assigns =
         assign(assigns,
@@ -102,7 +102,7 @@ defmodule ExoUI.Charts.Radial do
       inner_r = assigns.inner_radius * 1.0
       slices = build_donut_slices(data, total, cx, cy, outer_r, inner_r)
       chart_title = chart_label(assigns.aria_label, "Donut chart")
-      chart_description = chart_description(assigns.description)
+      chart_description = chart_description(assigns.description, data)
 
       assigns =
         assign(assigns,
@@ -161,7 +161,7 @@ defmodule ExoUI.Charts.Radial do
       inner_r = assigns.inner_radius * 1.0
       slices = build_donut_slices(data, total, cx, cy, outer_r, inner_r)
       chart_title = chart_label(assigns.aria_label, "Donut chart with summary")
-      chart_description = chart_description(assigns.description)
+      chart_description = chart_description(assigns.description, data)
 
       assigns =
         assign(assigns,
@@ -280,7 +280,7 @@ defmodule ExoUI.Charts.Radial do
         end)
 
       chart_title = chart_label(assigns.aria_label, "Radar chart")
-      chart_description = chart_description(assigns.description)
+      chart_description = chart_description(assigns.description, data)
 
       assigns =
         assign(assigns,
@@ -390,7 +390,7 @@ defmodule ExoUI.Charts.Radial do
         end)
 
       chart_title = chart_label(assigns.aria_label, "Radial chart")
-      chart_description = chart_description(assigns.description)
+      chart_description = chart_description(assigns.description, data)
 
       assigns =
         assign(assigns,
