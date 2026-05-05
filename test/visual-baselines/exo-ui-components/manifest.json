@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-05T06:27:06.645Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T06-23-14-312Z",
+  "updatedAt": "2026-05-05T06:48:08.772Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T06-41-21-843Z",
   "count": 85,
   "entries": [
     {
@@ -371,7 +371,7 @@
       "dataExoCount": 22,
       "width": 1280,
       "height": 900,
-      "sha256": "ac5d0d5b7974af11b99d94f50e174a1a9b119275437c6cbcec9e92514966625c"
+      "sha256": "c39b5699198809c5cb15015e21fcf94aff364497c08c5d8242fea6fa3cd16c66"
     },
     {
       "name": "feedback/spinner",
@@ -380,7 +380,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "ddb86e56d0f68d6e902bbbbbe087b7d88f0304d21a82753fdf68bed6bf4e9b61"
+      "sha256": "956a81a225abeed2fa224b493beac8b4d5feef497fbbd66414ea00e52d1ca0f0"
     },
     {
       "name": "feedback/toast_container",
@@ -389,7 +389,7 @@
       "dataExoCount": 26,
       "width": 1280,
       "height": 900,
-      "sha256": "e638345d723137bde611ad9ac2dc9c22784a86d5b39b2d2369fecd37f6c73e3c"
+      "sha256": "a2e326c50bc4d189de8190239c4673e6e48c296ba4c1cec15794402e6331b678"
     },
     {
       "name": "forms/combobox",
@@ -398,7 +398,7 @@
       "dataExoCount": 180,
       "width": 1280,
       "height": 900,
-      "sha256": "6f6d9773bdfaf4d859d9dee857613bf6506b2800fb9009d51094428d5e0f291f"
+      "sha256": "9145c18d0d194f49880de5a8800647d37e56ad778dc40f326a2f6abe0372157a"
     },
     {
       "name": "forms/combobox_async",

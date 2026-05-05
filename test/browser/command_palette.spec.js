@@ -2,6 +2,20 @@ const { test, expect } = require("@playwright/test");
 
 const { expectAttribute, expectFocused, gotoStory, story } = require("./helpers/storybook");
 
+async function expectWithinInert(locator, expected) {
+  await expect
+    .poll(async () =>
+      locator.evaluate((node) => Boolean(node.inert || node.closest("[inert]")))
+    )
+    .toBe(expected);
+}
+
+async function expectHtmlOverflow(page, expected) {
+  await expect
+    .poll(async () => page.evaluate(() => document.documentElement.style.overflow))
+    .toBe(expected);
+}
+
 test.describe("command palette", () => {
   test("opens with Ctrl+K, focuses the input, and closes with Escape", async ({ page }) => {
     await gotoStory(page, "/components/menus/command_palette");
@@ -32,15 +46,19 @@ test.describe("command palette", () => {
     await gotoStory(page, "/components/menus/command_palette");
 
     const canvas = story(page);
-    const trigger = canvas.getByRole("button", { name: "Open command palette" }).first();
+    const trigger = canvas.locator('#default-component button[data-exo="btn"]').first();
     const palette = canvas.locator("#command-palette-single-default");
     const input = palette.locator('[data-exo="command-palette-input"]');
+    const originalHtmlOverflow = await page.evaluate(() => document.documentElement.style.overflow);
 
     await expectAttribute(palette, "data-state", "closed");
     await trigger.click();
 
     await expectAttribute(palette, "data-state", "open");
     await expect(palette).toHaveAttribute("aria-hidden", "false");
+    await expect(palette).toHaveAttribute("data-overlay-stack-index", /\d+/);
+    await expectWithinInert(trigger, true);
+    await expectHtmlOverflow(page, "hidden");
     await expectFocused(input);
 
     await page.keyboard.press("Tab");
@@ -49,6 +67,8 @@ test.describe("command palette", () => {
     await page.keyboard.press("Escape");
     await expectAttribute(palette, "data-state", "closed");
     await expect(palette).toHaveAttribute("aria-hidden", "true");
+    await expectWithinInert(trigger, false);
+    await expectHtmlOverflow(page, originalHtmlOverflow);
     await expectFocused(trigger);
   });
 

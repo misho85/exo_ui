@@ -21,6 +21,7 @@ const overlayRegistry = {
   register(hook) {
     if (!hook?.el?.isConnected) return
 
+    if (!hook._overlayOrder) hook._overlayOrder = overlaySequence += 1
     this.active.add(hook)
     this.syncOutsideInert()
   },
@@ -90,8 +91,7 @@ const overlayRegistry = {
         for (const child of Array.from(node.parentElement.children)) {
           if (!(child instanceof HTMLElement)) continue
           if (child === node || allowed.has(child)) continue
-          if (roots.some((activeRoot) => child.contains(activeRoot))) continue
-          candidates.add(child)
+          this._collectOutsideCandidate(child, roots, candidates)
         }
 
         if (node.parentElement === document.body) break
@@ -100,6 +100,19 @@ const overlayRegistry = {
     }
 
     return candidates
+  },
+
+  _collectOutsideCandidate(element, roots, candidates) {
+    if (roots.some((activeRoot) => element === activeRoot)) return
+
+    if (roots.some((activeRoot) => element.contains(activeRoot))) {
+      for (const child of Array.from(element.children)) {
+        if (child instanceof HTMLElement) this._collectOutsideCandidate(child, roots, candidates)
+      }
+      return
+    }
+
+    candidates.add(element)
   },
 
   _canInert(element, roots) {
@@ -454,4 +467,4 @@ const ExoOverlay = {
   }
 }
 
-export { ExoOverlay }
+export { ExoOverlay, overlayRegistry }

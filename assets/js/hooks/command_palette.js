@@ -1,3 +1,5 @@
+import { overlayRegistry } from './overlay.js'
+
 const focusableSelector = [
   'a[href]',
   'button:not([disabled])',
@@ -229,6 +231,7 @@ const ExoCommandPalette = {
 
     this._pendingInvoker = null
     this._previousFocus = this._isRestoreTarget(previousFocus) ? previousFocus : null
+    overlayRegistry.register(this)
     this._filter()
 
     requestAnimationFrame(() => {
@@ -239,6 +242,8 @@ const ExoCommandPalette = {
 
   _deactivate(options = {}) {
     this._isOpenActive = false
+    overlayRegistry.unregister(this)
+    this._overlayOrder = null
     this._reset()
 
     if (options.restoreFocus === false) return
@@ -422,6 +427,7 @@ const ExoCommandPalette = {
 
   _unbind(options = {}) {
     if (!options.preserveState) PaletteRegistry.unregister(this)
+    if (!options.preserveState) overlayRegistry.unregister(this)
     if (this._onKey) this.el.removeEventListener("keydown", this._onKey)
     if (this._onDocumentPointerdown) document.removeEventListener("pointerdown", this._onDocumentPointerdown, true)
     if (this._onDocumentClick) document.removeEventListener("click", this._onDocumentClick, true)
@@ -455,6 +461,7 @@ const ExoCommandPalette = {
       this._isOpenActive = false
       this._previousFocus = null
       this._pendingInvoker = null
+      this._overlayOrder = null
     }
   }
 }

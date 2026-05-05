@@ -16,7 +16,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Storybook story types | 81 component stories, 1 live component story, 3 aggregate example stories, 0 component/layout page-mode stories |
 | Playwright component capture | 85 Storybook routes captured |
 | Capture artifacts | 85 screenshots, 85 WebM videos, 85 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-05T06-23-14-312Z/viewer.html` |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-05T06-41-21-843Z/viewer.html` |
 | Browser suite | 65 Playwright tests passing |
 | ExUnit suite | 502 tests passing |
 | Visual regression | 85 committed screenshot baselines with pixel-diff checking |
@@ -68,6 +68,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - Modal, sheet, and drawer roots now share topmost-only interactivity across cross-type stacks. Lower open overlays remain visible but are marked `inert` and `aria-hidden` until the active overlay above them closes, and Storybook now includes an `Overlay Stack` example route with screenshot/video capture.
 - `command_palette/1` now exposes a configurable `shortcut` attribute. The default remains `mod+k`, custom shortcuts such as `ctrl+j` work, and `shortcut={nil}` makes a palette manual-only so multiple command surfaces do not steal each other's keyboard events.
 - Command palette trigger-driven opening now follows the dialog lifecycle more closely: public show/hide helpers sync `data-state` and `aria-hidden`, the hook observes externally opened palettes, traps Tab inside the dialog, and restores focus to the trigger on close.
+- Command palette now participates in the shared overlay registry like modal, sheet, and drawer: trigger-open palettes receive a stack index, lock page scroll, inert outside Storybook/page siblings, keep sibling trigger/content branches isolated even inside the same story container, and restore focus only after inert state is released.
 
 ## Comparison vs shadcn/daisyUI
 
@@ -76,7 +77,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Component stories | Broad Storybook route coverage exists; all real component stories are component/live-component stories, and aggregate demos are explicit examples | No component/layout page-mode stories remain |
 | Theming | Token-driven CSS with light/dark support, reduced-motion guard, semantic elevation/backdrop tokens, and browser checks against hardcoded component backdrops | Needs docs for token customization patterns and more component-specific state tokens |
 | Forms | Phoenix FormField integration is now strong across most controls, select/combobox expose active-descendant keyboard state, and combobox empty/loading states announce changes politely, including an async LiveComponent server-filter story | Component-mode controls should expose more attrs/slots directly in PhoenixStorybook playgrounds |
-| Overlays/menus | Browser-tested popover, dropdown, context menu, menubar, modal/confirm-modal/sheet/drawer focus traps, command palette trigger open/focus trap/focus restore, topmost Escape/backdrop handling, outside inerting, scroll lock, same-type and cross-type stacking order, lower-overlay inerting, focus restore, public show/hide helpers for modal/drawer/sheet/command palette, configurable command palette shortcuts, and guarded confirm actions that can stay open for server validation | Richer nested overlay content recipes still need deeper Radix/shadcn parity checks |
+| Overlays/menus | Browser-tested popover, dropdown, context menu, menubar, modal/confirm-modal/sheet/drawer focus traps, command palette trigger open/focus trap/focus restore, shared overlay registry participation, topmost Escape/backdrop handling, outside inerting, scroll lock, same-type and cross-type stacking order, lower-overlay inerting, focus restore, public show/hide helpers for modal/drawer/sheet/command palette, configurable command palette shortcuts, and guarded confirm actions that can stay open for server validation | Richer nested overlay content recipes still need deeper Radix/shadcn parity checks |
 | Keyboard support | Covered for major actions, menus, select/combobox, rating, tabs, and date picker grid movement | Date picker month changes still depend on the parent LiveView handling prev/next events |
 | Visual proof | Automated screenshots and videos for 85 routes, committed visual baselines, a CI-friendly diff command, and GitHub Actions wiring | Needs review tuning once real PR diffs start producing visual changes |
 | Composability | Slots and `data-exo` styling are consistent | No shadcn-style `asChild`/polymorphic root pattern for advanced composition |
@@ -91,11 +92,11 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 ## Verification used
 
 - `mix test` -> 502 tests, 0 failures.
-- `bun run build:all`.
+- `mix assets.build` in `storybook` -> regenerated `priv/static/assets/storybook.js`.
 - `mix compile --warnings-as-errors` in `storybook`.
 - `bun run test:browser` -> 65 tests, 0 failures.
-- `bun run capture:components` -> 85 entries, 0 failed, 85 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T06-23-14-312Z`.
+- `bun run capture:components` -> 85 entries, 0 failed, 85 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T06-41-21-843Z`.
 - `bun run capture:validate` -> 85 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after switching command palette capture to trigger-driven opening.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after command palette joined the shared overlay registry.
 - `bun run visual:check` -> 85 current screenshots matched the committed baseline.
 - Documentation-only update added `docs/guides/component-usage.md` and linked it from README.
