@@ -13,13 +13,13 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | --- | --- |
 | Public components | 61 public component delegates audited from `lib/exo_ui/components.ex` |
 | Missing Storybook stories | 0 public components missing a story |
-| Storybook story types | 81 component stories, 22 live component stories, 6 aggregate example stories, 0 component/layout page-mode stories |
-| Playwright component capture | 109 Storybook routes captured |
-| Capture artifacts | 109 screenshots, 109 WebM videos, 109 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-05T20-56-52-392Z/viewer.html` |
-| Browser suite | 89 Playwright tests passing |
+| Storybook story types | 81 component stories, 23 live component stories, 6 aggregate example stories, 0 component/layout page-mode stories |
+| Playwright component capture | 110 Storybook routes captured |
+| Capture artifacts | 110 screenshots, 110 WebM videos, 110 MP4 videos |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-05T21-10-35-709Z/viewer.html` |
+| Browser suite | 90 Playwright tests passing |
 | ExUnit suite | 503 tests passing |
-| Visual regression | 109 committed screenshot baselines with pixel-diff checking |
+| Visual regression | 110 committed screenshot baselines with pixel-diff checking |
 | Usage documentation | Central copy-paste reference added at `docs/guides/component-usage.md` |
 
 ## What improved
@@ -121,6 +121,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `docs/guides/date-picker-recipes.md` now documents parent-controlled calendars, hidden ISO date submission, LiveComponent event targeting, min/max bounds, available-day marker semantics, disabled calendars, server validation, and browser coverage expectations.
 - `Access Review Workflow` is now a live Storybook recipe route for a security/admin product flow covering status tabs, risk/search filters, command-palette routing, table row actions, drawer-hosted review details, evidence-note validation, guarded revocation, reset state, and live status text.
 - `docs/guides/access-review-workflows.md` now documents the same access review pattern as a copy-paste production recipe, including targeted LiveComponent tab events, explicit command close, drawer validation, and modal-plus-drawer close pipelines after revoke.
+- `Incident Response Workflow` is now a live Storybook recipe route for an operations product flow covering status tabs, severity/search filters, command-palette routing, table row actions, drawer-hosted triage details, timeline events, escalation validation, guarded resolution, reset state, and live status text.
+- `docs/guides/incident-response-workflows.md` now documents the same incident response pattern as a copy-paste production recipe, including targeted LiveComponent tab events, command routing, drawer validation, escalation, acknowledgement, and modal-plus-drawer close pipelines after resolution.
 
 ## Comparison vs shadcn/daisyUI
 
@@ -131,9 +133,9 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Forms | Phoenix FormField integration is now strong across most controls, select/combobox expose active-descendant keyboard state, combobox empty/loading states announce changes politely, and async save, saved-filter, and bulk-edit success paths have live recipe coverage | Component-mode controls should expose more attrs/slots directly in PhoenixStorybook playgrounds |
 | Overlays/menus | Browser-tested popover, dropdown, context menu, menubar, modal/confirm-modal/sheet/drawer focus traps, command palette trigger open/focus trap/focus restore, shared overlay registry participation, topmost Escape/backdrop handling, outside inerting, scroll lock, same-type and cross-type stacking order, lower-overlay inerting, focus restore, long-form stacked drawer scrolling, stacked validation errors, command-surface stacks, destructive confirm flows inside stacked overlays, public show/hide helpers for modal/drawer/sheet/command palette, configurable command palette shortcuts, app-shell recipes, editable-record recipes, command-routing recipes, and guarded confirm actions that can stay open for server validation | Needs more real-app recipes over time, but the core overlay/menu interaction parity is much closer |
 | Keyboard support | Covered for major actions, menus, select/combobox, rating, tabs, date picker grid movement, parent-controlled date picker month changes, and command palette driven multi-screen routing | Needs broader app-level shortcut recipes as more production shells are added |
-| Visual proof | Automated screenshots and videos for 109 routes, committed visual baselines, a CI-friendly diff command, and GitHub Actions wiring | Needs review tuning once real PR diffs start producing visual changes |
+| Visual proof | Automated screenshots and videos for 110 routes, committed visual baselines, a CI-friendly diff command, and GitHub Actions wiring | Needs review tuning once real PR diffs start producing visual changes |
 | Composability | Slots and `data-exo` styling are consistent | No shadcn-style `asChild`/polymorphic root pattern for advanced composition |
-| Usage docs | Central copy-paste usage reference exists for the current public component surface, plus button, input, select, combobox, table, modal, drawer, command-palette, date-picker, access-review, app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, async-save, saved-filter, command-routing, role-operations, action/form, table/overlay/menu, component-state, and token recipes | Still needs more narrow per-component pages as new high-traffic primitives emerge |
+| Usage docs | Central copy-paste usage reference exists for the current public component surface, plus button, input, select, combobox, table, modal, drawer, command-palette, date-picker, access-review, incident-response, app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, async-save, saved-filter, command-routing, role-operations, action/form, table/overlay/menu, component-state, and token recipes | Still needs more narrow per-component pages as new high-traffic primitives emerge |
 
 ## Remaining priorities
 
@@ -145,9 +147,9 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 
 - `mix test` -> 503 tests, 0 failures.
 - `mix compile --warnings-as-errors` in `storybook`.
-- `bun run test:browser` -> 89 tests, 0 failures.
-- `bun run capture:components` -> 109 entries, 0 failed, 109 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T20-56-52-392Z`.
-- `bun run capture:validate` -> 109 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after adding Access Review Workflow.
-- `bun run visual:check` -> 109 current screenshots matched the committed baseline.
-- `docs/guides/component-usage.md` now links to button, input, select, combobox, table, modal, drawer, command-palette, date-picker, access-review, app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, import-export, async-save, command-routing, role-operations, saved-filter, action/form, table/overlay/menu, component-state, and token guides.
+- `bun run test:browser` -> 90 tests, 0 failures.
+- `bun run capture:components` -> 110 entries, 0 failed, 110 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T21-10-35-709Z`.
+- `bun run capture:validate` -> 110 entries with non-empty screenshot, WebM, and MP4 files.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after adding Incident Response Workflow.
+- `bun run visual:check` -> 110 current screenshots matched the committed baseline.
+- `docs/guides/component-usage.md` now links to button, input, select, combobox, table, modal, drawer, command-palette, date-picker, access-review, incident-response, app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, import-export, async-save, command-routing, role-operations, saved-filter, action/form, table/overlay/menu, component-state, and token guides.

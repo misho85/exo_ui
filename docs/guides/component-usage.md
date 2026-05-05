@@ -16,6 +16,7 @@ For full-page examples that combine multiple component families, see
 `docs/guides/command-palette-recipes.md`,
 `docs/guides/date-picker-recipes.md`,
 `docs/guides/access-review-workflows.md`,
+`docs/guides/incident-response-workflows.md`,
 `docs/guides/app-shell-workflows.md`,
 `docs/guides/editable-record-workflows.md`,
 `docs/guides/bulk-action-workflows.md`,

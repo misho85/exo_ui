@@ -419,6 +419,33 @@ async function componentDemo(page, name) {
       await clickButton(page, "Revoke access");
       await page.waitForTimeout(400);
       break;
+    case "incident_response_workflow":
+      await clickButton(page, "Open incident commands");
+      await page.waitForTimeout(300);
+      await safe(
+        page.locator('#story-live #incident-command [data-exo="command-palette-input"]'),
+        (node) => node.fill("critical", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await page.keyboard.press("Enter");
+      await page.waitForTimeout(350);
+      await clickButton(page, "Open incident Checkout API latency");
+      await page.waitForTimeout(350);
+      await clickButton(page, "Escalate incident");
+      await page.waitForTimeout(250);
+      await fillByLabel(page, "Triage note", "Payments rollback is ready.");
+      await page.waitForTimeout(250);
+      await safe(page.locator('#story-live #incident-owner'), (node) =>
+        node.selectOption("payments", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await clickButton(page, "Escalate incident");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Prepare resolve");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Resolve incident");
+      await page.waitForTimeout(400);
+      break;
     case "dashboard_drilldown_workflow":
       await clickButton(page, "At risk");
       await page.waitForTimeout(300);
