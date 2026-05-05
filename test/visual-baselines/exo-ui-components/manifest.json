@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-05T15:16:04.081Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T15-02-08-837Z",
-  "count": 98,
+  "updatedAt": "2026-05-05T15:51:48.950Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T15-38-47-563Z",
+  "count": 99,
   "entries": [
     {
       "name": "actions/button",
@@ -155,7 +155,7 @@
       "dataExoCount": 81,
       "width": 1280,
       "height": 900,
-      "sha256": "5a7861f103be7c6b31c2c093561cfe75348b5cf87bce1d5ab9f22988bc25b535"
+      "sha256": "b5c720df0e3de2236a71ef7995c9a44fd6bb401c313fefc2ab1e1bd2ef936978"
     },
     {
       "name": "charts/pie_chart",
@@ -164,7 +164,7 @@
       "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "dc735d0138741fa7d55987fdc2806923ce198c54ac92d0ad38d92fd515067f15"
+      "sha256": "396d4b3b8faef5e07f94c18b20cce40fa73b7b132135dc109bf3c5dfbe888e45"
     },
     {
       "name": "charts/progress_bar",
@@ -245,7 +245,7 @@
       "dataExoCount": 238,
       "width": 1280,
       "height": 900,
-      "sha256": "1cd90a08bfc4016d48b01ebceac41f186da3310fcb09bfa494d789c672afa1a7"
+      "sha256": "f6454abdeb86a0635faa3b2e0888619212f4e9c34c059232a0426412dc894c1b"
     },
     {
       "name": "data_display/kbd",
@@ -371,7 +371,7 @@
       "dataExoCount": 39,
       "width": 1280,
       "height": 900,
-      "sha256": "789bdeb8f2d0e45eb5003d40b5511f31ff75c3a8591c959146528c35c81baad6"
+      "sha256": "37371bd202a052610404568264198846474c57304a1d8ab8fbcc2157557cbc57"
     },
     {
       "name": "feedback/skeleton",
@@ -389,7 +389,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "2c048d5145fb930cfca5a04b90d8ad7813118f9c5c44d3f80f76c1a16e350fd9"
+      "sha256": "09f8d8519e7a9d3f47c0cee41d76a4a6a6ca24915d73742b015107f3c8e6f0a8"
     },
     {
       "name": "feedback/toast_container",
@@ -452,7 +452,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "806104cf39b8aadc05bd41f25c1a38e5518de3731185bc0c73687ac13ed10df7"
+      "sha256": "655ef8ebb49646f60e64b051a13aa6cff79164681d4d01714ba04eda163b4b47"
     },
     {
       "name": "forms/form",
@@ -461,7 +461,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "6454d67dce5b64b1ede09ca50310c1fc59ddd9afd2bb571f8639a6bbb2a1eda4"
+      "sha256": "c5477d66828ce83a878029ae2a97313c2d906605febd748908b6f1de24a64c86"
     },
     {
       "name": "forms/input",
@@ -632,7 +632,7 @@
       "dataExoCount": 57,
       "width": 1280,
       "height": 900,
-      "sha256": "6bf07edd32f594cf9e5084bc22ed61cd0930f0786eb0fca15c9fe07feb4128b1"
+      "sha256": "5eda8396834abfbda70de12253c9a17f858fddd6440c81ee159a1facdcd51181"
     },
     {
       "name": "menus/context_menu",
@@ -776,7 +776,7 @@
       "dataExoCount": 75,
       "width": 1280,
       "height": 900,
-      "sha256": "3824e164fe4e903c534217702807c5893de121be4ed9bd7e0fadfda2eedc6b20"
+      "sha256": "43518957bce0d168517f0de1dee105dad8a58a0b34f2de8a6befc07fb9d64c0a"
     },
     {
       "name": "overlays/popover",
@@ -812,7 +812,7 @@
       "dataExoCount": 49,
       "width": 1280,
       "height": 900,
-      "sha256": "f9e250b94b94194eddbd38f99e1746fbd82ed378fc07084db177c237a5b6f57a"
+      "sha256": "684eab4a70197eeb211879bf72d2e84e3b01bf6984bbdd72ae4943ba37163eee"
     },
     {
       "name": "recipes/bulk_action_workflow",
@@ -821,7 +821,7 @@
       "dataExoCount": 78,
       "width": 1280,
       "height": 900,
-      "sha256": "3c634b8685a99c8a78d26705c2c2668cca8eca12ae905491310f100055ee6207"
+      "sha256": "736cde34c40d992bf5716a90b44186cb1bbfe9323587dface56d35d633792d12"
     },
     {
       "name": "recipes/bulk_edit_workflow",
@@ -830,7 +830,7 @@
       "dataExoCount": 138,
       "width": 1280,
       "height": 900,
-      "sha256": "2824a2343f7a72591e8918b2774827b7def0af0aaeb522e835a6090f561869de"
+      "sha256": "eb6ddc8087cbdaac06ce945cd90cee57acbdd55ec4cbd7eedd3a8d7509621fe4"
     },
     {
       "name": "recipes/command_routing_workflow",
@@ -839,7 +839,7 @@
       "dataExoCount": 73,
       "width": 1280,
       "height": 900,
-      "sha256": "007df96881627021d86f208b59a38486957cb18220528311a25498840635014a"
+      "sha256": "527a1d26c1534cce541e8982e03165d120a9893462cb1460337595f49aa22645"
     },
     {
       "name": "recipes/component_recipe_matrix",
@@ -848,7 +848,7 @@
       "dataExoCount": 152,
       "width": 1280,
       "height": 900,
-      "sha256": "197d8a7f31c6d653ca80de8c4568b5aeade81b8891d915ed417bc7f8bc81ff2f"
+      "sha256": "4eaae4e2c81d2ad4d35de2fbf31a92d3d1b3f50b9ba7fcc0e872e73452fbc218"
     },
     {
       "name": "recipes/dashboard_drilldown_workflow",
@@ -857,7 +857,7 @@
       "dataExoCount": 132,
       "width": 1280,
       "height": 900,
-      "sha256": "b92907739dcecff017ebca05656cb9ec6658af782c98aef1675f5e3adc3452cb"
+      "sha256": "fce9268882ed20eece2b4195e60d002efa491b766ea8287c29d1a63ad3cbf867"
     },
     {
       "name": "recipes/data_table_workflow",
@@ -866,7 +866,7 @@
       "dataExoCount": 89,
       "width": 1280,
       "height": 900,
-      "sha256": "2c7f65da61b5561df2302a47c681fecc7cfe28e1a50a6637dd39b4779a09c45d"
+      "sha256": "a16add9cf881d3efc953eeb9f6568c40c98f3977cc27c324b126b69eada05016"
     },
     {
       "name": "recipes/import_export_workflow",
@@ -875,7 +875,16 @@
       "dataExoCount": 105,
       "width": 1280,
       "height": 900,
-      "sha256": "cbc6abf7477d31acf9caadb3719f30461b33d4d81bedc733a1d35228625d9bb9"
+      "sha256": "640e6bc6a3555ad4075ab9fbddf62cf74ad8ce61c7acc3391c6e696aa16b4f88"
+    },
+    {
+      "name": "recipes/role_operations_workflow",
+      "route": "/components/recipes/role_operations_workflow",
+      "screenshot": "screenshots/recipes__role_operations_workflow.png",
+      "dataExoCount": 146,
+      "width": 1280,
+      "height": 900,
+      "sha256": "08ae7c9030a3719413a3ce7cd918d768ad2a01cf72f2540634eba72c8bd22c7e"
     },
     {
       "name": "recipes/saved_filters_workflow",
@@ -884,7 +893,7 @@
       "dataExoCount": 74,
       "width": 1280,
       "height": 900,
-      "sha256": "4dd28c61ba350bd3a42f97894134d07f578f8ad6f4d3981a76b7230b129680c4"
+      "sha256": "dabafb611c2bd610b3208835949be3add9f62a5604e29167ac44265713af1bda"
     }
   ]
 }

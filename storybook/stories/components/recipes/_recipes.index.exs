@@ -13,5 +13,6 @@ defmodule Storybook.Components.Recipes do
   def entry("import_export_workflow"), do: [name: "Import Export Workflow", index: 5]
   def entry("async_save_workflow"), do: [name: "Async Save Workflow", index: 6]
   def entry("command_routing_workflow"), do: [name: "Command Routing Workflow", index: 7]
-  def entry("saved_filters_workflow"), do: [name: "Saved Filters Workflow", index: 8]
+  def entry("role_operations_workflow"), do: [name: "Role Operations Workflow", index: 8]
+  def entry("saved_filters_workflow"), do: [name: "Saved Filters Workflow", index: 9]
 end

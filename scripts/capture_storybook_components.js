@@ -301,6 +301,21 @@ async function componentDemo(page, name) {
       await clickButton(page, "Prepare export");
       await page.waitForTimeout(400);
       break;
+    case "role_operations_workflow":
+      await clickButton(page, "Support");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Blocked");
+      await page.waitForTimeout(300);
+      await safe(
+        page.locator('#story-live #role-operation-task-helio-domain').getByRole("button", {
+          name: "Open task"
+        }),
+        (node) => node.click({ timeout: 1500 })
+      );
+      await page.waitForTimeout(350);
+      await clickButton(page, "Acknowledge task");
+      await page.waitForTimeout(350);
+      break;
     case "saved_filters_workflow":
       await safe(page.locator('#story-live #saved-filter-query'), (node) =>
         node.fill("north", { timeout: 1500 })
