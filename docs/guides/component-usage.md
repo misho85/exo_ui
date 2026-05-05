@@ -5,6 +5,9 @@ surface. It complements Storybook: Storybook proves rendering and interaction,
 while this file shows how components should be used in real Phoenix LiveView
 templates.
 
+For full-page examples that combine multiple component families, see
+`docs/guides/app-shell-workflows.md`.
+
 ## Setup
 
 Import ExoUI in your app web helpers:

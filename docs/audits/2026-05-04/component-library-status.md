@@ -13,13 +13,13 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | --- | --- |
 | Public components | 61 public component delegates audited from `lib/exo_ui/components.ex` |
 | Missing Storybook stories | 0 public components missing a story |
-| Storybook story types | 81 component stories, 1 live component story, 4 aggregate example stories, 0 component/layout page-mode stories |
-| Playwright component capture | 86 Storybook routes captured |
-| Capture artifacts | 86 screenshots, 86 WebM videos, 86 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-05T07-43-25-154Z/viewer.html` |
-| Browser suite | 66 Playwright tests passing |
+| Storybook story types | 81 component stories, 1 live component story, 5 aggregate example stories, 0 component/layout page-mode stories |
+| Playwright component capture | 87 Storybook routes captured |
+| Capture artifacts | 87 screenshots, 87 WebM videos, 87 MP4 videos |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-05T08-28-56-862Z/viewer.html` |
+| Browser suite | 67 Playwright tests passing |
 | ExUnit suite | 502 tests passing |
-| Visual regression | 86 committed screenshot baselines with pixel-diff checking |
+| Visual regression | 87 committed screenshot baselines with pixel-diff checking |
 | Usage documentation | Central copy-paste reference added at `docs/guides/component-usage.md` |
 
 ## What improved
@@ -75,6 +75,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - The capture demo for `Overlay Stack` now records the full modal -> sheet -> drawer -> destructive confirm path, including the guarded confirm action that stays open after "Validate rollback".
 - Closed overlay roots, including command palettes, are no longer inerted just because another overlay is active. This lets a sheet safely launch a hidden command palette root as the next topmost overlay.
 - `Command Surface Stack` is now a Storybook example route and browser-tested recipe for sheet -> command palette -> drawer -> guarded confirm flows. The capture video records command search, Enter selection, drawer opening, and a confirm action that stays open for server validation.
+- `App Shell Workflow` is now a production-style Storybook example route combining sidebar layout, stat cards, a table, dropdown menu, command palette, validation sheet, account drawer, and guarded archive confirm in one executable page workflow.
+- `docs/guides/app-shell-workflows.md` now documents the same app-shell pattern as a copy-paste recipe, including the expected focus, inert, validation, and destructive-confirm behaviors.
 
 ## Comparison vs shadcn/daisyUI
 
@@ -85,14 +87,14 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Forms | Phoenix FormField integration is now strong across most controls, select/combobox expose active-descendant keyboard state, and combobox empty/loading states announce changes politely, including an async LiveComponent server-filter story | Component-mode controls should expose more attrs/slots directly in PhoenixStorybook playgrounds |
 | Overlays/menus | Browser-tested popover, dropdown, context menu, menubar, modal/confirm-modal/sheet/drawer focus traps, command palette trigger open/focus trap/focus restore, shared overlay registry participation, topmost Escape/backdrop handling, outside inerting, scroll lock, same-type and cross-type stacking order, lower-overlay inerting, focus restore, long-form stacked drawer scrolling, stacked validation errors, command-surface stacks, destructive confirm flows inside stacked overlays, public show/hide helpers for modal/drawer/sheet/command palette, configurable command palette shortcuts, and guarded confirm actions that can stay open for server validation | Needs more production-form recipes and app-shell examples, but the core overlay/menu interaction parity is much closer |
 | Keyboard support | Covered for major actions, menus, select/combobox, rating, tabs, and date picker grid movement | Date picker month changes still depend on the parent LiveView handling prev/next events |
-| Visual proof | Automated screenshots and videos for 86 routes, committed visual baselines, a CI-friendly diff command, and GitHub Actions wiring | Needs review tuning once real PR diffs start producing visual changes |
+| Visual proof | Automated screenshots and videos for 87 routes, committed visual baselines, a CI-friendly diff command, and GitHub Actions wiring | Needs review tuning once real PR diffs start producing visual changes |
 | Composability | Slots and `data-exo` styling are consistent | No shadcn-style `asChild`/polymorphic root pattern for advanced composition |
-| Usage docs | Central copy-paste usage reference exists for the current public component surface | Still needs richer per-component edge-case pages for variants, long content, and recipes |
+| Usage docs | Central copy-paste usage reference exists for the current public component surface, plus a dedicated app-shell workflow recipe | Still needs richer per-component edge-case pages for variants, long content, and recipes |
 
 ## Remaining priorities
 
 1. Expand the new component usage reference into per-component recipe pages: disabled states, validation errors, long content, dark mode, and richer keyboard/a11y notes.
-2. Add more production-form and app-shell examples that combine forms, menus, tables, and overlays in one workflow.
+2. Add more production-form examples that combine forms, tables, menus, and overlays around editable records.
 3. Tune visual diff thresholds after the first few CI runs if Linux font rendering causes expected drift.
 
 ## Verification used
@@ -100,9 +102,9 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `mix test` -> 502 tests, 0 failures.
 - `mix assets.build` in `storybook` -> regenerated `priv/static/assets/storybook.js`.
 - `mix compile --warnings-as-errors` in `storybook`.
-- `bun run test:browser` -> 66 tests, 0 failures.
-- `bun run capture:components` -> 86 entries, 0 failed, 86 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T07-43-25-154Z`.
-- `bun run capture:validate` -> 86 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after expanding Overlay Stack and adding Command Surface Stack.
-- `bun run visual:check` -> 86 current screenshots matched the committed baseline.
-- `docs/guides/component-usage.md` now includes a stacked sheet-to-drawer long-form recipe with validation-error/destructive confirm examples and a sheet-launched command palette recipe.
+- `bun run test:browser` -> 67 tests, 0 failures.
+- `bun run capture:components` -> 87 entries, 0 failed, 87 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T08-28-56-862Z`.
+- `bun run capture:validate` -> 87 entries with non-empty screenshot, WebM, and MP4 files.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after adding App Shell Workflow.
+- `bun run visual:check` -> 87 current screenshots matched the committed baseline.
+- `docs/guides/component-usage.md` now links to the app-shell workflow guide; `docs/guides/app-shell-workflows.md` documents the production-style shell recipe.

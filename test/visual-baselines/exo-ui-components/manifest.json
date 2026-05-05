@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-05T07:56:56.806Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T07-43-25-154Z",
-  "count": 86,
+  "updatedAt": "2026-05-05T08:33:26.387Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T08-28-56-862Z",
+  "count": 87,
   "entries": [
     {
       "name": "actions/button",
@@ -173,7 +173,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "a70017a5b57c336778945b5620905063ad1f34410e55b22c35ff415dd2ef05d2"
+      "sha256": "e95c262c20aaf4b77d02a4baa3fe4a62e78a760d04f8cb059a78e054bf72f5b5"
     },
     {
       "name": "charts/radar_chart",
@@ -380,7 +380,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "9a06ec7653542983fbd786032e9b3a2a1d01a5fc317b7762581da782cb9477cc"
+      "sha256": "4218f2d90b4573ed92466351692c81ee8adff672b8848897e7b15a76bf7c3021"
     },
     {
       "name": "feedback/toast_container",
@@ -434,7 +434,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "b6a525e6ad3fc87300e2d51cf27a0a1e171dbbea40130316e38899c55b573e6f"
+      "sha256": "73151a0633f87684b06584d7435a837f4beaaed2c8d42df97da697217e60706e"
     },
     {
       "name": "forms/form",
@@ -497,7 +497,16 @@
       "dataExoCount": 96,
       "width": 1280,
       "height": 900,
-      "sha256": "223f7c24025d1dd5a41b1eba29d9e3f931ff01690725671b43413c2ac0ef851f"
+      "sha256": "70ab117507f270413775739a04897536c1f791b9f795e6d26f1648232faf0fc7"
+    },
+    {
+      "name": "layout/app_shell_workflow",
+      "route": "/components/layout/app_shell_workflow",
+      "screenshot": "screenshots/layout__app_shell_workflow.png",
+      "dataExoCount": 204,
+      "width": 1280,
+      "height": 900,
+      "sha256": "1bcc4043a895c5678f177f97ddd2cf72a4db8491bf7f500ca6e6b907add460d2"
     },
     {
       "name": "layout/card",
@@ -506,7 +515,7 @@
       "dataExoCount": 55,
       "width": 1280,
       "height": 900,
-      "sha256": "ec4de7a9aa74b6714fdf7100bcebb6b9b8a1f25bcc237490132f3d62cb20702d"
+      "sha256": "62e646b2c0dc62d066135b1e66cd4c2ae4639351377dbaa53b141da8e8aec476"
     },
     {
       "name": "layout/carousel",
@@ -515,7 +524,7 @@
       "dataExoCount": 26,
       "width": 1280,
       "height": 900,
-      "sha256": "121a2c0451145766755e3e511ce83b70d548e6dd6223064a67b87d83ee51436b"
+      "sha256": "2f3a91544c823e05bb4271c3487356ca42658823fe38ebd90de5824deffd2428"
     },
     {
       "name": "layout/collapsible",
@@ -524,7 +533,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "d983670b98d790013882ac071ba59d71d7f75899d4a099c6fc2279cd0597e290"
+      "sha256": "0d8789fc882b8edbdd6c5296e5bd7651d9721d51a7e2a0b015fc5cce229ab854"
     },
     {
       "name": "layout/footer",
@@ -533,7 +542,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "8175dd78a2ebf65733f6a2e1762ca09a19dbeccd19e1e1e26f63fa083e9a9de4"
+      "sha256": "3dd130e669fd598f00443b777cb3284f8073d8eb6626050e7f98cf47e30c80c0"
     },
     {
       "name": "layout/header",
@@ -542,7 +551,7 @@
       "dataExoCount": 13,
       "width": 1280,
       "height": 900,
-      "sha256": "b9381ad670ed376386b3f62dc90ab7b8ff32b2ce27dfcdb926fc2a51eec2f6a7"
+      "sha256": "56f0222471a7944117fec35cbdbcd8127682dbd16dc8091e0652bf6c90a14fde"
     },
     {
       "name": "layout/hero",
@@ -551,7 +560,7 @@
       "dataExoCount": 14,
       "width": 1280,
       "height": 900,
-      "sha256": "e81234f1eafd7a0b8c8105638e3179fff65c3b2ff2d3aed1cc35614ac664a2e0"
+      "sha256": "8de3fc99ec142c345425868219e4f62be36d0c95c2eb1182dd57ea3062d99634"
     },
     {
       "name": "layout/icon",
@@ -560,7 +569,7 @@
       "dataExoCount": 0,
       "width": 1280,
       "height": 900,
-      "sha256": "4630b92fedc6ee54555ec401c034794ed88bda0428fc9a2d7c4933c10b6c3764"
+      "sha256": "1ccfc0ffc291b1b0dfb767d2ddf274b2918d2e5e284c2f5fbd3d3961238bf62e"
     },
     {
       "name": "layout/scroll_area",
@@ -569,7 +578,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "a7f7cd9b50d3f697dbf4eb4cb05492897ed05b5ea6a9922bc9281c207285cbae"
+      "sha256": "603557a96c372404caaddb08d9315e74094edaa8ffd654283e5b77087513cc07"
     },
     {
       "name": "layout/separator",
@@ -578,7 +587,7 @@
       "dataExoCount": 2,
       "width": 1280,
       "height": 900,
-      "sha256": "0a86dd14f14c1c2a096a1d0103a86a0a8ca100b1330a2728326c155366533fb4"
+      "sha256": "dfd34395e96c6b8a34fab3de6a65c7a97d51af63aedbdf647a2168e966c0f213"
     },
     {
       "name": "layouts/sidebar_layout",
@@ -587,7 +596,7 @@
       "dataExoCount": 54,
       "width": 1280,
       "height": 900,
-      "sha256": "09cb044e0d8b0f04374c6ab0b90eee71e633509c565c37122a31ad77c722e6eb"
+      "sha256": "7961b6dacbbb9742d557f6fc91e33708fc126499ac30e43e55db222faf5f7766"
     },
     {
       "name": "menus/command_palette",
@@ -650,7 +659,7 @@
       "dataExoCount": 36,
       "width": 1280,
       "height": 900,
-      "sha256": "07b803cf504a7e0f7d2e94557f125833f53c3de830ba86b464edecf8311b67f2"
+      "sha256": "a39cd58ed36c52dd37499f5d4c1f651ae744bb68f63df0c0e13c5d67d9e7e0b6"
     },
     {
       "name": "navigation/breadcrumb",
@@ -659,7 +668,7 @@
       "dataExoCount": 21,
       "width": 1280,
       "height": 900,
-      "sha256": "edbb82d3cb0beec6497c79fc6a4ec8c7e19535a236d4d17f429afc6c2f92251c"
+      "sha256": "6b7c1b8b46f64e4f8ce02380b2885b5a41a429bc59ce4392f6f92f95a6146ed6"
     },
     {
       "name": "navigation/navbar",
@@ -695,7 +704,7 @@
       "dataExoCount": 22,
       "width": 1280,
       "height": 900,
-      "sha256": "1d31cc089cf167f6d4c4f56f287e997720e191788736610dd27e1ee7d3d84a96"
+      "sha256": "4395a176d59f142cebb9595f723e42887717d17b93c0d35eccfa95cb9e02b496"
     },
     {
       "name": "navigation/wizard_sidebar",
@@ -713,7 +722,7 @@
       "dataExoCount": 22,
       "width": 1280,
       "height": 900,
-      "sha256": "aac3fc6f92ee74a7d5c019ef78a271a94c9bcac820558e67ae997cbd47557419"
+      "sha256": "ba13584ea836ef45a3909436a1a966936f6ae6dad5a1805ca1fe98b160973acf"
     },
     {
       "name": "overlays/drawer",
@@ -749,7 +758,7 @@
       "dataExoCount": 75,
       "width": 1280,
       "height": 900,
-      "sha256": "7d3448fa41368bbd3a2e5596f2b7387583819093875ea14176a93eb3f53ce287"
+      "sha256": "8ccbde8ca51f78ddbad1a08fb3410131210b52527d7223370ec9682907e9a445"
     },
     {
       "name": "overlays/popover",
@@ -758,7 +767,7 @@
       "dataExoCount": 12,
       "width": 1280,
       "height": 900,
-      "sha256": "1e8005cf12969f0c6a4ff00e840658abd9a1cd33420d1a86afd29921cc697cde"
+      "sha256": "a9ff1aad33f356da5b6ff9e751b8d4d23280c776672066ddb03cc6e6ce95d68e"
     },
     {
       "name": "overlays/sheet",
@@ -776,7 +785,7 @@
       "dataExoCount": 36,
       "width": 1280,
       "height": 900,
-      "sha256": "9c9dfd2d63d1049df92ab807f6c49ce383eb14136b4fe54758f8a7d0ea0da2b2"
+      "sha256": "9a82b9c9b586331ea644856417416bb2a1afb3f8b528e4fa7323d3eae93a433e"
     }
   ]
 }

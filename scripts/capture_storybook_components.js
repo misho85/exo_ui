@@ -130,6 +130,22 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(300);
       await clickFirst(page, '#story-live [data-exo="accordion-trigger"] >> nth=1');
       break;
+    case "app_shell_workflow":
+      await clickButton(page, "Open command palette");
+      await page.waitForTimeout(300);
+      await safe(page.locator('#story-live [data-exo="command-palette-input"]'), (node) =>
+        node.fill("filters", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await page.keyboard.press("Enter");
+      await page.waitForTimeout(350);
+      await clickButton(page, "Review filtered account");
+      await page.waitForTimeout(350);
+      await clickButton(page, "Archive segment");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Validate archive");
+      await page.waitForTimeout(400);
+      break;
     case "carousel":
       await clickFirst(page, '#story-live [data-exo="carousel-next"]');
       await page.waitForTimeout(500);
