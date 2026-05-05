@@ -324,12 +324,18 @@ defmodule ExoUI.LayoutsTest do
     refute html =~ ~s(data-exo="sidebar-badge")
   end
 
-  test "renders sidebar item with icon" do
+  test "renders sidebar item with lucide icon" do
     assigns = %{}
-    html = rendered_to_string(~H|<.sidebar_item href="/settings" label="Settings" icon="gear" />|)
+
+    html =
+      rendered_to_string(
+        ~H|<.sidebar_item href="/settings" label="Preferences" icon="settings" />|
+      )
 
     assert html =~ ~s(data-exo="sidebar-icon")
-    assert html =~ "gear"
+    assert html =~ ~s(aria-hidden="true")
+    assert html =~ "<svg"
+    refute html =~ ">settings<"
   end
 
   test "does not render icon when icon is nil" do
@@ -375,7 +381,7 @@ defmodule ExoUI.LayoutsTest do
     assert html =~ ~s(data-exo="sidebar-label")
     assert html =~ ~s(data-exo="sidebar-badge")
     assert html =~ ~s(data-active)
-    assert html =~ "mail"
+    assert html =~ "<svg"
     assert html =~ "Messages"
     assert html =~ "12"
     assert html =~ "special"

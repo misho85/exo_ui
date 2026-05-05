@@ -7,6 +7,8 @@ defmodule ExoUI.Layouts do
 
   use Phoenix.Component
 
+  import ExoUI.Components.Core, only: [icon: 1]
+
   @doc "Renders an app shell with collapsible sidebar, topbar, and main content area."
   attr :id, :string, default: "sidebar-layout"
   attr :class, :any, default: nil
@@ -109,7 +111,9 @@ defmodule ExoUI.Layouts do
     ~H"""
     <li data-exo="sidebar-item" data-active={@active && ""} class={@class} {@rest}>
       <.link navigate={@href}>
-        <span :if={@icon} data-exo="sidebar-icon">{@icon}</span>
+        <span :if={@icon} data-exo="sidebar-icon" aria-hidden="true">
+          <.icon name={@icon} class="size-4" />
+        </span>
         <span data-exo="sidebar-label">{@label}</span>
         <span
           :if={@badge && @badge > 0}

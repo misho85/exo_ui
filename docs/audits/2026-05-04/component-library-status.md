@@ -13,12 +13,12 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | --- | --- |
 | Public components | 61 public component delegates audited from `lib/exo_ui/components.ex` |
 | Missing Storybook stories | 0 public components missing a story |
-| Component-mode stories | 80 component stories, 1 live component story, 2 aggregate page-mode stories left (`Card`, `Charts overview`) |
+| Component-mode stories | 81 component stories, 1 live component story, 2 aggregate page-mode stories left (`Card`, `Charts overview`) |
 | Playwright component capture | 84 Storybook routes captured |
 | Capture artifacts | 84 screenshots, 84 WebM videos, 84 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-05T02-47-14-113Z/viewer.html` |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-05T03-42-28-153Z/viewer.html` |
 | Browser suite | 61 Playwright tests passing |
-| ExUnit suite | 496 tests passing after combobox server-filter changes |
+| ExUnit suite | 496 tests passing |
 | Visual regression | 84 committed screenshot baselines with pixel-diff checking |
 
 ## What improved
@@ -57,6 +57,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - Menu stories are now component-mode: `Dropdown`, `DropdownMenu`, `ContextMenu`, `CommandPalette`, and `Menubar` expose real attrs/slots in PhoenixStorybook, use generated Storybook IDs, and keep keyboard/focus browser coverage against the generated DOM.
 - Overlay stories are now component-mode: `Popover`, `Tooltip`, `HoverCard`, `ConfirmModal`, `Drawer`, and `Sheet` expose generated Storybook IDs, attrs/slots, source examples, and browser-tested trigger templates for opening/closing sheet and drawer variations.
 - `ContentCard`, `StatCard`, and `MetricCard` now have direct browser coverage for header/body rendering, action/trailing slots, trend direction states, and body-only/minimal variants.
+- `SidebarLayout` is now a component-mode Storybook story using a one-column preview so the app-shell layout is inspectable without being squeezed by the source panel.
+- `SidebarItem` now renders real Lucide SVG icons instead of showing icon names or emoji as visible text, with CSS sizing and ExUnit coverage for the icon slot.
 
 ## Comparison vs shadcn/daisyUI
 
@@ -83,7 +85,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `bun run build:all`.
 - `mix compile --warnings-as-errors` in `storybook`.
 - `bun run test:browser` -> 61 tests, 0 failures.
-- `bun run capture:components` -> 84 entries, 0 failed, 84 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T02-47-14-113Z`.
+- `bun run capture:components` -> 84 entries, 0 failed, 84 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T03-42-28-153Z`.
 - `bun run capture:validate` -> 84 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after converting overlay stories to component-mode layouts.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after converting `SidebarLayout` to component-mode and replacing text icons with SVG icons.
 - `bun run visual:check` -> 84 current screenshots matched the committed baseline.

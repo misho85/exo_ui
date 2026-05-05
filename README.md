@@ -274,8 +274,15 @@ bun run test:browser:install
 bun run test:browser
 ```
 
-Current browser coverage includes `popover`, `select`, `combobox`, `tooltip`,
-and `command_palette`.
+Current browser coverage spans actions, charts, forms, overlays/menus,
+navigation, layouts, data display, feedback, and visual-style smoke checks.
+Component capture produces screenshots and videos for every Storybook route:
+
+```sh
+bun run capture:components
+bun run capture:validate
+bun run visual:check
+```
 
 ## Development
 

@@ -5,15 +5,16 @@ test.describe("layout components", () => {
   test("sidebar layout syncs expanded state with button semantics and storage", async ({ page }) => {
     await gotoStory(page, "/layouts/sidebar_layout");
 
-    const root = story(page).locator("#demo-sidebar");
+    const root = story(page).locator("#sidebar-layout-single-app-shell");
     const trigger = root.locator('[data-exo="sidebar-hamburger"]');
-    const panel = root.locator("#demo-sidebar-panel");
-    const toggle = root.locator("#demo-sidebar-toggle");
+    const panel = root.locator("#sidebar-layout-single-app-shell-panel");
+    const toggle = root.locator("#sidebar-layout-single-app-shell-toggle");
 
     await expectAttribute(root, "data-ready", "");
     await expectAttribute(root, "data-state", "open");
     await expectAttribute(panel, "data-state", "open");
-    await expect(trigger).toHaveAttribute("aria-controls", "demo-sidebar-panel");
+    await expect(root.locator('[data-exo="sidebar-icon"] svg')).toHaveCount(4);
+    await expect(trigger).toHaveAttribute("aria-controls", "sidebar-layout-single-app-shell-panel");
     await expect(trigger).toHaveAttribute("aria-expanded", "true");
     await expect(toggle).toBeChecked();
 
@@ -40,7 +41,7 @@ test.describe("layout components", () => {
     await page.setViewportSize({ width: 390, height: 760 });
     await gotoStory(page, "/layouts/sidebar_layout");
 
-    const root = story(page).locator("#demo-sidebar");
+    const root = story(page).locator("#sidebar-layout-single-app-shell");
     const trigger = root.locator('[data-exo="sidebar-hamburger"]');
     const overlay = root.locator('[data-exo="sidebar-overlay"]');
 
