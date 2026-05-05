@@ -202,6 +202,18 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(350);
       await page.keyboard.press("Escape");
       break;
+    case "command_routing_workflow":
+      await clickButton(page, "Review accounts");
+      await page.waitForTimeout(350);
+      await clickButton(page, "Open routing commands");
+      await page.waitForTimeout(350);
+      await safe(page.locator('#story-live [data-exo="command-palette-input"]'), (node) =>
+        node.fill("risk", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await page.keyboard.press("Enter");
+      await page.waitForTimeout(450);
+      break;
     case "command_surface_stack":
       await clickButton(page, "Open command surface");
       await page.waitForTimeout(300);

@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-05T11:49:14.607Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T11-42-01-858Z",
-  "count": 92,
+  "updatedAt": "2026-05-05T13:16:03.444Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T13-12-52-433Z",
+  "count": 93,
   "entries": [
     {
       "name": "actions/button",
@@ -389,7 +389,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "f5dfc4572a567f33c8128674bf8007104bb2bea4d2f07b8ff052233421140fac"
+      "sha256": "bef3fa755e6a876f1c3064b393c1b232568204aa85e8949d44baf24614f30dc7"
     },
     {
       "name": "feedback/toast_container",
@@ -614,7 +614,7 @@
       "dataExoCount": 54,
       "width": 1280,
       "height": 900,
-      "sha256": "7961b6dacbbb9742d557f6fc91e33708fc126499ac30e43e55db222faf5f7766"
+      "sha256": "09cb044e0d8b0f04374c6ab0b90eee71e633509c565c37122a31ad77c722e6eb"
     },
     {
       "name": "menus/command_palette",
@@ -812,7 +812,7 @@
       "dataExoCount": 49,
       "width": 1280,
       "height": 900,
-      "sha256": "f6aab24994c12816310c2cfbf5161dc34c82bdfa0fefb48eb529790e3de897de"
+      "sha256": "6a76c93508f020edb19ad83813d32c2e059e12a7d12ec06a3db3e3483e2118a0"
     },
     {
       "name": "recipes/bulk_action_workflow",
@@ -821,7 +821,16 @@
       "dataExoCount": 78,
       "width": 1280,
       "height": 900,
-      "sha256": "f3ca13933ef7d1dcb3e868e455b13eac37e8de72442e81a19041137ff732eab5"
+      "sha256": "297f55f1357d8b14e441bb36ec260572b00b30d96cf01bbbd3bfcef9d0229222"
+    },
+    {
+      "name": "recipes/command_routing_workflow",
+      "route": "/components/recipes/command_routing_workflow",
+      "screenshot": "screenshots/recipes__command_routing_workflow.png",
+      "dataExoCount": 73,
+      "width": 1280,
+      "height": 900,
+      "sha256": "9c4ac359842aed14190939941d874eef07900634e0c6024c2521f7c54d2ecde4"
     },
     {
       "name": "recipes/component_recipe_matrix",
@@ -830,7 +839,7 @@
       "dataExoCount": 152,
       "width": 1280,
       "height": 900,
-      "sha256": "af8183d9e44f8e7228ec42010beb15bc5ca76abfe94edd232749e0556472eeb0"
+      "sha256": "0c0ac2a320c4dab10652a61046588777a0004061c1f8bd3965259347c381ce08"
     }
   ]
 }

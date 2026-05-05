@@ -13,13 +13,13 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | --- | --- |
 | Public components | 61 public component delegates audited from `lib/exo_ui/components.ex` |
 | Missing Storybook stories | 0 public components missing a story |
-| Storybook story types | 81 component stories, 5 live component stories, 6 aggregate example stories, 0 component/layout page-mode stories |
-| Playwright component capture | 92 Storybook routes captured |
-| Capture artifacts | 92 screenshots, 92 WebM videos, 92 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-05T11-42-01-858Z/viewer.html` |
-| Browser suite | 72 Playwright tests passing |
+| Storybook story types | 81 component stories, 6 live component stories, 6 aggregate example stories, 0 component/layout page-mode stories |
+| Playwright component capture | 93 Storybook routes captured |
+| Capture artifacts | 93 screenshots, 93 WebM videos, 93 MP4 videos |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-05T13-12-52-433Z/viewer.html` |
+| Browser suite | 73 Playwright tests passing |
 | ExUnit suite | 503 tests passing |
-| Visual regression | 92 committed screenshot baselines with pixel-diff checking |
+| Visual regression | 93 committed screenshot baselines with pixel-diff checking |
 | Usage documentation | Central copy-paste reference added at `docs/guides/component-usage.md` |
 
 ## What improved
@@ -87,6 +87,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `docs/guides/bulk-action-workflows.md` now documents the filtered table and bulk confirm pattern as a copy-paste production recipe.
 - `Async Save Workflow` is now a live Storybook recipe route covering validated draft state, disabled submit while saving, explicit `aria-busy`, polite live-region status text, stale request protection, and server-confirmed success state.
 - `docs/guides/async-save-workflows.md` now documents the same dirty -> saving -> saved pattern as a copy-paste production recipe.
+- `Command Routing Workflow` is now a live Storybook recipe route covering multi-screen navigation, command palette routing, focus-safe command close, active screen state, source tracking, route counters, and drilldown return actions.
+- `docs/guides/command-routing-workflows.md` now documents the same multi-screen command palette routing pattern as a copy-paste production recipe.
 
 ## Comparison vs shadcn/daisyUI
 
@@ -95,25 +97,25 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Component stories | Broad Storybook route coverage exists; all real component stories are component/live-component stories, and aggregate demos are explicit examples | No component/layout page-mode stories remain |
 | Theming | Token-driven CSS with light/dark support, reduced-motion guard, semantic elevation/backdrop tokens, browser checks against hardcoded component backdrops, and token customization recipes | Needs more component-specific state tokens as the design language matures |
 | Forms | Phoenix FormField integration is now strong across most controls, select/combobox expose active-descendant keyboard state, combobox empty/loading states announce changes politely, and async save success paths have live recipe coverage | Component-mode controls should expose more attrs/slots directly in PhoenixStorybook playgrounds |
-| Overlays/menus | Browser-tested popover, dropdown, context menu, menubar, modal/confirm-modal/sheet/drawer focus traps, command palette trigger open/focus trap/focus restore, shared overlay registry participation, topmost Escape/backdrop handling, outside inerting, scroll lock, same-type and cross-type stacking order, lower-overlay inerting, focus restore, long-form stacked drawer scrolling, stacked validation errors, command-surface stacks, destructive confirm flows inside stacked overlays, public show/hide helpers for modal/drawer/sheet/command palette, configurable command palette shortcuts, app-shell recipes, editable-record recipes, and guarded confirm actions that can stay open for server validation | Needs more real-app recipes over time, but the core overlay/menu interaction parity is much closer |
-| Keyboard support | Covered for major actions, menus, select/combobox, rating, tabs, date picker grid movement, and parent-controlled date picker month changes | Needs broader multi-screen workflow shortcuts once app-level navigation examples grow |
-| Visual proof | Automated screenshots and videos for 92 routes, committed visual baselines, a CI-friendly diff command, and GitHub Actions wiring | Needs review tuning once real PR diffs start producing visual changes |
+| Overlays/menus | Browser-tested popover, dropdown, context menu, menubar, modal/confirm-modal/sheet/drawer focus traps, command palette trigger open/focus trap/focus restore, shared overlay registry participation, topmost Escape/backdrop handling, outside inerting, scroll lock, same-type and cross-type stacking order, lower-overlay inerting, focus restore, long-form stacked drawer scrolling, stacked validation errors, command-surface stacks, destructive confirm flows inside stacked overlays, public show/hide helpers for modal/drawer/sheet/command palette, configurable command palette shortcuts, app-shell recipes, editable-record recipes, command-routing recipes, and guarded confirm actions that can stay open for server validation | Needs more real-app recipes over time, but the core overlay/menu interaction parity is much closer |
+| Keyboard support | Covered for major actions, menus, select/combobox, rating, tabs, date picker grid movement, parent-controlled date picker month changes, and command palette driven multi-screen routing | Needs broader app-level shortcut recipes as more production shells are added |
+| Visual proof | Automated screenshots and videos for 93 routes, committed visual baselines, a CI-friendly diff command, and GitHub Actions wiring | Needs review tuning once real PR diffs start producing visual changes |
 | Composability | Slots and `data-exo` styling are consistent | No shadcn-style `asChild`/polymorphic root pattern for advanced composition |
 | Usage docs | Central copy-paste usage reference exists for the current public component surface, plus app-shell, editable-record, bulk-action, async-save, action/form, table/overlay/menu, component-state, token, and combobox recipes | Still needs more narrow per-component pages for the highest-traffic primitives |
 
 ## Remaining priorities
 
 1. Keep expanding narrow per-component recipe pages for the highest-traffic primitives: button, input, select, combobox, table, modal, drawer, command palette, and date picker.
-2. Add more app-level workflow examples over time, especially multi-screen navigation and cross-page command routing.
+2. Add more app-level workflow examples over time, especially saved filters, bulk edit success paths, and production navigation shells.
 3. Tune visual diff thresholds after the first few CI runs if Linux font rendering causes expected drift.
 
 ## Verification used
 
 - `mix test` -> 503 tests, 0 failures.
 - `mix compile --warnings-as-errors` in `storybook`.
-- `bun run test:browser` -> 72 tests, 0 failures.
-- `bun run capture:components` -> 92 entries, 0 failed, 92 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T11-42-01-858Z`.
-- `bun run capture:validate` -> 92 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after adding Async Save Workflow.
-- `bun run visual:check` -> 92 current screenshots matched the committed baseline.
-- `docs/guides/component-usage.md` now links to app-shell, editable-record, bulk-action, async-save, action/form, table/overlay/menu, component-state, and token guides.
+- `bun run test:browser` -> 73 tests, 0 failures.
+- `bun run capture:components` -> 93 entries, 0 failed, 93 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T13-12-52-433Z`.
+- `bun run capture:validate` -> 93 entries with non-empty screenshot, WebM, and MP4 files.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after adding Command Routing Workflow.
+- `bun run visual:check` -> 93 current screenshots matched the committed baseline.
+- `docs/guides/component-usage.md` now links to app-shell, editable-record, bulk-action, async-save, command-routing, action/form, table/overlay/menu, component-state, and token guides.

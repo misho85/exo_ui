@@ -8,4 +8,5 @@ defmodule Storybook.Components.Recipes do
   def entry("component_recipe_matrix"), do: [name: "Component Recipe Matrix", index: 0]
   def entry("bulk_action_workflow"), do: [name: "Bulk Action Workflow", index: 1]
   def entry("async_save_workflow"), do: [name: "Async Save Workflow", index: 2]
+  def entry("command_routing_workflow"), do: [name: "Command Routing Workflow", index: 3]
 end
