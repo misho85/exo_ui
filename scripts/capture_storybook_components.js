@@ -308,6 +308,24 @@ async function componentDemo(page, name) {
       await clickButton(page, "Empty state");
       await page.waitForTimeout(350);
       break;
+    case "modal_recipes":
+      await clickButton(page, "Open editor modal");
+      await page.waitForTimeout(300);
+      await fillByLabel(page, "Workspace owner", "Mina");
+      await page.waitForTimeout(250);
+      await clickButton(page, "Save modal changes");
+      await page.waitForTimeout(350);
+      await clickButton(page, "Open labelled modal");
+      await page.waitForTimeout(300);
+      await fillByLabel(page, "Invite email", "design@example.com");
+      await page.waitForTimeout(250);
+      await clickButton(page, "Send labelled invite");
+      await page.waitForTimeout(350);
+      await clickButton(page, "Open guarded confirm");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Validate archive");
+      await page.waitForTimeout(400);
+      break;
     case "dashboard_drilldown_workflow":
       await clickButton(page, "At risk");
       await page.waitForTimeout(300);

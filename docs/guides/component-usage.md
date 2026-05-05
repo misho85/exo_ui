@@ -11,6 +11,7 @@ For full-page examples that combine multiple component families, see
 `docs/guides/select-recipes.md`,
 `docs/guides/combobox-recipes.md`,
 `docs/guides/table-recipes.md`,
+`docs/guides/modal-recipes.md`,
 `docs/guides/app-shell-workflows.md`,
 `docs/guides/editable-record-workflows.md`,
 `docs/guides/bulk-action-workflows.md`,
@@ -569,6 +570,9 @@ close it later from the LiveView:
   on_confirm={JS.push("validate-archive")}
 />
 ```
+
+For titled dialogs, titleless labelled dialogs, form state, close callbacks, and
+guarded confirmations, see `docs/guides/modal-recipes.md`.
 
 ### Popover
 
