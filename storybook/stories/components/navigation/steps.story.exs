@@ -1,30 +1,41 @@
 defmodule Storybook.Components.Steps do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Multi-step progress indicator."
+  def function, do: &ExoUI.Components.DataDisplay.steps/1
 
-  def render(assigns) do
-    ~H"""
-    <div style="display: flex; flex-direction: column; gap: 3rem; padding: 1rem; max-width: 600px;">
-      <section>
-        <h3 style="margin-bottom: 0.75rem; font-weight: 600;">Horizontal</h3>
-        <ExoUI.Components.steps>
-          <:step title="Account" status="complete" description="Login details saved" />
-          <:step title="Profile" status="current" description="Add public profile data" />
-          <:step title="Review" status="upcoming" description="Confirm and submit" />
-        </ExoUI.Components.steps>
-      </section>
-
-      <section>
-        <h3 style="margin-bottom: 0.75rem; font-weight: 600;">Vertical</h3>
-        <ExoUI.Components.steps orientation="vertical" aria_label="Shipping progress">
-          <:step title="Order placed" status="complete" />
-          <:step title="Processing" status="complete" />
-          <:step title="Shipped" status="current" />
-          <:step title="Delivered" status="upcoming" />
-        </ExoUI.Components.steps>
-      </section>
+  def template do
+    """
+    <div style="padding: 1rem; max-width: 38rem;" psb-code-hidden>
+      <.psb-variation/>
     </div>
     """
+  end
+
+  def variations do
+    [
+      %Variation{id: :horizontal, slots: account_steps()},
+      %Variation{
+        id: :vertical,
+        attributes: %{orientation: "vertical", aria_label: "Shipping progress"},
+        slots: shipping_steps()
+      }
+    ]
+  end
+
+  defp account_steps do
+    [
+      ~s|<:step title="Account" status="complete" description="Login details saved" />|,
+      ~s|<:step title="Profile" status="current" description="Add public profile data" />|,
+      ~s|<:step title="Review" status="upcoming" description="Confirm and submit" />|
+    ]
+  end
+
+  defp shipping_steps do
+    [
+      ~s|<:step title="Order placed" status="complete" />|,
+      ~s|<:step title="Processing" status="complete" />|,
+      ~s|<:step title="Shipped" status="current" />|,
+      ~s|<:step title="Delivered" status="upcoming" />|
+    ]
   end
 end

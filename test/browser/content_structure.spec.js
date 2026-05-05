@@ -49,7 +49,7 @@ test.describe("content structure components", () => {
 
     await gotoStory(page, "/components/data_display/timeline");
 
-    const timeline = story(page).locator('[data-exo="timeline"]');
+    const timeline = story(page).getByRole("list", { name: "Order timeline" });
     const currentEvent = timeline.locator('[data-exo="timeline-event"][aria-current="step"]');
 
     await expectAttribute(timeline, "aria-label", "Order timeline");
@@ -76,11 +76,11 @@ test.describe("content structure components", () => {
     await gotoStory(page, "/components/layout/accordion");
 
     const canvas = story(page);
-    const defaultAccordion = canvas.locator("#default");
+    const defaultAccordion = canvas.locator('[data-exo="accordion"]').first();
     const firstTrigger = defaultAccordion.locator('[data-exo="accordion-trigger"]').first();
     const secondTrigger = defaultAccordion.locator('[data-exo="accordion-trigger"]').nth(1);
-    const firstContent = defaultAccordion.locator("#default-content-0");
-    const secondContent = defaultAccordion.locator("#default-content-1");
+    const firstContent = defaultAccordion.locator('[data-exo="accordion-content"]').first();
+    const secondContent = defaultAccordion.locator('[data-exo="accordion-content"]').nth(1);
 
     await expect(defaultAccordion).toHaveAttribute("data-ready", "");
     await expect(firstTrigger).toHaveAttribute("aria-expanded", "true");
@@ -105,14 +105,21 @@ test.describe("content structure components", () => {
 
     await gotoStory(page, "/components/layout/collapsible");
 
-    const closedCollapsible = story(page).locator("#col-2");
-    const closedTrigger = closedCollapsible.locator('[data-exo="collapsible-trigger"]');
-    const closedContent = closedCollapsible.locator("#col-2-content");
+    const closedCollapsible = story(page)
+      .locator('[data-exo="collapsible"]')
+      .filter({ hasText: "Show advanced options" });
+    const closedTrigger = closedCollapsible.getByRole("button", { name: "Show advanced options" });
+    const closedContent = closedCollapsible.locator('[data-exo="collapsible-content"]');
 
     await expect(closedCollapsible).toHaveAttribute("data-ready", "");
-    await expect(closedTrigger).toHaveAttribute("aria-controls", "col-2-content");
+    const triggerId = await closedTrigger.getAttribute("id");
+    const contentId = await closedContent.getAttribute("id");
+
+    expect(triggerId).toBeTruthy();
+    expect(contentId).toBeTruthy();
+    await expect(closedTrigger).toHaveAttribute("aria-controls", contentId);
     await expect(closedTrigger).toHaveAttribute("aria-expanded", "false");
-    await expect(closedContent).toHaveAttribute("aria-labelledby", "col-2-trigger");
+    await expect(closedContent).toHaveAttribute("aria-labelledby", triggerId);
     await expect(closedContent).toHaveAttribute("aria-hidden", "true");
     await expect(closedTrigger.locator("button")).toHaveCount(0);
 

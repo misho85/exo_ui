@@ -1,29 +1,42 @@
 defmodule Storybook.Components.Breadcrumb do
-  use PhoenixStorybook.Story, :page
+  use PhoenixStorybook.Story, :component
 
-  def doc, do: "Breadcrumb navigation trail."
+  def function, do: &ExoUI.Components.DataDisplay.breadcrumb/1
 
-  def render(assigns) do
-    ~H"""
-    <div style="padding: 1rem; display: flex; flex-direction: column; gap: 2rem;">
-      <ExoUI.Components.breadcrumb aria_label="Catalog breadcrumb">
-        <:item href="#">Home</:item>
-        <:item href="#">Products</:item>
-        <:item>Current Page</:item>
-      </ExoUI.Components.breadcrumb>
-
-      <ExoUI.Components.breadcrumb separator="›">
-        <:item href="#">Dashboard</:item>
-        <:item href="#">Settings</:item>
-        <:item href="#">Team</:item>
-        <:item>Members</:item>
-      </ExoUI.Components.breadcrumb>
-
-      <ExoUI.Components.breadcrumb aria_label="Docs breadcrumb" separator="→">
-        <:item href="#">Home</:item>
-        <:item href="#" current>About</:item>
-      </ExoUI.Components.breadcrumb>
+  def template do
+    """
+    <div style="padding: 1rem;" psb-code-hidden>
+      <.psb-variation/>
     </div>
     """
+  end
+
+  def variations do
+    [
+      %Variation{
+        id: :catalog,
+        attributes: %{aria_label: "Catalog breadcrumb"},
+        slots: [
+          ~s|<:item href="#">Home</:item>|,
+          ~s|<:item href="#">Products</:item>|,
+          ~s|<:item>Current Page</:item>|
+        ]
+      },
+      %Variation{
+        id: :custom_separator,
+        attributes: %{separator: "›"},
+        slots: [
+          ~s|<:item href="#">Dashboard</:item>|,
+          ~s|<:item href="#">Settings</:item>|,
+          ~s|<:item href="#">Team</:item>|,
+          ~s|<:item>Members</:item>|
+        ]
+      },
+      %Variation{
+        id: :docs_current,
+        attributes: %{aria_label: "Docs breadcrumb", separator: "→"},
+        slots: [~s|<:item href="#">Home</:item>|, ~s|<:item href="#" current>About</:item>|]
+      }
+    ]
   end
 end

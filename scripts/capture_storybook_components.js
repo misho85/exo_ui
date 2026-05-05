@@ -94,6 +94,19 @@ async function focusFirst(page, selector) {
   return safe(page.locator(selector), (node) => node.focus({ timeout: 1500 }));
 }
 
+async function openOverlayIfClosed(page, overlaySelector, triggerSelector) {
+  const overlay = page.locator(`#story-live ${overlaySelector}`).first();
+
+  if ((await overlay.count()) > 0) {
+    const state = await overlay.getAttribute("data-state");
+    const hidden = await overlay.getAttribute("aria-hidden");
+
+    if (state === "open" || hidden === "false") return;
+  }
+
+  await clickFirst(page, triggerSelector);
+}
+
 async function componentDemo(page, name) {
   const demoName = name.split("/").pop();
 
@@ -172,7 +185,7 @@ async function componentDemo(page, name) {
       await clickFirst(page, '#story-live [data-exo="sidebar-hamburger"]');
       break;
     case "modal":
-      await clickFirst(page, '#story-live button, #story-live [role="button"]');
+      await openOverlayIfClosed(page, '[data-exo="modal"]', '#story-live button, #story-live [role="button"]');
       await page.waitForTimeout(400);
       break;
     case "menubar":
@@ -197,8 +210,11 @@ async function componentDemo(page, name) {
       await page.keyboard.press("Enter");
       break;
     case "sheet":
+      await openOverlayIfClosed(page, '[data-exo="sheet"]', '#story-live button, #story-live [role="button"]');
+      await page.waitForTimeout(400);
+      break;
     case "drawer":
-      await clickFirst(page, '#story-live button, #story-live [role="button"]');
+      await openOverlayIfClosed(page, '[data-exo="drawer"]', '#story-live button, #story-live [role="button"]');
       await page.waitForTimeout(400);
       break;
     case "tabs":

@@ -13,10 +13,10 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | --- | --- |
 | Public components | 61 public component delegates audited from `lib/exo_ui/components.ex` |
 | Missing Storybook stories | 0 public components missing a story |
-| Component-mode stories | 27 component stories, 1 live component story, 58 page-mode stories still to convert |
+| Component-mode stories | 32 component stories, 1 live component story, 53 page-mode stories still to convert |
 | Playwright component capture | 84 Storybook routes captured |
 | Capture artifacts | 84 screenshots, 84 WebM videos, 84 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-04T23-05-15-147Z/viewer.html` |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-05T00-17-27-969Z/viewer.html` |
 | Browser suite | 60 Playwright tests passing |
 | ExUnit suite | 496 tests passing after combobox server-filter changes |
 | Visual regression | 84 committed screenshot baselines with pixel-diff checking |
@@ -40,6 +40,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `Avatar`, `Kbd`, `Spinner`, `Indicator`, `EmptyState`, and `Swap` are now component-mode PhoenixStorybook stories with introspectable attrs/slots, playground support, source examples, and refreshed Playwright visual baselines.
 - `Icon`, `ContentCard`, `StatCard`, `MetricCard`, chart `ProgressBar`, and `RadialProgress` are also now component-mode stories.
 - `Header`, `Footer`, `Hero`, and `ScrollArea` now expose their attrs and slots in component-mode Storybook stories, and the ScrollArea browser test targets the component by accessible region name instead of a hand-authored demo ID.
+- `Accordion`, `Collapsible`, `Breadcrumb`, `Timeline`, and `Steps` now expose attrs and named slots in component-mode stories; their browser tests target accessible names, roles, and `data-exo` structure instead of page-demo IDs.
+- The capture helper now avoids closing already-open modal/sheet/drawer examples, making overlay screenshot baselines more deterministic.
 
 ## Comparison vs shadcn/daisyUI
 
@@ -55,7 +57,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 
 ## Remaining priorities
 
-1. Continue converting the remaining 58 page-mode Storybook examples to component-mode stories where PhoenixStorybook can expose attrs, slots, playground controls, and source examples.
+1. Continue converting the remaining 53 page-mode Storybook examples to component-mode stories where PhoenixStorybook can expose attrs, slots, playground controls, and source examples.
 2. Continue overlay parity work with richer nested overlay content examples and cross-type modal/sheet/drawer stacking.
 3. Add docs that show copy-paste Phoenix usage for every component: basic, disabled, error, long content, dark mode, and keyboard/a11y notes.
 4. Tune visual diff thresholds after the first few CI runs if Linux font rendering causes expected drift.
@@ -66,6 +68,6 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `bun run build:all`.
 - `mix compile --warnings-as-errors` in `storybook`.
 - `bun run test:browser` -> 60 tests, 0 failures.
-- `bun run capture:components` -> 84 entries, 0 failed, 84 MP4 conversions in `output/playwright/exo-ui-components/2026-05-04T23-05-15-147Z`.
+- `bun run capture:components` -> 84 entries, 0 failed, 84 MP4 conversions in `output/playwright/exo-ui-components/2026-05-05T00-17-27-969Z`.
 - `bun run capture:validate` -> 84 entries with non-empty screenshot, WebM, and MP4 files.
 - `bun run visual:check` -> 84 current screenshots matched the committed baseline.
