@@ -392,6 +392,33 @@ async function componentDemo(page, name) {
       await clickButton(page, "Save booking date");
       await page.waitForTimeout(400);
       break;
+    case "access_review_workflow":
+      await clickButton(page, "Open access commands");
+      await page.waitForTimeout(300);
+      await safe(
+        page.locator('#story-live #access-review-command [data-exo="command-palette-input"]'),
+        (node) => node.fill("high risk", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await page.keyboard.press("Enter");
+      await page.waitForTimeout(350);
+      await clickButton(page, "Open access review for Ana Markovic");
+      await page.waitForTimeout(350);
+      await clickButton(page, "Request evidence");
+      await page.waitForTimeout(250);
+      await fillByLabel(page, "Decision note", "Manager approval is missing.");
+      await page.waitForTimeout(250);
+      await safe(page.locator('#story-live #access-review-owner'), (node) =>
+        node.selectOption("manager", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await clickButton(page, "Request evidence");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Prepare revoke");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Revoke access");
+      await page.waitForTimeout(400);
+      break;
     case "dashboard_drilldown_workflow":
       await clickButton(page, "At risk");
       await page.waitForTimeout(300);
