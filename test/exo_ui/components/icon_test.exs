@@ -55,5 +55,10 @@ defmodule ExoUI.Components.IconTest do
     assert html =~ ~s(data-theme-value="light")
     assert html =~ ~s(data-theme-value="dark")
     assert html =~ ~s(data-theme-value="system")
+    assert html =~ ~s(data-exo="icon")
+    assert html =~ ~s(<svg)
+    refute html =~ "☀"
+    refute html =~ "☾"
+    refute html =~ "⚙"
   end
 end

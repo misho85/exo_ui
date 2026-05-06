@@ -194,7 +194,7 @@ defmodule ExoUI.Components.Core do
         aria-label="Light theme"
         aria-pressed="false"
       >
-        ☀
+        <.icon name="sun" class="size-4" />
       </button>
       <button
         type="button"
@@ -203,7 +203,7 @@ defmodule ExoUI.Components.Core do
         aria-label="Dark theme"
         aria-pressed="false"
       >
-        ☾
+        <.icon name="moon" class="size-4" />
       </button>
       <button
         type="button"
@@ -212,7 +212,7 @@ defmodule ExoUI.Components.Core do
         aria-label="System theme"
         aria-pressed="false"
       >
-        ⚙
+        <.icon name="monitor" class="size-4" />
       </button>
     </div>
     """

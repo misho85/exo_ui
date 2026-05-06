@@ -39,6 +39,7 @@ test.describe("core action components", () => {
 
     await expect(toggle).toHaveAttribute("data-ready", "");
     await expect(toggle).toHaveAttribute("role", "group");
+    await expect(toggle.locator('[data-exo="theme-btn"] [data-exo="icon"]')).toHaveCount(3);
     await dark.click();
 
     await expect(dark).toHaveAttribute("data-active", "");
