@@ -560,6 +560,7 @@ defmodule ExoUI.Components.Overlay do
   attr :id, :string, required: true
   attr :side, :string, values: ~w(top bottom left right), default: "bottom"
   attr :align, :string, values: ~w(start center end), default: "center"
+  attr :label, :string, default: "Hover card"
   attr :open_delay, :integer, default: 300
   attr :close_delay, :integer, default: 150
   attr :class, :any, default: nil
@@ -578,7 +579,12 @@ defmodule ExoUI.Components.Overlay do
       class={@class}
       {@rest}
     >
-      <div data-exo="hover-card-trigger" aria-describedby={"#{@id}-content"} aria-expanded="false">
+      <div
+        data-exo="hover-card-trigger"
+        aria-haspopup="dialog"
+        aria-controls={"#{@id}-content"}
+        aria-expanded="false"
+      >
         {render_slot(@trigger)}
       </div>
       <div
@@ -586,7 +592,8 @@ defmodule ExoUI.Components.Overlay do
         data-exo="hover-card-content"
         data-side={@side}
         data-align={@align}
-        role="tooltip"
+        role="dialog"
+        aria-label={@label}
         hidden
       >
         {render_slot(@inner_block)}
@@ -611,7 +618,14 @@ defmodule ExoUI.Components.Overlay do
   def context_menu(assigns) do
     ~H"""
     <div data-exo="context-menu" id={@id} phx-hook="ExoContextMenu" class={@class} {@rest}>
-      <div data-exo="context-menu-trigger">
+      <div
+        data-exo="context-menu-trigger"
+        tabindex="0"
+        role="button"
+        aria-haspopup="menu"
+        aria-controls={"#{@id}-content"}
+        aria-expanded="false"
+      >
         {render_slot(@trigger)}
       </div>
       <div id={"#{@id}-content"} data-exo="context-menu-content" role="menu" aria-label={@label}>

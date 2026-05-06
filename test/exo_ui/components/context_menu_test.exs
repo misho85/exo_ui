@@ -18,6 +18,12 @@ defmodule ExoUI.Components.ContextMenuTest do
 
     assert html =~ ~s(data-exo="context-menu")
     assert html =~ ~s(phx-hook="ExoContextMenu")
+    assert html =~ ~s(data-exo="context-menu-trigger")
+    assert html =~ ~s(tabindex="0")
+    assert html =~ ~s(role="button")
+    assert html =~ ~s(aria-haspopup="menu")
+    assert html =~ ~s(aria-controls="ctx-content")
+    assert html =~ ~s(aria-expanded="false")
     assert html =~ ~s(id="ctx-content")
     assert html =~ ~s(aria-label="Context menu")
     assert html =~ "Copy"

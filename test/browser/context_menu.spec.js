@@ -12,6 +12,9 @@ test.describe("context menu", () => {
     const menu = canvas.locator('#context-menu-single-default [data-exo="context-menu-content"]');
 
     await expect(root).toHaveAttribute("data-ready", "");
+    await expect(trigger).toHaveAttribute("role", "button");
+    await expect(trigger).toHaveAttribute("tabindex", "0");
+    await expect(trigger).toHaveAttribute("aria-haspopup", "menu");
     await expect(trigger).toHaveAttribute("aria-controls", "context-menu-single-default-content");
     await expect(menu).not.toHaveAttribute("data-open", "");
     await expect(menu.locator('[data-exo="context-menu-item"]')).toHaveCount(4);

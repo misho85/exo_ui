@@ -16,7 +16,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Storybook story types | 81 component stories, 27 live component stories, 6 aggregate example stories, 0 component/layout page-mode stories |
 | Playwright component capture | 114 Storybook routes captured |
 | Capture artifacts | 114 screenshots, 114 WebM videos, 114 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-06T19-19-46-810Z/viewer.html` |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-06T19-30-10-904Z/viewer.html` |
 | Browser suite | 95 Playwright tests passing |
 | ExUnit suite | 536 tests passing |
 | Visual regression | 114 committed screenshot baselines with pixel-diff checking |
@@ -29,6 +29,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - Layout/navigation/data-display components have broader Storybook and browser coverage, including carousel controls, breadcrumbs, timeline, scroll area, accordion, and collapsible behavior.
 - Accordion and collapsible now hide closed content from assistive tech and focus with `aria-hidden` plus `inert`, and their hooks keep those states synced after interaction.
 - Modal, sheet, and drawer now share stronger overlay focus isolation: open overlays inert outside page siblings, lock page scroll, trap Tab/Shift+Tab inside the dialog, keep Escape and backdrop interaction scoped to the active/topmost overlay, and restore focus to the trigger after close.
+- `hover_card/1` now exposes rich hover content as a controlled dialog surface instead of a tooltip description, and `context_menu/1` server-renders trigger role/tabindex/ARIA linkage before the JS hook mounts.
 - Select and combobox now assign stable option IDs and sync `aria-activedescendant`; combobox keyboard selection keeps focus on the search input while Enter commits the active option.
 - Select and button-trigger combobox triggers now expose both the field label and selected value to assistive tech, and disabled choice controls disable their hidden submitted value to match native form behavior.
 - `select/1` now accepts the same simple `options={[{label, value}]}` shape that made legacy `input type="select"` convenient, while keeping the slot API for icons, groups, and disabled rows.
@@ -207,6 +208,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `mix test test/exo_ui/components/input_test.exs test/exo_ui/components/select_test.exs test/exo_ui/components/combobox_test.exs` -> 84 tests, 0 failures after delegating single `input type="select"` to ExoUI select and moving select/combobox indicators to shared icons.
 - `mix test test/exo_ui/components/input_test.exs test/exo_ui/components/rating_test.exs test/exo_ui/components/dropdown_menu_test.exs` -> 44 tests, 0 failures after moving checkbox, rating, and dropdown submenu indicators to shared icons.
 - `bunx playwright test test/browser/form_controls.spec.js test/browser/rating.spec.js test/browser/dropdown_menu.spec.js -g "grouped form controls|syncs clicked stars|opens with a button trigger"` -> 3 focused browser checks, 0 failures after verifying the iconized checkbox/rating/dropdown paths.
+- `mix test test/exo_ui/components/hover_card_test.exs test/exo_ui/components/context_menu_test.exs` -> 4 tests, 0 failures after moving hover-card semantics away from tooltip and rendering context-menu trigger ARIA server-side.
+- `bunx playwright test test/browser/hover_card.spec.js test/browser/context_menu.spec.js` -> 3 tests, 0 failures after verifying the hover-card dialog attrs and context-menu trigger/linkage attrs in Storybook.
 - `mix test test/exo_ui/components/table_test.exs` -> 8 tests, 0 failures after adding table loading status support.
 - `bunx playwright test test/browser/data_feedback.spec.js -g "table renders caption"` -> 1 test, 0 failures after verifying `aria-busy` and the loading status row in Storybook.
 - `mix test test/exo_ui/components/file_input_test.exs` -> 7 tests, 0 failures after adding selected-file summary output support.
@@ -231,8 +234,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js` -> 1 focused workflow check, 0 failures after event-mode pagination and bottom-nav targeting.
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js test/browser/onboarding_provisioning_workflow.spec.js` -> 2 focused workflow checks, 0 failures.
 - `PLAYWRIGHT_TEST_TIMEOUT=180000 bun run test:browser` -> 95 tests, 0 failures.
-- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T19-19-46-810Z`.
+- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T19-30-10-904Z`.
 - `bun run capture:validate` -> 114 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the checkbox/rating/dropdown shared-icon pass.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the hover-card/context-menu ARIA pass.
 - `bun run visual:check` -> 114 current screenshots matched the committed baseline.
 - `docs/guides/component-usage.md` now links to button, input, select, combobox, table, modal, drawer, command-palette, date-picker, access-review, incident-response, release-readiness, billing-dispute, onboarding-provisioning, app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, import-export, async-save, command-routing, navigation-shell, role-operations, saved-filter, action/form, table/overlay/menu, component-state, and token guides.

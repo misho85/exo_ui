@@ -12,6 +12,9 @@ test.describe("hover card", () => {
     const content = hoverCard.locator('[data-exo="hover-card-content"]');
 
     await expectAttribute(hoverCard, "data-ready", "true");
+    await expect(trigger).toHaveAttribute("aria-haspopup", "dialog");
+    await expect(trigger).toHaveAttribute("aria-controls", "hover-card-single-default-content");
+    await expect(content).toHaveAttribute("role", "dialog");
     await expect(content).not.toHaveAttribute("data-open", "");
 
     await trigger.hover();
