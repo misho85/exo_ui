@@ -16,9 +16,9 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Storybook story types | 81 component stories, 27 live component stories, 6 aggregate example stories, 0 component/layout page-mode stories |
 | Playwright component capture | 114 Storybook routes captured |
 | Capture artifacts | 114 screenshots, 114 WebM videos, 114 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-06T18-56-38-227Z/viewer.html` |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-06T19-09-39-253Z/viewer.html` |
 | Browser suite | 95 Playwright tests passing |
-| ExUnit suite | 532 tests passing |
+| ExUnit suite | 536 tests passing |
 | Visual regression | 114 committed screenshot baselines with pixel-diff checking |
 | Usage documentation | Central copy-paste reference added at `docs/guides/component-usage.md` |
 
@@ -32,6 +32,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - Select and combobox now assign stable option IDs and sync `aria-activedescendant`; combobox keyboard selection keeps focus on the search input while Enter commits the active option.
 - Select and button-trigger combobox triggers now expose both the field label and selected value to assistive tech, and disabled choice controls disable their hidden submitted value to match native form behavior.
 - `select/1` now accepts the same simple `options={[{label, value}]}` shape that made legacy `input type="select"` convenient, while keeping the slot API for icons, groups, and disabled rows.
+- Legacy `input/1 type="select"` now delegates to ExoUI's custom `select/1` for single-select usage; only multiple-select compatibility keeps the native fallback because the public custom select is single-value.
+- `select/1` and `combobox/1` now render trigger/clear indicators through the shared Lucide `<.icon>` wrapper instead of hand-authored SVG or raw close text.
 - `combobox/1` now accepts the same simple `options={[{label, value}]}` data shape for client/static lists, including grouped option maps, while keeping option slots for richer row markup.
 - `radio_group/1` now accepts option maps with per-option disabled states and descriptions, so common shadcn-style labelled radio rows no longer require slot markup.
 - `slider/1` now supports `show_value`, `value_suffix`, and `aria_value_text`, with an `ExoSlider` hook that keeps the visible `<output>` and `aria-valuetext` synced as the range changes.
@@ -181,7 +183,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 
 ## Verification used
 
-- `mix test` -> 532 tests, 0 failures.
+- `mix test` -> 536 tests, 0 failures.
 - `mix compile --warnings-as-errors`.
 - `mix compile --warnings-as-errors` in `storybook`.
 - `mix test test/exo_ui/components/icon_test.exs` -> 5 tests, 0 failures after adding default icon accessibility attrs, scoped size CSS, and a stable missing-icon fallback.
@@ -201,6 +203,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `bunx playwright test test/browser/content_structure.spec.js test/browser/data_feedback.spec.js -g "breadcrumb and timeline|table renders caption"` -> 2 focused browser checks, 0 failures after verifying breadcrumb separator icons and the table action icon story.
 - `mix test test/exo_ui/components/input_test.exs` -> 17 tests, 0 failures after adding text-like input prefix/suffix and icon adornments.
 - `bunx playwright test test/browser/form_controls.spec.js -g "input and checkbox expose error descriptions"` -> 1 test, 0 failures after verifying the Storybook input adornment wrapper and hidden decorative icons.
+- `mix test test/exo_ui/components/input_test.exs test/exo_ui/components/select_test.exs test/exo_ui/components/combobox_test.exs` -> 84 tests, 0 failures after delegating single `input type="select"` to ExoUI select and moving select/combobox indicators to shared icons.
 - `mix test test/exo_ui/components/table_test.exs` -> 8 tests, 0 failures after adding table loading status support.
 - `bunx playwright test test/browser/data_feedback.spec.js -g "table renders caption"` -> 1 test, 0 failures after verifying `aria-busy` and the loading status row in Storybook.
 - `mix test test/exo_ui/components/file_input_test.exs` -> 7 tests, 0 failures after adding selected-file summary output support.
@@ -216,7 +219,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `mix test test/exo_ui/components/fieldset_test.exs test/exo_ui/components/date_picker_test.exs` -> 15 tests, 0 failures after stable lowercase form IDs and date picker month labelling fixes.
 - `bunx playwright test test/browser/data_feedback.spec.js -g "date picker exposes calendar semantics"` -> 1 test, 0 failures after date picker month-reference coverage.
 - `mix test test/exo_ui/components/select_test.exs test/exo_ui/components/combobox_test.exs` -> 59 tests, 0 failures after select/combobox accessible-name and disabled hidden-value fixes.
-- `bunx playwright test test/browser/select.spec.js test/browser/combobox.spec.js` -> 7 tests, 0 failures after component-level select/combobox browser coverage.
+- `bunx playwright test test/browser/select.spec.js test/browser/combobox.spec.js` -> 7 tests, 0 failures after component-level select/combobox browser coverage and the shared icon/select-input compatibility pass.
 - `mix test test/exo_ui/components/bottom_nav_test.exs test/exo_ui/components/pagination_test.exs` -> 16 tests, 0 failures after event-mode bottom nav and pagination support.
 - `bunx playwright test test/browser/navigation_progress.spec.js test/browser/content_structure.spec.js` -> 9 tests, 0 failures after the pagination, wizard, and accordion semantics pass.
 - `mix test test/exo_ui/components/table_test.exs` -> 6 tests, 0 failures after the row-level table click semantics pass.
@@ -225,8 +228,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js` -> 1 focused workflow check, 0 failures after event-mode pagination and bottom-nav targeting.
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js test/browser/onboarding_provisioning_workflow.spec.js` -> 2 focused workflow checks, 0 failures.
 - `PLAYWRIGHT_TEST_TIMEOUT=180000 bun run test:browser` -> 95 tests, 0 failures.
-- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T18-56-38-227Z`.
+- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T19-09-39-253Z`.
 - `bun run capture:validate` -> 114 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the breadcrumb/table icon pass.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the select/combobox icon and select-input compatibility pass.
 - `bun run visual:check` -> 114 current screenshots matched the committed baseline.
 - `docs/guides/component-usage.md` now links to button, input, select, combobox, table, modal, drawer, command-palette, date-picker, access-review, incident-response, release-readiness, billing-dispute, onboarding-provisioning, app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, import-export, async-save, command-routing, navigation-shell, role-operations, saved-filter, action/form, table/overlay/menu, component-state, and token guides.

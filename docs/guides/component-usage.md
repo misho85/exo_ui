@@ -1487,8 +1487,10 @@ surface. The main remaining shadcn/daisyUI-style parity gaps are:
 - Command palette shortcuts are configurable; use `shortcut={nil}` for
   manual-only palettes when the host app owns keyboard routing. Trigger-driven
   palettes restore focus to their opener on close.
-- `input type="select"` and `dropdown/1` are legacy compatibility paths. Prefer
-  `select/1` and `dropdown_menu/1`.
+- `input type="select"` delegates to `select/1` for single-select compatibility;
+  prefer `select/1` directly for new code. Multiple select still uses a native
+  compatibility fallback. `dropdown/1` is also a legacy path; prefer
+  `dropdown_menu/1`.
 - Advanced composition patterns such as Radix-style `asChild` are not part of
   the current LiveView API.
 - Decorative icon props, such as `empty_state.icon` and `stat_card.icon`, use

@@ -189,6 +189,23 @@ defmodule ExoUI.Components.ComboboxTest do
       """)
 
     assert html =~ ~s(data-exo="combobox-clear")
+    assert html =~ ~s(data-exo="icon")
+    assert html =~ ~s(focusable="false")
+  end
+
+  test "renders button trigger indicator through ExoUI icon" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.combobox id="c8-icon" name="x">
+        <:option value="a">A</:option>
+      </.combobox>
+      """)
+
+    assert html =~ ~s(data-exo="combobox-icon")
+    assert html =~ ~s(data-exo="icon")
+    assert html =~ ~s(aria-hidden="true")
   end
 
   test "renders creatable option" do

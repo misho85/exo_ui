@@ -68,6 +68,49 @@ defmodule ExoUI.Components.InputTest do
     assert html =~ ~s(data-exo="input")
   end
 
+  test "renders single select input through ExoUI select" do
+    assigns = %{options: [{"Active", "active"}, {"Inactive", "inactive"}]}
+
+    html =
+      rendered_to_string(~H|<.input
+  id="status"
+  type="select"
+  name="status"
+  value="active"
+  label="Status"
+  prompt="Choose status"
+  options={@options}
+/>|)
+
+    assert html =~ ~s(data-exo="popover")
+    assert html =~ ~s(data-exo-select="trigger")
+    assert html =~ ~s(role="listbox")
+    assert html =~ ~s(type="hidden")
+    assert html =~ ~s(name="status")
+    assert html =~ ~s(value="active")
+    assert html =~ "Active"
+    refute html =~ "<select"
+  end
+
+  test "keeps native select fallback for multiple select input" do
+    assigns = %{options: [{"A", "a"}, {"B", "b"}]}
+
+    html =
+      rendered_to_string(~H|<.input
+  id="tags"
+  type="select"
+  name="tags[]"
+  value={["a"]}
+  label="Tags"
+  options={@options}
+  multiple
+/>|)
+
+    assert html =~ "<select"
+    assert html =~ ~s(multiple)
+    assert html =~ ~s(name="tags[]")
+  end
+
   test "renders hidden input" do
     assigns = %{}
     html = rendered_to_string(~H|<.input type="hidden" name="id" value="123" />|)

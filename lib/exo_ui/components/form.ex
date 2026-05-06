@@ -25,7 +25,13 @@ defmodule ExoUI.Components.Form do
     """
   end
 
-  @doc "Renders a form input (text, textarea, checkbox, hidden, or select)."
+  @doc """
+  Renders a form input (text, textarea, checkbox, hidden, or select).
+
+  `type="select"` delegates to `select/1` for single-select usage. `multiple`
+  keeps the native select fallback for compatibility because ExoUI's custom
+  select is single-value.
+  """
   attr :field, Phoenix.HTML.FormField, doc: "a form field struct"
   attr :id, :any, default: nil
   attr :type, :string, default: "text"
@@ -126,8 +132,8 @@ defmodule ExoUI.Components.Form do
     """
   end
 
-  # Deprecated: Use select/1 instead
-  def input(%{type: "select"} = assigns) do
+  # Compatibility fallback: ExoUI's custom select is single-value.
+  def input(%{type: "select", multiple: true} = assigns) do
     assigns = prepare_basic_field(assigns)
 
     ~H"""
@@ -150,6 +156,31 @@ defmodule ExoUI.Components.Form do
       <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
       <.field_errors id={@error_id} errors={@errors} />
     </div>
+    """
+  end
+
+  def input(%{type: "select"} = assigns) do
+    assigns =
+      assigns
+      |> assign_new(:options, fn -> [] end)
+      |> prepare_basic_field()
+      |> assign(:select_disabled, select_disabled?(assigns.rest))
+      |> assign(:select_rest, Map.drop(assigns.rest, [:disabled, "disabled"]))
+
+    ~H"""
+    <.select
+      id={@id}
+      name={@name}
+      value={@value}
+      options={@options}
+      label={@label}
+      description={@description}
+      prompt={@prompt}
+      errors={@errors}
+      disabled={@select_disabled}
+      class={@class}
+      {@select_rest}
+    />
     """
   end
 
@@ -417,17 +448,9 @@ defmodule ExoUI.Components.Form do
               {@prompt}
             <% end %>
           </span>
-          <svg
-            data-exo="select-icon"
-            viewBox="0 0 24 24"
-            width="16"
-            height="16"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path d="m6 9 6 6 6-6" />
-          </svg>
+          <span data-exo="select-icon" aria-hidden="true">
+            <.icon name="chevron-down" class="size-4" />
+          </span>
         </button>
         <div
           id={@id}
@@ -611,17 +634,9 @@ defmodule ExoUI.Components.Form do
                 {@prompt}
               <% end %>
             </span>
-            <svg
-              data-exo="combobox-icon"
-              viewBox="0 0 24 24"
-              width="16"
-              height="16"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="m7 15 5-5 5 5" /><path d="m7 9 5 5 5-5" />
-            </svg>
+            <span data-exo="combobox-icon" aria-hidden="true">
+              <.icon name="chevrons-up-down" class="size-4" />
+            </span>
           </button>
           <button
             :if={@clearable && @value}
@@ -630,7 +645,7 @@ defmodule ExoUI.Components.Form do
             aria-label="Clear"
             disabled={@disabled}
           >
-            &#x2715;
+            <.icon name="x" class="size-3" />
           </button>
         </div>
         <div
@@ -755,6 +770,8 @@ defmodule ExoUI.Components.Form do
     />
     """
   end
+
+  defp select_disabled?(rest), do: rest[:disabled] in [true, "true", "disabled", ""]
 
   defp combobox_status(status, _loading) when is_binary(status), do: status
   defp combobox_status(_status, true), do: "Loading results"

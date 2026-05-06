@@ -24,6 +24,22 @@ defmodule ExoUI.Components.SelectTest do
     assert html =~ "Inactive"
   end
 
+  test "renders trigger indicator through ExoUI icon" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.select id="s-icon" name="status">
+        <:option value="active">Active</:option>
+      </.select>
+      """)
+
+    assert html =~ ~s(data-exo="select-icon")
+    assert html =~ ~s(data-exo="icon")
+    assert html =~ ~s(aria-hidden="true")
+    assert html =~ ~s(focusable="false")
+  end
+
   test "renders select from options attr" do
     assigns = %{roles: [{"Admin", "admin"}, {"Editor", "editor"}]}
 
