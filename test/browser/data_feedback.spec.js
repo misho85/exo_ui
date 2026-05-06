@@ -40,6 +40,18 @@ test.describe("data and feedback components", () => {
     await expect(emptyText.locator('[data-exo="skeleton-line"]')).toHaveCount(0);
   });
 
+  test("badge exposes size variants and shared icon markup", async ({ page }) => {
+    await gotoStory(page, "/components/feedback/badge");
+
+    const canvas = story(page);
+    const largeBadge = canvas.locator('[data-exo="badge"][data-size="lg"]');
+    const iconBadge = canvas.locator('[data-exo="badge"][data-variant="success"]').last();
+
+    await expectAttribute(largeBadge, "data-size", "lg");
+    await expect(iconBadge.locator('[data-exo="icon"]')).toHaveCount(1);
+    await expect(iconBadge.locator('[data-exo="icon"]')).toHaveAttribute("aria-hidden", "true");
+  });
+
   test("date picker exposes calendar semantics, form value, and error links", async ({ page }) => {
     await gotoStory(page, "/components/forms/date_picker");
 

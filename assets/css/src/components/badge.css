@@ -1,12 +1,28 @@
 :where([data-exo="badge"]) {
   display: inline-flex;
   align-items: center;
+  gap: var(--exo-space-1);
   border-radius: calc(var(--exo-radius) * 3);
   padding: var(--exo-space-1) var(--exo-space-3);
   font-family: var(--exo-font);
   font-size: var(--exo-text-xs);
   font-weight: 600;
   line-height: 1;
+}
+
+:where([data-exo="badge"][data-size="sm"]) {
+  padding: 0.125rem var(--exo-space-2);
+  font-size: var(--exo-text-xs);
+}
+
+:where([data-exo="badge"][data-size="md"]) {
+  padding: var(--exo-space-1) var(--exo-space-3);
+  font-size: var(--exo-text-xs);
+}
+
+:where([data-exo="badge"][data-size="lg"]) {
+  padding: var(--exo-space-2) var(--exo-space-4);
+  font-size: var(--exo-text-sm);
 }
 
 :where([data-exo="badge"][data-variant="primary"]) {

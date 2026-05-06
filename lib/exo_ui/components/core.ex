@@ -68,13 +68,16 @@ defmodule ExoUI.Components.Core do
 
   @doc "Renders an inline badge/tag."
   attr :variant, :string, default: "primary"
+  attr :size, :string, values: ~w(sm md lg), default: "md"
+  attr :icon, :string, default: nil
   attr :class, :any, default: nil
   attr :rest, :global
   slot :inner_block, required: true
 
   def badge(assigns) do
     ~H"""
-    <span data-exo="badge" data-variant={@variant} class={@class} {@rest}>
+    <span data-exo="badge" data-variant={@variant} data-size={@size} class={@class} {@rest}>
+      <.icon :if={@icon} name={@icon} class="size-3" />
       {render_slot(@inner_block)}
     </span>
     """
