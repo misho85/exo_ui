@@ -520,6 +520,8 @@ defmodule ExoUI.Components.Core do
     default: "top-right"
 
   attr :class, :any, default: nil
+  attr :badge_label, :string, default: nil
+  attr :badge_live, :string, default: "polite"
   attr :rest, :global
   slot :badge
   slot :inner_block, required: true
@@ -528,7 +530,15 @@ defmodule ExoUI.Components.Core do
     ~H"""
     <div data-exo="indicator" data-position={@position} class={@class} {@rest}>
       {render_slot(@inner_block)}
-      <span :if={@badge != []} data-exo="indicator-badge">{render_slot(@badge)}</span>
+      <span
+        :if={@badge != []}
+        data-exo="indicator-badge"
+        role="status"
+        aria-live={@badge_live}
+        aria-label={@badge_label}
+      >
+        {render_slot(@badge)}
+      </span>
     </div>
     """
   end

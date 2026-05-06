@@ -15,6 +15,7 @@ defmodule Storybook.Components.Indicator do
     [
       %Variation{
         id: :count,
+        attributes: %{badge_label: "5 unread inbox items"},
         slots: [
           ~s|<:badge>5</:badge>|,
           ~s|<ExoUI.Components.button variant="primary">Inbox</ExoUI.Components.button>|
@@ -22,6 +23,7 @@ defmodule Storybook.Components.Indicator do
       },
       %Variation{
         id: :large_count,
+        attributes: %{badge_label: "99 or more notifications"},
         slots: [
           ~s|<:badge>99+</:badge>|,
           ~s|<ExoUI.Components.button variant="outline">Notifications</ExoUI.Components.button>|

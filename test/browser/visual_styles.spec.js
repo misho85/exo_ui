@@ -92,6 +92,9 @@ test.describe("component visual styles", () => {
     await expect(indicator).toHaveCSS("position", "relative");
     expect(["flex", "inline-flex"]).toContain(indicatorDisplay);
     await expect(indicatorBadge).toHaveCSS("position", "absolute");
+    await expect(indicatorBadge).toHaveAttribute("role", "status");
+    await expect(indicatorBadge).toHaveAttribute("aria-live", "polite");
+    await expect(indicatorBadge).toHaveAttribute("aria-label", "5 unread inbox items");
     expect(dotIndicatorAfter.content).toBe('""');
     expect(dotIndicatorAfter.position).toBe("absolute");
     expect(Number.parseFloat(dotIndicatorAfter.width)).toBeGreaterThan(6);

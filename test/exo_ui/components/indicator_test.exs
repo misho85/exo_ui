@@ -39,6 +39,21 @@ defmodule ExoUI.Components.IndicatorTest do
     |> assert_text("5")
   end
 
+  test "renders badge as a polite status region" do
+    assigns = %{}
+
+    ~H"""
+    <.indicator badge_label="5 unread inbox items">
+      <:badge>5</:badge>
+      Inbox
+    </.indicator>
+    """
+    |> parse_component()
+    |> assert_attribute("role", "status", "[data-exo='indicator-badge']")
+    |> assert_attribute("aria-live", "polite", "[data-exo='indicator-badge']")
+    |> assert_attribute("aria-label", "5 unread inbox items", "[data-exo='indicator-badge']")
+  end
+
   test "omits badge when slot not provided" do
     assigns = %{}
 
