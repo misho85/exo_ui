@@ -770,11 +770,9 @@ defmodule ExoUI.Components.Overlay do
   end
 
   def menubar(assigns) do
-    id = assigns[:id] || "menubar-#{System.unique_integer([:positive])}"
-
     assigns =
       assigns
-      |> assign(:id, id)
+      |> assign_new(:id, fn -> "menubar-#{System.unique_integer([:positive])}" end)
       |> assign(:menus, Enum.with_index(assigns.menu))
 
     ~H"""

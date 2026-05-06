@@ -8,7 +8,8 @@ const ExoCombobox = {
     const filter = this.el.dataset.filter || 'server'
     const onFilter = this.el.dataset.onFilter
     const onFilterTarget = this.el.getAttribute('phx-target')
-    const debounce = parseInt(this.el.dataset.debounce || '300', 10)
+    const parsedDebounce = Number.parseInt(this.el.dataset.debounce, 10)
+    const debounce = Number.isFinite(parsedDebounce) ? parsedDebounce : 300
 
     this._search = isInputTrigger
       ? this.el.querySelector('[data-exo-combobox="input-trigger"]')

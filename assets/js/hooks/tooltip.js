@@ -22,7 +22,8 @@ const ExoTooltip = {
     this._content = content
     this._timeout = null
     this._declaredSide = content.dataset.side
-    this._delay = parseInt(content.dataset.delay) || 500
+    const parsedDelay = Number.parseInt(content.dataset.delay, 10)
+    this._delay = Number.isFinite(parsedDelay) ? parsedDelay : 500
 
     // Upgrade to popover API — enables top-layer rendering.
     // Before this, CSS-only :hover fallback keeps the tooltip functional.

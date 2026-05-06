@@ -1044,10 +1044,15 @@ defmodule ExoUI.Components.Form do
   end
 
   def slider(assigns) do
+    default_value = div(assigns.min + assigns.max, 2)
+
     assigns =
       assigns
-      |> assign(:value, if(is_nil(assigns[:value]), do: 50, else: assigns[:value]))
-      |> assign(:value_text, slider_value_text(assigns[:value] || 50, assigns[:value_suffix]))
+      |> assign(:value, if(is_nil(assigns[:value]), do: default_value, else: assigns[:value]))
+      |> assign(
+        :value_text,
+        slider_value_text(assigns[:value] || default_value, assigns[:value_suffix])
+      )
       |> assign(:computed_aria_value_text, slider_aria_value_text(assigns))
       |> prepare_basic_field()
 

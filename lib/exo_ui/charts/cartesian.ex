@@ -244,8 +244,7 @@ defmodule ExoUI.Charts.Cartesian do
   attr :rest, :global
 
   def area_chart(assigns) do
-    id = assigns[:id] || "area-#{System.unique_integer([:positive])}"
-    assigns = assign(assigns, :id, id)
+    assigns = assign_new(assigns, :id, fn -> "area-#{System.unique_integer([:positive])}" end)
 
     if Enum.empty?(assigns.data) do
       ~H|<.chart_empty empty_text={@empty_text} aria_label={@aria_label} class={@class} {@rest} />|
@@ -1145,8 +1144,8 @@ defmodule ExoUI.Charts.Cartesian do
   attr :rest, :global
 
   def area_chart_stacked(assigns) do
-    id = assigns[:id] || "area-stacked-#{System.unique_integer([:positive])}"
-    assigns = assign(assigns, :id, id)
+    assigns =
+      assign_new(assigns, :id, fn -> "area-stacked-#{System.unique_integer([:positive])}" end)
 
     if Enum.empty?(assigns.data) do
       ~H|<.chart_empty empty_text={@empty_text} aria_label={@aria_label} class={@class} {@rest} />|

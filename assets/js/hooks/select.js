@@ -64,7 +64,7 @@ const ExoSelect = {
           if (idx >= 0) this._selectOption(options[idx])
           return
         case 'Escape':
-          this._popover.hidePopover()
+          this._closePopover()
           this._trigger.focus()
           return
         default:
@@ -144,8 +144,14 @@ const ExoSelect = {
     }
 
     // Close popover
-    this._popover.hidePopover()
+    this._closePopover()
     this._trigger.focus()
+  },
+
+  _closePopover() {
+    try {
+      if (this._popover?.matches(':popover-open')) this._popover.hidePopover()
+    } catch (_err) {}
   },
 
   _typeAhead(char, options) {
