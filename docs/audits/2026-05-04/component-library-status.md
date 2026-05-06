@@ -16,9 +16,9 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Storybook story types | 81 component stories, 27 live component stories, 6 aggregate example stories, 0 component/layout page-mode stories |
 | Playwright component capture | 114 Storybook routes captured |
 | Capture artifacts | 114 screenshots, 114 WebM videos, 114 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-06T15-49-00-101Z/viewer.html` |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-06T16-23-24-915Z/viewer.html` |
 | Browser suite | 95 Playwright tests passing |
-| ExUnit suite | 527 tests passing |
+| ExUnit suite | 529 tests passing |
 | Visual regression | 114 committed screenshot baselines with pixel-diff checking |
 | Usage documentation | Central copy-paste reference added at `docs/guides/component-usage.md` |
 
@@ -57,6 +57,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `ThemeToggle`, `Fieldset`, `FileInput`, and `Rating` are now component-mode stories with real PhoenixStorybook attrs/variations instead of page-only examples; their browser tests now target accessible roles, names, and generated Storybook IDs.
 - Overlay stacking is more robust when a second modal/sheet/drawer-style overlay opens programmatically while another overlay is already active; the registry no longer inert-hides an overlay root that is already opening, and focus now moves after the overlay is registered as topmost.
 - `ChatBubble`, `List`, and `Table` are now component-mode stories. The table story keeps real row slots and function attrs via `{:eval, ...}` helpers so row IDs and ARIA row labels still render in the actual Storybook DOM.
+- `table/1` now supports a server-owned loading state with `loading`, `loading_label`, and `:loading_state`, exposing `aria-busy` plus a polite status row without forcing callers to wrap the table in custom markup.
 - `Flash`, `FlashGroup`, and `ToastContainer` are now component-mode stories, keeping role/live-region coverage while exposing placements, close labels, flash maps, and toast data as Storybook attrs.
 - Chart stories are now mostly component-mode: sparkline/trend badge plus radial, pie/donut, bar, line, area, and radar variants expose data, dimensions, colors, legends, and empty states as PhoenixStorybook attrs.
 - `ExoUI.Charts` now keeps its public facade while exposing Phoenix component `attr` metadata directly on the public wrapper functions, so Storybook can load chart controls without delegating through metadata-blind `defdelegate` functions.
@@ -172,11 +173,13 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 
 ## Verification used
 
-- `mix test` -> 527 tests, 0 failures.
+- `mix test` -> 529 tests, 0 failures.
 - `mix compile --warnings-as-errors`.
 - `mix compile --warnings-as-errors` in `storybook`.
 - `mix test test/exo_ui/components/input_test.exs` -> 17 tests, 0 failures after adding text-like input prefix/suffix and icon adornments.
 - `bunx playwright test test/browser/form_controls.spec.js -g "input and checkbox expose error descriptions"` -> 1 test, 0 failures after verifying the Storybook input adornment wrapper and hidden decorative icons.
+- `mix test test/exo_ui/components/table_test.exs` -> 8 tests, 0 failures after adding table loading status support.
+- `bunx playwright test test/browser/data_feedback.spec.js -g "table renders caption"` -> 1 test, 0 failures after verifying `aria-busy` and the loading status row in Storybook.
 - `mix test test/exo_ui/components/file_input_test.exs` -> 7 tests, 0 failures after adding selected-file summary output support.
 - `bunx playwright test test/browser/form_controls.spec.js -g "grouped form controls expose invalid state"` -> 1 test, 0 failures after verifying the file-input selected summary updates after a multi-file selection.
 - `mix test test/exo_ui/components/slider_test.exs` -> 15 tests, 0 failures after adding slider visible value and `aria-valuetext` support.
@@ -199,7 +202,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js` -> 1 focused workflow check, 0 failures after event-mode pagination and bottom-nav targeting.
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js test/browser/onboarding_provisioning_workflow.spec.js` -> 2 focused workflow checks, 0 failures.
 - `PLAYWRIGHT_TEST_TIMEOUT=180000 bun run test:browser` -> 95 tests, 0 failures.
-- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T15-49-00-101Z`.
+- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T16-23-24-915Z`.
 - `bun run capture:validate` -> 114 entries with non-empty screenshot, WebM, and MP4 files.
 - `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the file-input selected summary pass.
 - `bun run visual:check` -> 114 current screenshots matched the committed baseline.

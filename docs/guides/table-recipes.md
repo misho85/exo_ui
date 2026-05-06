@@ -16,6 +16,8 @@ columns, row actions, empty states, and server-owned interaction state.
   end}
   caption="Account review queue"
   empty_label="No accounts match the current filters."
+  loading={@loading_accounts?}
+  loading_label="Loading accounts"
   actions_label="Row actions"
 >
   <:col :let={account} label="Account">{account.name}</:col>
@@ -34,6 +36,9 @@ columns, row actions, empty states, and server-owned interaction state.
   <:empty>
     <.empty_state title="No matching accounts" description="Adjust filters to restore rows." />
   </:empty>
+  <:loading_state>
+    Refreshing account rows...
+  </:loading_state>
 </.table>
 ```
 
@@ -63,8 +68,12 @@ end
   columns.
 - Use `align="right"` for numeric values and `align="center"` for compact
   status columns.
+- Use `loading` with `loading_label` or `:loading_state` while a server-owned
+  filter, sort, or pagination request is refreshing rows; the table exposes
+  `aria-busy` and a polite status row.
 - Provide either `empty_label` or an `:empty` slot for zero-row states.
 - Keep filtering, selected row, reviewed/escalated flags, and empty states in
   server assigns; the table should render from state instead of mutating DOM.
 - Browser coverage should verify captions, row IDs, row labels, aligned cells,
-  action slot buttons, filtered row counts, empty rendering, and reset behavior.
+  action slot buttons, filtered row counts, loading status, empty rendering, and
+  reset behavior.

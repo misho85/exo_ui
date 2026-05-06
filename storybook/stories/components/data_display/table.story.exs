@@ -14,6 +14,20 @@ defmodule Storybook.Components.Table do
   def variations do
     [
       %Variation{
+        id: :loading,
+        attributes: %{
+          id: "loading-users-table",
+          rows: [],
+          caption: "Loading members",
+          loading: true
+        },
+        slots: [
+          ~s|<:col label="Name">Name</:col>|,
+          ~s|<:col label="Email">Email</:col>|,
+          ~s|<:loading_state>Loading member rows...</:loading_state>|
+        ]
+      },
+      %Variation{
         id: :users,
         attributes: %{
           id: "users-table",

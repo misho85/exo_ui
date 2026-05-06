@@ -78,10 +78,21 @@
   color: var(--exo-muted-foreground);
 }
 
-:where([data-exo="table-empty"]) {
+:where([data-exo="table-loading-cell"]) {
+  padding: var(--exo-space-6) var(--exo-space-4);
+  text-align: center;
+  color: var(--exo-muted-foreground);
+}
+
+:where([data-exo="table-empty"], [data-exo="table-loading"]) {
   display: flex;
   justify-content: center;
   font-size: var(--exo-text-sm);
+}
+
+:where([data-exo="table-loading"]) {
+  align-items: center;
+  gap: var(--exo-space-2);
 }
 
 :where([data-exo="table-action-cell"]) {

@@ -72,6 +72,39 @@ defmodule ExoUI.Components.TableTest do
     assert html =~ "No orders yet"
   end
 
+  test "renders loading state with busy status" do
+    assigns = %{rows: []}
+
+    html =
+      rendered_to_string(~H"""
+      <.table id="orders" rows={@rows} loading loading_label="Loading orders">
+        <:col label="Amount" align="end">$0</:col>
+      </.table>
+      """)
+
+    assert html =~ ~s(data-loading)
+    assert html =~ ~s(aria-busy="true")
+    assert html =~ ~s(data-exo="table-loading")
+    assert html =~ ~s(role="status")
+    assert html =~ "Loading orders"
+    refute html =~ ~s(data-exo="table-empty")
+  end
+
+  test "renders custom loading state slot" do
+    assigns = %{rows: []}
+
+    html =
+      rendered_to_string(~H"""
+      <.table id="orders" rows={@rows} loading>
+        <:col label="Amount" align="end">$0</:col>
+        <:loading_state>Refreshing order rows</:loading_state>
+      </.table>
+      """)
+
+    assert html =~ "Refreshing order rows"
+    refute html =~ "Loading..."
+  end
+
   test "renders row labels for clickable rows" do
     assigns = %{users: [%{id: 1, name: "John"}]}
 

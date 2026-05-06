@@ -171,11 +171,15 @@ test.describe("data and feedback components", () => {
     const canvas = story(page);
     const table = canvas.getByRole("table", { name: "Team members and access levels" });
     const emptyTable = canvas.getByRole("table", { name: "Archived members" });
+    const loadingTable = canvas.getByRole("table", { name: "Loading members" });
 
-    await expect(canvas.locator('[data-exo="table-caption"]').first()).toHaveText("Team members and access levels");
+    await expect(table.locator('[data-exo="table-caption"]')).toHaveText("Team members and access levels");
     await expect(canvas.locator('[data-exo="table-head-cell"][data-align="center"]').first()).toHaveText("Status");
     await expect(table.locator('[data-exo="table-row"][aria-label="Open Alice Smith"]')).toHaveCount(1);
     await expect(emptyTable.locator('[data-exo="table-empty"]')).toContainText("No archived members.");
+    await expect(loadingTable.locator("tbody")).toHaveAttribute("aria-busy", "true");
+    await expect(loadingTable.locator('[data-exo="table-loading"]')).toHaveAttribute("role", "status");
+    await expect(loadingTable.locator('[data-exo="table-loading"]')).toContainText("Loading member rows...");
   });
 
   test("list renders description-list semantics", async ({ page }) => {

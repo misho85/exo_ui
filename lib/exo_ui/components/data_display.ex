@@ -16,6 +16,8 @@ defmodule ExoUI.Components.DataDisplay do
   attr :row_label, :any, default: nil
   attr :caption, :string, default: nil
   attr :empty_label, :string, default: "No results."
+  attr :loading, :boolean, default: false
+  attr :loading_label, :string, default: "Loading..."
   attr :actions_label, :string, default: "Actions"
   attr :class, :any, default: nil
   attr :rest, :global
@@ -29,6 +31,7 @@ defmodule ExoUI.Components.DataDisplay do
 
   slot :action
   slot :empty
+  slot :loading_state
 
   def table(assigns) do
     assigns =
@@ -64,10 +67,23 @@ defmodule ExoUI.Components.DataDisplay do
         </thead>
         <tbody
           id={@id}
+          data-loading={@loading && ""}
+          aria-busy={@loading && "true"}
           phx-hook="ExoTable"
           phx-update={is_struct(@rows, Phoenix.LiveView.LiveStream) && "stream"}
         >
-          <tr :if={@empty?} data-exo="table-empty-row">
+          <tr :if={@loading} data-exo="table-loading-row">
+            <td data-exo="table-loading-cell" colspan={@column_count}>
+              <div data-exo="table-loading" role="status" aria-live="polite" aria-atomic="true">
+                <%= if @loading_state != [] do %>
+                  {render_slot(@loading_state)}
+                <% else %>
+                  {@loading_label}
+                <% end %>
+              </div>
+            </td>
+          </tr>
+          <tr :if={!@loading && @empty?} data-exo="table-empty-row">
             <td data-exo="table-empty-cell" colspan={@column_count}>
               <div data-exo="table-empty">
                 <%= if @empty != [] do %>
