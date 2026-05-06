@@ -45,6 +45,7 @@ test.describe("content structure components", () => {
       "aria-hidden",
       "true"
     );
+    await expect(docsBreadcrumb.locator('[data-exo="breadcrumb-separator"] [data-exo="icon"]')).toHaveCount(1);
     await expect(docsBreadcrumb.locator('[data-exo="breadcrumb-current"]')).toHaveAttribute(
       "aria-current",
       "page"

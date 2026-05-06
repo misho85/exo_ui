@@ -1161,6 +1161,9 @@ Use for hierarchical navigation.
 </.breadcrumb>
 ```
 
+Use `separator_icon` for a custom Lucide separator, or `separator` when a
+literal text separator is required.
+
 ### Tabs
 
 Use `id` when you want keyboard handling through the `ExoTabs` hook. Use

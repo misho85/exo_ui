@@ -35,6 +35,8 @@
 }
 
 :where([data-exo="breadcrumb-separator"]) {
+  display: inline-flex;
+  align-items: center;
   color: var(--exo-muted-foreground);
   user-select: none;
 }

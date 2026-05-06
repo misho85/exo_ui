@@ -136,7 +136,7 @@ defmodule ExoUI.Storybook.Components.NavigationShellWorkflowDemo do
           <span style="font-weight: 700;">Exo Operations</span>
         </:brand>
         <:center>
-          <.breadcrumb aria_label="Navigation shell breadcrumb" separator="›">
+          <.breadcrumb aria_label="Navigation shell breadcrumb">
             <:item href="#">Workspace</:item>
             <:item href="#">Launch Center</:item>
             <:item current>{@active_section_data.label}</:item>

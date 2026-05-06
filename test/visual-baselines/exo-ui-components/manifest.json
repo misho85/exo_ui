@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-06T18:21:56.780Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T18-16-52-111Z",
+  "updatedAt": "2026-05-06T19:01:11.358Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T18-56-38-227Z",
   "count": 114,
   "entries": [
     {
@@ -281,13 +281,13 @@
       "dataExoCount": 25,
       "width": 1280,
       "height": 900,
-      "sha256": "444cc1a7505151846013d5d4f8adba3bbde72ce4ca499ba1842fb4de69fcbd4c"
+      "sha256": "94b63d3b403ef45633075a610a6c289cb243b4ffa3a0ef7adebb6912d09a6c77"
     },
     {
       "name": "data_display/table",
       "route": "/components/data_display/table",
       "screenshot": "screenshots/data_display__table.png",
-      "dataExoCount": 68,
+      "dataExoCount": 72,
       "width": 1280,
       "height": 900,
       "sha256": "6db849c558d763ccdc315f87959a110b17703df6001a9341ba2a7fba7c034043"
@@ -389,7 +389,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "9782dda60d1b5233b96abc117b0b3bebda82fe7c2b757fc1734887d05ed889e2"
+      "sha256": "7745eaac1a8787e882af80285c92ae046ef535d33702eaffb51d96b1eb76db71"
     },
     {
       "name": "feedback/toast_container",
@@ -407,7 +407,7 @@
       "dataExoCount": 207,
       "width": 1280,
       "height": 900,
-      "sha256": "127c25e8da61dd17af73e878ff83bf89e9b4e536b819ee3742ca94ac573febde"
+      "sha256": "5c7600c012390f20476bddbde544e807dcc97f094220c227d8aabda0e82b0dca"
     },
     {
       "name": "forms/combobox_async",
@@ -683,10 +683,10 @@
       "name": "navigation/breadcrumb",
       "route": "/components/navigation/breadcrumb",
       "screenshot": "screenshots/navigation__breadcrumb.png",
-      "dataExoCount": 21,
+      "dataExoCount": 27,
       "width": 1280,
       "height": 900,
-      "sha256": "16c441de1b42ab58e034ca0b4dcd13a62ff967b2b65018c9fe25e02ffa76b445"
+      "sha256": "01c587bc8c3cae72a507a10a96d0db7b1183678da5f5af2f5e27a3fad5606303"
     },
     {
       "name": "navigation/navbar",
@@ -965,13 +965,13 @@
       "dataExoCount": 132,
       "width": 1280,
       "height": 900,
-      "sha256": "24ec5039ab5ff482000b135470c3da4a8b9fc3af35673648b906f7fe49ab10a8"
+      "sha256": "16b8c338474b65238c48a2f7b2452f3c3d9f2ad0c04f7e9558018e16b7296159"
     },
     {
       "name": "recipes/navigation_shell_workflow",
       "route": "/components/recipes/navigation_shell_workflow",
       "screenshot": "screenshots/recipes__navigation_shell_workflow.png",
-      "dataExoCount": 228,
+      "dataExoCount": 230,
       "width": 1280,
       "height": 900,
       "sha256": "ba9cb4257cbf2563cee160f338ad846464c9aa4aa9bd278cabad7d85d24f00d9"

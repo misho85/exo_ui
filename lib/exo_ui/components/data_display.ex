@@ -287,7 +287,8 @@ defmodule ExoUI.Components.DataDisplay do
 
   @doc "Renders a breadcrumb navigation trail."
   attr :aria_label, :string, default: "Breadcrumb"
-  attr :separator, :string, default: "/"
+  attr :separator, :string, default: nil
+  attr :separator_icon, :string, default: "chevron-right"
   attr :class, :any, default: nil
   attr :rest, :global
 
@@ -299,14 +300,18 @@ defmodule ExoUI.Components.DataDisplay do
   end
 
   def breadcrumb(assigns) do
-    assigns = assign(assigns, :item_count, length(assigns.item))
+    assigns =
+      assigns
+      |> assign(:item_count, length(assigns.item))
+      |> assign(:render_separator, assigns.separator != nil || assigns.separator_icon)
 
     ~H"""
     <nav data-exo="breadcrumb" aria-label={@aria_label} class={@class} {@rest}>
       <ol>
         <li :for={{item, idx} <- Enum.with_index(@item)} data-exo="breadcrumb-item">
-          <span :if={idx > 0} data-exo="breadcrumb-separator" aria-hidden="true">
-            {@separator}
+          <span :if={idx > 0 && @render_separator} data-exo="breadcrumb-separator" aria-hidden="true">
+            <.icon :if={@separator == nil} name={@separator_icon} class="size-3" />
+            <span :if={@separator != nil}>{@separator}</span>
           </span>
           <.link
             :if={item[:navigate] && !breadcrumb_current?(item, idx, @item_count)}

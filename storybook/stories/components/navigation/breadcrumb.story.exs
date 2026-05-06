@@ -23,8 +23,8 @@ defmodule Storybook.Components.Breadcrumb do
         ]
       },
       %Variation{
-        id: :custom_separator,
-        attributes: %{separator: "›"},
+        id: :custom_separator_icon,
+        attributes: %{separator_icon: "chevron-right"},
         slots: [
           ~s|<:item href="#">Dashboard</:item>|,
           ~s|<:item href="#">Settings</:item>|,
@@ -34,7 +34,7 @@ defmodule Storybook.Components.Breadcrumb do
       },
       %Variation{
         id: :docs_current,
-        attributes: %{aria_label: "Docs breadcrumb", separator: "→"},
+        attributes: %{aria_label: "Docs breadcrumb", separator_icon: "arrow-right"},
         slots: [~s|<:item href="#">Home</:item>|, ~s|<:item href="#" current>About</:item>|]
       }
     ]

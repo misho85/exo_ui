@@ -10,7 +10,7 @@ stay in sync.
 <.navbar aria-label="Workspace navigation">
   <:brand>Acme Ops</:brand>
   <:center>
-    <.breadcrumb separator="›">
+    <.breadcrumb>
       <:item href="#">Workspace</:item>
       <:item current>{@active_section_label}</:item>
     </.breadcrumb>

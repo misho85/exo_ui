@@ -75,7 +75,7 @@ defmodule Storybook.Components.Table do
       ~s|<:col :let={user} label="Email">{user.email}</:col>|,
       ~s|<:col :let={user} label="Role"><ExoUI.Components.badge variant={if user.role == "Admin", do: "primary", else: "secondary"}>{user.role}</ExoUI.Components.badge></:col>|,
       ~s|<:col :let={user} label="Status" align="center"><ExoUI.Components.badge variant={if user.status == "Active", do: "success", else: "secondary"}>{user.status}</ExoUI.Components.badge></:col>|,
-      ~s|<:action :let={user}><ExoUI.Components.button size="sm" variant="ghost">{user.name} →</ExoUI.Components.button></:action>|
+      ~s|<:action :let={user}><ExoUI.Components.button size="sm" variant="ghost">{user.name}<ExoUI.Components.icon name="arrow-right" class="size-3" /></ExoUI.Components.button></:action>|
     ]
   end
 end

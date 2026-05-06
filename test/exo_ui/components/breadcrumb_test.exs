@@ -49,8 +49,11 @@ defmodule ExoUI.Components.BreadcrumbTest do
       </.breadcrumb>
       """)
 
+    {:ok, tree} = Floki.parse_fragment(html)
+
     assert html =~ ~s(data-exo="breadcrumb-separator")
     assert html =~ ~s(aria-hidden="true")
+    assert Floki.find(tree, ~s([data-exo="breadcrumb-separator"] [data-exo="icon"])) != []
   end
 
   test "does not render separator before first item" do
@@ -114,17 +117,37 @@ defmodule ExoUI.Components.BreadcrumbTest do
 
     html =
       rendered_to_string(~H"""
-      <.breadcrumb aria_label="Project path" separator="›">
+      <.breadcrumb aria_label="Project path" separator="|">
         <:item href="/">Home</:item>
         <:item href="/docs" current>Docs</:item>
       </.breadcrumb>
       """)
 
+    {:ok, tree} = Floki.parse_fragment(html)
+    [separator] = Floki.find(tree, ~s([data-exo="breadcrumb-separator"]))
+
     assert html =~ ~s(aria-label="Project path")
-    assert html =~ "›"
+    assert Floki.text(separator) == "|"
+    assert Floki.find(separator, ~s([data-exo="icon"])) == []
     assert html =~ ~s(data-exo="breadcrumb-current")
     assert html =~ ~s(aria-current="page")
     refute html =~ ~s(href="/docs")
+  end
+
+  test "supports a custom separator icon" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.breadcrumb separator_icon="arrow-right">
+        <:item href="/">Home</:item>
+        <:item>Page</:item>
+      </.breadcrumb>
+      """)
+
+    {:ok, tree} = Floki.parse_fragment(html)
+
+    assert Floki.find(tree, ~s([data-exo="breadcrumb-separator"] [data-exo="icon"])) != []
   end
 
   test "renders breadcrumb with class" do
