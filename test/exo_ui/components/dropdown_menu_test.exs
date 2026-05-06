@@ -136,6 +136,8 @@ defmodule ExoUI.Components.DropdownMenuTest do
     assert html =~ ~s(aria-haspopup="menu")
     assert html =~ ~s(aria-expanded="false")
     assert html =~ ~s(aria-controls="sub-menu")
+    assert html =~ ~s(data-exo="dropdown-item-chevron")
+    assert html =~ ~s(data-exo="icon")
     refute html =~ ~s(popovertargetaction="hide")
   end
 

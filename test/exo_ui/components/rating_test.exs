@@ -42,6 +42,7 @@ defmodule ExoUI.Components.RatingTest do
       """)
 
     assert length(Regex.scan(~r/data-exo="rating-star"/, html)) == 3
+    assert length(Regex.scan(~r/data-exo="icon"/, html)) == 3
   end
 
   test "renders readonly" do

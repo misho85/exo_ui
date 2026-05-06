@@ -125,6 +125,8 @@ defmodule ExoUI.Components.InputTest do
       rendered_to_string(~H|<.input type="checkbox" name="agree" value="true" label="I agree" />|)
 
     assert html =~ ~s(type="checkbox")
+    assert html =~ ~s(data-exo="checkbox-indicator")
+    assert html =~ ~s(data-exo="icon")
     assert html =~ "I agree"
   end
 
