@@ -24,11 +24,27 @@ defmodule Storybook.Components.Slider do
       },
       %Variation{
         id: :min_max,
-        attributes: %{name: "brightness", value: 75, min: 0, max: 100, label: "Brightness"}
+        attributes: %{
+          name: "brightness",
+          value: 75,
+          min: 0,
+          max: 100,
+          label: "Brightness",
+          show_value: true,
+          value_suffix: "%"
+        }
       },
       %Variation{
         id: :stepped,
-        attributes: %{name: "rating", value: 3, min: 1, max: 5, step: 1, label: "Rating (1-5)"}
+        attributes: %{
+          name: "rating",
+          value: 3,
+          min: 1,
+          max: 5,
+          step: 1,
+          label: "Rating (1-5)",
+          show_value: true
+        }
       },
       %Variation{
         id: :with_error,

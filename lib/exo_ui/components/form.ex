@@ -972,6 +972,9 @@ defmodule ExoUI.Components.Form do
   attr :max, :integer, default: 100
   attr :step, :integer, default: 1
   attr :label, :string, default: nil
+  attr :show_value, :boolean, default: false
+  attr :value_suffix, :string, default: nil
+  attr :aria_value_text, :string, default: nil
   attr :description, :string, default: nil
   attr :errors, :list, default: []
   attr :class, :any, default: nil
@@ -992,18 +995,40 @@ defmodule ExoUI.Components.Form do
     assigns =
       assigns
       |> assign(:value, if(is_nil(assigns[:value]), do: 50, else: assigns[:value]))
+      |> assign(:value_text, slider_value_text(assigns[:value] || 50, assigns[:value_suffix]))
+      |> assign(:computed_aria_value_text, slider_aria_value_text(assigns))
       |> prepare_basic_field()
 
     ~H"""
-    <div data-exo="slider-field" class={@class}>
-      <label :if={@label} data-exo="label" for={@id}>{@label}</label>
+    <div
+      id={if @show_value && @id, do: "#{@id}-slider-field"}
+      data-exo="slider-field"
+      class={@class}
+      phx-hook={if @show_value && @id, do: "ExoSlider"}
+    >
+      <div :if={@label || @show_value} data-exo="slider-header">
+        <label :if={@label} data-exo="label" for={@id}>{@label}</label>
+        <output
+          :if={@show_value}
+          id={if @id, do: "#{@id}-value"}
+          data-exo="slider-value"
+          data-exo-slider="output"
+          data-suffix={@value_suffix}
+          data-aria-value-text={@aria_value_text}
+          for={@id}
+        >
+          {@value_text}
+        </output>
+      </div>
       <input
         id={@id}
         type="range"
         data-exo="slider"
+        data-exo-slider="input"
         data-invalid={@errors != [] && ""}
         aria-invalid={if @errors != [], do: "true"}
         aria-describedby={@describedby}
+        aria-valuetext={@computed_aria_value_text}
         name={@name}
         value={@value}
         min={@min}
@@ -1015,6 +1040,22 @@ defmodule ExoUI.Components.Form do
       <.field_errors id={@error_id} errors={@errors} />
     </div>
     """
+  end
+
+  defp slider_value_text(value, suffix) when suffix in [nil, ""], do: to_string(value)
+  defp slider_value_text(value, suffix), do: "#{value}#{suffix}"
+
+  defp slider_aria_value_text(assigns) do
+    cond do
+      present?(assigns[:aria_value_text]) ->
+        assigns[:aria_value_text]
+
+      present?(assigns[:value_suffix]) ->
+        slider_value_text(assigns[:value] || 50, assigns[:value_suffix])
+
+      true ->
+        nil
+    end
   end
 
   @doc "Renders a calendar date picker with month navigation and date selection."

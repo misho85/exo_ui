@@ -57,6 +57,33 @@ defmodule ExoUI.Components.SliderTest do
     assert html =~ "Volume"
   end
 
+  test "renders slider value output with suffix and aria-valuetext" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H|<.slider name="volume" value={75} show_value value_suffix="%" />|)
+
+    assert html =~ ~s(id="volume-slider-field")
+    assert html =~ ~s(phx-hook="ExoSlider")
+    assert html =~ ~s(data-exo="slider-header")
+    assert html =~ ~s(data-exo="slider-value")
+    assert html =~ ~s(for="volume")
+    assert html =~ ~s(aria-valuetext="75%")
+    assert html =~ "75%"
+  end
+
+  test "renders explicit slider aria value text" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.slider name="risk" value={80} show_value value_suffix="%" aria_value_text="High risk" />
+      """)
+
+    assert html =~ ~s(aria-valuetext="High risk")
+    assert html =~ ~s(data-aria-value-text="High risk")
+  end
+
   test "renders slider without label when not provided" do
     assigns = %{}
     html = rendered_to_string(~H|<.slider name="vol" />|)

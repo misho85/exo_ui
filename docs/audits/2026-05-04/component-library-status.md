@@ -16,9 +16,9 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Storybook story types | 81 component stories, 27 live component stories, 6 aggregate example stories, 0 component/layout page-mode stories |
 | Playwright component capture | 114 Storybook routes captured |
 | Capture artifacts | 114 screenshots, 114 WebM videos, 114 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-06T14-47-24-762Z/viewer.html` |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-06T14-59-32-357Z/viewer.html` |
 | Browser suite | 95 Playwright tests passing |
-| ExUnit suite | 521 tests passing |
+| ExUnit suite | 523 tests passing |
 | Visual regression | 114 committed screenshot baselines with pixel-diff checking |
 | Usage documentation | Central copy-paste reference added at `docs/guides/component-usage.md` |
 
@@ -34,6 +34,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `select/1` now accepts the same simple `options={[{label, value}]}` shape that made legacy `input type="select"` convenient, while keeping the slot API for icons, groups, and disabled rows.
 - `combobox/1` now accepts the same simple `options={[{label, value}]}` data shape for client/static lists, including grouped option maps, while keeping option slots for richer row markup.
 - `radio_group/1` now accepts option maps with per-option disabled states and descriptions, so common shadcn-style labelled radio rows no longer require slot markup.
+- `slider/1` now supports `show_value`, `value_suffix`, and `aria_value_text`, with an `ExoSlider` hook that keeps the visible `<output>` and `aria-valuetext` synced as the range changes.
 - Combobox empty/loading states now update a polite live region, expose `aria-busy` on the listbox while loading, and document the keyboard model in Storybook.
 - Combobox server filtering can now target nested LiveComponents, and Storybook includes an async remote-search demo with loading, empty, result, and selection states.
 - Combobox now has a copy-paste usage guide for client filtering, LiveView server filtering, LiveComponent-targeted filtering, and live-region status text.
@@ -154,7 +155,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | --- | --- | --- |
 | Component stories | Broad Storybook route coverage exists; all real component stories are component/live-component stories, and aggregate demos are explicit examples | No component/layout page-mode stories remain |
 | Theming | Token-driven CSS with light/dark support, reduced-motion guard, semantic elevation/backdrop tokens, browser checks against hardcoded component backdrops, and token customization recipes | Needs more component-specific state tokens as the design language matures |
-| Forms | Phoenix FormField integration is now strong across most controls, generated field IDs are stable/lowercase, date picker month labelling is valid with and without caller IDs, select, combobox, and radio group accept richer `options` data without forcing callers back to native/raw markup, select/combobox expose active-descendant keyboard state, labelled choice triggers include the current value in their accessible name, disabled custom choices no longer submit hidden values, combobox empty/loading states announce changes politely, and async save, saved-filter, and bulk-edit success paths have live coverage | Component-mode controls should keep getting direct primitive-focused tests as APIs evolve |
+| Forms | Phoenix FormField integration is now strong across most controls, generated field IDs are stable/lowercase, date picker month labelling is valid with and without caller IDs, select, combobox, and radio group accept richer `options` data without forcing callers back to native/raw markup, slider can expose a synced visible value and `aria-valuetext`, select/combobox expose active-descendant keyboard state, labelled choice triggers include the current value in their accessible name, disabled custom choices no longer submit hidden values, combobox empty/loading states announce changes politely, and async save, saved-filter, and bulk-edit success paths have live coverage | Component-mode controls should keep getting direct primitive-focused tests as APIs evolve |
 | Overlays/menus | Browser-tested popover, dropdown, context menu, menubar, modal/confirm-modal/sheet/drawer focus traps, command palette trigger open/focus trap/focus restore, shared overlay registry participation, topmost Escape/backdrop handling, outside inerting, scroll lock, same-type and cross-type stacking order, lower-overlay inerting, focus restore, long-form stacked drawer scrolling, stacked validation errors, command-surface stacks, destructive confirm flows inside stacked overlays, public show/hide helpers for modal/drawer/sheet/command palette, configurable command palette shortcuts, and guarded confirm actions that can stay open for server validation | Keep tightening primitive APIs and browser tests instead of adding more broad example pages |
 | Keyboard support | Covered for major actions, menus, select/combobox, rating, targeted tabs/wizard flows, event-owned bottom navigation, event-owned pagination, date picker grid movement, parent-controlled date picker month changes, pagination disabled-button semantics, wizard disabled-step semantics, accordion button state, and command palette driven multi-screen routing | Needs deeper primitive-level shortcut and focus-state coverage |
 | Visual proof | Automated screenshots and videos for 114 routes, committed visual baselines, a CI-friendly diff command, and GitHub Actions wiring | Needs review tuning once real PR diffs start producing visual changes |
@@ -169,9 +170,11 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 
 ## Verification used
 
-- `mix test` -> 521 tests, 0 failures.
+- `mix test` -> 523 tests, 0 failures.
 - `mix compile --warnings-as-errors`.
 - `mix compile --warnings-as-errors` in `storybook`.
+- `mix test test/exo_ui/components/slider_test.exs` -> 15 tests, 0 failures after adding slider visible value and `aria-valuetext` support.
+- `bunx playwright test test/browser/form_controls.spec.js -g "grouped form controls expose invalid state"` -> 1 test, 0 failures after verifying the slider output hook updates text and `aria-valuetext` from an input event.
 - `mix test test/exo_ui/components/radio_group_test.exs` -> 18 tests, 0 failures after adding `radio_group/1` option map descriptions and disabled item support.
 - `bunx playwright test test/browser/form_controls.spec.js -g "grouped form controls expose invalid state"` -> 1 test, 0 failures after adding the Storybook radio-group data-disabled coverage.
 - `mix test test/exo_ui/components/combobox_test.exs` -> 35 tests, 0 failures after adding `combobox/1` options data support.
@@ -190,8 +193,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js` -> 1 focused workflow check, 0 failures after event-mode pagination and bottom-nav targeting.
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js test/browser/onboarding_provisioning_workflow.spec.js` -> 2 focused workflow checks, 0 failures.
 - `PLAYWRIGHT_TEST_TIMEOUT=180000 bun run test:browser` -> 95 tests, 0 failures.
-- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T14-47-24-762Z`.
+- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T14-59-32-357Z`.
 - `bun run capture:validate` -> 114 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the radio-group options API pass.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the slider output API pass.
 - `bun run visual:check` -> 114 current screenshots matched the committed baseline.
 - `docs/guides/component-usage.md` now links to button, input, select, combobox, table, modal, drawer, command-palette, date-picker, access-review, incident-response, release-readiness, billing-dispute, onboarding-provisioning, app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, import-export, async-save, command-routing, navigation-shell, role-operations, saved-filter, action/form, table/overlay/menu, component-state, and token guides.

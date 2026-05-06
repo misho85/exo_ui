@@ -481,7 +481,16 @@ Use for numeric ranges.
   min={1}
   max={100}
   step={1}
+  show_value
   description="Choose the number of seats for this workspace."
+/>
+
+<.slider
+  name="discount"
+  label="Discount"
+  value={15}
+  show_value
+  value_suffix="%"
 />
 ```
 

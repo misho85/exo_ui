@@ -4,6 +4,20 @@
   gap: var(--exo-space-1);
 }
 
+:where([data-exo="slider-header"]) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--exo-space-3);
+}
+
+:where([data-exo="slider-value"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-xs);
+  color: var(--exo-muted-foreground);
+  font-variant-numeric: tabular-nums;
+}
+
 :where([data-exo="slider"]) {
   -webkit-appearance: none;
   appearance: none;

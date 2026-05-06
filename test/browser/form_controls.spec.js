@@ -52,10 +52,23 @@ test.describe("form controls", () => {
     const slider = story(page).locator("[data-exo=\"slider\"][name=\"threshold\"][aria-invalid=\"true\"]");
     const sliderId = await slider.getAttribute("id");
     const disabledSlider = story(page).locator("[data-exo=\"slider\"][name=\"locked_quota\"]");
+    const valueSlider = story(page).locator("[data-exo=\"slider\"][name=\"brightness\"]");
+    const valueSliderId = await valueSlider.getAttribute("id");
+    const valueOutput = story(page).locator(`[data-exo="slider-value"][for="${valueSliderId}"]`);
 
     await expectAttribute(slider, "aria-invalid", "true");
     await expectAttribute(slider, "aria-describedby", `${sliderId}-description ${sliderId}-error`);
     await expect(disabledSlider).toBeDisabled();
+    await expectAttribute(valueSlider, "aria-valuetext", "75%");
+    await expect(valueOutput).toHaveText("75%");
+
+    await valueSlider.evaluate((node) => {
+      node.value = "76";
+      node.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+
+    await expectAttribute(valueSlider, "aria-valuetext", "76%");
+    await expect(valueOutput).toHaveText("76%");
 
     await gotoStory(page, "/components/forms/file_input");
 
