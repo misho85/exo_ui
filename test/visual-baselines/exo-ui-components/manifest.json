@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-06T15:32:01.038Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T15-27-28-053Z",
+  "updatedAt": "2026-05-06T15:53:31.653Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T15-49-00-101Z",
   "count": 114,
   "entries": [
     {
@@ -389,7 +389,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "b0b28db90d29178ac2f45e0c1a1c3f285c0ae0f80a7a30e6bf1fe75098601e35"
+      "sha256": "ebb355c31d92094510160a73895a2f3bbe2e61f015ad06bd1ad90b2c1c594d26"
     },
     {
       "name": "feedback/toast_container",
@@ -467,10 +467,10 @@
       "name": "forms/input",
       "route": "/components/forms/input",
       "screenshot": "screenshots/forms__input.png",
-      "dataExoCount": 33,
+      "dataExoCount": 45,
       "width": 1280,
       "height": 900,
-      "sha256": "cfd80e868149947d30afdf595feb7e1ec564de1efff6472375572163a6d37c1c"
+      "sha256": "0a76e1cf29174a0587a12568425135ae1cb72d11ca10591f1cacdf7fe960bc8f"
     },
     {
       "name": "forms/radio_group",
@@ -857,7 +857,7 @@
       "dataExoCount": 95,
       "width": 1280,
       "height": 900,
-      "sha256": "a4fa74ba3fa5681d7236a0be2cd7d1aa87bd80cda8aa940c71d837adfd8fe6ad"
+      "sha256": "5f8d9db6c55c5c45139b6fce8e41253ee9d419db79efdeb94c7b87cf5e7fd9ed"
     },
     {
       "name": "recipes/combobox_recipes",
@@ -983,7 +983,7 @@
       "dataExoCount": 228,
       "width": 1280,
       "height": 900,
-      "sha256": "09fce8335c48aefdbfe4c26514af9b9a5ee781f98db77df4abacc05a3f53c632"
+      "sha256": "f14f96fcdb0e44b4ae90ed1a7e2cd715ed903eaa88c229194e292396fb852009"
     },
     {
       "name": "recipes/release_readiness_workflow",
@@ -1028,7 +1028,7 @@
       "dataExoCount": 84,
       "width": 1280,
       "height": 900,
-      "sha256": "23d5ef268e03df0a5b083dd9476000aea247f6f26b416cbe30cc0fd414372d7d"
+      "sha256": "d7e0369d776d41d54683dfce2329376a78092c52e13e1aa3b05d018abaafb840"
     }
   ]
 }

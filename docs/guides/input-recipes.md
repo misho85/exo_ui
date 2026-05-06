@@ -4,6 +4,30 @@ Use this pattern when inputs need production validation and accessibility state:
 text/email fields, textarea limits, checkbox requirements, readonly values,
 disabled controls, and submit safety.
 
+Text-like inputs can also carry production adornments without dropping back to
+hand-authored wrapper markup:
+
+```heex
+<ExoUI.Components.Form.input
+  id="profile-budget"
+  name="profile[budget]"
+  label="Monthly budget"
+  value={@draft.budget}
+  prefix="$"
+  suffix="USD"
+/>
+
+<ExoUI.Components.Form.input
+  id="profile-search"
+  type="search"
+  name="profile[query]"
+  label="Search profiles"
+  value={@query}
+  leading_icon="search"
+  trailing_icon="circle-question-mark"
+/>
+```
+
 ## Structure
 
 ```heex

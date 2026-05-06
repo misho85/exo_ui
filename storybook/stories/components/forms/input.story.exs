@@ -26,6 +26,30 @@ defmodule Storybook.Components.Input do
         }
       },
       %Variation{
+        id: :with_prefix_suffix,
+        attributes: %{
+          type: "text",
+          id: "input-budget",
+          name: "budget",
+          value: "1250",
+          label: "Budget",
+          prefix: "$",
+          suffix: "USD"
+        }
+      },
+      %Variation{
+        id: :with_icons,
+        attributes: %{
+          type: "search",
+          id: "input-search",
+          name: "query",
+          value: "northstar",
+          label: "Search",
+          leading_icon: "search",
+          trailing_icon: "circle-question-mark"
+        }
+      },
+      %Variation{
         id: :email,
         attributes: %{type: "email", id: "input-email", name: "email", value: "", label: "Email"}
       },

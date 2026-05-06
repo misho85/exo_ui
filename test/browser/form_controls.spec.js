@@ -16,6 +16,22 @@ test.describe("form controls", () => {
     await expectAttribute(input, "aria-describedby", `${inputId}-description ${inputId}-error`);
     await expect(canvas.locator(`#${inputId}-error`)).toHaveAttribute("role", "alert");
 
+    const budget = canvas.locator('[data-exo="input"][name="budget"]');
+    const budgetFrame = canvas.locator('[data-exo="input-frame"]:has([data-exo="input"][name="budget"])');
+    const iconFrame = canvas.locator('[data-exo="input-frame"]:has([data-exo="input"][name="query"])');
+
+    await expect(budgetFrame).toContainText("$");
+    await expect(budgetFrame).toContainText("USD");
+    await expectAttribute(budget, "data-adorned", "");
+    await expect(iconFrame.locator('[data-exo="input-icon"][data-position="leading"]')).toHaveAttribute(
+      "aria-hidden",
+      "true"
+    );
+    await expect(iconFrame.locator('[data-exo="input-icon"][data-position="trailing"]')).toHaveAttribute(
+      "aria-hidden",
+      "true"
+    );
+
     await expectAttribute(checkbox, "aria-invalid", "true");
     await expectAttribute(checkbox, "aria-describedby", `${checkboxId}-description ${checkboxId}-error`);
     await expect(canvas.locator(`#${checkboxId}-error`)).toHaveAttribute("role", "alert");

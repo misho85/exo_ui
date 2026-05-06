@@ -19,6 +19,48 @@ defmodule ExoUI.Components.InputTest do
     assert html =~ "Email"
   end
 
+  test "renders input with prefix and suffix adornments" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H|<.input
+  id="budget"
+  type="text"
+  name="budget"
+  value="1250"
+  description="Monthly cap"
+  errors={["is too high"]}
+  prefix="$"
+  suffix="USD"
+/>|)
+
+    assert html =~ ~s(data-exo="input-frame")
+    assert html =~ ~s(data-invalid)
+    assert html =~ ~s(aria-describedby="budget-description budget-error")
+    assert html =~ ~s(aria-invalid="true")
+    assert html =~ ~s(data-exo="input-prefix")
+    assert html =~ ~s(data-exo="input-suffix")
+    assert html =~ ~s(data-adorned)
+    assert html =~ "$"
+    assert html =~ "USD"
+    assert html =~ ~s(name="budget")
+  end
+
+  test "renders input icons as hidden decorative adornments" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(
+        ~H|<.input type="search" name="query" value="" leading_icon="search" trailing_icon="mail" />|
+      )
+
+    assert html =~ ~s(data-exo="input-icon")
+    assert html =~ ~s(data-position="leading")
+    assert html =~ ~s(data-position="trailing")
+    assert html =~ ~s(aria-hidden="true")
+    assert html =~ ~s(type="search")
+  end
+
   test "renders textarea" do
     assigns = %{}
     html = rendered_to_string(~H|<.input type="textarea" name="bio" value="hello" />|)

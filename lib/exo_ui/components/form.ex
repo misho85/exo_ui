@@ -38,6 +38,10 @@ defmodule ExoUI.Components.Form do
   attr :prompt, :string, default: nil, doc: "the prompt for select inputs"
   attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
   attr :multiple, :boolean, default: false, doc: "the multiple flag for select inputs"
+  attr :prefix, :string, default: nil, doc: "text displayed before a text-like input value"
+  attr :suffix, :string, default: nil, doc: "text displayed after a text-like input value"
+  attr :leading_icon, :string, default: nil, doc: "Lucide icon displayed before a text-like input"
+  attr :trailing_icon, :string, default: nil, doc: "Lucide icon displayed after a text-like input"
   attr :class, :any, default: nil
 
   attr :rest, :global,
@@ -150,12 +154,46 @@ defmodule ExoUI.Components.Form do
   end
 
   def input(assigns) do
-    assigns = prepare_basic_field(assigns)
+    assigns =
+      assigns
+      |> prepare_basic_field()
+      |> assign(:adorned, input_adorned?(assigns))
 
     ~H"""
     <div data-exo="field">
       <label :if={@label} data-exo="label" for={@id}>{@label}</label>
+
+      <div
+        :if={@adorned}
+        data-exo="input-frame"
+        data-invalid={@errors != [] && ""}
+        data-disabled={@rest[:disabled] && ""}
+      >
+        <span :if={@leading_icon} data-exo="input-icon" data-position="leading" aria-hidden="true">
+          <.icon name={@leading_icon} class="size-4" />
+        </span>
+        <span :if={@prefix} data-exo="input-prefix">{@prefix}</span>
+        <input
+          id={@id}
+          data-exo="input"
+          data-adorned
+          data-invalid={@errors != [] && ""}
+          aria-invalid={if @errors != [], do: "true"}
+          aria-describedby={@describedby}
+          type={@type}
+          name={@name}
+          value={Phoenix.HTML.Form.normalize_value(@type, @value)}
+          class={@class}
+          {@rest}
+        />
+        <span :if={@suffix} data-exo="input-suffix">{@suffix}</span>
+        <span :if={@trailing_icon} data-exo="input-icon" data-position="trailing" aria-hidden="true">
+          <.icon name={@trailing_icon} class="size-4" />
+        </span>
+      </div>
+
       <input
+        :if={!@adorned}
         id={@id}
         data-exo="input"
         data-invalid={@errors != [] && ""}
@@ -849,6 +887,13 @@ defmodule ExoUI.Components.Form do
       "" -> nil
       value -> value
     end
+  end
+
+  defp input_adorned?(assigns) do
+    Enum.any?(
+      [assigns[:prefix], assigns[:suffix], assigns[:leading_icon], assigns[:trailing_icon]],
+      &present?/1
+    )
   end
 
   defp radio_item_id(nil, _value), do: nil
