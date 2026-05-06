@@ -17,7 +17,13 @@ test.describe("data and feedback components", () => {
     const selectedPicker = canvas.locator("#date-picker-single-selected");
     const keyboardPicker = canvas.locator("#date-picker-single-keyboard-navigation");
 
+    await expect(canvas.locator('[data-exo="date-picker-month"][id="-month"]')).toHaveCount(0);
+    await expect(canvas.locator('[data-exo="date-picker-grid"][aria-labelledby="-month"]')).toHaveCount(0);
     await expectAttribute(selectedPicker, "data-ready", "");
+    await expect(selectedPicker.locator('[data-exo="date-picker-month"]')).toHaveAttribute(
+      "id",
+      /.+-month/
+    );
     await expectAttribute(invalidPicker, "role", "group");
     await expectAttribute(invalidPicker, "aria-invalid", "true");
     await expectAttribute(

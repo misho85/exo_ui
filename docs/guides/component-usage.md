@@ -456,6 +456,10 @@ and selected date changes through events. Use `target={@myself}` inside a
 LiveComponent; omit `target` in a regular LiveView unless you are routing the
 event to a specific component.
 
+Pass `id` for production calendars. If `id` and `name` are omitted, ExoUI can
+derive a stable lowercase id from `label`; if no stable id is available, the
+grid falls back to an `aria-label` instead of rendering a broken month reference.
+
 ```heex
 <.date_picker
   id="due-date"

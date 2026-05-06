@@ -741,7 +741,7 @@ defmodule ExoUI.Components.Form do
   defp hidden_choice_value(value), do: value || ""
 
   defp prepare_basic_field(assigns) do
-    id = assigns[:id] || generated_input_id(assigns[:name])
+    id = assigns[:id] || generated_input_id(assigns[:name]) || generated_input_id(assigns[:label])
     errors = assigns[:errors] || []
 
     description_id =
@@ -796,6 +796,7 @@ defmodule ExoUI.Components.Form do
   defp generated_input_id(value) do
     value
     |> to_string()
+    |> String.downcase()
     |> String.replace(~r/[^a-zA-Z0-9_-]+/, "-")
     |> String.trim("-")
     |> case do
@@ -1026,6 +1027,8 @@ defmodule ExoUI.Components.Form do
         current: current,
         weeks: weeks,
         available_set: available_set,
+        month_id: date_picker_month_id(assigns[:id]),
+        month_label: Calendar.strftime(current, "%B %Y"),
         can_prev: can_prev,
         can_next: can_next
       )
@@ -1057,8 +1060,8 @@ defmodule ExoUI.Components.Form do
           >
             ‹
           </button>
-          <span id={"#{@id}-month"} data-exo="date-picker-month" aria-live="polite">
-            {Calendar.strftime(@current, "%B %Y")}
+          <span id={@month_id} data-exo="date-picker-month" aria-live="polite">
+            {@month_label}
           </span>
           <button
             type="button"
@@ -1087,7 +1090,8 @@ defmodule ExoUI.Components.Form do
         <div
           data-exo="date-picker-grid"
           role="grid"
-          aria-labelledby={"#{@id}-month"}
+          aria-labelledby={@month_id}
+          aria-label={unless @month_id, do: @month_label}
           aria-readonly="true"
         >
           <div :for={week <- @weeks} data-exo="date-picker-week" role="row">
@@ -1173,6 +1177,9 @@ defmodule ExoUI.Components.Form do
   defp date_input_value(nil), do: ""
   defp date_input_value(%Date{} = date), do: Date.to_iso8601(date)
   defp date_input_value(value), do: to_string(value)
+
+  defp date_picker_month_id(nil), do: nil
+  defp date_picker_month_id(id), do: "#{id}-month"
 
   defp normalize_date(%Date{} = date), do: date
   defp normalize_date(nil), do: nil

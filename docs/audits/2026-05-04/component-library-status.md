@@ -16,9 +16,9 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Storybook story types | 81 component stories, 27 live component stories, 6 aggregate example stories, 0 component/layout page-mode stories |
 | Playwright component capture | 114 Storybook routes captured |
 | Capture artifacts | 114 screenshots, 114 WebM videos, 114 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-06T11-23-02-557Z/viewer.html` |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-06T11-43-40-484Z/viewer.html` |
 | Browser suite | 95 Playwright tests passing |
-| ExUnit suite | 510 tests passing |
+| ExUnit suite | 512 tests passing |
 | Visual regression | 114 committed screenshot baselines with pixel-diff checking |
 | Usage documentation | Central copy-paste reference added at `docs/guides/component-usage.md` |
 
@@ -38,6 +38,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - Rating no longer hardcodes amber in component CSS; it uses `--exo-rating-active`, and the browser test verifies keyboard selection and visible focus styling.
 - Date picker now has roving keyboard grid navigation for Arrow keys, Home, End, PageUp, and PageDown, plus browser coverage against a fixed-date Storybook example.
 - Date picker now exposes a `target` attribute for parent-controlled LiveComponent events, and Storybook includes a live controlled-month recipe with browser coverage for prev/next month and selected-date updates.
+- Date picker and shared form field ID generation now derive stable lowercase IDs from labels when `id`/`name` are omitted, and no longer render broken month references like `aria-labelledby="-month"` when no stable ID is available.
 - The capture workflow now produces a real manifest, writes a latest-run pointer, validates local screenshot/video files for every captured component route, and supports committed screenshot baselines with pixel-diff checking.
 - The capture workflow now also waits for LiveView `phx-connected` before demo interactions, preventing flaky closed overlay screenshots when a fresh Storybook server is still mounting.
 - Overlay, sidebar, command palette, menu, hover card, and carousel elevation/backdrop styles now use semantic `--exo-*` tokens instead of hardcoded black shadow or backdrop values, with browser coverage preventing those values from creeping back into component CSS.
@@ -150,7 +151,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | --- | --- | --- |
 | Component stories | Broad Storybook route coverage exists; all real component stories are component/live-component stories, and aggregate demos are explicit examples | No component/layout page-mode stories remain |
 | Theming | Token-driven CSS with light/dark support, reduced-motion guard, semantic elevation/backdrop tokens, browser checks against hardcoded component backdrops, and token customization recipes | Needs more component-specific state tokens as the design language matures |
-| Forms | Phoenix FormField integration is now strong across most controls, select/combobox expose active-descendant keyboard state, labelled choice triggers include the current value in their accessible name, disabled custom choices no longer submit hidden values, combobox empty/loading states announce changes politely, and async save, saved-filter, and bulk-edit success paths have live coverage | Component-mode controls should keep getting direct primitive-focused tests as APIs evolve |
+| Forms | Phoenix FormField integration is now strong across most controls, generated field IDs are stable/lowercase, date picker month labelling is valid with and without caller IDs, select/combobox expose active-descendant keyboard state, labelled choice triggers include the current value in their accessible name, disabled custom choices no longer submit hidden values, combobox empty/loading states announce changes politely, and async save, saved-filter, and bulk-edit success paths have live coverage | Component-mode controls should keep getting direct primitive-focused tests as APIs evolve |
 | Overlays/menus | Browser-tested popover, dropdown, context menu, menubar, modal/confirm-modal/sheet/drawer focus traps, command palette trigger open/focus trap/focus restore, shared overlay registry participation, topmost Escape/backdrop handling, outside inerting, scroll lock, same-type and cross-type stacking order, lower-overlay inerting, focus restore, long-form stacked drawer scrolling, stacked validation errors, command-surface stacks, destructive confirm flows inside stacked overlays, public show/hide helpers for modal/drawer/sheet/command palette, configurable command palette shortcuts, and guarded confirm actions that can stay open for server validation | Keep tightening primitive APIs and browser tests instead of adding more broad example pages |
 | Keyboard support | Covered for major actions, menus, select/combobox, rating, targeted tabs/wizard flows, event-owned bottom navigation, event-owned pagination, date picker grid movement, parent-controlled date picker month changes, pagination disabled-button semantics, wizard disabled-step semantics, accordion button state, and command palette driven multi-screen routing | Needs deeper primitive-level shortcut and focus-state coverage |
 | Visual proof | Automated screenshots and videos for 114 routes, committed visual baselines, a CI-friendly diff command, and GitHub Actions wiring | Needs review tuning once real PR diffs start producing visual changes |
@@ -165,9 +166,11 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 
 ## Verification used
 
-- `mix test` -> 510 tests, 0 failures.
+- `mix test` -> 512 tests, 0 failures.
 - `mix compile --warnings-as-errors`.
 - `mix compile --warnings-as-errors` in `storybook`.
+- `mix test test/exo_ui/components/fieldset_test.exs test/exo_ui/components/date_picker_test.exs` -> 15 tests, 0 failures after stable lowercase form IDs and date picker month labelling fixes.
+- `bunx playwright test test/browser/data_feedback.spec.js -g "date picker exposes calendar semantics"` -> 1 test, 0 failures after date picker month-reference coverage.
 - `mix test test/exo_ui/components/select_test.exs test/exo_ui/components/combobox_test.exs` -> 59 tests, 0 failures after select/combobox accessible-name and disabled hidden-value fixes.
 - `bunx playwright test test/browser/select.spec.js test/browser/combobox.spec.js` -> 7 tests, 0 failures after component-level select/combobox browser coverage.
 - `mix test test/exo_ui/components/bottom_nav_test.exs test/exo_ui/components/pagination_test.exs` -> 16 tests, 0 failures after event-mode bottom nav and pagination support.
@@ -178,8 +181,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js` -> 1 focused workflow check, 0 failures after event-mode pagination and bottom-nav targeting.
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js test/browser/onboarding_provisioning_workflow.spec.js` -> 2 focused workflow checks, 0 failures.
 - `bun run test:browser` -> 95 tests, 0 failures.
-- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T11-23-02-557Z`.
+- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T11-43-40-484Z`.
 - `bun run capture:validate` -> 114 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the navigation shell workflow pass.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the date picker/form ID pass.
 - `bun run visual:check` -> 114 current screenshots matched the committed baseline.
 - `docs/guides/component-usage.md` now links to button, input, select, combobox, table, modal, drawer, command-palette, date-picker, access-review, incident-response, release-readiness, billing-dispute, onboarding-provisioning, app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, import-export, async-save, command-routing, navigation-shell, role-operations, saved-filter, action/form, table/overlay/menu, component-state, and token guides.

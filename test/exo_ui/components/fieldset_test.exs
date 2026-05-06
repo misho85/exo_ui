@@ -56,11 +56,11 @@ defmodule ExoUI.Components.FieldsetTest do
       </.fieldset>
       """)
 
-    assert html =~ ~s(id="Billing")
-    assert html =~ ~s(id="Billing-legend")
-    assert html =~ ~s(id="Billing-description")
-    assert html =~ ~s(id="Billing-error")
-    assert html =~ ~s(aria-describedby="Billing-description Billing-error")
+    assert html =~ ~s(id="billing")
+    assert html =~ ~s(id="billing-legend")
+    assert html =~ ~s(id="billing-description")
+    assert html =~ ~s(id="billing-error")
+    assert html =~ ~s(aria-describedby="billing-description billing-error")
     assert html =~ ~s(aria-invalid="true")
     assert html =~ ~s(role="alert")
   end

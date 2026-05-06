@@ -25,6 +25,34 @@ defmodule ExoUI.Components.DatePickerTest do
     assert html =~ ~s(role="grid")
   end
 
+  test "generates stable ids from label when id and name are omitted" do
+    assigns = %{date: ~D[2026-03-15]}
+
+    html =
+      rendered_to_string(
+        ~H|<.date_picker label="Booking date" current_month={@date} selected={@date} />|
+      )
+
+    assert html =~ ~s(id="booking-date")
+    assert html =~ ~s(id="booking-date-label")
+    assert html =~ ~s(aria-labelledby="booking-date-label")
+    assert html =~ ~s(id="booking-date-month")
+    assert html =~ ~s(aria-labelledby="booking-date-month")
+    refute html =~ ~s(id="-month")
+    refute html =~ ~s(aria-labelledby="-month")
+  end
+
+  test "uses grid aria-label instead of broken month id when no stable id is available" do
+    assigns = %{date: ~D[2026-03-15]}
+
+    html =
+      rendered_to_string(~H|<.date_picker current_month={@date} selected={@date} />|)
+
+    assert html =~ ~s(aria-label="March 2026")
+    refute html =~ ~s(id="-month")
+    refute html =~ ~s(aria-labelledby="-month")
+  end
+
   test "highlights selected date" do
     assigns = %{date: ~D[2026-03-15]}
 
