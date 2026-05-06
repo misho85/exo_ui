@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-06T18:13:05.077Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T18-08-31-098Z",
+  "updatedAt": "2026-05-06T18:21:56.780Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T18-16-52-111Z",
   "count": 114,
   "entries": [
     {
@@ -281,7 +281,7 @@
       "dataExoCount": 25,
       "width": 1280,
       "height": 900,
-      "sha256": "94b63d3b403ef45633075a610a6c289cb243b4ffa3a0ef7adebb6912d09a6c77"
+      "sha256": "444cc1a7505151846013d5d4f8adba3bbde72ce4ca499ba1842fb4de69fcbd4c"
     },
     {
       "name": "data_display/table",
@@ -389,7 +389,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "4dfaef6f0b2ff97d46d448fd78449cd5af0b5061a472b715f31c0774343375dc"
+      "sha256": "9782dda60d1b5233b96abc117b0b3bebda82fe7c2b757fc1734887d05ed889e2"
     },
     {
       "name": "feedback/toast_container",
@@ -452,7 +452,7 @@
       "dataExoCount": 17,
       "width": 1280,
       "height": 900,
-      "sha256": "6199f94010a13b19e73e364a8f31a251d2ac55778de5dccf4eaded7628d4cd28"
+      "sha256": "f2fbe8ba3020d26473753261654001ae691613f04a00bf979463e9e37d10f8b8"
     },
     {
       "name": "forms/form",
@@ -506,7 +506,7 @@
       "dataExoCount": 28,
       "width": 1280,
       "height": 900,
-      "sha256": "9a98f6063eff5ac347dabef09c36b0f1ca36ddf975e0819f1ad0eaffc1b73b41"
+      "sha256": "bc9eb194e8584058913d56380f48ee1ab32a293c6275fc2c3624b7d8397a9222"
     },
     {
       "name": "layout/accordion",
@@ -521,10 +521,10 @@
       "name": "layout/app_shell_workflow",
       "route": "/components/layout/app_shell_workflow",
       "screenshot": "screenshots/layout__app_shell_workflow.png",
-      "dataExoCount": 214,
+      "dataExoCount": 215,
       "width": 1280,
       "height": 900,
-      "sha256": "0c36128e58ef8a02e310c26943c8f02034eb33586ab3bb01dd80f2b5122f9d3e"
+      "sha256": "6255b92872991721a8b28b6fe4ff61459f48d05537c72f7712029fa8e95f07b6"
     },
     {
       "name": "layout/card",
@@ -611,10 +611,10 @@
       "name": "layouts/sidebar_layout",
       "route": "/layouts/sidebar_layout",
       "screenshot": "screenshots/layouts__sidebar_layout.png",
-      "dataExoCount": 58,
+      "dataExoCount": 59,
       "width": 1280,
       "height": 900,
-      "sha256": "09cb044e0d8b0f04374c6ab0b90eee71e633509c565c37122a31ad77c722e6eb"
+      "sha256": "9935bac9de9758af662ffd76380f42e72be227da195dd076155b7be686c5df4c"
     },
     {
       "name": "menus/command_palette",
@@ -965,7 +965,7 @@
       "dataExoCount": 132,
       "width": 1280,
       "height": 900,
-      "sha256": "16b8c338474b65238c48a2f7b2452f3c3d9f2ad0c04f7e9558018e16b7296159"
+      "sha256": "24ec5039ab5ff482000b135470c3da4a8b9fc3af35673648b906f7fe49ab10a8"
     },
     {
       "name": "recipes/navigation_shell_workflow",

@@ -30,6 +30,7 @@ test.describe("layout components", () => {
     await expect(root.locator('[data-exo="sidebar-icon"] svg')).toHaveCount(4);
     await expect(trigger).toHaveAttribute("aria-controls", "sidebar-layout-single-app-shell-panel");
     await expect(trigger).toHaveAttribute("aria-expanded", "true");
+    await expect(trigger.locator('[data-exo="icon"]')).toHaveCount(1);
     await expect(toggle).toBeChecked();
 
     await trigger.click();

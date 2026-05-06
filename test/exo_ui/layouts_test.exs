@@ -17,6 +17,8 @@ defmodule ExoUI.LayoutsTest do
       </.sidebar_layout>
       """)
 
+    {:ok, tree} = Floki.parse_fragment(html)
+
     assert html =~ ~s(data-exo="sidebar")
     assert html =~ ~s(data-state="open")
     assert html =~ ~s(data-exo="sidebar-content")
@@ -26,6 +28,8 @@ defmodule ExoUI.LayoutsTest do
     assert html =~ ~s(data-exo="sidebar-nav")
     assert html =~ ~s(data-exo="sidebar-aside")
     assert html =~ ~s(phx-hook="ExoSidebar")
+    assert Floki.find(tree, ~s([data-exo="sidebar-hamburger"] [data-exo="icon"])) != []
+    refute html =~ "☰"
     assert html =~ "Nav content"
     assert html =~ "Main content"
   end

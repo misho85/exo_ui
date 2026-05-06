@@ -51,7 +51,7 @@ defmodule ExoUI.Layouts do
             aria-controls={"#{@id}-panel"}
             aria-expanded="true"
           >
-            <span aria-hidden="true">☰</span>
+            <.icon name="menu" class="size-5" />
           </button>
 
           <div :if={@topbar_start != []} data-exo="topbar-start">
