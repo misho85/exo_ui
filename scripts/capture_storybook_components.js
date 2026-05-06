@@ -477,6 +477,39 @@ async function componentDemo(page, name) {
       await clickButton(page, "Close review");
       await page.waitForTimeout(300);
       break;
+    case "billing_dispute_workflow":
+      await clickButton(page, "Open billing commands");
+      await page.waitForTimeout(300);
+      await safe(
+        page.locator('#story-live #billing-command [data-exo="command-palette-input"]'),
+        (node) => node.fill("payments", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await page.keyboard.press("Enter");
+      await page.waitForTimeout(350);
+      await clickButton(page, "Review Acme Corp");
+      await page.waitForTimeout(350);
+      await clickButton(page, "Prepare credit");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Issue credit");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Keep reviewing");
+      await page.waitForTimeout(250);
+      await clickButton(page, "Review Acme Corp");
+      await page.waitForTimeout(350);
+      await fillByLabel(page, "Review note", "Duplicate charge confirmed by invoice retry logs.");
+      await page.waitForTimeout(250);
+      await safe(page.locator('#story-live #billing-reviewer'), (node) =>
+        node.selectOption("manager", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await clickButton(page, "Request evidence");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Prepare credit");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Issue credit");
+      await page.waitForTimeout(400);
+      break;
     case "dashboard_drilldown_workflow":
       await clickButton(page, "At risk");
       await page.waitForTimeout(300);

@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-05T21:35:20.659Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-05T21-31-05-493Z",
-  "count": 111,
+  "updatedAt": "2026-05-06T07:26:38.396Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T07-22-20-249Z",
+  "count": 112,
   "entries": [
     {
       "name": "actions/button",
@@ -389,7 +389,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "568e053c732ff3910adddd3fd1af1fc57733609d9ceaa7aa07e606ceb8e8c4c0"
+      "sha256": "1468156d327b2c86053f158c4c74dcda7a36ce7195e966b97d6066de05ec16bd"
     },
     {
       "name": "feedback/toast_container",
@@ -407,7 +407,7 @@
       "dataExoCount": 180,
       "width": 1280,
       "height": 900,
-      "sha256": "e1f0f47bb1e3023f49d8bf571f5a97a60440b3da1cf9dcde0cb97e81fed4ef5c"
+      "sha256": "2c102960e13bbd3bd9928ba9851d9631cffc7b1efc1a07d542f255687ec09292"
     },
     {
       "name": "forms/combobox_async",
@@ -425,7 +425,7 @@
       "dataExoCount": 451,
       "width": 1280,
       "height": 900,
-      "sha256": "cfb90983a8a8f7847893fe94fe8fa32f6af12423d5bf4e7aee4b2b59d513711d"
+      "sha256": "70cbc6faa2cdea733bbe1e95c48083e954f2e5a288987524d0d48b55a7369e12"
     },
     {
       "name": "forms/date_picker_controlled",
@@ -614,7 +614,7 @@
       "dataExoCount": 54,
       "width": 1280,
       "height": 900,
-      "sha256": "09cb044e0d8b0f04374c6ab0b90eee71e633509c565c37122a31ad77c722e6eb"
+      "sha256": "7961b6dacbbb9742d557f6fc91e33708fc126499ac30e43e55db222faf5f7766"
     },
     {
       "name": "menus/command_palette",
@@ -822,6 +822,15 @@
       "width": 1280,
       "height": 900,
       "sha256": "6acaa8eac07d932887e2335c2d4d4af8f82675990db66bee0b9d4e9d655966d6"
+    },
+    {
+      "name": "recipes/billing_dispute_workflow",
+      "route": "/components/recipes/billing_dispute_workflow",
+      "screenshot": "screenshots/recipes__billing_dispute_workflow.png",
+      "dataExoCount": 202,
+      "width": 1280,
+      "height": 900,
+      "sha256": "900f5a844e9aa57e6cf44f6180d9a8a9a4cb4ec54d8492e878deddf2c164ad72"
     },
     {
       "name": "recipes/bulk_action_workflow",
