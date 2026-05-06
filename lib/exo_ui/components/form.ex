@@ -760,7 +760,9 @@ defmodule ExoUI.Components.Form do
           Map.get(option, "value"),
       value: Map.get(option, :value) || Map.get(option, "value"),
       icon: Map.get(option, :icon) || Map.get(option, "icon"),
-      disabled: Map.get(option, :disabled) || Map.get(option, "disabled"),
+      description: Map.get(option, :description) || Map.get(option, "description"),
+      disabled:
+        normalize_option_disabled(Map.get(option, :disabled) || Map.get(option, "disabled")),
       group: Map.get(option, :group) || Map.get(option, "group") || group
     }
   end
@@ -770,6 +772,8 @@ defmodule ExoUI.Components.Form do
   end
 
   defp slot_option?(option), do: Map.has_key?(option, :inner_block)
+
+  defp normalize_option_disabled(value), do: value in [true, "true"]
 
   defp group_options(options) do
     options
@@ -850,6 +854,18 @@ defmodule ExoUI.Components.Form do
   defp radio_item_id(nil, _value), do: nil
   defp radio_item_id(group_id, value), do: "#{group_id}-#{generated_input_id(value) || "option"}"
 
+  defp radio_description_id(nil, _option), do: nil
+
+  defp radio_description_id(group_id, option) do
+    if present?(option[:description]) do
+      "#{radio_item_id(group_id, option[:value])}-description"
+    end
+  end
+
+  defp radio_option_disabled?(group_disabled, option) do
+    group_disabled || option[:disabled] == true
+  end
+
   defp generated_input_id(nil), do: nil
 
   defp generated_input_id(value) do
@@ -866,12 +882,12 @@ defmodule ExoUI.Components.Form do
 
   defp present?(value), do: value not in [nil, ""]
 
-  @doc "Renders a radio button group from a list of {label, value} tuples or slot-based items."
+  @doc "Renders a radio button group from option data or slot-based items."
   attr :field, Phoenix.HTML.FormField, default: nil, doc: "a form field struct"
   attr :id, :string, default: nil
   attr :name, :string
   attr :value, :any, default: nil
-  attr :options, :list, default: [], doc: "list of {label, value} tuples"
+  attr :options, :list, default: [], doc: "list of {label, value} tuples or option maps"
   attr :label, :string, default: nil
   attr :description, :string, default: nil
   attr :errors, :list, default: []
@@ -882,6 +898,7 @@ defmodule ExoUI.Components.Form do
   slot :item do
     attr :value, :any, required: true
     attr :disabled, :boolean
+    attr :description, :string
   end
 
   def radio_group(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
@@ -896,7 +913,10 @@ defmodule ExoUI.Components.Form do
   end
 
   def radio_group(assigns) do
-    assigns = prepare_basic_field(assigns)
+    assigns =
+      assigns
+      |> prepare_basic_field()
+      |> assign(:radio_options, normalized_choice_options(assigns.item, assigns[:options]))
 
     ~H"""
     <fieldset
@@ -909,45 +929,34 @@ defmodule ExoUI.Components.Form do
       {@rest}
     >
       <legend :if={@label} id={@label_id} data-exo="label">{@label}</legend>
-      <%= if @item != [] do %>
-        <label
-          :for={item <- @item}
-          data-exo="radio-item"
-          for={radio_item_id(@id, item[:value])}
-          data-disabled={(@disabled || item[:disabled]) && ""}
+      <label
+        :for={option <- @radio_options}
+        data-exo="radio-item"
+        for={radio_item_id(@id, option[:value])}
+        data-value={option[:value]}
+        data-disabled={radio_option_disabled?(@disabled, option) && ""}
+        aria-disabled={to_string(radio_option_disabled?(@disabled, option))}
+      >
+        <input
+          id={radio_item_id(@id, option[:value])}
+          type="radio"
+          data-exo="radio"
+          name={@name}
+          value={option[:value]}
+          checked={option_selected?(option[:value], @value)}
+          disabled={radio_option_disabled?(@disabled, option)}
+          aria-describedby={radio_description_id(@id, option)}
+        />
+        <span data-exo="radio-indicator" />
+        <span data-exo="radio-label"><.choice_option_label option={option} /></span>
+        <span
+          :if={option[:description]}
+          id={radio_description_id(@id, option)}
+          data-exo="radio-description"
         >
-          <input
-            id={radio_item_id(@id, item[:value])}
-            type="radio"
-            data-exo="radio"
-            name={@name}
-            value={item[:value]}
-            checked={to_string(@value) == to_string(item[:value])}
-            disabled={@disabled || item[:disabled]}
-          />
-          <span data-exo="radio-indicator" />
-          <span>{render_slot(item)}</span>
-        </label>
-      <% else %>
-        <label
-          :for={{opt_label, opt_value} <- @options}
-          data-exo="radio-item"
-          for={radio_item_id(@id, opt_value)}
-          data-disabled={@disabled && ""}
-        >
-          <input
-            id={radio_item_id(@id, opt_value)}
-            type="radio"
-            data-exo="radio"
-            name={@name}
-            value={opt_value}
-            checked={to_string(@value) == to_string(opt_value)}
-            disabled={@disabled}
-          />
-          <span data-exo="radio-indicator" />
-          <span>{opt_label}</span>
-        </label>
-      <% end %>
+          {option[:description]}
+        </span>
+      </label>
       <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
       <.field_errors id={@error_id} errors={@errors} />
     </fieldset>

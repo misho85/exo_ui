@@ -449,13 +449,18 @@ values, input triggers, creatable rows, and disabled option safety, see
 
 ### Radio Group
 
-Use tuple options for simple groups or `:item` slots for custom labels.
+Use tuple options for simple groups, option maps for disabled or described items,
+or `:item` slots when labels need custom markup.
 
 ```heex
 <.radio_group
   field={@form[:billing_cycle]}
   label="Billing cycle"
-  options={[{"Monthly", "monthly"}, {"Yearly", "yearly"}]}
+  options={[
+    {"Monthly", "monthly"},
+    %{label: "Yearly", value: "yearly", description: "Best value"},
+    %{label: "Enterprise", value: "enterprise", disabled: true}
+  ]}
 />
 
 <.radio_group id="plan" name="account[plan]" value={@plan} label="Plan">

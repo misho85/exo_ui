@@ -37,6 +37,7 @@ test.describe("form controls", () => {
       "role",
       "alert"
     );
+    await expect(canvas.locator("#radio-group-single-priority-critical")).toBeDisabled();
     await expect(canvas.locator("#radio-group-single-slot-items-pickup")).toBeDisabled();
     await expect(canvas.locator("#radio-group-single-disabled")).toHaveAttribute("disabled", "");
 

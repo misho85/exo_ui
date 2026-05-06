@@ -21,7 +21,16 @@ defmodule Storybook.Components.RadioGroup do
            label: "Select a plan",
            description: "Choose the subscription tier for this workspace.",
            value: "pro",
-           options: [{"Free", "free"}, {"Pro", "pro"}, {"Enterprise", "enterprise"}]
+           options: [
+             %{label: "Free", value: "free", description: "For evaluation workspaces."},
+             %{label: "Pro", value: "pro", description: "Shared team operations."},
+             %{
+               label: "Enterprise",
+               value: "enterprise",
+               disabled: true,
+               description: "Requires a sales-approved contract."
+             }
+           ]
          }
        }},
       {"priority",
@@ -35,7 +44,7 @@ defmodule Storybook.Components.RadioGroup do
              {"Low", "low"},
              {"Medium", "medium"},
              {"High", "high"},
-             {"Critical", "critical"}
+             %{label: "Critical", value: "critical", disabled: true}
            ]
          }
        }},

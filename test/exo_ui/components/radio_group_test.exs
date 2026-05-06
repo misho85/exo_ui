@@ -32,6 +32,42 @@ defmodule ExoUI.Components.RadioGroupTest do
     assert html =~ ~s(value="lg")
   end
 
+  test "renders radio group option maps with disabled item descriptions" do
+    assigns = %{
+      plans: [
+        %{label: "Starter", value: "starter", description: "Basic workspace access"},
+        %{label: "Enterprise", value: "enterprise", disabled: true, description: "Contact sales"}
+      ]
+    }
+
+    html =
+      rendered_to_string(~H"""
+      <.radio_group id="plan" name="plan" value="starter" options={@plans} />
+      """)
+
+    assert html =~ ~s(data-value="starter")
+    assert html =~ ~s(id="plan-starter-description")
+    assert html =~ ~s(aria-describedby="plan-starter-description")
+    assert html =~ "Basic workspace access"
+    assert html =~ ~s(data-value="enterprise")
+    assert html =~ ~s(data-disabled)
+    assert html =~ ~s(aria-disabled="true")
+    assert html =~ ~s(disabled)
+    assert html =~ "Contact sales"
+  end
+
+  test "renders string-key radio group option maps" do
+    assigns = %{options: [%{"label" => "Email", "value" => "email"}]}
+
+    html =
+      rendered_to_string(~H"""
+      <.radio_group name="contact_method" options={@options} />
+      """)
+
+    assert html =~ "Email"
+    assert html =~ ~s(value="email")
+  end
+
   test "renders radio group with selected value" do
     assigns = %{}
 
@@ -162,6 +198,21 @@ defmodule ExoUI.Components.RadioGroupTest do
 
     assert html =~ ~s(data-disabled)
     assert html =~ "disabled"
+  end
+
+  test "renders slot-based item description" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.radio_group id="delivery" name="delivery">
+        <:item value="standard" description="Arrives in five days">Standard</:item>
+      </.radio_group>
+      """)
+
+    assert html =~ ~s(id="delivery-standard-description")
+    assert html =~ ~s(aria-describedby="delivery-standard-description")
+    assert html =~ "Arrives in five days"
   end
 
   test "renders radio group with field struct" do
