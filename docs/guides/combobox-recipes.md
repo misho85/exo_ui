@@ -22,10 +22,15 @@ mode, creatable rows, disabled choices, and submit safety.
     filter="client"
     description="Required for routing ownership."
     errors={Map.get(@errors, :assignee, [])}
+    options={[
+      {"Design", [%{label: "Ana Markovic", value: "ana"}]},
+      {"Engineering",
+       [
+         %{label: "Nikola Petrovic", value: "nikola"},
+         %{label: "Stefan unavailable", value: "stefan", disabled: true}
+       ]}
+    ]}
   >
-    <:option value="ana" group="Design">Ana Markovic</:option>
-    <:option value="nikola" group="Engineering">Nikola Petrovic</:option>
-    <:option value="stefan" group="Engineering" disabled>Stefan unavailable</:option>
     <:empty>No teammates found.</:empty>
   </.combobox>
 

@@ -404,7 +404,8 @@ server-owned select state, see `docs/guides/select-recipes.md`.
 Use when users need search plus a submitted hidden value. Client filtering is
 enough for static option lists. Button-trigger comboboxes expose the label plus
 current value as the trigger name, and disabled comboboxes disable their hidden
-submitted value.
+submitted value. Use `options` for simple lists or grouped/disabled option maps,
+and use slots when option rows need icons or custom markup.
 
 ```heex
 <.combobox
@@ -413,13 +414,33 @@ submitted value.
   label="Country"
   prompt="Search countries..."
   filter="client"
+  options={[
+    {"Serbia", "rs"},
+    {"Croatia", "hr"},
+    {"Bosnia and Herzegovina", "ba"}
+  ]}
 >
-  <:option value="rs">Serbia</:option>
-  <:option value="hr">Croatia</:option>
-  <:option value="ba">Bosnia and Herzegovina</:option>
   <:empty>No countries found.</:empty>
 </.combobox>
 ```
+
+```heex
+<.combobox
+  id="assignee"
+  field={@form[:assignee_id]}
+  label="Assignee"
+  prompt="Search teammates..."
+  filter="client"
+>
+  <:option value="ana" group="Design">Ana Markovic</:option>
+  <:option value="nikola" group="Engineering">Nikola Petrovic</:option>
+  <:option value="stefan" group="Engineering" disabled>Stefan unavailable</:option>
+  <:empty>No teammates found.</:empty>
+</.combobox>
+```
+
+Slots remain available when teams prefer declarative rows or need markup that
+does not fit a data map.
 
 For server-filtered LiveViews and LiveComponents, use the dedicated guide:
 [Combobox Usage](combobox.md). For client/server recipe patterns, clearable

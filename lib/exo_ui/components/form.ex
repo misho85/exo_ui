@@ -420,6 +420,7 @@ defmodule ExoUI.Components.Form do
   attr :id, :string, required: true
   attr :name, :any
   attr :value, :any, default: nil
+  attr :options, :list, default: [], doc: "list of {label, value} tuples or option maps"
   attr :field, Phoenix.HTML.FormField, default: nil
   attr :label, :string, default: nil
   attr :description, :string, default: nil
@@ -566,7 +567,11 @@ defmodule ExoUI.Components.Form do
             disabled={@disabled}
           >
             <span id={@value_id} data-exo="combobox-value" data-placeholder={!@selected_opt && ""}>
-              {if @selected_opt, do: render_slot(@selected_opt), else: @prompt}
+              <%= if @selected_opt do %>
+                <.choice_option_label option={@selected_opt} />
+              <% else %>
+                {@prompt}
+              <% end %>
             </span>
             <svg
               data-exo="combobox-icon"

@@ -12,12 +12,18 @@ Use `combobox/1` when users need to search a list and submit a single hidden val
   label="Country"
   prompt="Search countries..."
   filter="client"
+  options={[
+    {"Serbia", "rs"},
+    {"Croatia", "hr"},
+    {"Bosnia and Herzegovina", "ba"}
+  ]}
 >
-  <:option value="rs">Serbia</:option>
-  <:option value="hr">Croatia</:option>
-  <:option value="ba">Bosnia and Herzegovina</:option>
+  <:empty>No countries found</:empty>
 </.combobox>
 ```
+
+Use option maps for grouped or disabled data rows. Use `:option` slots instead
+when rows need icons or custom markup beyond a label/value pair.
 
 ## Server Filter In A LiveView
 

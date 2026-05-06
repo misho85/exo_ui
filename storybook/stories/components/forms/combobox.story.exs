@@ -19,16 +19,17 @@ defmodule Storybook.Components.Combobox do
          attributes: %{
            name: "country",
            filter: "client",
-           prompt: "Search countries..."
+           prompt: "Search countries...",
+           options: [
+             {"Serbia", "rs"},
+             {"Croatia", "hr"},
+             {"Bosnia & Herzegovina", "ba"},
+             {"Montenegro", "me"},
+             {"Slovenia", "si"},
+             {"North Macedonia", "mk"}
+           ]
          },
-         slots: [
-           ~s|<:option value="rs">Serbia</:option>|,
-           ~s|<:option value="hr">Croatia</:option>|,
-           ~s|<:option value="ba">Bosnia &amp; Herzegovina</:option>|,
-           ~s|<:option value="me">Montenegro</:option>|,
-           ~s|<:option value="si">Slovenia</:option>|,
-           ~s|<:option value="mk">North Macedonia</:option>|
-         ]
+         slots: []
        }},
       {"cb-selected",
        %Variation{

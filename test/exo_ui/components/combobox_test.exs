@@ -27,6 +27,51 @@ defmodule ExoUI.Components.ComboboxTest do
     assert html =~ "Croatia"
   end
 
+  test "renders combobox from options attr" do
+    assigns = %{countries: [{"Serbia", "rs"}, {"Croatia", "hr"}]}
+
+    html =
+      rendered_to_string(~H"""
+      <.combobox
+        id="c-options"
+        name="country"
+        value="hr"
+        label="Country"
+        prompt="Search countries..."
+        options={@countries}
+      />
+      """)
+
+    assert html =~ ~s(data-exo="combobox-option")
+    assert html =~ ~s(data-value="rs")
+    assert html =~ ~s(data-value="hr")
+    assert html =~ ~s(value="hr")
+
+    [trigger_part | _] = String.split(html, ~s(popover="auto"))
+    assert trigger_part =~ "Croatia"
+  end
+
+  test "renders grouped and disabled combobox option maps from options attr" do
+    assigns = %{
+      people: [
+        {"Design", [%{label: "Ana Markovic", value: "ana"}]},
+        {"Engineering", [%{label: "Stefan unavailable", value: "stefan", disabled: true}]}
+      ]
+    }
+
+    html =
+      rendered_to_string(~H"""
+      <.combobox id="c-grouped-options" name="assignee" options={@people} />
+      """)
+
+    assert html =~ ~s(role="group")
+    assert html =~ ~s(aria-label="Design")
+    assert html =~ ~s(data-value="stefan")
+    assert html =~ ~s(data-disabled)
+    assert html =~ ~s(aria-disabled="true")
+    assert html =~ "Ana Markovic"
+  end
+
   test "renders search input with role=combobox inside popover for button trigger" do
     assigns = %{}
 
