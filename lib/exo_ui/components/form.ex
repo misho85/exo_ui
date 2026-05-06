@@ -367,11 +367,11 @@ defmodule ExoUI.Components.Form do
           aria-haspopup="listbox"
           aria-expanded="false"
           aria-controls={"#{@id}-listbox"}
-          aria-labelledby={if @label_id, do: @label_id}
+          aria-labelledby={@trigger_labelledby}
           style={"anchor-name: --select-#{@id}"}
           disabled={@disabled}
         >
-          <span data-exo="select-value" data-placeholder={!@selected_opt && ""}>
+          <span id={@value_id} data-exo="select-value" data-placeholder={!@selected_opt && ""}>
             {if @selected_opt, do: render_slot(@selected_opt), else: @prompt}
           </span>
           <svg
@@ -404,7 +404,7 @@ defmodule ExoUI.Components.Form do
           </div>
         </div>
       </div>
-      <.choice_hidden_input name={@name} value={@value} />
+      <.choice_hidden_input name={@name} value={@value} disabled={@disabled} />
       <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
       <.field_errors id={@error_id} errors={@errors} />
     </div>
@@ -521,7 +521,7 @@ defmodule ExoUI.Components.Form do
           {combobox_status(@status, @loading)}
         </span>
       </div>
-      <.choice_hidden_input name={@name} value={@value} />
+      <.choice_hidden_input name={@name} value={@value} disabled={@disabled} />
       <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
       <.field_errors id={@error_id} errors={@errors} />
     </div>
@@ -556,11 +556,11 @@ defmodule ExoUI.Components.Form do
             aria-haspopup="listbox"
             aria-expanded="false"
             aria-controls={"#{@id}-listbox"}
-            aria-labelledby={if @label_id, do: @label_id}
+            aria-labelledby={@trigger_labelledby}
             style={"anchor-name: --combobox-#{@id}"}
             disabled={@disabled}
           >
-            <span data-exo="combobox-value" data-placeholder={!@selected_opt && ""}>
+            <span id={@value_id} data-exo="combobox-value" data-placeholder={!@selected_opt && ""}>
               {if @selected_opt, do: render_slot(@selected_opt), else: @prompt}
             </span>
             <svg
@@ -628,7 +628,7 @@ defmodule ExoUI.Components.Form do
           {combobox_status(@status, @loading)}
         </span>
       </div>
-      <.choice_hidden_input name={@name} value={@value} />
+      <.choice_hidden_input name={@name} value={@value} disabled={@disabled} />
       <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
       <.field_errors id={@error_id} errors={@errors} />
     </div>
@@ -682,10 +682,17 @@ defmodule ExoUI.Components.Form do
 
   attr :name, :any, default: nil
   attr :value, :any, default: nil
+  attr :disabled, :boolean, default: false
 
   defp choice_hidden_input(assigns) do
     ~H"""
-    <input :if={@name} type="hidden" name={@name} value={hidden_choice_value(@value)} />
+    <input
+      :if={@name}
+      type="hidden"
+      name={@name}
+      value={hidden_choice_value(@value)}
+      disabled={@disabled}
+    />
     """
   end
 
@@ -699,6 +706,8 @@ defmodule ExoUI.Components.Form do
     assign(assigns,
       grouped: group_options(assigns.option),
       label_id: choice_label_id(assigns),
+      value_id: choice_value_id(assigns),
+      trigger_labelledby: choice_trigger_labelledby(assigns),
       selected_opt: selected_option(assigns.option, assigns[:value])
     )
   end
@@ -720,6 +729,14 @@ defmodule ExoUI.Components.Form do
   defp choice_label_id(assigns) do
     assigns[:label_id]
   end
+
+  defp choice_value_id(assigns), do: "#{assigns.id}-value"
+
+  defp choice_trigger_labelledby(%{label_id: label_id} = assigns) when is_binary(label_id) do
+    "#{label_id} #{choice_value_id(assigns)}"
+  end
+
+  defp choice_trigger_labelledby(_assigns), do: nil
 
   defp hidden_choice_value(value), do: value || ""
 

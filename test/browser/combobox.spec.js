@@ -85,11 +85,13 @@ test.describe("combobox", () => {
     const groupedId = "combobox-single-grouped-options";
     const grouped = canvas.locator(`#${groupedId}-combobox`);
     const clear = grouped.locator("[data-exo=\"combobox-clear\"]");
+    const groupedTrigger = grouped.locator("[data-exo-combobox=\"trigger\"]");
     const groupedValue = canvas.locator("input[name=\"assignee\"]");
     const selected = canvas.locator(`#${groupedId} [data-exo="combobox-option"][data-value="maria"]`);
     const disabledOption = canvas.locator(`#${groupedId} [data-exo="combobox-option"][data-value="stefan"]`);
 
     await expectAttribute(grouped, "data-ready", "");
+    await expect(groupedTrigger).toHaveAccessibleName("Assignee Maria Ilic");
     await expect(selected).toHaveAttribute("aria-selected", "true");
     await expect(disabledOption).toHaveAttribute("data-disabled", "");
     await clear.click();
@@ -124,7 +126,9 @@ test.describe("combobox", () => {
 
     const disabledTrigger = canvas.locator("#combobox-single-disabled-combobox [data-exo-combobox=\"trigger\"]");
     await expect(disabledTrigger).toBeDisabled();
-    await expect(canvas.locator("input[name=\"locked_owner\"]")).toHaveValue("ops");
+    const disabledValue = canvas.locator("input[name=\"locked_owner\"]");
+    await expect(disabledValue).toHaveValue("ops");
+    await expect(disabledValue).toBeDisabled();
   });
 
   test("supports async server filtering with LiveView loading state", async ({ page }) => {

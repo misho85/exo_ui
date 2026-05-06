@@ -368,7 +368,9 @@ Use for boolean form fields.
 ### Select
 
 Use the custom select for single-value selection with optional icons, groups,
-disabled options, and field integration.
+disabled options, and field integration. When a label and value are present, the
+trigger exposes both to assistive tech; a disabled select also disables its hidden
+submitted value to match native form behavior.
 
 ```heex
 <.select
@@ -390,7 +392,9 @@ server-owned select state, see `docs/guides/select-recipes.md`.
 ### Combobox
 
 Use when users need search plus a submitted hidden value. Client filtering is
-enough for static option lists.
+enough for static option lists. Button-trigger comboboxes expose the label plus
+current value as the trigger name, and disabled comboboxes disable their hidden
+submitted value.
 
 ```heex
 <.combobox

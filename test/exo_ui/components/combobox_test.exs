@@ -272,6 +272,9 @@ defmodule ExoUI.Components.ComboboxTest do
 
     assert html =~ ~s(data-exo="label")
     assert html =~ "Country"
+    assert html =~ ~s(id="c14-label")
+    assert html =~ ~s(id="c14-value")
+    assert html =~ ~s(aria-labelledby="c14-label c14-value")
   end
 
   test "input trigger references the field label" do
@@ -344,12 +347,32 @@ defmodule ExoUI.Components.ComboboxTest do
 
     html =
       rendered_to_string(~H"""
-      <.combobox id="c16" name="x" disabled>
+      <.combobox id="c16" name="x" value="a" disabled>
         <:option value="a">A</:option>
       </.combobox>
       """)
 
     assert html =~ ~s(disabled)
+
+    {:ok, doc} = Floki.parse_document(html)
+    [hidden] = Floki.find(doc, ~s(input[type="hidden"][name="x"]))
+    assert Floki.attribute(hidden, "disabled") == ["disabled"]
+    assert Floki.attribute(hidden, "value") == ["a"]
+  end
+
+  test "input trigger disables hidden input when disabled" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.combobox id="c16-input" name="x" value="a" trigger="input" disabled>
+        <:option value="a">A</:option>
+      </.combobox>
+      """)
+
+    {:ok, doc} = Floki.parse_document(html)
+    [hidden] = Floki.find(doc, ~s(input[type="hidden"][name="x"]))
+    assert Floki.attribute(hidden, "disabled") == ["disabled"]
   end
 
   test "button trigger shows selected value in trigger" do
@@ -364,6 +387,26 @@ defmodule ExoUI.Components.ComboboxTest do
       """)
 
     [trigger_part | _] = String.split(html, ~s(popover="auto"))
+    assert trigger_part =~ "Beta"
+  end
+
+  test "button trigger accessible name includes label and selected value" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.combobox id="c17-labelled" name="x" value="b" label="Language">
+        <:option value="a">Alpha</:option>
+        <:option value="b">Beta</:option>
+      </.combobox>
+      """)
+
+    assert html =~ ~s(id="c17-labelled-label")
+    assert html =~ ~s(id="c17-labelled-value")
+    assert html =~ ~s(aria-labelledby="c17-labelled-label c17-labelled-value")
+
+    [trigger_part | _] = String.split(html, ~s(popover="auto"))
+    assert trigger_part =~ "Language"
     assert trigger_part =~ "Beta"
   end
 

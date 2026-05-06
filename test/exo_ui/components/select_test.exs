@@ -79,7 +79,29 @@ defmodule ExoUI.Components.SelectTest do
 
     assert html =~ ~s(data-exo="label")
     assert html =~ "Role"
-    assert html =~ ~s(aria-labelledby)
+    assert html =~ ~s(id="s5-label")
+    assert html =~ ~s(id="s5-value")
+    assert html =~ ~s(aria-labelledby="s5-label s5-value")
+  end
+
+  test "button trigger accessible name includes label and selected value" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.select id="s5-value-name" name="x" value="admin" label="Role">
+        <:option value="admin">Admin</:option>
+        <:option value="editor">Editor</:option>
+      </.select>
+      """)
+
+    assert html =~ ~s(id="s5-value-name-label")
+    assert html =~ ~s(id="s5-value-name-value")
+    assert html =~ ~s(aria-labelledby="s5-value-name-label s5-value-name-value")
+
+    [trigger_part | _] = String.split(html, ~s(popover="auto"))
+    assert trigger_part =~ "Role"
+    assert trigger_part =~ "Admin"
   end
 
   test "renders option with icon" do
@@ -269,12 +291,17 @@ defmodule ExoUI.Components.SelectTest do
 
     html =
       rendered_to_string(~H"""
-      <.select id="s17" name="x" disabled>
+      <.select id="s17" name="x" value="a" disabled>
         <:option value="a">A</:option>
       </.select>
       """)
 
     assert html =~ ~s(disabled)
+
+    {:ok, doc} = Floki.parse_document(html)
+    [hidden] = Floki.find(doc, ~s(input[type="hidden"][name="x"]))
+    assert Floki.attribute(hidden, "disabled") == ["disabled"]
+    assert Floki.attribute(hidden, "value") == ["a"]
   end
 
   test "defaults to bottom/start alignment" do

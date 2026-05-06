@@ -20,6 +20,7 @@ test.describe("select", () => {
     const popover = canvas.locator(`#${selectId}`);
     const listbox = canvas.locator(`#${selectId}-listbox`);
 
+    await expect(trigger).toHaveAccessibleName("Status Active");
     await trigger.click();
 
     await expectPopoverState(popover, true);
@@ -40,6 +41,7 @@ test.describe("select", () => {
     await expect(trigger).toHaveAttribute("aria-expanded", "false");
     await expect(value).toHaveValue("inactive");
     await expect(trigger.locator("[data-exo=\"select-value\"]")).toHaveText("Inactive");
+    await expect(trigger).toHaveAccessibleName("Status Inactive");
   });
 
   test("ignores disabled options instead of committing them", async ({ page }) => {
@@ -62,5 +64,17 @@ test.describe("select", () => {
     await expect(value).toHaveValue("");
     await expectPopoverState(popover, true);
     await expect(trigger.locator("[data-exo=\"select-value\"]")).toHaveText("Select a fruit");
+  });
+
+  test("keeps disabled custom select out of form submission", async ({ page }) => {
+    await gotoStory(page, "/components/forms/select");
+
+    const canvas = story(page);
+    const selectId = "select-single-disabled";
+    const trigger = canvas.locator(`#${selectId}-select [data-exo-select="trigger"]`);
+    const value = canvas.locator("input[name=\"locked\"]");
+
+    await expect(trigger).toBeDisabled();
+    await expect(value).toBeDisabled();
   });
 });

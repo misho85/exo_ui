@@ -16,9 +16,9 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Storybook story types | 81 component stories, 27 live component stories, 6 aggregate example stories, 0 component/layout page-mode stories |
 | Playwright component capture | 114 Storybook routes captured |
 | Capture artifacts | 114 screenshots, 114 WebM videos, 114 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-06T11-07-18-250Z/viewer.html` |
-| Browser suite | 94 Playwright tests passing |
-| ExUnit suite | 507 tests passing |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-06T11-23-02-557Z/viewer.html` |
+| Browser suite | 95 Playwright tests passing |
+| ExUnit suite | 510 tests passing |
 | Visual regression | 114 committed screenshot baselines with pixel-diff checking |
 | Usage documentation | Central copy-paste reference added at `docs/guides/component-usage.md` |
 
@@ -30,6 +30,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - Accordion and collapsible now hide closed content from assistive tech and focus with `aria-hidden` plus `inert`, and their hooks keep those states synced after interaction.
 - Modal, sheet, and drawer now share stronger overlay focus isolation: open overlays inert outside page siblings, lock page scroll, trap Tab/Shift+Tab inside the dialog, keep Escape and backdrop interaction scoped to the active/topmost overlay, and restore focus to the trigger after close.
 - Select and combobox now assign stable option IDs and sync `aria-activedescendant`; combobox keyboard selection keeps focus on the search input while Enter commits the active option.
+- Select and button-trigger combobox triggers now expose both the field label and selected value to assistive tech, and disabled choice controls disable their hidden submitted value to match native form behavior.
 - Combobox empty/loading states now update a polite live region, expose `aria-busy` on the listbox while loading, and document the keyboard model in Storybook.
 - Combobox server filtering can now target nested LiveComponents, and Storybook includes an async remote-search demo with loading, empty, result, and selection states.
 - Combobox now has a copy-paste usage guide for client filtering, LiveView server filtering, LiveComponent-targeted filtering, and live-region status text.
@@ -149,24 +150,26 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | --- | --- | --- |
 | Component stories | Broad Storybook route coverage exists; all real component stories are component/live-component stories, and aggregate demos are explicit examples | No component/layout page-mode stories remain |
 | Theming | Token-driven CSS with light/dark support, reduced-motion guard, semantic elevation/backdrop tokens, browser checks against hardcoded component backdrops, and token customization recipes | Needs more component-specific state tokens as the design language matures |
-| Forms | Phoenix FormField integration is now strong across most controls, select/combobox expose active-descendant keyboard state, combobox empty/loading states announce changes politely, and async save, saved-filter, and bulk-edit success paths have live recipe coverage | Component-mode controls should expose more attrs/slots directly in PhoenixStorybook playgrounds |
-| Overlays/menus | Browser-tested popover, dropdown, context menu, menubar, modal/confirm-modal/sheet/drawer focus traps, command palette trigger open/focus trap/focus restore, shared overlay registry participation, topmost Escape/backdrop handling, outside inerting, scroll lock, same-type and cross-type stacking order, lower-overlay inerting, focus restore, long-form stacked drawer scrolling, stacked validation errors, command-surface stacks, destructive confirm flows inside stacked overlays, public show/hide helpers for modal/drawer/sheet/command palette, configurable command palette shortcuts, app-shell recipes, editable-record recipes, command-routing recipes, and guarded confirm actions that can stay open for server validation | Needs more real-app recipes over time, but the core overlay/menu interaction parity is much closer |
-| Keyboard support | Covered for major actions, menus, select/combobox, rating, targeted tabs/wizard flows, event-owned bottom navigation, event-owned pagination, date picker grid movement, parent-controlled date picker month changes, pagination disabled-button semantics, wizard disabled-step semantics, accordion button state, and command palette driven multi-screen routing | Needs broader app-level shortcut recipes as more production shells are added |
+| Forms | Phoenix FormField integration is now strong across most controls, select/combobox expose active-descendant keyboard state, labelled choice triggers include the current value in their accessible name, disabled custom choices no longer submit hidden values, combobox empty/loading states announce changes politely, and async save, saved-filter, and bulk-edit success paths have live coverage | Component-mode controls should keep getting direct primitive-focused tests as APIs evolve |
+| Overlays/menus | Browser-tested popover, dropdown, context menu, menubar, modal/confirm-modal/sheet/drawer focus traps, command palette trigger open/focus trap/focus restore, shared overlay registry participation, topmost Escape/backdrop handling, outside inerting, scroll lock, same-type and cross-type stacking order, lower-overlay inerting, focus restore, long-form stacked drawer scrolling, stacked validation errors, command-surface stacks, destructive confirm flows inside stacked overlays, public show/hide helpers for modal/drawer/sheet/command palette, configurable command palette shortcuts, and guarded confirm actions that can stay open for server validation | Keep tightening primitive APIs and browser tests instead of adding more broad example pages |
+| Keyboard support | Covered for major actions, menus, select/combobox, rating, targeted tabs/wizard flows, event-owned bottom navigation, event-owned pagination, date picker grid movement, parent-controlled date picker month changes, pagination disabled-button semantics, wizard disabled-step semantics, accordion button state, and command palette driven multi-screen routing | Needs deeper primitive-level shortcut and focus-state coverage |
 | Visual proof | Automated screenshots and videos for 114 routes, committed visual baselines, a CI-friendly diff command, and GitHub Actions wiring | Needs review tuning once real PR diffs start producing visual changes |
 | Composability | Slots and `data-exo` styling are consistent | No shadcn-style `asChild`/polymorphic root pattern for advanced composition |
 | Usage docs | Central copy-paste usage reference exists for the current public component surface, plus button, input, select, combobox, table, modal, drawer, command-palette, date-picker, access-review, incident-response, release-readiness, billing-dispute, onboarding-provisioning, app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, async-save, saved-filter, command-routing, role-operations, action/form, table/overlay/menu, component-state, and token recipes | Still needs more narrow per-component pages as new high-traffic primitives emerge |
 
 ## Remaining priorities
 
-1. Add more app-level workflow examples over time, especially production navigation shells and role-specific operations variants for concrete product domains.
+1. Stop expanding broad workflow recipes by default; put new effort into component internals, component-mode stories, and primitive-level tests.
 2. Tune visual diff thresholds after the first few CI runs if Linux font rendering causes expected drift.
-3. Keep adding narrow per-component recipe pages when new primitives become high-traffic or start showing regressions.
+3. Keep tightening high-traffic primitives such as select, combobox, date picker, table, overlay, and navigation before adding any new example surface.
 
 ## Verification used
 
-- `mix test` -> 507 tests, 0 failures.
+- `mix test` -> 510 tests, 0 failures.
 - `mix compile --warnings-as-errors`.
 - `mix compile --warnings-as-errors` in `storybook`.
+- `mix test test/exo_ui/components/select_test.exs test/exo_ui/components/combobox_test.exs` -> 59 tests, 0 failures after select/combobox accessible-name and disabled hidden-value fixes.
+- `bunx playwright test test/browser/select.spec.js test/browser/combobox.spec.js` -> 7 tests, 0 failures after component-level select/combobox browser coverage.
 - `mix test test/exo_ui/components/bottom_nav_test.exs test/exo_ui/components/pagination_test.exs` -> 16 tests, 0 failures after event-mode bottom nav and pagination support.
 - `bunx playwright test test/browser/navigation_progress.spec.js test/browser/content_structure.spec.js` -> 9 tests, 0 failures after the pagination, wizard, and accordion semantics pass.
 - `mix test test/exo_ui/components/table_test.exs` -> 6 tests, 0 failures after the row-level table click semantics pass.
@@ -174,8 +177,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `mix test test/exo_ui/components/tabs_test.exs test/exo_ui/components/wizard_test.exs` -> 6 tests, 0 failures after the LiveComponent `target` support pass.
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js` -> 1 focused workflow check, 0 failures after event-mode pagination and bottom-nav targeting.
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js test/browser/onboarding_provisioning_workflow.spec.js` -> 2 focused workflow checks, 0 failures.
-- `bun run test:browser` -> 94 tests, 0 failures.
-- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T11-07-18-250Z`.
+- `bun run test:browser` -> 95 tests, 0 failures.
+- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T11-23-02-557Z`.
 - `bun run capture:validate` -> 114 entries with non-empty screenshot, WebM, and MP4 files.
 - `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the navigation shell workflow pass.
 - `bun run visual:check` -> 114 current screenshots matched the committed baseline.
