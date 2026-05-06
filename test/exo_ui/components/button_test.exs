@@ -31,6 +31,18 @@ defmodule ExoUI.Components.ButtonTest do
     assert html =~ ~s(type="submit")
   end
 
+  test "passes popover target attributes through" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(
+        ~H|<.button popovertarget="account-menu" popovertargetaction="hide">Close</.button>|
+      )
+
+    assert html =~ ~s(popovertarget="account-menu")
+    assert html =~ ~s(popovertargetaction="hide")
+  end
+
   test "renders disabled links without href navigation" do
     assigns = %{}
     html = rendered_to_string(~H|<.button href="/billing" disabled>Billing</.button>|)

@@ -11,7 +11,8 @@ defmodule ExoUI.Components.Core do
   attr :class, :any, default: nil
 
   attr :rest, :global,
-    include: ~w(href navigate patch method disabled name value type form download)
+    include:
+      ~w(href navigate patch method disabled name value type form download popovertarget popovertargetaction)
 
   slot :inner_block, required: true
 

@@ -26,7 +26,7 @@ defmodule Storybook.Components.Hero do
         slots: [
           ~s|<:title>Ship your next project faster</:title>|,
           ~s|<:subtitle>Production-ready components that work with any CSS framework.</:subtitle>|,
-          ~s|<:actions><button data-exo="btn" data-variant="primary" data-size="md">Get Started</button><button data-exo="btn" data-variant="outline" data-size="md">Learn More</button></:actions>|
+          ~s|<:actions><ExoUI.Components.button variant="primary">Get Started</ExoUI.Components.button><ExoUI.Components.button variant="outline">Learn More</ExoUI.Components.button></:actions>|
         ]
       }
     ]

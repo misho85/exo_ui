@@ -20,7 +20,7 @@ defmodule Storybook.Components.Modal do
         slots: [
           ~s|<:title>Modal Title</:title>|,
           "This is the modal body content.",
-          ~s|<:actions><button data-exo="btn" data-variant="primary" data-size="md">Save</button></:actions>|
+          ~s|<:actions><ExoUI.Components.button variant="primary">Save</ExoUI.Components.button></:actions>|
         ]
       },
       %Variation{
@@ -29,7 +29,7 @@ defmodule Storybook.Components.Modal do
         attributes: %{id: "labelled-modal", show: false, label: "Invite teammate dialog"},
         slots: [
           "Use aria-label when the modal has no visible title.",
-          ~s|<:actions><button data-exo="btn" data-variant="outline" data-size="md">Cancel</button><button data-exo="btn" data-variant="primary" data-size="md">Send invite</button></:actions>|
+          ~s|<:actions><ExoUI.Components.button variant="outline">Cancel</ExoUI.Components.button><ExoUI.Components.button variant="primary">Send invite</ExoUI.Components.button></:actions>|
         ]
       },
       %Variation{

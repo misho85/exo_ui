@@ -16,9 +16,9 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Storybook story types | 81 component stories, 26 live component stories, 6 aggregate example stories, 0 component/layout page-mode stories |
 | Playwright component capture | 113 Storybook routes captured |
 | Capture artifacts | 113 screenshots, 113 WebM videos, 113 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-06T07-49-07-134Z/viewer.html` |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-06T08-17-18-147Z/viewer.html` |
 | Browser suite | 93 Playwright tests passing |
-| ExUnit suite | 503 tests passing |
+| ExUnit suite | 504 tests passing |
 | Visual regression | 113 committed screenshot baselines with pixel-diff checking |
 | Usage documentation | Central copy-paste reference added at `docs/guides/component-usage.md` |
 
@@ -129,6 +129,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `docs/guides/billing-dispute-workflows.md` now documents the same billing dispute pattern as a copy-paste production recipe, including targeted LiveComponent tab events, drawer validation, evidence requests, and `close_on_confirm={@credit_ready?}` guarded credit behavior.
 - `Onboarding Provisioning Workflow` is now a live Storybook recipe route for an admin/SaaS setup flow covering status tabs, team/search filters, command-palette routing, progress feedback, table row actions, drawer-hosted setup validation, setup-info requests, guarded account activation, reset state, and live status text.
 - `docs/guides/onboarding-provisioning-workflows.md` now documents the same onboarding provisioning pattern as a copy-paste production recipe, including targeted LiveComponent tab events, drawer validation, setup-info requests, and `close_on_confirm={@provision_ready?}` guarded activation behavior.
+- Storybook demos, recipe demos, and the central usage guide now avoid raw `input`, `select`, `textarea`, and `button` markup where ExoUI provides an equivalent component. The remaining raw HTML is inside ExoUI component implementations where native primitives are required.
+- `button/1` now accepts `popovertarget` and `popovertargetaction`, so Popover API close actions can use the same ExoUI button primitive instead of hand-authored native buttons.
 
 ## Comparison vs shadcn/daisyUI
 
@@ -151,11 +153,11 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 
 ## Verification used
 
-- `mix test` -> 503 tests, 0 failures.
+- `mix test` -> 504 tests, 0 failures.
 - `mix compile --warnings-as-errors` in `storybook`.
 - `bun run test:browser` -> 93 tests, 0 failures.
-- `bun run capture:components` -> 113 entries, 0 failed, 113 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T07-49-07-134Z`.
+- `bun run capture:components` -> 113 entries, 0 failed, 113 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T08-17-18-147Z`.
 - `bun run capture:validate` -> 113 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after adding Onboarding Provisioning Workflow.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the UI primitive consistency pass.
 - `bun run visual:check` -> 113 current screenshots matched the committed baseline.
 - `docs/guides/component-usage.md` now links to button, input, select, combobox, table, modal, drawer, command-palette, date-picker, access-review, incident-response, release-readiness, billing-dispute, onboarding-provisioning, app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, import-export, async-save, command-routing, role-operations, saved-filter, action/form, table/overlay/menu, component-state, and token guides.

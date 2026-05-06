@@ -17,14 +17,14 @@ defmodule Storybook.Components.Indicator do
         id: :count,
         slots: [
           ~s|<:badge>5</:badge>|,
-          ~s|<button data-exo="btn" data-variant="primary" data-size="md">Inbox</button>|
+          ~s|<ExoUI.Components.button variant="primary">Inbox</ExoUI.Components.button>|
         ]
       },
       %Variation{
         id: :large_count,
         slots: [
           ~s|<:badge>99+</:badge>|,
-          ~s|<button data-exo="btn" data-variant="outline" data-size="md">Notifications</button>|
+          ~s|<ExoUI.Components.button variant="outline">Notifications</ExoUI.Components.button>|
         ]
       },
       %VariationGroup{

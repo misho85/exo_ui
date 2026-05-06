@@ -27,14 +27,12 @@ defmodule Storybook.Components.OverlayStack do
           <p>
             This modal can open a sheet or drawer without losing the active overlay order.
           </p>
-          <label style="display: grid; gap: 0.35rem; color: var(--exo-foreground);">
-            Release note
-            <input
-              data-exo="input"
-              value="Ship the verified build"
-              style="width: 100%; border: 1px solid var(--exo-border); border-radius: var(--exo-radius); padding: 0.5rem 0.75rem; background: var(--exo-background); color: var(--exo-foreground);"
-            />
-          </label>
+          <ExoUI.Components.Form.input
+            id="overlay-stack-release-note"
+            name="release[note]"
+            label="Release note"
+            value="Ship the verified build"
+          />
         </div>
         <:actions>
           <ExoUI.Components.button
@@ -96,9 +94,10 @@ defmodule Storybook.Components.OverlayStack do
             This drawer is now the only interactive overlay. It contains a long form so the
             drawer body, not the document, owns scrolling while the overlay stack is active.
           </p>
-          <form
+          <ExoUI.Components.Form.form
             id="overlay-stack-release-form"
-            data-exo="form"
+            for={%{}}
+            as={:release}
             aria-label="Release review form"
             style="display: flex; flex-direction: column; gap: 1rem;"
           >
@@ -138,21 +137,13 @@ defmodule Storybook.Components.OverlayStack do
               <legend style="padding: 0 0.25rem; color: var(--exo-foreground); font-weight: 600;">
                 Long review checklist
               </legend>
-              <label
+              <ExoUI.Components.Form.input
                 :for={index <- 1..14}
-                style="display: flex; align-items: flex-start; gap: 0.5rem;"
-              >
-                <input
-                  id={"overlay-stack-check-#{index}"}
-                  name={"release[check_#{index}]"}
-                  type="checkbox"
-                  data-exo="checkbox"
-                  value="true"
-                />
-                <span>
-                  Checkpoint {index}: verify owner, rollback path, and customer impact notes.
-                </span>
-              </label>
+                id={"overlay-stack-check-#{index}"}
+                name={"release[check_#{index}]"}
+                type="checkbox"
+                label={"Checkpoint #{index}: verify owner, rollback path, and customer impact notes."}
+              />
             </fieldset>
             <div style="position: sticky; bottom: -1.5rem; display: flex; justify-content: flex-end; gap: 0.5rem; padding: 1rem 0 0; background: var(--exo-background); border-top: 1px solid var(--exo-border);">
               <ExoUI.Components.button
@@ -173,7 +164,7 @@ defmodule Storybook.Components.OverlayStack do
                 Save review
               </ExoUI.Components.button>
             </div>
-          </form>
+          </ExoUI.Components.Form.form>
         </div>
       </ExoUI.Components.Overlay.drawer>
 

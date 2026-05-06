@@ -26,7 +26,7 @@ defmodule Storybook.Components.Header do
         slots: [
           "Projects",
           ~s|<:subtitle>All active projects.</:subtitle>|,
-          ~s|<:actions><button data-exo="btn" data-variant="primary" data-size="md">New Project</button></:actions>|
+          ~s|<:actions><ExoUI.Components.button variant="primary">New Project</ExoUI.Components.button></:actions>|
         ]
       }
     ]

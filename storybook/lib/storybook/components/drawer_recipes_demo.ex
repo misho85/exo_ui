@@ -282,13 +282,14 @@ defmodule ExoUI.Storybook.Components.DrawerRecipesDemo do
           </ExoUI.Components.form>
 
           <section aria-label="Drawer review checklist" style="display: grid; gap: 0.5rem;">
-            <label
+            <ExoUI.Components.Form.input
               :for={item <- drawer_checklist()}
-              style="display: flex; align-items: center; gap: 0.5rem; color: var(--exo-muted-foreground);"
-            >
-              <input type="checkbox" checked={item.checked} disabled />
-              <span>{item.label}</span>
-            </label>
+              id={"drawer-recipe-check-#{String.replace(item.label, ~r/[^a-z0-9]+/i, "-")}"}
+              type="checkbox"
+              label={item.label}
+              checked={item.checked}
+              disabled
+            />
           </section>
 
           <div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.5rem;">

@@ -750,10 +750,13 @@ scroll for long content.
   <.input id="release-notes" name="release[notes]" type="textarea" label="Notes" rows="5" />
   <fieldset>
     <legend>Long review checklist</legend>
-    <label :for={index <- 1..12}>
-      <input type="checkbox" name={"release[check_#{index}]"} />
-      Checkpoint {index}
-    </label>
+    <.input
+      :for={index <- 1..12}
+      id={"release-check-#{index}"}
+      type="checkbox"
+      name={"release[check_#{index}]"}
+      label={"Checkpoint #{index}"}
+    />
   </fieldset>
   <.button type="button" variant="danger" phx-click={show_modal("rollback-confirm")}>
     Request rollback
@@ -888,12 +891,12 @@ Use for app-style horizontal menus.
 ```heex
 <.menubar id="editor-menu">
   <:menu label="File">
-    <button type="button" role="menuitem" phx-click="new-file">New file</button>
-    <button type="button" role="menuitem" phx-click="save-file">Save</button>
+    <.button type="button" role="menuitem" variant="ghost" size="sm" phx-click="new-file">New file</.button>
+    <.button type="button" role="menuitem" variant="ghost" size="sm" phx-click="save-file">Save</.button>
   </:menu>
   <:menu label="Edit">
-    <button type="button" role="menuitem" phx-click="undo">Undo</button>
-    <button type="button" role="menuitem" phx-click="redo">Redo</button>
+    <.button type="button" role="menuitem" variant="ghost" size="sm" phx-click="undo">Undo</.button>
+    <.button type="button" role="menuitem" variant="ghost" size="sm" phx-click="redo">Redo</.button>
   </:menu>
 </.menubar>
 ```

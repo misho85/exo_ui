@@ -16,9 +16,9 @@ defmodule Storybook.Components.Menubar do
       %Variation{
         id: :default,
         slots: [
-          ~s|<:menu label="File"><button role="menuitem">New File</button><button role="menuitem">Save</button></:menu>|,
-          ~s|<:menu label="Edit"><button role="menuitem">Undo</button><button role="menuitem">Redo</button></:menu>|,
-          ~s|<:menu label="View"><button role="menuitem">Toggle sidebar</button></:menu>|
+          ~s|<:menu label="File"><ExoUI.Components.button role="menuitem" variant="ghost" size="sm">New File</ExoUI.Components.button><ExoUI.Components.button role="menuitem" variant="ghost" size="sm">Save</ExoUI.Components.button></:menu>|,
+          ~s|<:menu label="Edit"><ExoUI.Components.button role="menuitem" variant="ghost" size="sm">Undo</ExoUI.Components.button><ExoUI.Components.button role="menuitem" variant="ghost" size="sm">Redo</ExoUI.Components.button></:menu>|,
+          ~s|<:menu label="View"><ExoUI.Components.button role="menuitem" variant="ghost" size="sm">Toggle sidebar</ExoUI.Components.button></:menu>|
         ]
       }
     ]

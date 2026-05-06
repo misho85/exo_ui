@@ -41,7 +41,7 @@ defmodule Storybook.Components.Popover do
         slots: [
           ~s|<:trigger>Open</:trigger>|,
           ~s|<p style="padding: 0.5rem 0.75rem;">Click the button below to close.</p>|,
-          ~s|<button type="button" popovertarget="popover-single-with-close-button" popovertargetaction="hide" style="margin-top: 0.5rem;">Close</button>|
+          ~s|<ExoUI.Components.button popovertarget="popover-single-with-close-button" popovertargetaction="hide" style="margin-top: 0.5rem;">Close</ExoUI.Components.button>|
         ]
       }
     ]

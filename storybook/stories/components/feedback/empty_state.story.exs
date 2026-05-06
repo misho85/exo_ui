@@ -29,14 +29,14 @@ defmodule Storybook.Components.EmptyState do
           subtitle: "Try adjusting your search or filters."
         },
         slots: [
-          ~s|<:action><button data-exo="btn" data-variant="outline" data-size="md">Clear filters</button></:action>|
+          ~s|<:action><ExoUI.Components.button variant="outline">Clear filters</ExoUI.Components.button></:action>|
         ]
       },
       %Variation{
         id: :call_to_action,
         attributes: %{title: "No projects yet"},
         slots: [
-          ~s|<:action><button data-exo="btn" data-variant="primary" data-size="md">Create project</button></:action>|
+          ~s|<:action><ExoUI.Components.button variant="primary">Create project</ExoUI.Components.button></:action>|
         ]
       }
     ]

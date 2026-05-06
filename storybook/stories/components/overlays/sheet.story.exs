@@ -19,7 +19,7 @@ defmodule Storybook.Components.Sheet do
         slots: [
           ~s|<:title>Sheet title</:title>|,
           ~s|<p>Sheet content goes here.</p>|,
-          ~s|<:footer><button data-exo="btn" data-variant="outline" phx-click={ExoUI.Components.Overlay.hide_sheet("sheet-single-right")}>Cancel</button><button data-exo="btn">Save</button></:footer>|
+          ~s|<:footer><ExoUI.Components.button variant="outline" phx-click={ExoUI.Components.Overlay.hide_sheet("sheet-single-right")}>Cancel</ExoUI.Components.button><ExoUI.Components.button>Save</ExoUI.Components.button></:footer>|
         ]
       },
       %Variation{

@@ -24,7 +24,7 @@ defmodule Storybook.Components.ContentCard do
         id: :with_action,
         attributes: %{title: "With action"},
         slots: [
-          ~s|<:action><button data-exo="btn" data-variant="ghost" data-size="sm">View</button></:action>|,
+          ~s|<:action><ExoUI.Components.button variant="ghost" size="sm">View</ExoUI.Components.button></:action>|,
           ~s|<p style="margin: 0; color: var(--exo-muted-foreground); line-height: 1.5;">The action slot is rendered in the card header.</p>|
         ]
       },
