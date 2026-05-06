@@ -11,6 +11,8 @@ defmodule ExoUI.Components.SpinnerTest do
     assert html =~ ~s(data-size="md")
     assert html =~ ~s(role="status")
     assert html =~ ~s(aria-label="Loading")
+    assert html =~ ~s(aria-hidden="true")
+    assert html =~ ~s(focusable="false")
   end
 
   test "renders spinner with custom size" do

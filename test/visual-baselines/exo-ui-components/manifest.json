@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-06T17:38:34.367Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T17-31-45-182Z",
+  "updatedAt": "2026-05-06T17:48:40.900Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T17-43-33-246Z",
   "count": 114,
   "entries": [
     {
@@ -281,7 +281,7 @@
       "dataExoCount": 25,
       "width": 1280,
       "height": 900,
-      "sha256": "444cc1a7505151846013d5d4f8adba3bbde72ce4ca499ba1842fb4de69fcbd4c"
+      "sha256": "94b63d3b403ef45633075a610a6c289cb243b4ffa3a0ef7adebb6912d09a6c77"
     },
     {
       "name": "data_display/table",
@@ -290,7 +290,7 @@
       "dataExoCount": 68,
       "width": 1280,
       "height": 900,
-      "sha256": "53fd784b892cdb6a870a665e87ddc76b56d5533d5d1541a5ec5abc72f3a4f972"
+      "sha256": "6db849c558d763ccdc315f87959a110b17703df6001a9341ba2a7fba7c034043"
     },
     {
       "name": "data_display/timeline",
@@ -389,7 +389,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "038ff4a507041b69f74e79c304f6c70f0f032d42fed4b927369a591d0cf7d9d9"
+      "sha256": "7df43d18f9ef7b7df5442dc5024e87bcaaa7a7533ae6cc2c00120933d057dc99"
     },
     {
       "name": "feedback/toast_container",
@@ -407,7 +407,7 @@
       "dataExoCount": 207,
       "width": 1280,
       "height": 900,
-      "sha256": "5c7600c012390f20476bddbde544e807dcc97f094220c227d8aabda0e82b0dca"
+      "sha256": "127c25e8da61dd17af73e878ff83bf89e9b4e536b819ee3742ca94ac573febde"
     },
     {
       "name": "forms/combobox_async",
@@ -668,7 +668,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "8a60adcf2f1758be1e5d359c4eb9f168c8ef84b7849a51eeaa071949007d8727"
+      "sha256": "a02d1a49f2c944a5cfe6646890f04933c1a38a605d89fb56ab5369622f4828ed"
     },
     {
       "name": "navigation/bottom_nav",
@@ -731,7 +731,7 @@
       "dataExoCount": 35,
       "width": 1280,
       "height": 900,
-      "sha256": "7042bb48bd33cf5283156354cb819e643745bc27bdeb7631b3beaaf2aceecfcc"
+      "sha256": "570bdc48266cbbcc9d3a7b0bc54ab91a7666e2dee4655d635852d5c84f2913ce"
     },
     {
       "name": "overlays/confirm_modal",
@@ -857,7 +857,7 @@
       "dataExoCount": 98,
       "width": 1280,
       "height": 900,
-      "sha256": "bd5ceecd8617146a29b77cce2136193ef8598c3699ee51a54684c3b5daee3f6f"
+      "sha256": "d1022c33cadcc152edf00f42f3eee1d2a04949a29087d05a06c5e96a5801f75c"
     },
     {
       "name": "recipes/combobox_recipes",
@@ -929,7 +929,7 @@
       "dataExoCount": 197,
       "width": 1280,
       "height": 900,
-      "sha256": "e68e6d775606d1d7418c323a5184956af80c45a04d7603d539ccbbb91a8c651d"
+      "sha256": "5ae492310a6f64e443f931fa13d5835cb69188fe76966eae6306675c7f5af732"
     },
     {
       "name": "recipes/import_export_workflow",
@@ -983,7 +983,7 @@
       "dataExoCount": 241,
       "width": 1280,
       "height": 900,
-      "sha256": "ca47b51b0bb00e8c34600d19cb30463d2fb57cdfc573551f284dfe83397a95ed"
+      "sha256": "4648ca99a63467efe768eb89470f72791dcedd09a8f76eff39075d02d293f2d4"
     },
     {
       "name": "recipes/release_readiness_workflow",
@@ -1028,7 +1028,7 @@
       "dataExoCount": 84,
       "width": 1280,
       "height": 900,
-      "sha256": "d7e0369d776d41d54683dfce2329376a78092c52e13e1aa3b05d018abaafb840"
+      "sha256": "23d5ef268e03df0a5b083dd9476000aea247f6f26b416cbe30cc0fd414372d7d"
     }
   ]
 }

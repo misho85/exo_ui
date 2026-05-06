@@ -102,6 +102,15 @@ test.describe("component visual styles", () => {
 
     await expect(emptyStateIcon).toHaveCSS("width", "32px");
 
+    await gotoStory(page, "/components/feedback/spinner");
+
+    const spinner = story(page).locator('[data-exo="spinner"]').first();
+    const spinnerSvg = spinner.locator("svg").first();
+
+    await expect(spinner).toHaveAttribute("role", "status");
+    await expect(spinnerSvg).toHaveAttribute("aria-hidden", "true");
+    await expect(spinnerSvg).toHaveAttribute("focusable", "false");
+
     await gotoStory(page, "/components/feedback/radial_progress");
 
     const radialProgress = story(page).locator('[data-exo="radial-progress"]').first();
