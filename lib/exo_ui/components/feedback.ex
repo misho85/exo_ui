@@ -155,19 +155,45 @@ defmodule ExoUI.Components.Feedback do
   defp feedback_live(_kind), do: "polite"
 
   @doc "Renders an alert banner with kind-based styling (info, success, warning, error)."
+  attr :id, :string, default: nil
   attr :kind, :atom, required: true, values: [:info, :success, :warning, :error]
   attr :title, :string, default: nil
+  attr :icon, :string, default: nil
+  attr :role, :string, default: nil
+  attr :live, :string, default: nil
   attr :class, :any, default: nil
   attr :rest, :global
   slot :inner_block, required: true
   slot :action
 
   def alert(assigns) do
+    assigns =
+      assign(assigns,
+        role: assigns.role || feedback_role(assigns.kind),
+        live: assigns.live || feedback_live(assigns.kind),
+        title_id: if(assigns.id && assigns.title, do: "#{assigns.id}-title"),
+        message_id: if(assigns.id, do: "#{assigns.id}-message")
+      )
+
     ~H"""
-    <div data-exo="alert" data-kind={@kind} role="alert" class={@class} {@rest}>
+    <div
+      id={@id}
+      data-exo="alert"
+      data-kind={@kind}
+      role={@role}
+      aria-live={@live}
+      aria-atomic="true"
+      aria-labelledby={@title_id}
+      aria-describedby={@message_id}
+      class={@class}
+      {@rest}
+    >
+      <div :if={@icon} data-exo="alert-icon">
+        <.icon name={@icon} class="size-4" />
+      </div>
       <div data-exo="alert-content">
-        <p :if={@title} data-exo="alert-title">{@title}</p>
-        <div data-exo="alert-message">{render_slot(@inner_block)}</div>
+        <p :if={@title} id={@title_id} data-exo="alert-title">{@title}</p>
+        <div id={@message_id} data-exo="alert-message">{render_slot(@inner_block)}</div>
       </div>
       <div :if={@action != []} data-exo="alert-action">{render_slot(@action)}</div>
     </div>

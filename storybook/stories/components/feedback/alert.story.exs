@@ -20,7 +20,7 @@ defmodule Storybook.Components.Alert do
       },
       %Variation{
         id: :success,
-        attributes: %{kind: :success, title: "Success"},
+        attributes: %{kind: :success, title: "Success", icon: "circle-check"},
         slots: ["Your changes have been saved successfully."]
       },
       %Variation{
@@ -30,8 +30,16 @@ defmodule Storybook.Components.Alert do
       },
       %Variation{
         id: :error,
-        attributes: %{kind: :error, title: "Error"},
+        attributes: %{kind: :error, title: "Error", icon: "circle-alert"},
         slots: ["Failed to save changes. Please try again."]
+      },
+      %Variation{
+        id: :with_action,
+        attributes: %{kind: :warning, title: "Storage limit", icon: "triangle-alert"},
+        slots: [
+          ~s|<:action><ExoUI.Components.button variant="outline" size="sm">Review</ExoUI.Components.button></:action>|,
+          "Usage is above the configured threshold."
+        ]
       },
       %Variation{
         id: :no_title,

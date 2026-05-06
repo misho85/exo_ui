@@ -9,6 +9,23 @@ const {
 } = require("./helpers/storybook");
 
 test.describe("data and feedback components", () => {
+  test("alert renders live-region semantics, icons, and actions", async ({ page }) => {
+    await gotoStory(page, "/components/feedback/alert");
+
+    const canvas = story(page);
+    const success = canvas.locator('[data-exo="alert"][data-kind="success"]');
+    const warning = canvas.locator('[data-exo="alert"][data-kind="warning"]').first();
+    const actionAlert = canvas.locator('[data-exo="alert"][data-kind="warning"]').last();
+    const error = canvas.locator('[data-exo="alert"][data-kind="error"]');
+
+    await expectAttribute(success, "role", "status");
+    await expectAttribute(success, "aria-live", "polite");
+    await expect(success.locator('[data-exo="alert-icon"] [data-exo="icon"]')).toHaveCount(1);
+    await expectAttribute(warning, "role", "alert");
+    await expectAttribute(error, "aria-live", "assertive");
+    await expect(actionAlert.locator('[data-exo="alert-action"] [data-exo="btn"]')).toHaveText("Review");
+  });
+
   test("date picker exposes calendar semantics, form value, and error links", async ({ page }) => {
     await gotoStory(page, "/components/forms/date_picker");
 

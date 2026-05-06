@@ -10,6 +10,25 @@
   border: 1px solid transparent;
 }
 
+:where([data-exo="alert-icon"]) {
+  display: inline-flex;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+:where([data-exo="alert-content"]) {
+  flex: 1;
+  min-width: 0;
+}
+
+:where([data-exo="alert-action"]) {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: var(--exo-space-2);
+  margin-left: auto;
+}
+
 :where([data-exo="alert"][data-kind="info"]) {
   background: color-mix(in oklch, var(--exo-info) 10%, transparent);
   color: var(--exo-info);

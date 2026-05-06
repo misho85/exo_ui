@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-06T19:49:02.045Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T19-44-24-160Z",
+  "updatedAt": "2026-05-06T20:01:26.662Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T19-56-39-436Z",
   "count": 114,
   "entries": [
     {
@@ -305,10 +305,10 @@
       "name": "feedback/alert",
       "route": "/components/feedback/alert",
       "screenshot": "screenshots/feedback__alert.png",
-      "dataExoCount": 19,
+      "dataExoCount": 31,
       "width": 1280,
       "height": 900,
-      "sha256": "9caddb171fb1fcd8ad482b1ae595c454ccfa1f52e09620e157de2d0fb31f0737"
+      "sha256": "e05962ce23cfc88bf6d3f9b1d8a426a761335d83a798a6caf3e31b74367e0a6d"
     },
     {
       "name": "feedback/badge",
@@ -389,7 +389,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "8d3900be758871c493f717b0c83e834d3d0526021d4dec9f662a34100df956a8"
+      "sha256": "fc1390edfa834d00184365f6f9908dc29b141b53ad1607826e7cb25b7018d188"
     },
     {
       "name": "feedback/toast_container",
@@ -407,7 +407,7 @@
       "dataExoCount": 218,
       "width": 1280,
       "height": 900,
-      "sha256": "00fd53e52ddd2a3f294a09545978725e4e6e8e646b94923627c6492883b94c22"
+      "sha256": "b4facdcf8a21e97195c6b03241bec4e728affd1394a9145fe78c5d7609452069"
     },
     {
       "name": "forms/combobox_async",
@@ -614,7 +614,7 @@
       "dataExoCount": 59,
       "width": 1280,
       "height": 900,
-      "sha256": "9935bac9de9758af662ffd76380f42e72be227da195dd076155b7be686c5df4c"
+      "sha256": "cce5175f3987c5666e2627c3e2f4af400d5653ab1e1dddf4f0bf387d8ac02306"
     },
     {
       "name": "menus/command_palette",
@@ -668,7 +668,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "8a60adcf2f1758be1e5d359c4eb9f168c8ef84b7849a51eeaa071949007d8727"
+      "sha256": "a02d1a49f2c944a5cfe6646890f04933c1a38a605d89fb56ab5369622f4828ed"
     },
     {
       "name": "navigation/bottom_nav",
@@ -893,7 +893,7 @@
       "dataExoCount": 166,
       "width": 1280,
       "height": 900,
-      "sha256": "62aea9d8f51a90630d7ac696297eb6ecd9e3f9e1f3397d6438db11c48140bd60"
+      "sha256": "235b58a47debfe9a86ca1af94c4f1d2203d008e0864f37ba26806bf992fd9399"
     },
     {
       "name": "recipes/dashboard_drilldown_workflow",
