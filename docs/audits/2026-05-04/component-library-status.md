@@ -16,9 +16,9 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Storybook story types | 81 component stories, 27 live component stories, 6 aggregate example stories, 0 component/layout page-mode stories |
 | Playwright component capture | 114 Storybook routes captured |
 | Capture artifacts | 114 screenshots, 114 WebM videos, 114 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-06T21-01-26-979Z/viewer.html` |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-06T21-12-47-949Z/viewer.html` |
 | Browser suite | 98 Playwright tests passing |
-| ExUnit suite | 548 tests passing |
+| ExUnit suite | 549 tests passing |
 | Visual regression | 114 committed screenshot baselines with pixel-diff checking |
 | Usage documentation | Central copy-paste reference added at `docs/guides/component-usage.md` |
 
@@ -88,6 +88,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `Select`, `Combobox`, `DatePicker`, `RadioGroup`, and `Form` are now component-mode stories with generated PhoenixStorybook DOM IDs, exposed playground attributes/slots, refreshed browser selectors, and validated screenshot/video output. The `Form` story uses a Storybook-only wrapper to avoid the real `form/1` name collision with `Phoenix.Component.form/1` while still rendering `ExoUI.Components.Form.form/1`.
 - `Carousel` and `Pagination` are now component-mode stories with playground-ready attrs/slots, generated Storybook IDs, updated browser selectors, and refreshed screenshot/video baselines.
 - Menu stories are now component-mode: `Dropdown`, `DropdownMenu`, `ContextMenu`, `CommandPalette`, and `Menubar` expose real attrs/slots in PhoenixStorybook, use generated Storybook IDs, and keep keyboard/focus browser coverage against the generated DOM.
+- `dropdown_menu/1` now accepts a `label` attr so menu content can expose a user-facing accessible name instead of falling back to an internal DOM id.
 - Overlay stories are now component-mode: `Popover`, `Tooltip`, `HoverCard`, `ConfirmModal`, `Drawer`, and `Sheet` expose generated Storybook IDs, attrs/slots, source examples, and browser-tested trigger templates for opening/closing sheet and drawer variations.
 - `ContentCard`, `StatCard`, and `MetricCard` now have direct browser coverage for header/body rendering, action/trailing slots, trend direction states, and body-only/minimal variants.
 - `SidebarLayout` is now a component-mode Storybook story using a one-column preview so the app-shell layout is inspectable without being squeezed by the source panel.
@@ -195,7 +196,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 
 ## Verification used
 
-- `mix test` -> 548 tests, 0 failures.
+- `mix test` -> 549 tests, 0 failures.
 - `mix compile --warnings-as-errors`.
 - `mix compile --warnings-as-errors` in `storybook`.
 - `mix assets.build` in `storybook` -> refreshed the Playwright Storybook JS bundle so newly added hooks are present when `PLAYWRIGHT=1` disables watchers.
@@ -235,6 +236,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `bunx playwright test test/browser/visual_styles.spec.js` -> 2 browser checks, 0 failures after verifying separator decorative/semantic DOM, avatar fallback/image labels, and kbd labels in Storybook.
 - `mix test test/exo_ui/components/progress_test.exs test/exo_ui/components/radial_progress_test.exs test/exo_ui/components/structural_test.exs` -> 38 tests, 0 failures after adding custom progress `aria_value_text` and stat-card trend labels.
 - `bunx playwright test test/browser/navigation_progress.spec.js -g "progress components"` and `bunx playwright test test/browser/data_feedback.spec.js -g "card components"` -> 6 browser checks, 0 failures after verifying progress value text and stat-card trend labels in Storybook.
+- `mix test test/exo_ui/components/dropdown_menu_test.exs` -> 19 tests, 0 failures after adding custom dropdown menu labels.
+- `bunx playwright test test/browser/dropdown_menu.spec.js` -> 2 browser checks, 0 failures after verifying dropdown menu labels on the real Storybook menu node.
 - `mix test test/exo_ui/components/table_test.exs` -> 8 tests, 0 failures after adding table loading status support.
 - `bunx playwright test test/browser/data_feedback.spec.js -g "table renders caption"` -> 1 test, 0 failures after verifying `aria-busy` and the loading status row in Storybook.
 - `mix test test/exo_ui/components/file_input_test.exs` -> 7 tests, 0 failures after adding selected-file summary output support.
@@ -259,8 +262,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js` -> 1 focused workflow check, 0 failures after event-mode pagination and bottom-nav targeting.
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js test/browser/onboarding_provisioning_workflow.spec.js` -> 2 focused workflow checks, 0 failures.
 - `PLAYWRIGHT_TEST_TIMEOUT=180000 bun run test:browser` -> 98 tests, 0 failures.
-- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T21-01-26-979Z`.
+- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T21-12-47-949Z`.
 - `bun run capture:validate` -> 114 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the progress/stat-card accessibility pass.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the dropdown menu label pass.
 - `bun run visual:check` -> 114 current screenshots matched the committed baseline.
 - `docs/guides/component-usage.md` now links to button, input, select, combobox, table, modal, drawer, command-palette, date-picker, access-review, incident-response, release-readiness, billing-dispute, onboarding-provisioning, app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, import-export, async-save, command-routing, navigation-shell, role-operations, saved-filter, action/form, table/overlay/menu, component-state, and token guides.

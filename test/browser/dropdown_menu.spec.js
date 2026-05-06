@@ -15,6 +15,7 @@ test.describe("dropdown menu", () => {
     const root = canvas.locator("#dropdown-single-basic-popover");
     const triggerButton = root.locator('[data-exo="popover-trigger"] [data-exo="btn"]');
     const popover = page.locator("#dropdown-single-basic");
+    const menu = popover.locator('[data-exo="dropdown-menu"]');
 
     await expect(root.locator("button button")).toHaveCount(0);
     await expect(root).toHaveAttribute("data-ready", "");
@@ -22,6 +23,7 @@ test.describe("dropdown menu", () => {
     await triggerButton.click();
 
     await expectPopoverState(popover, true);
+    await expect(menu).toHaveAttribute("aria-label", "Row actions");
     await expect(triggerButton).toHaveAttribute("aria-expanded", "true");
 
     const edit = popover.getByRole("menuitem", { name: /Edit/ });
@@ -45,6 +47,7 @@ test.describe("dropdown menu", () => {
     const root = canvas.locator("#dropdown-single-link-items-popover");
     const triggerButton = root.locator('[data-exo="popover-trigger"] [data-exo="btn"]');
     const popover = page.locator("#dropdown-single-link-items");
+    const menu = popover.locator('[data-exo="dropdown-menu"]');
     const home = popover.getByRole("menuitem", { name: /Home/ });
     const settings = popover.getByRole("menuitem", { name: /Settings/ });
     const billing = popover.getByRole("menuitem", { name: /Billing/ });
@@ -53,6 +56,7 @@ test.describe("dropdown menu", () => {
     await triggerButton.click();
 
     await expectPopoverState(popover, true);
+    await expect(menu).toHaveAttribute("aria-label", "Navigation actions");
     await expectFocused(home);
     await expect(billing).toHaveAttribute("aria-disabled", "true");
     await page.keyboard.press("End");

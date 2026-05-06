@@ -172,6 +172,7 @@ defmodule ExoUI.Components.Overlay do
 
   @doc "Renders a dropdown menu with entries (items, separators, labels, sub-triggers)."
   attr :id, :string, required: true
+  attr :label, :string, default: nil
   attr :side, :string, values: ~w(top bottom left right), default: "bottom"
   attr :align, :string, values: ~w(start center end), default: "end"
   attr :class, :any, default: nil
@@ -199,7 +200,7 @@ defmodule ExoUI.Components.Overlay do
       <div
         data-exo="dropdown-menu"
         role="menu"
-        aria-label={@id}
+        aria-label={@label || @id}
         id={"#{@id}-menu"}
         phx-hook="ExoDropdownMenu"
         class={@class}

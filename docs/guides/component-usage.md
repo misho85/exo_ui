@@ -690,7 +690,7 @@ Use for action menus. The slot supports labels, separators, links, disabled
 items, icons, shortcuts, and danger variants.
 
 ```heex
-<.dropdown_menu id="project-actions">
+<.dropdown_menu id="project-actions" label="Project actions">
   <:trigger>
     <.button variant="outline">Actions</.button>
   </:trigger>

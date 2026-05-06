@@ -15,7 +15,7 @@ defmodule Storybook.Components.DropdownMenu do
     [
       %Variation{
         id: :actions,
-        attributes: %{align: "end"},
+        attributes: %{align: "end", label: "Record actions"},
         slots: [
           ~s|<:trigger><ExoUI.Components.button variant="outline">Actions</ExoUI.Components.button></:trigger>|,
           ~s|<:entry click="edit" icon="pencil">Edit</:entry>|,
@@ -26,7 +26,7 @@ defmodule Storybook.Components.DropdownMenu do
       },
       %Variation{
         id: :shortcuts,
-        attributes: %{align: "start"},
+        attributes: %{align: "start", label: "File actions"},
         slots: [
           ~s|<:trigger><ExoUI.Components.button>File</ExoUI.Components.button></:trigger>|,
           ~s|<:entry type="label">Create</:entry>|,
@@ -39,6 +39,7 @@ defmodule Storybook.Components.DropdownMenu do
       },
       %Variation{
         id: :links,
+        attributes: %{label: "Navigation actions"},
         slots: [
           ~s|<:trigger><ExoUI.Components.button variant="ghost">Navigate</ExoUI.Components.button></:trigger>|,
           ~s|<:entry href="#" icon="house">Home</:entry>|,

@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-06T21:06:27.977Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T21-01-26-979Z",
+  "updatedAt": "2026-05-06T21:18:14.809Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T21-12-47-949Z",
   "count": 114,
   "entries": [
     {
@@ -281,7 +281,7 @@
       "dataExoCount": 25,
       "width": 1280,
       "height": 900,
-      "sha256": "b53287c34814acd67b34718a8e6b861a271096899d34295d6c8cd90ec9751bf8"
+      "sha256": "a9b0613a907661f0b193d14ac2dd5a6578503899396e964e0f7b9e0b5423dc81"
     },
     {
       "name": "data_display/table",
@@ -290,7 +290,7 @@
       "dataExoCount": 72,
       "width": 1280,
       "height": 900,
-      "sha256": "6db849c558d763ccdc315f87959a110b17703df6001a9341ba2a7fba7c034043"
+      "sha256": "53fd784b892cdb6a870a665e87ddc76b56d5533d5d1541a5ec5abc72f3a4f972"
     },
     {
       "name": "data_display/timeline",
@@ -389,7 +389,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "b3817a48c91c354bb6463822ca55976064d81dc5999d65bceed4b723a1674060"
+      "sha256": "48bd861475f4e3332525a410677ab663adfd7e9852d9cdaa96915d0ebe6c4126"
     },
     {
       "name": "feedback/toast_container",
@@ -614,7 +614,7 @@
       "dataExoCount": 59,
       "width": 1280,
       "height": 900,
-      "sha256": "cce5175f3987c5666e2627c3e2f4af400d5653ab1e1dddf4f0bf387d8ac02306"
+      "sha256": "9935bac9de9758af662ffd76380f42e72be227da195dd076155b7be686c5df4c"
     },
     {
       "name": "menus/command_palette",
@@ -650,7 +650,7 @@
       "dataExoCount": 65,
       "width": 1280,
       "height": 900,
-      "sha256": "bf6bf37ba53bd0f49855d3a44b74f7cdc1821ee99a9113d566112d6511993bcd"
+      "sha256": "9665bb609b100772583d3748dbe9979f83e3faff35fb326fb8bdcbc9e42b7eb9"
     },
     {
       "name": "menus/dropdown_menu",
@@ -659,7 +659,7 @@
       "dataExoCount": 61,
       "width": 1280,
       "height": 900,
-      "sha256": "2872219110ec2c57772c5900aaae4828cb59d14b3e15c7bfb82aa1dbba34f349"
+      "sha256": "595e43fd591465ffe181b23fdb58093ba93299fbe461bae7063f3f626a94b327"
     },
     {
       "name": "menus/menubar",
@@ -731,7 +731,7 @@
       "dataExoCount": 39,
       "width": 1280,
       "height": 900,
-      "sha256": "29a32d908b899f6465ff16687e69a8e9968337dc602386810df699a5484fde71"
+      "sha256": "a1a16f079bded401c87126c33d8a896b38101667e2aafae5ac3674da591b1001"
     },
     {
       "name": "overlays/confirm_modal",
@@ -740,7 +740,7 @@
       "dataExoCount": 24,
       "width": 1280,
       "height": 900,
-      "sha256": "030af9fa2f45e9deab14ecc201d7c63fd924c7aef9fe4b349fc4b858db61ddcc"
+      "sha256": "32d099f359cec0bfcd5489d82750dd4ba18f4cc01b66caf0fea2df5fe1720e35"
     },
     {
       "name": "overlays/drawer",
@@ -857,7 +857,7 @@
       "dataExoCount": 99,
       "width": 1280,
       "height": 900,
-      "sha256": "c8336c6541379ed0ade2f755f9589a2852017fa3fc1221dd6b13daca0da35c73"
+      "sha256": "bd5ceecd8617146a29b77cce2136193ef8598c3699ee51a54684c3b5daee3f6f"
     },
     {
       "name": "recipes/combobox_recipes",
@@ -902,7 +902,7 @@
       "dataExoCount": 137,
       "width": 1280,
       "height": 900,
-      "sha256": "3a402e6387c168658252aa717385bb1d1badeea7eb5ae520b3766dfa54d13a0f"
+      "sha256": "8981e38ce69020f8f1657f26b6be09673b059aa2196436e51be361db99fc459b"
     },
     {
       "name": "recipes/data_table_workflow",
@@ -929,7 +929,7 @@
       "dataExoCount": 215,
       "width": 1280,
       "height": 900,
-      "sha256": "dbda23b13c9b60263fe3c70a68ff66b99d80d0d1ae7b328d0c973bdba10bd652"
+      "sha256": "1d86ab18f30dafd6d33acae0ff0f2b617870393eb792d174172f525230325aac"
     },
     {
       "name": "recipes/import_export_workflow",
@@ -983,7 +983,7 @@
       "dataExoCount": 245,
       "width": 1280,
       "height": 900,
-      "sha256": "368a800cea6a4e312fafa97e6bc145765180a446ebb582b4ef2bf15a4b0e5d73"
+      "sha256": "be0f353abf3343f645ea96fa9022c7afe92f45e112cf1cdd6f10081da497adc7"
     },
     {
       "name": "recipes/release_readiness_workflow",

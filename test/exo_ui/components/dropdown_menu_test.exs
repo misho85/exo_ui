@@ -76,6 +76,21 @@ defmodule ExoUI.Components.DropdownMenuTest do
     assert html =~ "Actions"
   end
 
+  test "renders custom accessible menu label" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.dropdown_menu id="dd-labelled" label="Account actions">
+        <:trigger>Menu</:trigger>
+        <:entry>Edit</:entry>
+      </.dropdown_menu>
+      """)
+
+    assert html =~ ~s(role="menu")
+    assert html =~ ~s(aria-label="Account actions")
+  end
+
   test "renders item with click and popovertargetaction=hide" do
     assigns = %{}
 
