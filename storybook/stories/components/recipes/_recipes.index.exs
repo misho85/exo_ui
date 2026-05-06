@@ -18,14 +18,18 @@ defmodule Storybook.Components.Recipes do
   def entry("incident_response_workflow"), do: [name: "Incident Response Workflow", index: 10]
   def entry("release_readiness_workflow"), do: [name: "Release Readiness Workflow", index: 11]
   def entry("billing_dispute_workflow"), do: [name: "Billing Dispute Workflow", index: 12]
-  def entry("component_recipe_matrix"), do: [name: "Component Recipe Matrix", index: 13]
-  def entry("bulk_action_workflow"), do: [name: "Bulk Action Workflow", index: 14]
-  def entry("bulk_edit_workflow"), do: [name: "Bulk Edit Workflow", index: 15]
-  def entry("dashboard_drilldown_workflow"), do: [name: "Dashboard Drilldown Workflow", index: 16]
-  def entry("data_table_workflow"), do: [name: "Data Table Workflow", index: 17]
-  def entry("import_export_workflow"), do: [name: "Import Export Workflow", index: 18]
-  def entry("async_save_workflow"), do: [name: "Async Save Workflow", index: 19]
-  def entry("command_routing_workflow"), do: [name: "Command Routing Workflow", index: 20]
-  def entry("role_operations_workflow"), do: [name: "Role Operations Workflow", index: 21]
-  def entry("saved_filters_workflow"), do: [name: "Saved Filters Workflow", index: 22]
+
+  def entry("onboarding_provisioning_workflow"),
+    do: [name: "Onboarding Provisioning Workflow", index: 13]
+
+  def entry("component_recipe_matrix"), do: [name: "Component Recipe Matrix", index: 14]
+  def entry("bulk_action_workflow"), do: [name: "Bulk Action Workflow", index: 15]
+  def entry("bulk_edit_workflow"), do: [name: "Bulk Edit Workflow", index: 16]
+  def entry("dashboard_drilldown_workflow"), do: [name: "Dashboard Drilldown Workflow", index: 17]
+  def entry("data_table_workflow"), do: [name: "Data Table Workflow", index: 18]
+  def entry("import_export_workflow"), do: [name: "Import Export Workflow", index: 19]
+  def entry("async_save_workflow"), do: [name: "Async Save Workflow", index: 20]
+  def entry("command_routing_workflow"), do: [name: "Command Routing Workflow", index: 21]
+  def entry("role_operations_workflow"), do: [name: "Role Operations Workflow", index: 22]
+  def entry("saved_filters_workflow"), do: [name: "Saved Filters Workflow", index: 23]
 end

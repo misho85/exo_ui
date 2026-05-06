@@ -510,6 +510,39 @@ async function componentDemo(page, name) {
       await clickButton(page, "Issue credit");
       await page.waitForTimeout(400);
       break;
+    case "onboarding_provisioning_workflow":
+      await clickButton(page, "Open onboarding commands");
+      await page.waitForTimeout(300);
+      await safe(
+        page.locator('#story-live #onboarding-command [data-exo="command-palette-input"]'),
+        (node) => node.fill("identity", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await page.keyboard.press("Enter");
+      await page.waitForTimeout(350);
+      await clickButton(page, "Review Ana Markovic");
+      await page.waitForTimeout(350);
+      await clickButton(page, "Prepare activation");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Activate account");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Keep reviewing");
+      await page.waitForTimeout(250);
+      await clickButton(page, "Review Ana Markovic");
+      await page.waitForTimeout(350);
+      await fillByLabel(page, "Setup note", "SSO role mapping and workspace defaults are approved.");
+      await page.waitForTimeout(250);
+      await safe(page.locator('#story-live #onboarding-provisioner'), (node) =>
+        node.selectOption("identity", { timeout: 1500 })
+      );
+      await page.waitForTimeout(250);
+      await clickButton(page, "Request setup info");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Prepare activation");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Activate account");
+      await page.waitForTimeout(400);
+      break;
     case "dashboard_drilldown_workflow":
       await clickButton(page, "At risk");
       await page.waitForTimeout(300);

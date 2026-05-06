@@ -19,6 +19,7 @@ For full-page examples that combine multiple component families, see
 `docs/guides/incident-response-workflows.md`,
 `docs/guides/release-readiness-workflows.md`,
 `docs/guides/billing-dispute-workflows.md`,
+`docs/guides/onboarding-provisioning-workflows.md`,
 `docs/guides/app-shell-workflows.md`,
 `docs/guides/editable-record-workflows.md`,
 `docs/guides/bulk-action-workflows.md`,
