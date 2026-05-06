@@ -16,9 +16,9 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Storybook story types | 81 component stories, 27 live component stories, 6 aggregate example stories, 0 component/layout page-mode stories |
 | Playwright component capture | 114 Storybook routes captured |
 | Capture artifacts | 114 screenshots, 114 WebM videos, 114 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-06T19-30-10-904Z/viewer.html` |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-06T19-44-24-160Z/viewer.html` |
 | Browser suite | 95 Playwright tests passing |
-| ExUnit suite | 536 tests passing |
+| ExUnit suite | 537 tests passing |
 | Visual regression | 114 committed screenshot baselines with pixel-diff checking |
 | Usage documentation | Central copy-paste reference added at `docs/guides/component-usage.md` |
 
@@ -67,6 +67,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `theme_toggle/1` now uses ExoUI Lucide icons for light, dark, and system buttons instead of raw glyph text, while keeping button labels and `aria-pressed` owned by the control.
 - `spinner/1` now keeps the status semantics on the wrapper while marking its animated SVG as decorative with `aria-hidden="true"` and `focusable="false"`.
 - Modal, sheet, drawer, flash, and toast close controls now render their close glyphs through ExoUI's shared Lucide `<.icon>` wrapper; command palette search also uses the same icon path instead of a hand-authored SVG.
+- `toast_container/1` now exposes toast stacks as labelled regions and adds opt-in `ExoToast` auto-dismiss behavior with pause-on-hover/focus, Escape dismissal, and Storybook/browser metadata coverage.
 - Date picker, pagination, carousel, and wizard completed-state indicators now render navigation/check symbols through ExoUI's shared Lucide `<.icon>` wrapper instead of raw `‹`, `›`, or checkmark text.
 - Sidebar layout's hamburger control now renders the Lucide `menu` icon through ExoUI's shared `<.icon>` wrapper instead of raw `☰` text.
 - `breadcrumb/1` now defaults to an ExoUI Lucide separator icon through `separator_icon` while keeping `separator` as an explicit text override, and Storybook table actions no longer use raw arrow text.
@@ -185,9 +186,10 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 
 ## Verification used
 
-- `mix test` -> 536 tests, 0 failures.
+- `mix test` -> 537 tests, 0 failures.
 - `mix compile --warnings-as-errors`.
 - `mix compile --warnings-as-errors` in `storybook`.
+- `mix assets.build` in `storybook` -> refreshed the Playwright Storybook JS bundle so newly added hooks are present when `PLAYWRIGHT=1` disables watchers.
 - `mix test test/exo_ui/components/icon_test.exs` -> 5 tests, 0 failures after adding default icon accessibility attrs, scoped size CSS, and a stable missing-icon fallback.
 - `bunx playwright test test/browser/actions_core.spec.js -g "theme toggle syncs"` -> 1 test, 0 failures after replacing raw theme-toggle glyphs with ExoUI Lucide icons.
 - `mix test test/exo_ui/components/spinner_test.exs` -> 3 tests, 0 failures after marking the spinner SVG decorative while keeping the wrapper status semantics.
@@ -210,6 +212,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `bunx playwright test test/browser/form_controls.spec.js test/browser/rating.spec.js test/browser/dropdown_menu.spec.js -g "grouped form controls|syncs clicked stars|opens with a button trigger"` -> 3 focused browser checks, 0 failures after verifying the iconized checkbox/rating/dropdown paths.
 - `mix test test/exo_ui/components/hover_card_test.exs test/exo_ui/components/context_menu_test.exs` -> 4 tests, 0 failures after moving hover-card semantics away from tooltip and rendering context-menu trigger ARIA server-side.
 - `bunx playwright test test/browser/hover_card.spec.js test/browser/context_menu.spec.js` -> 3 tests, 0 failures after verifying the hover-card dialog attrs and context-menu trigger/linkage attrs in Storybook.
+- `mix test test/exo_ui/components/flash_test.exs` -> 7 tests, 0 failures after adding labelled toast-region output and opt-in auto-dismiss hook metadata.
+- `bunx playwright test test/browser/data_feedback.spec.js -g "flash and toast"` -> 1 focused browser check, 0 failures after verifying `ExoToast` mounts on the Storybook auto-dismiss variation.
 - `mix test test/exo_ui/components/table_test.exs` -> 8 tests, 0 failures after adding table loading status support.
 - `bunx playwright test test/browser/data_feedback.spec.js -g "table renders caption"` -> 1 test, 0 failures after verifying `aria-busy` and the loading status row in Storybook.
 - `mix test test/exo_ui/components/file_input_test.exs` -> 7 tests, 0 failures after adding selected-file summary output support.
@@ -234,8 +238,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js` -> 1 focused workflow check, 0 failures after event-mode pagination and bottom-nav targeting.
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js test/browser/onboarding_provisioning_workflow.spec.js` -> 2 focused workflow checks, 0 failures.
 - `PLAYWRIGHT_TEST_TIMEOUT=180000 bun run test:browser` -> 95 tests, 0 failures.
-- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T19-30-10-904Z`.
+- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T19-44-24-160Z`.
 - `bun run capture:validate` -> 114 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the hover-card/context-menu ARIA pass.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the toast auto-dismiss/labelled-region pass.
 - `bun run visual:check` -> 114 current screenshots matched the committed baseline.
 - `docs/guides/component-usage.md` now links to button, input, select, combobox, table, modal, drawer, command-palette, date-picker, access-review, incident-response, release-readiness, billing-dispute, onboarding-provisioning, app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, import-export, async-save, command-routing, navigation-shell, role-operations, saved-filter, action/form, table/overlay/menu, component-state, and token guides.

@@ -66,6 +66,9 @@ defmodule ExoUI.Components.FlashTest do
     assert html =~ ~s(data-exo="toast")
     assert html =~ ~s(id="toast-container")
     assert html =~ ~s(data-placement="bottom-right")
+    assert html =~ ~s(role="region")
+    assert html =~ ~s(aria-label="Notifications")
+    assert html =~ ~s(data-auto-dismiss="false")
     assert html =~ ~s(role="status")
     assert html =~ ~s(aria-describedby="t1-message")
     assert Floki.find(tree, ~s([data-exo="toast-close"] [data-exo="icon"])) != []
@@ -83,5 +86,25 @@ defmodule ExoUI.Components.FlashTest do
     assert html =~ ~s(aria-live="assertive")
     assert html =~ ~s(aria-labelledby="t1-title")
     assert html =~ ~s(type="button")
+  end
+
+  test "renders optional auto-dismiss hook metadata" do
+    assigns = %{toasts: [{"t1", %{kind: :info, message: "Saved"}}]}
+
+    html =
+      rendered_to_string(~H|<.toast_container
+  id="toast-auto"
+  label="Autosaving updates"
+  toasts={@toasts}
+  auto_dismiss
+  duration={1500}
+/>|)
+
+    assert html =~ ~s(id="toast-auto")
+    assert html =~ ~s(role="region")
+    assert html =~ ~s(aria-label="Autosaving updates")
+    assert html =~ ~s(phx-hook="ExoToast")
+    assert html =~ ~s(data-auto-dismiss="true")
+    assert html =~ ~s(data-duration="1500")
   end
 end

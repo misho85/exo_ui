@@ -25,6 +25,16 @@ defmodule Storybook.Components.ToastContainer do
           placement: "top-left",
           close_label: "Dismiss toast"
         }
+      },
+      %Variation{
+        id: :auto_dismiss,
+        attributes: %{
+          id: "toast-container-auto",
+          label: "Auto dismissing notifications",
+          toasts: auto_dismiss_toasts(),
+          auto_dismiss: true,
+          duration: 60_000
+        }
       }
     ]
   end
@@ -43,6 +53,12 @@ defmodule Storybook.Components.ToastContainer do
       {"toast-4",
        %{kind: :warning, title: "Connection slow", message: "Updates may arrive late."}},
       {"toast-5", %{kind: :info, message: "Draft autosaved."}}
+    ]
+  end
+
+  defp auto_dismiss_toasts do
+    [
+      {"toast-auto-1", %{kind: :success, title: "Queued", message: "Export will dismiss itself."}}
     ]
   end
 end

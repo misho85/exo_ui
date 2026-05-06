@@ -256,10 +256,18 @@ test.describe("data and feedback components", () => {
     await gotoStory(page, "/components/feedback/toast_container");
 
     const toastCanvas = story(page);
-    const container = toastCanvas.locator('[data-exo="toast-container"][data-placement="bottom-right"]');
+    const container = toastCanvas.locator(
+      '[data-exo="toast-container"][data-placement="bottom-right"][data-auto-dismiss="false"]',
+    );
+    const autoContainer = toastCanvas.locator('[data-exo="toast-container"][data-auto-dismiss="true"]');
     const errorToast = toastCanvas.locator("#toast-3");
 
     await expectAttribute(container, "data-placement", "bottom-right");
+    await expectAttribute(container, "role", "region");
+    await expectAttribute(container, "aria-label", "Notifications");
+    await expectAttribute(autoContainer, "data-ready", "true");
+    await expectAttribute(autoContainer, "data-auto-dismiss", "true");
+    await expectAttribute(autoContainer, "data-duration", "60000");
     await expectAttribute(errorToast, "role", "alert");
     await expectAttribute(errorToast, "aria-live", "assertive");
     await expect(errorToast.locator('[data-exo="toast-close"]')).toHaveAttribute("type", "button");

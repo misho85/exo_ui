@@ -95,7 +95,10 @@ defmodule ExoUI.Components.Feedback do
   @doc "Renders a stream-based toast notification container."
   attr :toasts, :any, default: []
   attr :id, :string, default: "toast-container"
+  attr :label, :string, default: "Notifications"
   attr :close_label, :string, default: "Dismiss notification"
+  attr :auto_dismiss, :boolean, default: false
+  attr :duration, :integer, default: 5000
 
   attr :placement, :string,
     values: ~w(top-right top-left bottom-right bottom-left),
@@ -109,7 +112,12 @@ defmodule ExoUI.Components.Feedback do
       data-exo="toast-container"
       id={@id}
       data-placement={@placement}
+      data-auto-dismiss={to_string(@auto_dismiss)}
+      data-duration={@duration}
+      role="region"
+      aria-label={@label}
       phx-update="stream"
+      phx-hook={@auto_dismiss && "ExoToast"}
       {@rest}
     >
       <div
