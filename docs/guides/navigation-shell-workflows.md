@@ -37,6 +37,18 @@ stay in sync.
   target={@myself}
   aria_label="Workspace setup progress"
 />
+
+<.pagination
+  page={@page}
+  total_pages={@total_pages}
+  on_click="set-page"
+  target={@myself}
+/>
+
+<.bottom_nav aria-label="Mobile workspace navigation" target={@myself}>
+  <:item label="Summary" icon="layout-list" click="change-section" click_value="summary" active />
+  <:item label="Teams" icon="users" click="change-section" click_value="teams" />
+</.bottom_nav>
 ```
 
 ## Rules
@@ -44,10 +56,10 @@ stay in sync.
 - Pass `target={@myself}` when `tabs/1` or `wizard_sidebar/1` are used inside
   a LiveComponent with event-name clicks.
 - Keep breadcrumbs as state reflection; they should match the active section.
-- Use `pagination/1` for page semantics and ExoUI buttons when a LiveComponent
-  owns page state through events.
-- Keep mobile `bottom_nav/1` active state derived from the same section assign
-  as desktop navigation.
+- Use `pagination/1` with `on_click` and `target` when a LiveComponent owns page
+  state through events.
+- Use `bottom_nav/1` with click items and `target` when mobile navigation
+  changes LiveComponent state; the event receives `phx-value-item`.
 - Browser coverage should verify tab targeting, wizard targeting, active
   breadcrumbs, current pagination labels, bottom-nav `aria-current`, and reset
   behavior.

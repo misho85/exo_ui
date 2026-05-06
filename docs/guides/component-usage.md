@@ -278,12 +278,18 @@ Use column slots for grouped links and `bottom` for legal or secondary content.
 ### Bottom Nav
 
 Use for compact mobile navigation. Mark the current destination with `active`.
+Use `click`/`target` when a LiveComponent owns mobile navigation state.
 
 ```heex
 <.bottom_nav aria-label="Mobile primary">
   <:item label="Home" icon="home" navigate={~p"/"} active={@active == :home} />
   <:item label="Search" icon="search" navigate={~p"/search"} active={@active == :search} />
   <:item label="Account" icon="user" navigate={~p"/account"} active={@active == :account} />
+</.bottom_nav>
+
+<.bottom_nav aria-label="Mobile workspace navigation" target={@myself}>
+  <:item label="Summary" icon="layout-list" click="change-section" click_value="summary" active={@section == "summary"} />
+  <:item label="Teams" icon="users" click="change-section" click_value="teams" active={@section == "teams"} />
 </.bottom_nav>
 ```
 
@@ -1101,13 +1107,21 @@ Use `id` when you want keyboard handling through the `ExoTabs` hook. Use
 
 ### Pagination
 
-Use a path function so the component stays route-agnostic.
+Use a path function so the component stays route-agnostic, or `on_click` when a
+LiveComponent owns page state.
 
 ```heex
 <.pagination
   page={@page}
   total_pages={@total_pages}
   patch_fn={fn page -> ~p"/projects?page=#{page}" end}
+/>
+
+<.pagination
+  page={@page}
+  total_pages={@total_pages}
+  on_click="set-page"
+  target={@myself}
 />
 ```
 

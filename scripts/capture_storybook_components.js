@@ -603,9 +603,14 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(300);
       await clickButton(page, "Plan");
       await page.waitForTimeout(300);
-      await clickButton(page, "Next route page");
+      await clickButton(page, "Next page");
       await page.waitForTimeout(300);
-      await clickButton(page, "Rollout");
+      await safe(
+        page.locator('#story-live [aria-label="Navigation shell mobile navigation"]').getByRole("button", {
+          name: "Report"
+        }),
+        (node) => node.click({ timeout: 1500 })
+      );
       await page.waitForTimeout(350);
       break;
     case "command_surface_stack":

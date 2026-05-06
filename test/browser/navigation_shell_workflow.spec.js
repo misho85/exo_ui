@@ -17,6 +17,7 @@ test.describe("navigation shell workflow", () => {
     const wizard = root.locator('[data-exo="wizard"]');
     const pagination = root.locator('[aria-label="Navigation shell pagination"]');
     const bottomNav = root.locator('[aria-label="Navigation shell mobile navigation"]');
+    const sectionNav = root.locator("aside").first();
 
     await expectAttribute(root, "data-active-section", "overview");
     await expect(state).toHaveAttribute("data-active-tab", "summary");
@@ -27,12 +28,20 @@ test.describe("navigation shell workflow", () => {
       /.+/
     );
     await expect(bottomNav.locator('[aria-current="page"]')).toContainText("Overview");
+    await expect(bottomNav.getByRole("button", { name: "Report" })).toHaveAttribute(
+      "phx-target",
+      /.+/
+    );
+    await expect(bottomNav.getByRole("button", { name: "Report" })).toHaveAttribute(
+      "phx-value-item",
+      "report"
+    );
 
     await tabs.getByRole("tab", { name: /Teams/ }).click();
     await expectAttribute(root, "data-active-tab", "teams");
     await expect(state).toHaveAttribute("data-last-action", "opened Teams tab");
 
-    await root.getByRole("button", { name: "Plan", exact: true }).click();
+    await sectionNav.getByRole("button", { name: "Plan", exact: true }).click();
     await expectAttribute(root, "data-active-section", "plan");
     await expect(root.locator('[data-exo="breadcrumb-current"]')).toHaveText("Plan");
     await expect(bottomNav.locator('[aria-current="page"]')).toContainText("Plan");
@@ -41,8 +50,12 @@ test.describe("navigation shell workflow", () => {
     await wizard.getByRole("button", { name: "Step 1, Scope, current" }).click();
     await expectAttribute(root, "data-active-step", "scope");
 
-    await root.getByRole("button", { name: "Next route page" }).click();
+    await pagination.getByRole("button", { name: "Next page" }).click();
     await expectAttribute(root, "data-page", "2");
+    await expect(pagination.getByRole("button", { name: "Previous page" })).toHaveAttribute(
+      "phx-target",
+      /.+/
+    );
     await expect(pagination.locator('[aria-current="page"]')).toHaveAttribute(
       "aria-label",
       "Open navigation shell page 2, current page"
@@ -51,9 +64,9 @@ test.describe("navigation shell workflow", () => {
       "Validate mobile nav labels"
     );
 
-    await root.getByRole("button", { name: "Rollout", exact: true }).click();
-    await expectAttribute(root, "data-active-section", "rollout");
-    await expect(bottomNav.locator('[aria-current="page"]')).toContainText("Rollout");
+    await bottomNav.getByRole("button", { name: "Report" }).click();
+    await expectAttribute(root, "data-active-section", "report");
+    await expect(bottomNav.locator('[aria-current="page"]')).toContainText("Report");
 
     await root.getByRole("button", { name: "Reset shell" }).click();
     await expectAttribute(root, "data-active-section", "overview");

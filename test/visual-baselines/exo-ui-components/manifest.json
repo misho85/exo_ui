@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-06T09:40:46.709Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T09-35-30-720Z",
+  "updatedAt": "2026-05-06T11:12:40.344Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T11-07-18-250Z",
   "count": 114,
   "entries": [
     {
@@ -389,7 +389,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "9ae49d4c8dcd8430e05e87ae440666bc21dab7a350d7680d2792b86c2441e259"
+      "sha256": "7dfdd5996bf016415b24b45203e58c31ebe0f95ae0cbe3ee95513d1431c85e40"
     },
     {
       "name": "feedback/toast_container",
@@ -857,7 +857,7 @@
       "dataExoCount": 95,
       "width": 1280,
       "height": 900,
-      "sha256": "5f8d9db6c55c5c45139b6fce8e41253ee9d419db79efdeb94c7b87cf5e7fd9ed"
+      "sha256": "a4fa74ba3fa5681d7236a0be2cd7d1aa87bd80cda8aa940c71d837adfd8fe6ad"
     },
     {
       "name": "recipes/combobox_recipes",
@@ -884,7 +884,7 @@
       "dataExoCount": 73,
       "width": 1280,
       "height": 900,
-      "sha256": "5196a7336c954a993121a0201362ff4af83e59229704b98a5b708d683a49757d"
+      "sha256": "b9bd7e9d76efdeb8ac143e252ea4fae16d55dd88720af606ef33f72d984ee446"
     },
     {
       "name": "recipes/component_recipe_matrix",
@@ -971,10 +971,10 @@
       "name": "recipes/navigation_shell_workflow",
       "route": "/components/recipes/navigation_shell_workflow",
       "screenshot": "screenshots/recipes__navigation_shell_workflow.png",
-      "dataExoCount": 213,
+      "dataExoCount": 211,
       "width": 1280,
       "height": 900,
-      "sha256": "5451798ccf1f8be783919d256eb494ff75c19622832d3d02606c55fdd246b1f9"
+      "sha256": "57d11136edeb12516dda5a9c06942b157159459c25a23b602483a1850587415c"
     },
     {
       "name": "recipes/onboarding_provisioning_workflow",
@@ -1028,7 +1028,7 @@
       "dataExoCount": 84,
       "width": 1280,
       "height": 900,
-      "sha256": "23d5ef268e03df0a5b083dd9476000aea247f6f26b416cbe30cc0fd414372d7d"
+      "sha256": "d7e0369d776d41d54683dfce2329376a78092c52e13e1aa3b05d018abaafb840"
     }
   ]
 }

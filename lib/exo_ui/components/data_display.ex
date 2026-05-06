@@ -466,7 +466,13 @@ defmodule ExoUI.Components.DataDisplay do
   @doc "Renders a pagination control with page numbers and prev/next buttons."
   attr :page, :integer, required: true
   attr :total_pages, :integer, required: true
-  attr :patch_fn, :any, required: true, doc: "function taking page number, returns path"
+
+  attr :patch_fn, :any,
+    default: nil,
+    doc: "function taking page number and returning a patch path"
+
+  attr :on_click, :string, default: nil, doc: "optional phx-click event for page buttons"
+  attr :target, :any, default: nil, doc: "optional phx-target for on_click"
   attr :prev_label, :string, default: "Previous page"
   attr :next_label, :string, default: "Next page"
   attr :page_label, :string, default: "Page %{page}"
@@ -482,7 +488,8 @@ defmodule ExoUI.Components.DataDisplay do
       assign(assigns,
         page: page,
         total_pages: total_pages,
-        range: pagination_range(page, total_pages)
+        range: pagination_range(page, total_pages),
+        patch_fn: assigns.patch_fn || fn page -> "#page-#{page}" end
       )
 
     ~H"""
@@ -497,13 +504,24 @@ defmodule ExoUI.Components.DataDisplay do
         Page {@page} of {@total_pages}
       </span>
       <.link
-        :if={@page > 1}
+        :if={@page > 1 && !@on_click}
         data-exo="pagination-btn"
         patch={@patch_fn.(@page - 1)}
         aria-label={@prev_label}
       >
         ‹
       </.link>
+      <button
+        :if={@page > 1 && @on_click}
+        type="button"
+        data-exo="pagination-btn"
+        phx-click={@on_click}
+        phx-value-page={@page - 1}
+        phx-target={@target}
+        aria-label={@prev_label}
+      >
+        ‹
+      </button>
       <button
         :if={@page <= 1}
         type="button"
@@ -522,6 +540,7 @@ defmodule ExoUI.Components.DataDisplay do
             <span data-exo="pagination-ellipsis" aria-hidden="true">…</span>
           <% num -> %>
             <.link
+              :if={!@on_click}
               data-exo="pagination-btn"
               data-active={num == @page && ""}
               patch={@patch_fn.(num)}
@@ -530,17 +549,41 @@ defmodule ExoUI.Components.DataDisplay do
             >
               {num}
             </.link>
+            <button
+              :if={@on_click}
+              type="button"
+              data-exo="pagination-btn"
+              data-active={num == @page && ""}
+              phx-click={@on_click}
+              phx-value-page={num}
+              phx-target={@target}
+              aria-label={pagination_page_label(@page_label, num, num == @page)}
+              aria-current={num == @page && "page"}
+            >
+              {num}
+            </button>
         <% end %>
       <% end %>
 
       <.link
-        :if={@page < @total_pages}
+        :if={@page < @total_pages && !@on_click}
         data-exo="pagination-btn"
         patch={@patch_fn.(@page + 1)}
         aria-label={@next_label}
       >
         ›
       </.link>
+      <button
+        :if={@page < @total_pages && @on_click}
+        type="button"
+        data-exo="pagination-btn"
+        phx-click={@on_click}
+        phx-value-page={@page + 1}
+        phx-target={@target}
+        aria-label={@next_label}
+      >
+        ›
+      </button>
       <button
         :if={@page >= @total_pages}
         type="button"

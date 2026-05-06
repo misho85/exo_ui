@@ -23,7 +23,11 @@
   min-height: 3.25rem;
   padding: var(--exo-space-2);
   color: var(--exo-muted-foreground);
+  border: 0;
   border-radius: calc(var(--exo-radius) - 2px);
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
   font-size: var(--exo-text-xs);
   font-weight: 600;
   text-align: center;

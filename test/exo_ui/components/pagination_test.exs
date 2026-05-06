@@ -52,4 +52,21 @@ defmodule ExoUI.Components.PaginationTest do
 
     assert html =~ ~s(aria-label="Go to page 2, current page")
   end
+
+  test "supports event-driven pagination with target" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(
+        ~H|<.pagination page={2} total_pages={3} on_click="set-page" target="#pager" />|
+      )
+
+    assert html =~ ~s(phx-click="set-page")
+    assert html =~ ~s(phx-value-page="1")
+    assert html =~ ~s(phx-value-page="2")
+    assert html =~ ~s(phx-value-page="3")
+    assert html =~ ~s(phx-target="#pager")
+    assert html =~ ~s(aria-label="Page 2, current page")
+    refute html =~ "<a "
+  end
 end

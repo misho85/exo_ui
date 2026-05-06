@@ -50,6 +50,10 @@ defmodule ExoUI.Storybook.Components.NavigationShellWorkflowDemo do
     {:noreply, change_section(socket, section, "section navigation")}
   end
 
+  def handle_event("change-nav-section", %{"item" => section}, socket) do
+    {:noreply, change_section(socket, section, "bottom navigation")}
+  end
+
   def handle_event("change-navigation-tab", %{"tab" => tab}, socket) do
     if Enum.any?(@tabs, &(&1.id == tab and !Map.get(&1, :disabled, false))) do
       {:noreply,
@@ -248,36 +252,15 @@ defmodule ExoUI.Storybook.Components.NavigationShellWorkflowDemo do
                 </:col>
               </.table>
 
-              <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-top: 1rem;">
-                <.button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  disabled={@page == 1}
-                  phx-click="set-navigation-page"
-                  phx-value-page={@page - 1}
-                  phx-target={@myself}
-                >
-                  Previous route page
-                </.button>
+              <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
                 <.pagination
                   page={@page}
                   total_pages={@total_pages}
-                  patch_fn={&page_patch/1}
+                  on_click="set-navigation-page"
+                  target={@myself}
                   aria_label="Navigation shell pagination"
                   page_label="Open navigation shell page %{page}"
                 />
-                <.button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  disabled={@page == @total_pages}
-                  phx-click="set-navigation-page"
-                  phx-value-page={@page + 1}
-                  phx-target={@myself}
-                >
-                  Next route page
-                </.button>
               </div>
             </.content_card>
 
@@ -306,12 +289,13 @@ defmodule ExoUI.Storybook.Components.NavigationShellWorkflowDemo do
         </main>
       </div>
 
-      <.bottom_nav aria-label="Navigation shell mobile navigation">
+      <.bottom_nav aria-label="Navigation shell mobile navigation" target={@myself}>
         <:item
           :for={item <- @sections}
           label={item.label}
           icon={item.icon}
-          href={"#navigation-shell-#{item.id}"}
+          click="change-nav-section"
+          click_value={item.id}
           active={item.id == @active_section}
         />
       </.bottom_nav>
@@ -491,7 +475,6 @@ defmodule ExoUI.Storybook.Components.NavigationShellWorkflowDemo do
   end
 
   defp total_pages, do: 3
-  defp page_patch(page), do: "#navigation-shell-page-#{page}"
 
   defp section(id), do: Enum.find(@sections, &(&1.id == id)) || hd(@sections)
   defp section_label(id), do: section(id).label

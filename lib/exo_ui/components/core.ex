@@ -372,6 +372,7 @@ defmodule ExoUI.Components.Core do
   end
 
   @doc "Renders a mobile bottom navigation bar with icon items."
+  attr :target, :any, default: nil, doc: "optional phx-target for click-based items"
   attr :class, :any, default: nil
   attr :rest, :global
 
@@ -381,14 +382,33 @@ defmodule ExoUI.Components.Core do
     attr :href, :string
     attr :navigate, :string
     attr :patch, :string
+    attr :click, :string
+    attr :click_value, :string
     attr :active, :boolean
   end
 
   def bottom_nav(assigns) do
     ~H"""
     <nav data-exo="bottom-nav" class={@class} {@rest}>
+      <button
+        :for={item <- @item}
+        :if={item[:click]}
+        type="button"
+        data-exo="bottom-nav-item"
+        data-active={item[:active] && ""}
+        phx-click={item.click}
+        phx-value-item={item[:click_value] || item.label}
+        phx-target={@target}
+        aria-current={item[:active] && "page"}
+      >
+        <span :if={item[:icon]} data-exo="bottom-nav-icon" aria-hidden="true">
+          <.icon name={item.icon} class="size-5" />
+        </span>
+        <span data-exo="bottom-nav-label">{item.label}</span>
+      </button>
       <.link
         :for={item <- @item}
+        :if={!item[:click]}
         data-exo="bottom-nav-item"
         data-active={item[:active] && ""}
         href={item[:href]}

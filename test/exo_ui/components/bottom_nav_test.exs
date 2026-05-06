@@ -103,6 +103,25 @@ defmodule ExoUI.Components.BottomNavTest do
     |> assert_attribute("href", "/", "[data-exo='bottom-nav-item']")
   end
 
+  test "renders click item with target and value" do
+    assigns = %{}
+
+    ~H"""
+    <.bottom_nav target="#owner">
+      <:item label="Plan" icon="clipboard-list" click="change-section" click_value="plan" active>
+        Plan
+      </:item>
+    </.bottom_nav>
+    """
+    |> parse_component()
+    |> assert_component("button[data-exo='bottom-nav-item']")
+    |> assert_attribute("type", "button", "[data-exo='bottom-nav-item']")
+    |> assert_attribute("phx-click", "change-section", "[data-exo='bottom-nav-item']")
+    |> assert_attribute("phx-value-item", "plan", "[data-exo='bottom-nav-item']")
+    |> assert_attribute("phx-target", "#owner", "[data-exo='bottom-nav-item']")
+    |> assert_attribute("aria-current", "page", "[data-exo='bottom-nav-item']")
+  end
+
   test "renders bottom_nav with class" do
     assigns = %{}
 
