@@ -52,11 +52,13 @@ test.describe("navigation and progress components", () => {
     const canvas = story(page);
     const firstPagination = canvas.locator('[data-exo="pagination"]').first();
     const customPagination = canvas.locator('[aria-label="Report pages"]');
+    const disabledPrevious = firstPagination
+      .locator('button[data-exo="pagination-btn"][data-disabled]')
+      .first();
 
-    await expect(firstPagination.locator('[data-exo="pagination-btn"][data-disabled]').first()).toHaveAttribute(
-      "aria-label",
-      "Previous page"
-    );
+    await expect(disabledPrevious).toHaveAttribute("aria-label", "Previous page");
+    await expect(disabledPrevious).toBeDisabled();
+    await expect(firstPagination.locator('[data-exo="pagination-status"]')).toHaveText("Page 1 of 5");
     await expect(firstPagination.locator('[aria-current="page"]')).toHaveAttribute(
       "aria-label",
       "Page 1, current page"
@@ -113,6 +115,7 @@ test.describe("navigation and progress components", () => {
       "Step 2, Profile info, current"
     );
     await expect(pendingWizardStep).toHaveAttribute("aria-label", "Step 3, Billing, pending");
+    await expect(pendingWizardStep).toBeDisabled();
   });
 
   test("progress components expose bounded values and accessible names", async ({ page }) => {

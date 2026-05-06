@@ -1,7 +1,7 @@
 # ExoUI component library status
 
 **Date:** 2026-05-04
-**Latest update:** 2026-05-05
+**Latest update:** 2026-05-06
 **Scope:** public `ExoUI.Components.*` surface, Storybook routes, Playwright browser suite, generated screenshot/video capture.
 **Baseline target:** functionality and documentation quality approaching shadcn/ui and daisyUI.
 
@@ -16,7 +16,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Storybook story types | 81 component stories, 26 live component stories, 6 aggregate example stories, 0 component/layout page-mode stories |
 | Playwright component capture | 113 Storybook routes captured |
 | Capture artifacts | 113 screenshots, 113 WebM videos, 113 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-06T08-17-18-147Z/viewer.html` |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-06T08-36-46-394Z/viewer.html` |
 | Browser suite | 93 Playwright tests passing |
 | ExUnit suite | 504 tests passing |
 | Visual regression | 113 committed screenshot baselines with pixel-diff checking |
@@ -131,6 +131,9 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `docs/guides/onboarding-provisioning-workflows.md` now documents the same onboarding provisioning pattern as a copy-paste production recipe, including targeted LiveComponent tab events, drawer validation, setup-info requests, and `close_on_confirm={@provision_ready?}` guarded activation behavior.
 - Storybook demos, recipe demos, and the central usage guide now avoid raw `input`, `select`, `textarea`, and `button` markup where ExoUI provides an equivalent component. The remaining raw HTML is inside ExoUI component implementations where native primitives are required.
 - `button/1` now accepts `popovertarget` and `popovertargetaction`, so Popover API close actions can use the same ExoUI button primitive instead of hand-authored native buttons.
+- `pagination/1` now renders disabled previous/next controls as real disabled buttons instead of non-focusable spans, and exposes a polite page status for assistive tech.
+- `wizard_sidebar/1` now renders pending steps as disabled buttons instead of divs, keeping one consistent control shape across completed, current, and unavailable steps.
+- `accordion/1` no longer renders a hidden checkbox as a second state mirror; the button `aria-expanded` state is the single source for CSS and hook behavior.
 
 ## Comparison vs shadcn/daisyUI
 
@@ -140,7 +143,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Theming | Token-driven CSS with light/dark support, reduced-motion guard, semantic elevation/backdrop tokens, browser checks against hardcoded component backdrops, and token customization recipes | Needs more component-specific state tokens as the design language matures |
 | Forms | Phoenix FormField integration is now strong across most controls, select/combobox expose active-descendant keyboard state, combobox empty/loading states announce changes politely, and async save, saved-filter, and bulk-edit success paths have live recipe coverage | Component-mode controls should expose more attrs/slots directly in PhoenixStorybook playgrounds |
 | Overlays/menus | Browser-tested popover, dropdown, context menu, menubar, modal/confirm-modal/sheet/drawer focus traps, command palette trigger open/focus trap/focus restore, shared overlay registry participation, topmost Escape/backdrop handling, outside inerting, scroll lock, same-type and cross-type stacking order, lower-overlay inerting, focus restore, long-form stacked drawer scrolling, stacked validation errors, command-surface stacks, destructive confirm flows inside stacked overlays, public show/hide helpers for modal/drawer/sheet/command palette, configurable command palette shortcuts, app-shell recipes, editable-record recipes, command-routing recipes, and guarded confirm actions that can stay open for server validation | Needs more real-app recipes over time, but the core overlay/menu interaction parity is much closer |
-| Keyboard support | Covered for major actions, menus, select/combobox, rating, tabs, date picker grid movement, parent-controlled date picker month changes, and command palette driven multi-screen routing | Needs broader app-level shortcut recipes as more production shells are added |
+| Keyboard support | Covered for major actions, menus, select/combobox, rating, tabs, date picker grid movement, parent-controlled date picker month changes, pagination disabled-button semantics, wizard disabled-step semantics, accordion button state, and command palette driven multi-screen routing | Needs broader app-level shortcut recipes as more production shells are added |
 | Visual proof | Automated screenshots and videos for 113 routes, committed visual baselines, a CI-friendly diff command, and GitHub Actions wiring | Needs review tuning once real PR diffs start producing visual changes |
 | Composability | Slots and `data-exo` styling are consistent | No shadcn-style `asChild`/polymorphic root pattern for advanced composition |
 | Usage docs | Central copy-paste usage reference exists for the current public component surface, plus button, input, select, combobox, table, modal, drawer, command-palette, date-picker, access-review, incident-response, release-readiness, billing-dispute, onboarding-provisioning, app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, async-save, saved-filter, command-routing, role-operations, action/form, table/overlay/menu, component-state, and token recipes | Still needs more narrow per-component pages as new high-traffic primitives emerge |
@@ -155,9 +158,10 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 
 - `mix test` -> 504 tests, 0 failures.
 - `mix compile --warnings-as-errors` in `storybook`.
+- `bunx playwright test test/browser/navigation_progress.spec.js test/browser/content_structure.spec.js` -> 9 tests, 0 failures after the pagination, wizard, and accordion semantics pass.
 - `bun run test:browser` -> 93 tests, 0 failures.
-- `bun run capture:components` -> 113 entries, 0 failed, 113 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T08-17-18-147Z`.
+- `bun run capture:components` -> 113 entries, 0 failed, 113 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T08-36-46-394Z`.
 - `bun run capture:validate` -> 113 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the UI primitive consistency pass.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the pagination, wizard, and accordion semantics pass.
 - `bun run visual:check` -> 113 current screenshots matched the committed baseline.
 - `docs/guides/component-usage.md` now links to button, input, select, combobox, table, modal, drawer, command-palette, date-picker, access-review, incident-response, release-readiness, billing-dispute, onboarding-provisioning, app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, import-export, async-save, command-routing, role-operations, saved-filter, action/form, table/overlay/menu, component-state, and token guides.

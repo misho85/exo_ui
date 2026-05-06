@@ -26,17 +26,22 @@
   transition: background var(--exo-duration) var(--exo-easing);
 }
 
-:where(button[data-exo="wizard-btn"]) {
+:where(button[data-exo="wizard-btn"]:not(:disabled)) {
   cursor: pointer;
 }
 
-:where(button[data-exo="wizard-btn"]):hover {
+:where(button[data-exo="wizard-btn"]:not(:disabled)):hover {
   background: var(--exo-muted);
 }
 
 :where(button[data-exo="wizard-btn"]):focus-visible {
   outline: 2px solid var(--exo-ring);
   outline-offset: 2px;
+}
+
+:where([data-exo="wizard-btn"][data-disabled]) {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 :where([data-exo="wizard-indicator"]) {

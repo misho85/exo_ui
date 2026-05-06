@@ -77,7 +77,7 @@ defmodule ExoUI.Components.AccordionTest do
     refute html =~ ~s(data-joined)
   end
 
-  test "renders accordion item with checked checkbox when open" do
+  test "renders accordion item as expanded when open" do
     assigns = %{}
 
     html =
@@ -87,7 +87,8 @@ defmodule ExoUI.Components.AccordionTest do
       </.accordion>
       """)
 
-    assert html =~ "checked"
+    assert html =~ ~s(aria-expanded="true")
+    assert html =~ ~s(aria-hidden="false")
   end
 
   test "renders accordion with class" do
@@ -229,7 +230,7 @@ defmodule ExoUI.Components.AccordionTest do
     assert html =~ ~s(phx-hook="ExoAccordion")
   end
 
-  test "hidden checkbox has aria-hidden and tabindex" do
+  test "does not render a hidden checkbox state mirror" do
     assigns = %{}
 
     html =
@@ -239,9 +240,7 @@ defmodule ExoUI.Components.AccordionTest do
       </.accordion>
       """)
 
-    assert html =~ ~s(aria-hidden="true")
-    assert html =~ ~s(tabindex="-1")
-    assert html =~ ~s(type="checkbox")
-    assert html =~ ~s(data-exo="accordion-state")
+    refute html =~ ~s(data-exo="accordion-state")
+    refute html =~ ~s(type="checkbox")
   end
 end

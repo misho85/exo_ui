@@ -11,6 +11,10 @@ defmodule ExoUI.Components.PaginationTest do
     assert html =~ ~s(aria-label="Pagination")
     assert html =~ ~s(aria-label="Previous page")
     assert html =~ ~s(aria-disabled="true")
+    assert html =~ ~s(type="button")
+    assert html =~ ~s(disabled)
+    assert html =~ ~s(data-exo="pagination-status")
+    assert html =~ "Page 1 of 5"
     assert html =~ ~s(aria-label="Page 1, current page")
     assert html =~ ~s(aria-label="Page 2")
   end
@@ -35,6 +39,7 @@ defmodule ExoUI.Components.PaginationTest do
     assert html =~ ~s(aria-label="Page 3, current page")
     assert html =~ ~s(aria-label="Next page")
     assert html =~ ~s(aria-disabled="true")
+    assert html =~ "Page 3 of 3"
   end
 
   test "supports custom page labels" do

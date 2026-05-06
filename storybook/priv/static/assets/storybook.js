@@ -3,7 +3,6 @@
   var ExoAccordion = {
     mounted() {
       this._triggers = () => Array.from(this.el.querySelectorAll('[data-exo="accordion-trigger"]:not([disabled])'));
-      this._checkboxes = () => Array.from(this.el.querySelectorAll('[data-exo="accordion-state"]:not([disabled])'));
       this._isSingle = () => this.el.dataset.type === "single";
       this._isCollapsible = () => this.el.hasAttribute("data-collapsible");
       this.el.addEventListener("keydown", this._onKeydown = (e) => {
@@ -37,31 +36,21 @@
       this.el.addEventListener("click", this._onClick = (e) => {
         const trigger = this._closestTrigger(e);
         if (!trigger || trigger.disabled) return;
-        const item = trigger.closest('[data-exo="accordion-item"]');
-        const checkbox = item?.querySelector('[data-exo="accordion-state"]');
-        if (!checkbox) return;
-        const wasChecked = checkbox.checked;
+        const wasExpanded = trigger.getAttribute("aria-expanded") === "true";
         if (this._isSingle()) {
-          if (wasChecked && this._isCollapsible()) {
-            checkbox.checked = false;
+          if (wasExpanded && this._isCollapsible()) {
             this._syncAria(trigger, false);
-          } else if (wasChecked && !this._isCollapsible()) {
+          } else if (wasExpanded && !this._isCollapsible()) {
             e.preventDefault();
             return;
           } else {
-            this._checkboxes().forEach((cb) => {
-              if (cb !== checkbox && cb.checked) {
-                cb.checked = false;
-                const otherTrigger = cb.parentElement.querySelector('[data-exo="accordion-trigger"]');
-                if (otherTrigger) this._syncAria(otherTrigger, false);
-              }
+            this._triggers().forEach((otherTrigger) => {
+              if (otherTrigger !== trigger) this._syncAria(otherTrigger, false);
             });
-            checkbox.checked = true;
             this._syncAria(trigger, true);
           }
         } else {
-          checkbox.checked = !wasChecked;
-          this._syncAria(trigger, checkbox.checked);
+          this._syncAria(trigger, !wasExpanded);
         }
       });
       this._syncAllAria();
@@ -91,10 +80,9 @@
     _syncAllAria() {
       const items = this.el.querySelectorAll('[data-exo="accordion-item"]');
       items.forEach((item) => {
-        const checkbox = item.querySelector('[data-exo="accordion-state"]');
         const trigger = item.querySelector('[data-exo="accordion-trigger"]');
-        if (checkbox && trigger) {
-          this._syncAria(trigger, checkbox.checked);
+        if (trigger) {
+          this._syncAria(trigger, trigger.getAttribute("aria-expanded") === "true");
         }
       });
     }

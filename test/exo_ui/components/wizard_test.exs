@@ -22,6 +22,8 @@ defmodule ExoUI.Components.WizardTest do
     assert html =~ ~s(type="button")
     assert html =~ ~s(aria-current="step")
     assert html =~ ~s(aria-disabled="true")
+    assert html =~ ~s(data-disabled)
+    assert html =~ ~s(disabled)
     assert html =~ ~s(aria-label="Step 2, Payment, current")
     assert html =~ "Details"
     assert html =~ "Payment"

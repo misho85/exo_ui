@@ -234,16 +234,19 @@ defmodule ExoUI.Components.DataDisplay do
             </span>
             <span data-exo="wizard-label">{step.label}</span>
           </button>
-          <div
+          <button
             :if={step.status not in [:completed, :current]}
+            type="button"
             data-exo="wizard-btn"
             data-status={step.status}
+            data-disabled
             aria-disabled="true"
             aria-label={wizard_step_label(step, idx)}
+            disabled
           >
             <span data-exo="wizard-indicator" aria-hidden="true">{idx + 1}</span>
             <span data-exo="wizard-label">{step.label}</span>
-          </div>
+          </button>
           <div :if={idx < @last_idx} data-exo="wizard-connector" data-status={step.status} />
         </li>
       </ol>
@@ -484,6 +487,9 @@ defmodule ExoUI.Components.DataDisplay do
       class={@class}
       {@rest}
     >
+      <span data-exo="pagination-status" aria-live="polite" aria-atomic="true">
+        Page {@page} of {@total_pages}
+      </span>
       <.link
         :if={@page > 1}
         data-exo="pagination-btn"
@@ -492,15 +498,17 @@ defmodule ExoUI.Components.DataDisplay do
       >
         ‹
       </.link>
-      <span
+      <button
         :if={@page <= 1}
+        type="button"
         data-exo="pagination-btn"
         data-disabled
         aria-disabled="true"
         aria-label={@prev_label}
+        disabled
       >
         ‹
-      </span>
+      </button>
 
       <%= for item <- @range do %>
         <%= case item do %>
@@ -527,15 +535,17 @@ defmodule ExoUI.Components.DataDisplay do
       >
         ›
       </.link>
-      <span
+      <button
         :if={@page >= @total_pages}
+        type="button"
         data-exo="pagination-btn"
         data-disabled
         aria-disabled="true"
         aria-label={@next_label}
+        disabled
       >
         ›
-      </span>
+      </button>
     </nav>
     """
   end
@@ -783,15 +793,6 @@ defmodule ExoUI.Components.DataDisplay do
         data-exo="accordion-item"
         data-disabled={item[:disabled] || nil}
       >
-        <input
-          type="checkbox"
-          id={"#{@id}-#{idx}"}
-          checked={item[:open]}
-          disabled={item[:disabled]}
-          data-exo="accordion-state"
-          aria-hidden="true"
-          tabindex="-1"
-        />
         <button
           type="button"
           data-exo="accordion-trigger"
