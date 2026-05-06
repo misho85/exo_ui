@@ -201,7 +201,7 @@ Use when a list, table, search, or dashboard section has no content.
 
 ```heex
 <.empty_state
-  icon="!"
+  icon="inbox"
   title="No projects found"
   subtitle="Adjust filters or create a new project."
 >
@@ -1121,7 +1121,7 @@ Use for dashboard metrics.
 <.stat_card
   title="Revenue"
   value="$42,300"
-  icon="$"
+  icon="trending-up"
   trend="+12%"
   trend_direction="up"
   subtitle="Compared with last month"
@@ -1488,5 +1488,5 @@ surface. The main remaining shadcn/daisyUI-style parity gaps are:
   `select/1` and `dropdown_menu/1`.
 - Advanced composition patterns such as Radix-style `asChild` are not part of
   the current LiveView API.
-- Some decorative icon props, such as `empty_state.icon` and `stat_card.icon`,
-  are plain rendered content today rather than dedicated icon slots.
+- Decorative icon props, such as `empty_state.icon` and `stat_card.icon`, use
+  Lucide icon names and render through ExoUI's `<.icon>` wrapper.

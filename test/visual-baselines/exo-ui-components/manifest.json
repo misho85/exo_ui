@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-06T16:53:13.039Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T16-44-18-723Z",
+  "updatedAt": "2026-05-06T17:05:14.323Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T16-59-52-239Z",
   "count": 114,
   "entries": [
     {
@@ -278,10 +278,10 @@
       "name": "data_display/stat_card",
       "route": "/components/data_display/stat_card",
       "screenshot": "screenshots/data_display__stat_card.png",
-      "dataExoCount": 23,
+      "dataExoCount": 25,
       "width": 1280,
       "height": 900,
-      "sha256": "6bcf18d2b7042c44eba8ef2f216fe01db74e23dd5eecd8d8fd6c7a6c406bb8fc"
+      "sha256": "94b63d3b403ef45633075a610a6c289cb243b4ffa3a0ef7adebb6912d09a6c77"
     },
     {
       "name": "data_display/table",
@@ -323,10 +323,10 @@
       "name": "feedback/empty_state",
       "route": "/components/feedback/empty_state",
       "screenshot": "screenshots/feedback__empty_state.png",
-      "dataExoCount": 14,
+      "dataExoCount": 16,
       "width": 1280,
       "height": 900,
-      "sha256": "db45050fe70141f00eecc5f389129fcff54ec34ffe151e19e706b110888052b8"
+      "sha256": "3c842efead9772d2915d1f79b7c19466767a09581c263d8b76bbf187f9194779"
     },
     {
       "name": "feedback/flash",
@@ -389,7 +389,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "dbd92a3c1e3b4ffbcc255aa239cf8d0998b643086b041f009ccbbda39c5f4d2f"
+      "sha256": "3d221f9c3066b51f53ebc3eeb2f33a6cd59a4459fed841e17e4240f237f6d6db"
     },
     {
       "name": "feedback/toast_container",
@@ -407,7 +407,7 @@
       "dataExoCount": 207,
       "width": 1280,
       "height": 900,
-      "sha256": "5c7600c012390f20476bddbde544e807dcc97f094220c227d8aabda0e82b0dca"
+      "sha256": "127c25e8da61dd17af73e878ff83bf89e9b4e536b819ee3742ca94ac573febde"
     },
     {
       "name": "forms/combobox_async",
@@ -506,7 +506,7 @@
       "dataExoCount": 28,
       "width": 1280,
       "height": 900,
-      "sha256": "9a98f6063eff5ac347dabef09c36b0f1ca36ddf975e0819f1ad0eaffc1b73b41"
+      "sha256": "bc9eb194e8584058913d56380f48ee1ab32a293c6275fc2c3624b7d8397a9222"
     },
     {
       "name": "layout/accordion",
@@ -515,7 +515,7 @@
       "dataExoCount": 78,
       "width": 1280,
       "height": 900,
-      "sha256": "6f5186711d9e5550293595df602e016248bb6fb2a0c38ea09a8e016744c27842"
+      "sha256": "ab0a3a16ee30921c8c103b8cbd4ba5a79f400931c47e670eb60c4562c1b1da75"
     },
     {
       "name": "layout/app_shell_workflow",
@@ -530,10 +530,10 @@
       "name": "layout/card",
       "route": "/components/layout/card",
       "screenshot": "screenshots/layout__card.png",
-      "dataExoCount": 55,
+      "dataExoCount": 58,
       "width": 1280,
       "height": 900,
-      "sha256": "577f73267f7628ce79fa8da0644add58a3ada13625b2b3e3a96bad334fc615a7"
+      "sha256": "1f381885fa45df246eb06b9e0def209eb63fbfc9e07304e91fc190d579e9bbb6"
     },
     {
       "name": "layout/carousel",
@@ -596,7 +596,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "791c7debbb64d96a5fc486bfd47c10cb1b11f27032aa9cae6b303f698b215377"
+      "sha256": "fcbcf7fcf3b0bebb5150563546df7f9a1d90af551228f1e661e19de698c22a9b"
     },
     {
       "name": "layout/separator",
@@ -605,7 +605,7 @@
       "dataExoCount": 2,
       "width": 1280,
       "height": 900,
-      "sha256": "94918894a430be8ffa2b659aae3ce9b5af04a98c65ac1958afa446fe902b694a"
+      "sha256": "8f9e151cdba3284d231c7c1fe9ac864c50d6ca0999e0439aafeb9402bfc2aa89"
     },
     {
       "name": "layouts/sidebar_layout",
@@ -668,7 +668,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "8a60adcf2f1758be1e5d359c4eb9f168c8ef84b7849a51eeaa071949007d8727"
+      "sha256": "a02d1a49f2c944a5cfe6646890f04933c1a38a605d89fb56ab5369622f4828ed"
     },
     {
       "name": "navigation/bottom_nav",
@@ -704,7 +704,7 @@
       "dataExoCount": 46,
       "width": 1280,
       "height": 900,
-      "sha256": "50617de0834fe7b7b984c8d5305bef2d28fc56c35ef6cc1e0416a15b7e684662"
+      "sha256": "c2b87ca9682dc2d8622d9440ea4878198c5cf274a1e6efc541abb330cabb34fb"
     },
     {
       "name": "navigation/steps",
@@ -713,7 +713,7 @@
       "dataExoCount": 33,
       "width": 1280,
       "height": 900,
-      "sha256": "f65cef95595695302906f86f5f70a3cc205fe6e879711fed36c23dc0e8d02513"
+      "sha256": "7e1eadd46d42649c9e7256edccb378c34fcb108a048afa4cc60408a4d4064d24"
     },
     {
       "name": "navigation/tabs",
@@ -722,7 +722,7 @@
       "dataExoCount": 29,
       "width": 1280,
       "height": 900,
-      "sha256": "ab5fce3eb02f0bded564316290cbcc1934a70e164e42d14ce07f6bda16505a72"
+      "sha256": "85a7fef8abfffba7e1622378e7cbf88620a83dc6b5da5748bf08f4d636f75d4c"
     },
     {
       "name": "navigation/wizard_sidebar",
@@ -731,7 +731,7 @@
       "dataExoCount": 35,
       "width": 1280,
       "height": 900,
-      "sha256": "7042bb48bd33cf5283156354cb819e643745bc27bdeb7631b3beaaf2aceecfcc"
+      "sha256": "570bdc48266cbbcc9d3a7b0bc54ab91a7666e2dee4655d635852d5c84f2913ce"
     },
     {
       "name": "overlays/confirm_modal",
@@ -740,7 +740,7 @@
       "dataExoCount": 22,
       "width": 1280,
       "height": 900,
-      "sha256": "04e57b1b0f005aee0f7bda5b0409299655d1022270c939224169645d6245df08"
+      "sha256": "c4fac155da72cf6ffb28cb992e60eb63cf75b39b8592e35bd4aa6f1dc868b499"
     },
     {
       "name": "overlays/drawer",
@@ -857,7 +857,7 @@
       "dataExoCount": 98,
       "width": 1280,
       "height": 900,
-      "sha256": "c8336c6541379ed0ade2f755f9589a2852017fa3fc1221dd6b13daca0da35c73"
+      "sha256": "bd5ceecd8617146a29b77cce2136193ef8598c3699ee51a54684c3b5daee3f6f"
     },
     {
       "name": "recipes/combobox_recipes",
@@ -929,7 +929,7 @@
       "dataExoCount": 197,
       "width": 1280,
       "height": 900,
-      "sha256": "5ae492310a6f64e443f931fa13d5835cb69188fe76966eae6306675c7f5af732"
+      "sha256": "e68e6d775606d1d7418c323a5184956af80c45a04d7603d539ccbbb91a8c651d"
     },
     {
       "name": "recipes/import_export_workflow",

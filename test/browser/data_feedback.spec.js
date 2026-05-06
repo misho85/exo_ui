@@ -220,6 +220,7 @@ test.describe("data and feedback components", () => {
 
     await expect(positiveStat.locator('[data-exo="stat-card-label"]')).toHaveText("Total users");
     await expect(positiveStat.locator('[data-exo="stat-card-value"]')).toHaveText("12,481");
+    await expect(positiveStat.locator('[data-exo="stat-card-icon"] [data-exo="icon"]')).toHaveCount(1);
     await expect(positiveStat.locator('[data-exo="stat-card-trend"]')).toHaveAttribute("data-direction", "up");
     await expect(negativeStat.locator('[data-exo="stat-card-trend"]')).toHaveAttribute("data-direction", "down");
     await expect(minimalStat.locator('[data-exo="stat-card-bottom"]')).toHaveCount(0);

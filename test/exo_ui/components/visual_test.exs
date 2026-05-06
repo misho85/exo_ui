@@ -29,10 +29,13 @@ defmodule ExoUI.Components.VisualTest do
 
     html =
       rendered_to_string(
-        ~H|<.empty_state title="No results" subtitle="Try a different search" />|
+        ~H|<.empty_state icon="search" title="No results" subtitle="Try a different search" />|
       )
 
     assert html =~ ~s(data-exo="empty-state")
+    assert html =~ ~s(data-exo="empty-state-icon")
+    assert html =~ ~s(data-exo="icon")
+    assert html =~ ~s(aria-hidden="true")
     assert html =~ "No results"
     assert html =~ "Try a different search"
   end

@@ -96,6 +96,12 @@ test.describe("component visual styles", () => {
     expect(dotIndicatorAfter.position).toBe("absolute");
     expect(Number.parseFloat(dotIndicatorAfter.width)).toBeGreaterThan(6);
 
+    await gotoStory(page, "/components/feedback/empty_state");
+
+    const emptyStateIcon = story(page).locator('[data-exo="empty-state-icon"] [data-exo="icon"]').first();
+
+    await expect(emptyStateIcon).toHaveCSS("width", "32px");
+
     await gotoStory(page, "/components/feedback/radial_progress");
 
     const radialProgress = story(page).locator('[data-exo="radial-progress"]').first();

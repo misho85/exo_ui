@@ -16,7 +16,7 @@ defmodule Storybook.Components.EmptyState do
       %Variation{
         id: :messages,
         attributes: %{
-          icon: "📭",
+          icon: "inbox",
           title: "No messages",
           subtitle: "You don't have any messages yet."
         }
@@ -24,7 +24,7 @@ defmodule Storybook.Components.EmptyState do
       %Variation{
         id: :search_results,
         attributes: %{
-          icon: "🔍",
+          icon: "search",
           title: "No results found",
           subtitle: "Try adjusting your search or filters."
         },

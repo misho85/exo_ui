@@ -18,7 +18,7 @@ defmodule Storybook.Components.StatCard do
         attributes: %{
           title: "Total users",
           value: "12,481",
-          icon: "U",
+          icon: "users",
           trend: "+12%",
           trend_direction: "up",
           subtitle: "vs last month"
@@ -29,7 +29,7 @@ defmodule Storybook.Components.StatCard do
         attributes: %{
           title: "Bounce rate",
           value: "24.3%",
-          icon: "%",
+          icon: "percent",
           trend: "-3.1%",
           trend_direction: "down",
           subtitle: "vs last month"

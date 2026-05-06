@@ -182,7 +182,9 @@ defmodule ExoUI.Components.DataDisplay do
           <span data-exo="stat-card-label">{@title}</span>
           <span data-exo="stat-card-value">{@value}</span>
         </div>
-        <div :if={@icon} data-exo="stat-card-icon">{@icon}</div>
+        <div :if={@icon} data-exo="stat-card-icon" aria-hidden="true">
+          <.icon name={@icon} class="size-5" />
+        </div>
       </div>
       <div :if={@subtitle || @trend} data-exo="stat-card-bottom">
         <span :if={@trend} data-exo="stat-card-trend" data-direction={@trend_direction}>
