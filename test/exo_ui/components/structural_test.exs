@@ -52,9 +52,14 @@ defmodule ExoUI.Components.StructuralTest do
     assigns = %{}
 
     html =
-      rendered_to_string(
-        ~H|<.stat_card title="Revenue" value="$1,234" icon="trending-up" trend="+12%" trend_direction="up" />|
-      )
+      rendered_to_string(~H|<.stat_card
+  title="Revenue"
+  value="$1,234"
+  icon="trending-up"
+  trend="+12%"
+  trend_direction="up"
+  trend_label="Up 12 percent"
+/>|)
 
     assert html =~ ~s(data-exo="stat-card")
     assert html =~ ~s(data-exo="stat-card-icon")
@@ -63,6 +68,7 @@ defmodule ExoUI.Components.StructuralTest do
     assert html =~ "Revenue"
     assert html =~ "$1,234"
     assert html =~ ~s(data-direction="up")
+    assert html =~ ~s(aria-label="Up 12 percent")
   end
 
   test "renders metric_card" do

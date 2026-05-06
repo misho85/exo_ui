@@ -48,7 +48,13 @@ defmodule Storybook.Components.RadialProgress do
       },
       %Variation{
         id: :custom_max,
-        attributes: %{value: 3, max: 5, show_value: true, aria_label: "3 of 5 tasks complete"}
+        attributes: %{
+          value: 3,
+          max: 5,
+          show_value: true,
+          aria_label: "Task progress",
+          aria_value_text: "3 of 5 tasks complete"
+        }
       }
     ]
   end

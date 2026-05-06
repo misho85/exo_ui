@@ -16,9 +16,9 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Storybook story types | 81 component stories, 27 live component stories, 6 aggregate example stories, 0 component/layout page-mode stories |
 | Playwright component capture | 114 Storybook routes captured |
 | Capture artifacts | 114 screenshots, 114 WebM videos, 114 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-06T20-49-28-761Z/viewer.html` |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-06T21-01-26-979Z/viewer.html` |
 | Browser suite | 98 Playwright tests passing |
-| ExUnit suite | 546 tests passing |
+| ExUnit suite | 548 tests passing |
 | Visual regression | 114 committed screenshot baselines with pixel-diff checking |
 | Usage documentation | Central copy-paste reference added at `docs/guides/component-usage.md` |
 
@@ -41,6 +41,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `slider/1` now supports `show_value`, `value_suffix`, and `aria_value_text`, with an `ExoSlider` hook that keeps the visible `<output>` and `aria-valuetext` synced as the range changes.
 - `file_input/1` now supports `show_selected` and `empty_label`, with an `ExoFileInput` hook that keeps a polite selected-file summary synced after users choose one or more files.
 - `input/1` now supports text-like prefix/suffix adornments plus leading/trailing Lucide icons while keeping the real input responsible for value, focus, `aria-invalid`, and `aria-describedby`.
+- `progress/1` and `radial_progress/1` now accept `aria_value_text`, so custom max flows can announce text such as "3 of 5 tasks complete" instead of forcing every progressbar to announce only a percentage.
 - Combobox empty/loading states now update a polite live region, expose `aria-busy` on the listbox while loading, and document the keyboard model in Storybook.
 - Combobox server filtering can now target nested LiveComponents, and Storybook includes an async remote-search demo with loading, empty, result, and selection states.
 - Combobox now has a copy-paste usage guide for client filtering, LiveView server filtering, LiveComponent-targeted filtering, and live-region status text.
@@ -66,6 +67,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `separator/1` now defaults to a decorative divider that stays out of the accessibility tree, while `decorative={false}` restores semantic `role="separator"` output with orientation and optional label metadata.
 - `avatar/1` image variants now support explicit `alt` text, and initials-only fallbacks expose the person's full name as `role="img"` while hiding the visual initials from assistive tech.
 - `kbd/1` now supports an optional accessible label for symbolic keycaps such as Command/Escape while keeping the visible shortcut compact.
+- `stat_card/1` now supports `trend_label`, letting symbolic trend values like `+12%` or `-3.1%` carry explicit up/down accessible text.
 - `empty_state/1` and `stat_card/1` now render their decorative `icon` attrs through ExoUI's Lucide `<.icon>` wrapper instead of plain text or emoji, so they share the same sizing, fallback, and accessibility behavior as other icon-bearing components.
 - `theme_toggle/1` now uses ExoUI Lucide icons for light, dark, and system buttons instead of raw glyph text, while keeping button labels and `aria-pressed` owned by the control.
 - `spinner/1` now keeps the status semantics on the wrapper while marking its animated SVG as decorative with `aria-hidden="true"` and `focusable="false"`.
@@ -193,7 +195,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 
 ## Verification used
 
-- `mix test` -> 546 tests, 0 failures.
+- `mix test` -> 548 tests, 0 failures.
 - `mix compile --warnings-as-errors`.
 - `mix compile --warnings-as-errors` in `storybook`.
 - `mix assets.build` in `storybook` -> refreshed the Playwright Storybook JS bundle so newly added hooks are present when `PLAYWRIGHT=1` disables watchers.
@@ -231,6 +233,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `bunx playwright test test/browser/visual_styles.spec.js -g "data display and feedback"` -> 1 focused browser check, 0 failures after verifying indicator badge role/live/label metadata in Storybook.
 - `mix test test/exo_ui/components/separator_test.exs test/exo_ui/components/visual_test.exs test/exo_ui/components/kbd_test.exs` -> 12 tests, 0 failures after adding separator decorative/semantic modes, avatar fallback naming, and symbolic kbd labels.
 - `bunx playwright test test/browser/visual_styles.spec.js` -> 2 browser checks, 0 failures after verifying separator decorative/semantic DOM, avatar fallback/image labels, and kbd labels in Storybook.
+- `mix test test/exo_ui/components/progress_test.exs test/exo_ui/components/radial_progress_test.exs test/exo_ui/components/structural_test.exs` -> 38 tests, 0 failures after adding custom progress `aria_value_text` and stat-card trend labels.
+- `bunx playwright test test/browser/navigation_progress.spec.js -g "progress components"` and `bunx playwright test test/browser/data_feedback.spec.js -g "card components"` -> 6 browser checks, 0 failures after verifying progress value text and stat-card trend labels in Storybook.
 - `mix test test/exo_ui/components/table_test.exs` -> 8 tests, 0 failures after adding table loading status support.
 - `bunx playwright test test/browser/data_feedback.spec.js -g "table renders caption"` -> 1 test, 0 failures after verifying `aria-busy` and the loading status row in Storybook.
 - `mix test test/exo_ui/components/file_input_test.exs` -> 7 tests, 0 failures after adding selected-file summary output support.
@@ -255,8 +259,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js` -> 1 focused workflow check, 0 failures after event-mode pagination and bottom-nav targeting.
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js test/browser/onboarding_provisioning_workflow.spec.js` -> 2 focused workflow checks, 0 failures.
 - `PLAYWRIGHT_TEST_TIMEOUT=180000 bun run test:browser` -> 98 tests, 0 failures.
-- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T20-49-28-761Z`.
+- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T21-01-26-979Z`.
 - `bun run capture:validate` -> 114 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the separator/avatar/kbd accessibility pass.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the progress/stat-card accessibility pass.
 - `bun run visual:check` -> 114 current screenshots matched the committed baseline.
 - `docs/guides/component-usage.md` now links to button, input, select, combobox, table, modal, drawer, command-palette, date-picker, access-review, incident-response, release-readiness, billing-dispute, onboarding-provisioning, app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, import-export, async-save, command-routing, navigation-shell, role-operations, saved-filter, action/form, table/overlay/menu, component-state, and token guides.

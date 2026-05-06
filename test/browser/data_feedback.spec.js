@@ -267,7 +267,15 @@ test.describe("data and feedback components", () => {
     await expect(positiveStat.locator('[data-exo="stat-card-value"]')).toHaveText("12,481");
     await expect(positiveStat.locator('[data-exo="stat-card-icon"] [data-exo="icon"]')).toHaveCount(1);
     await expect(positiveStat.locator('[data-exo="stat-card-trend"]')).toHaveAttribute("data-direction", "up");
+    await expect(positiveStat.locator('[data-exo="stat-card-trend"]')).toHaveAttribute(
+      "aria-label",
+      "Up 12 percent versus last month"
+    );
     await expect(negativeStat.locator('[data-exo="stat-card-trend"]')).toHaveAttribute("data-direction", "down");
+    await expect(negativeStat.locator('[data-exo="stat-card-trend"]')).toHaveAttribute(
+      "aria-label",
+      "Down 3.1 percent versus last month"
+    );
     await expect(minimalStat.locator('[data-exo="stat-card-bottom"]')).toHaveCount(0);
 
     await gotoStory(page, "/components/data_display/metric_card");

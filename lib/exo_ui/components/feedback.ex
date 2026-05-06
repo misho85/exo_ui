@@ -205,6 +205,7 @@ defmodule ExoUI.Components.Feedback do
   attr :max, :integer, default: 100
   attr :label, :string, default: nil
   attr :aria_label, :string, default: nil
+  attr :aria_value_text, :string, default: nil
   attr :class, :any, default: nil
   attr :rest, :global
 
@@ -218,7 +219,8 @@ defmodule ExoUI.Components.Feedback do
         pct: pct,
         value_now: value_now,
         value_max: value_max,
-        progress_label: assigns.aria_label || assigns.label || "Progress"
+        progress_label: assigns.aria_label || assigns.label || "Progress",
+        progress_value_text: assigns.aria_value_text || "#{pct}%"
       )
 
     ~H"""
@@ -234,7 +236,7 @@ defmodule ExoUI.Components.Feedback do
         aria-valuenow={@value_now}
         aria-valuemin="0"
         aria-valuemax={@value_max}
-        aria-valuetext={"#{@pct}%"}
+        aria-valuetext={@progress_value_text}
       >
         <div data-exo="progress-bar" style={"width: #{@pct}%"} />
       </div>
@@ -248,6 +250,7 @@ defmodule ExoUI.Components.Feedback do
   attr :size, :string, values: ~w(sm md lg), default: "md"
   attr :show_value, :boolean, default: true
   attr :aria_label, :string, default: "Progress"
+  attr :aria_value_text, :string, default: nil
   attr :class, :any, default: nil
   attr :rest, :global
   slot :inner_block
@@ -264,6 +267,7 @@ defmodule ExoUI.Components.Feedback do
       |> assign(:pct, pct)
       |> assign(:value_now, value_now)
       |> assign(:value_max, value_max)
+      |> assign(:progress_value_text, assigns.aria_value_text || "#{pct}%")
       |> assign(:circumference, circumference)
       |> assign(:offset, offset)
 
@@ -276,7 +280,7 @@ defmodule ExoUI.Components.Feedback do
       aria-valuenow={@value_now}
       aria-valuemin="0"
       aria-valuemax={@value_max}
-      aria-valuetext={"#{@pct}%"}
+      aria-valuetext={@progress_value_text}
       class={@class}
       {@rest}
     >

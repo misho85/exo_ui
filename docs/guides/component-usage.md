@@ -1039,7 +1039,12 @@ Use for linear progress.
 
 ```heex
 <.progress value={72} max={100} label="Upload progress" />
-<.progress value={3} max={5} aria_label="Completed onboarding steps" />
+<.progress
+  value={3}
+  max={5}
+  aria_label="Completed onboarding steps"
+  aria_value_text="3 of 5 steps complete"
+/>
 ```
 
 ### Radial Progress
@@ -1048,7 +1053,13 @@ Use for compact circular progress.
 
 ```heex
 <.radial_progress value={64} max={100} size="lg" aria_label="Storage used" />
-<.radial_progress value={3} max={5} show_value={false}>
+<.radial_progress
+  value={3}
+  max={5}
+  show_value={false}
+  aria_label="Task progress"
+  aria_value_text="3 of 5 tasks complete"
+>
   3/5
 </.radial_progress>
 ```
@@ -1129,6 +1140,7 @@ Use for dashboard metrics.
   icon="trending-up"
   trend="+12%"
   trend_direction="up"
+  trend_label="Up 12 percent compared with last month"
   subtitle="Compared with last month"
 />
 

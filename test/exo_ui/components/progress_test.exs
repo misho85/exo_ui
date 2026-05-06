@@ -41,6 +41,17 @@ defmodule ExoUI.Components.ProgressTest do
     assert html =~ ~s(aria-valuemax="10")
   end
 
+  test "renders custom aria value text" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(
+        ~H|<.progress value={3} max={5} aria_value_text="3 of 5 import steps complete" />|
+      )
+
+    assert html =~ ~s(aria-valuetext="3 of 5 import steps complete")
+  end
+
   test "renders progress with label" do
     assigns = %{}
     html = rendered_to_string(~H|<.progress value={60} label="Upload" />|)

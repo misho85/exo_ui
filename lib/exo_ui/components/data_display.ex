@@ -171,6 +171,7 @@ defmodule ExoUI.Components.DataDisplay do
   attr :subtitle, :string, default: nil
   attr :trend, :string, default: nil
   attr :trend_direction, :string, default: nil
+  attr :trend_label, :string, default: nil
   attr :class, :any, default: nil
   attr :rest, :global
 
@@ -187,7 +188,12 @@ defmodule ExoUI.Components.DataDisplay do
         </div>
       </div>
       <div :if={@subtitle || @trend} data-exo="stat-card-bottom">
-        <span :if={@trend} data-exo="stat-card-trend" data-direction={@trend_direction}>
+        <span
+          :if={@trend}
+          data-exo="stat-card-trend"
+          data-direction={@trend_direction}
+          aria-label={@trend_label}
+        >
           {@trend}
         </span>
         <span :if={@subtitle} data-exo="stat-card-subtitle">{@subtitle}</span>

@@ -27,7 +27,13 @@ defmodule Storybook.Components.Progress do
       },
       %Variation{
         id: :custom_max,
-        attributes: %{value: 3, max: 5, label: "Import steps", aria_label: "Import steps"}
+        attributes: %{
+          value: 3,
+          max: 5,
+          label: "Import steps",
+          aria_label: "Import steps",
+          aria_value_text: "3 of 5 import steps complete"
+        }
       },
       %Variation{
         id: :clamped,

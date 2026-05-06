@@ -37,6 +37,14 @@ defmodule ExoUI.Components.RadialProgressTest do
     |> assert_attribute("aria-label", "Storage usage")
   end
 
+  test "renders custom aria value text" do
+    assigns = %{}
+
+    ~H|<.radial_progress value={3} max={5} aria_value_text="3 of 5 tasks complete" />|
+    |> parse_component()
+    |> assert_attribute("aria-valuetext", "3 of 5 tasks complete")
+  end
+
   test "renders SVG with track and fill circles" do
     assigns = %{}
 

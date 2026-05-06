@@ -21,6 +21,7 @@ defmodule Storybook.Components.StatCard do
           icon: "users",
           trend: "+12%",
           trend_direction: "up",
+          trend_label: "Up 12 percent versus last month",
           subtitle: "vs last month"
         }
       },
@@ -32,6 +33,7 @@ defmodule Storybook.Components.StatCard do
           icon: "percent",
           trend: "-3.1%",
           trend_direction: "down",
+          trend_label: "Down 3.1 percent versus last month",
           subtitle: "vs last month"
         }
       },

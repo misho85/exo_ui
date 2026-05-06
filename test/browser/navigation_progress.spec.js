@@ -136,16 +136,20 @@ test.describe("navigation and progress components", () => {
     const clamped = story(page).locator('[data-exo="progress"][aria-label="Over quota"]');
     await expect(customMax).toHaveAttribute("aria-valuenow", "3");
     await expect(customMax).toHaveAttribute("aria-valuemax", "5");
-    await expect(customMax).toHaveAttribute("aria-valuetext", "60%");
+    await expect(customMax).toHaveAttribute("aria-valuetext", "3 of 5 import steps complete");
     await expect(clamped).toHaveAttribute("aria-valuenow", "100");
     await expect(clamped).toHaveAttribute("aria-valuetext", "100%");
 
     await gotoStory(page, "/components/feedback/radial_progress");
 
     const radial = story(page).locator('[data-exo="radial-progress"]').first();
+    const radialCustom = story(page).locator('[data-exo="radial-progress"][aria-label="Task progress"]');
     await expect(radial).toHaveAttribute("aria-label", "0 percent complete");
     await expect(radial).toHaveAttribute("aria-valuenow", "0");
     await expect(radial).toHaveAttribute("aria-valuetext", "0%");
     await expect(radial.locator("svg")).toHaveAttribute("aria-hidden", "true");
+    await expect(radialCustom).toHaveAttribute("aria-valuenow", "3");
+    await expect(radialCustom).toHaveAttribute("aria-valuemax", "5");
+    await expect(radialCustom).toHaveAttribute("aria-valuetext", "3 of 5 tasks complete");
   });
 });

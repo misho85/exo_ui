@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-06T20:54:12.263Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T20-49-28-761Z",
+  "updatedAt": "2026-05-06T21:06:27.977Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T21-01-26-979Z",
   "count": 114,
   "entries": [
     {
@@ -281,7 +281,7 @@
       "dataExoCount": 25,
       "width": 1280,
       "height": 900,
-      "sha256": "444cc1a7505151846013d5d4f8adba3bbde72ce4ca499ba1842fb4de69fcbd4c"
+      "sha256": "b53287c34814acd67b34718a8e6b861a271096899d34295d6c8cd90ec9751bf8"
     },
     {
       "name": "data_display/table",
@@ -362,7 +362,7 @@
       "dataExoCount": 33,
       "width": 1280,
       "height": 900,
-      "sha256": "f1b74f01098abb042529490afff58653a203d11cd066075ca2cfe7745cee55fe"
+      "sha256": "dd1cd3de153b7abf2d7577a1819f4dceb0186875485277becf4767620c0b75ed"
     },
     {
       "name": "feedback/radial_progress",
@@ -389,7 +389,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "f5558b2820697b047746392354faad6bedacdd3e9b7e17b2d2b1afbdb913a438"
+      "sha256": "b3817a48c91c354bb6463822ca55976064d81dc5999d65bceed4b723a1674060"
     },
     {
       "name": "feedback/toast_container",
@@ -614,7 +614,7 @@
       "dataExoCount": 59,
       "width": 1280,
       "height": 900,
-      "sha256": "9935bac9de9758af662ffd76380f42e72be227da195dd076155b7be686c5df4c"
+      "sha256": "cce5175f3987c5666e2627c3e2f4af400d5653ab1e1dddf4f0bf387d8ac02306"
     },
     {
       "name": "menus/command_palette",
@@ -668,7 +668,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "a02d1a49f2c944a5cfe6646890f04933c1a38a605d89fb56ab5369622f4828ed"
+      "sha256": "8a60adcf2f1758be1e5d359c4eb9f168c8ef84b7849a51eeaa071949007d8727"
     },
     {
       "name": "navigation/bottom_nav",
@@ -857,7 +857,7 @@
       "dataExoCount": 99,
       "width": 1280,
       "height": 900,
-      "sha256": "bd5ceecd8617146a29b77cce2136193ef8598c3699ee51a54684c3b5daee3f6f"
+      "sha256": "c8336c6541379ed0ade2f755f9589a2852017fa3fc1221dd6b13daca0da35c73"
     },
     {
       "name": "recipes/combobox_recipes",
@@ -983,7 +983,7 @@
       "dataExoCount": 245,
       "width": 1280,
       "height": 900,
-      "sha256": "be0f353abf3343f645ea96fa9022c7afe92f45e112cf1cdd6f10081da497adc7"
+      "sha256": "368a800cea6a4e312fafa97e6bc145765180a446ebb582b4ef2bf15a4b0e5d73"
     },
     {
       "name": "recipes/release_readiness_workflow",
