@@ -1,6 +1,7 @@
 const { test, expect } = require("@playwright/test");
 
 const {
+  chooseSelect,
   expectAttribute,
   gotoStory,
   story
@@ -74,7 +75,7 @@ test.describe("billing dispute workflow", () => {
       .click();
     await expectAttribute(drawer, "data-state", "open");
     await drawer.getByLabel("Review note").fill("Duplicate charge confirmed by invoice retry logs.");
-    await drawer.getByLabel("Reviewer").selectOption("manager");
+    await chooseSelect(drawer, "billing-reviewer", "manager");
     await drawer.getByRole("button", { name: "Request evidence" }).click();
     await expectAttribute(root, "data-evidence-count", "1");
     await expectAttribute(root, "data-evidence-total", "1");

@@ -35,6 +35,17 @@ async function expectFocused(locator) {
     .toBe(true);
 }
 
+async function chooseSelect(root, selectId, value) {
+  const trigger = root.locator(`#${selectId}-select [data-exo-select="trigger"]`);
+  const popover = root.locator(`#${selectId}`);
+  const option = popover.locator(`[data-exo="select-option"][data-value="${value}"]`);
+
+  await trigger.click();
+  await expectPopoverState(popover, true);
+  await option.click();
+  await expectPopoverState(popover, false);
+}
+
 async function expectHiddenState(locator, hidden) {
   await expect
     .poll(async () => locator.evaluate((node) => node.hidden))
@@ -42,6 +53,7 @@ async function expectHiddenState(locator, hidden) {
 }
 
 module.exports = {
+  chooseSelect,
   expectAttribute,
   expectFocused,
   expectHiddenState,

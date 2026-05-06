@@ -18,10 +18,9 @@ size, pagination, and empty states should all be derived from assigns.
     label="Search table"
     value={@query}
   />
-  <ExoUI.Components.Form.input
+  <ExoUI.Components.Form.select
     id="table-sort"
     name="table[sort]"
-    type="select"
     label="Sort"
     value={@sort}
     options={[{"ARR high to low", "arr_desc"}, {"Risk high to low", "risk_desc"}]}

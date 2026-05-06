@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-06T11:48:33.039Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T11-43-40-484Z",
+  "updatedAt": "2026-05-06T12:36:32.272Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T12-30-45-918Z",
   "count": 114,
   "entries": [
     {
@@ -242,10 +242,10 @@
       "name": "data_display/editable_record_workflow",
       "route": "/components/data_display/editable_record_workflow",
       "screenshot": "screenshots/data_display__editable_record_workflow.png",
-      "dataExoCount": 238,
+      "dataExoCount": 251,
       "width": 1280,
       "height": 900,
-      "sha256": "931b7871966da19e9a6b5956d3be2da2c05539034d1c83f15bf3ac4984930821"
+      "sha256": "9351cf96b1c6043998f467b059aadcc793db39fa3f16002b10b4c6e0fcaf5e23"
     },
     {
       "name": "data_display/kbd",
@@ -389,7 +389,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "b0b28db90d29178ac2f45e0c1a1c3f285c0ae0f80a7a30e6bf1fe75098601e35"
+      "sha256": "976278f13a6d3edc58d5d6d87d7f56c5c3297a28f28ed68b32b205f9c3226e02"
     },
     {
       "name": "feedback/toast_container",
@@ -809,46 +809,46 @@
       "name": "recipes/access_review_workflow",
       "route": "/components/recipes/access_review_workflow",
       "screenshot": "screenshots/recipes__access_review_workflow.png",
-      "dataExoCount": 206,
+      "dataExoCount": 230,
       "width": 1280,
       "height": 900,
-      "sha256": "02fc6461afcdcf6ede8379e55083c461253ead205fbdd2589ee21aa888a4814f"
+      "sha256": "8441eb89474a1aa53932528ace16725b9228f9bc8a1fc6e1af0abe2f466ac30a"
     },
     {
       "name": "recipes/async_save_workflow",
       "route": "/components/recipes/async_save_workflow",
       "screenshot": "screenshots/recipes__async_save_workflow.png",
-      "dataExoCount": 49,
+      "dataExoCount": 60,
       "width": 1280,
       "height": 900,
-      "sha256": "6acaa8eac07d932887e2335c2d4d4af8f82675990db66bee0b9d4e9d655966d6"
+      "sha256": "081454478e4e7fb265619a2ffb6519efa0e3185ae9878ac03043bf4d35eb2a44"
     },
     {
       "name": "recipes/billing_dispute_workflow",
       "route": "/components/recipes/billing_dispute_workflow",
       "screenshot": "screenshots/recipes__billing_dispute_workflow.png",
-      "dataExoCount": 202,
+      "dataExoCount": 228,
       "width": 1280,
       "height": 900,
-      "sha256": "900f5a844e9aa57e6cf44f6180d9a8a9a4cb4ec54d8492e878deddf2c164ad72"
+      "sha256": "6eb773a4c2691d2a8981d96b6ecb9e52f4b68002a5f06ed8749aa1db55e4d814"
     },
     {
       "name": "recipes/bulk_action_workflow",
       "route": "/components/recipes/bulk_action_workflow",
       "screenshot": "screenshots/recipes__bulk_action_workflow.png",
-      "dataExoCount": 78,
+      "dataExoCount": 93,
       "width": 1280,
       "height": 900,
-      "sha256": "1a391a5420b8bb9a5f74ebfa91e8036ffbe7c38c6add459206fd2daa3c026b71"
+      "sha256": "04b2981ee5c6efcb59c4678b45ae8445fef0d82b82c507fcdac0d6ea71807598"
     },
     {
       "name": "recipes/bulk_edit_workflow",
       "route": "/components/recipes/bulk_edit_workflow",
       "screenshot": "screenshots/recipes__bulk_edit_workflow.png",
-      "dataExoCount": 138,
+      "dataExoCount": 173,
       "width": 1280,
       "height": 900,
-      "sha256": "79ed3a5ad85c34e6d2b251804b1d9946227dbbc5f5b02ed237ff97bb1ca19fbd"
+      "sha256": "54dbba2098e2a60dd26f064b724576e5ffb578f21d6017d255250d87ea435136"
     },
     {
       "name": "recipes/button_recipes",
@@ -908,10 +908,10 @@
       "name": "recipes/data_table_workflow",
       "route": "/components/recipes/data_table_workflow",
       "screenshot": "screenshots/recipes__data_table_workflow.png",
-      "dataExoCount": 89,
+      "dataExoCount": 128,
       "width": 1280,
       "height": 900,
-      "sha256": "f12127a8613eb763207aec182ed9b256fcbea2752dc273a25ce63be9eaa0e072"
+      "sha256": "6c061f41da5ce4b1ff97d465a68888479a78e0e07e3a4082888789b4228cee5e"
     },
     {
       "name": "recipes/date_picker_recipes",
@@ -926,28 +926,28 @@
       "name": "recipes/drawer_recipes",
       "route": "/components/recipes/drawer_recipes",
       "screenshot": "screenshots/recipes__drawer_recipes.png",
-      "dataExoCount": 166,
+      "dataExoCount": 188,
       "width": 1280,
       "height": 900,
-      "sha256": "49ebfcdaa1c3e9c1c6758869dcc765e475c5bf6ed7b4d36aa62c182c2a8637c2"
+      "sha256": "72f6364608a238df92e6d7a05891d124c6e1b4485d520c44978447827e7f6a00"
     },
     {
       "name": "recipes/import_export_workflow",
       "route": "/components/recipes/import_export_workflow",
       "screenshot": "screenshots/recipes__import_export_workflow.png",
-      "dataExoCount": 105,
+      "dataExoCount": 116,
       "width": 1280,
       "height": 900,
-      "sha256": "8e4ccaca62275c334ff5d27aa12b1b9dbcea59911b345ab0a816309864c90909"
+      "sha256": "df2c57a2b546b0ce48a2dc54f9779c7c413482ee44073a203bd4b03ee23c7959"
     },
     {
       "name": "recipes/incident_response_workflow",
       "route": "/components/recipes/incident_response_workflow",
       "screenshot": "screenshots/recipes__incident_response_workflow.png",
-      "dataExoCount": 203,
+      "dataExoCount": 227,
       "width": 1280,
       "height": 900,
-      "sha256": "e9c1e4abb7614c1c8a9ce4f9f9b217f3ae6c717db6bf0b1b1883d5f5b45e4f9b"
+      "sha256": "078b5cee0819da6f01c2f3bf25a44a4781d3df26f8597bdd1e5d517878f850c5"
     },
     {
       "name": "recipes/input_recipes",
@@ -980,19 +980,19 @@
       "name": "recipes/onboarding_provisioning_workflow",
       "route": "/components/recipes/onboarding_provisioning_workflow",
       "screenshot": "screenshots/recipes__onboarding_provisioning_workflow.png",
-      "dataExoCount": 200,
+      "dataExoCount": 228,
       "width": 1280,
       "height": 900,
-      "sha256": "22a1db473cd2beee741f45599ac6283ba82cb65dfd07b3ada8db3476e6e03fbd"
+      "sha256": "09fce8335c48aefdbfe4c26514af9b9a5ee781f98db77df4abacc05a3f53c632"
     },
     {
       "name": "recipes/release_readiness_workflow",
       "route": "/components/recipes/release_readiness_workflow",
       "screenshot": "screenshots/recipes__release_readiness_workflow.png",
-      "dataExoCount": 197,
+      "dataExoCount": 225,
       "width": 1280,
       "height": 900,
-      "sha256": "2f5e648dfd19b817196b6669f268a1f8879a7a9d8a5b5b9cbc6c6fee52c87b95"
+      "sha256": "09f50d216ddb72d666335ab4040f779ab269afd9db787dce5085f4546a3d68b9"
     },
     {
       "name": "recipes/role_operations_workflow",
@@ -1007,10 +1007,10 @@
       "name": "recipes/saved_filters_workflow",
       "route": "/components/recipes/saved_filters_workflow",
       "screenshot": "screenshots/recipes__saved_filters_workflow.png",
-      "dataExoCount": 74,
+      "dataExoCount": 102,
       "width": 1280,
       "height": 900,
-      "sha256": "f890c9bbf4d927da956184491841570efbff09f32bba49b61265f07f6df17ed1"
+      "sha256": "e6aee750cd2554e460099feb333363545265e10e08956d5325d974728808d209"
     },
     {
       "name": "recipes/select_recipes",

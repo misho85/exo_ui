@@ -263,10 +263,9 @@ defmodule ExoUI.Storybook.Components.DrawerRecipesDemo do
               errors={@owner_errors}
               autocomplete="off"
             />
-            <.input
+            <.select
               id="drawer-recipe-priority"
               name="drawer_recipe[priority]"
-              type="select"
               label="Priority"
               value={@priority}
               options={priority_options()}
@@ -345,10 +344,9 @@ defmodule ExoUI.Storybook.Components.DrawerRecipesDemo do
           <p style="margin: 0; color: var(--exo-muted-foreground);">
             This drawer intentionally omits a title and relies on the explicit drawer label.
           </p>
-          <.input
+          <.select
             id="drawer-recipe-segment"
             name="drawer_recipe[segment]"
-            type="select"
             label="Account segment"
             value={@segment}
             options={segment_options()}

@@ -1,6 +1,7 @@
 const { test, expect } = require("@playwright/test");
 
 const {
+  chooseSelect,
   expectAttribute,
   gotoStory,
   story
@@ -55,7 +56,7 @@ test.describe("access review workflow", () => {
     await expect(state).toHaveAttribute("data-last-action", "blocked evidence request");
 
     await drawer.getByLabel("Decision note").fill("Manager approval is missing.");
-    await drawer.getByLabel("Routing owner").selectOption("manager");
+    await chooseSelect(drawer, "access-review-owner", "manager");
     await drawer.getByRole("button", { name: "Request evidence" }).click();
     await expectAttribute(root, "data-evidence-count", "1");
     await expect(detail).toHaveAttribute("data-status", "evidence");
@@ -72,7 +73,7 @@ test.describe("access review workflow", () => {
     await expectAttribute(root, "data-selected-grant", "");
     await expect(root.locator("#access-grant-ana-admin")).toContainText("Revoked");
 
-    await root.getByLabel("Risk").selectOption("all");
+    await chooseSelect(root, "access-review-risk", "all");
     await expectAttribute(root, "data-risk-filter", "all");
     await root.getByRole("tab", { name: "Approved" }).click();
     await expectAttribute(root, "data-active-tab", "approved");

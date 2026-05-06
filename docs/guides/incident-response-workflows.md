@@ -14,9 +14,9 @@ incident through a guarded confirmation.
 
 <.form for={%{}} as={:incident} phx-change="change-incident-filters">
   <.input name="incident[query]" label="Search incidents" value={@query} />
-  <.input
+  <.select
+    id="incident-severity"
     name="incident[severity]"
-    type="select"
     label="Severity"
     value={@severity_filter}
     options={[

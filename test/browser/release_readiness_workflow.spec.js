@@ -1,6 +1,7 @@
 const { test, expect } = require("@playwright/test");
 
 const {
+  chooseSelect,
   expectAttribute,
   gotoStory,
   story
@@ -65,7 +66,7 @@ test.describe("release readiness workflow", () => {
     );
 
     await drawer.getByLabel("Review note").fill("Smoke test reviewed and approved.");
-    await drawer.getByLabel("Reviewer").selectOption("engineering-lead");
+    await chooseSelect(drawer, "release-reviewer", "engineering-lead");
     await drawer.getByRole("button", { name: "Approve check" }).click();
     await expectAttribute(root, "data-ready-count", "2");
     await expectAttribute(root, "data-pending-count", "1");
@@ -74,7 +75,7 @@ test.describe("release readiness workflow", () => {
     await drawer.getByRole("button", { name: "Close review" }).click();
     await expectAttribute(drawer, "data-state", "closed");
 
-    await root.getByLabel("Lane").selectOption("all");
+    await chooseSelect(root, "release-lane", "all");
     await expectAttribute(root, "data-lane-filter", "all");
     await expectAttribute(root, "data-active-tab", "ready");
     await expectAttribute(root, "data-visible-count", "2");
@@ -87,7 +88,7 @@ test.describe("release readiness workflow", () => {
       .click();
     await expectAttribute(drawer, "data-state", "open");
     await drawer.getByLabel("Review note").fill("Rollout flags match the launch plan.");
-    await drawer.getByLabel("Reviewer").selectOption("product-lead");
+    await chooseSelect(drawer, "release-reviewer", "product-lead");
     await drawer.getByRole("button", { name: "Approve check" }).click();
     await expectAttribute(root, "data-ready-count", "3");
     await expectAttribute(root, "data-pending-count", "0");
@@ -102,7 +103,7 @@ test.describe("release readiness workflow", () => {
       .click();
     await expectAttribute(drawer, "data-state", "open");
     await drawer.getByLabel("Review note").fill("Rollback runbook is approved for launch.");
-    await drawer.getByLabel("Reviewer").selectOption("release-manager");
+    await chooseSelect(drawer, "release-reviewer", "release-manager");
     await drawer.getByRole("button", { name: "Approve check" }).click();
     await expectAttribute(root, "data-ready-count", "4");
     await expectAttribute(root, "data-blocked-count", "0");

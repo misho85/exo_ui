@@ -264,10 +264,9 @@ defmodule ExoUI.Storybook.Components.AccessReviewWorkflowDemo do
                 value={@query}
                 placeholder="User, team, role, or resource"
               />
-              <ExoUI.Components.Form.input
+              <ExoUI.Components.Form.select
                 id="access-review-risk"
                 name="access[risk]"
-                type="select"
                 label="Risk"
                 value={@risk_filter}
                 options={risk_options()}
@@ -436,10 +435,9 @@ defmodule ExoUI.Storybook.Components.AccessReviewWorkflowDemo do
             phx-target={@myself}
             style="display: grid; gap: 0.875rem;"
           >
-            <ExoUI.Components.Form.input
+            <ExoUI.Components.Form.select
               id="access-review-owner"
               name="review[owner]"
-              type="select"
               label="Routing owner"
               value={@review_owner}
               options={owner_options()}

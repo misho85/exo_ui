@@ -153,10 +153,9 @@ defmodule ExoUI.Storybook.Components.AsyncSaveWorkflowDemo do
             description="Required before the async save is queued."
             errors={field_errors(@errors, :owner)}
           />
-          <ExoUI.Components.Form.input
+          <ExoUI.Components.Form.select
             id="async-save-priority"
             name="record[priority]"
-            type="select"
             label="Priority"
             value={@draft.priority}
             options={priority_options()}

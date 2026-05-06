@@ -55,7 +55,7 @@ should leave the drawer open and feed the same errors back into ExoUI inputs.
 <.drawer id="release-check-drawer" side="right">
   <:title>Review {@selected_check.title}</:title>
   <.form for={%{}} as={:review} phx-change="change-release-review" phx-target={@myself}>
-    <.input name="review[reviewer]" type="select" label="Reviewer" value={@reviewer} options={reviewer_options()} />
+    <.select id="review-reviewer" name="review[reviewer]" label="Reviewer" value={@reviewer} options={reviewer_options()} />
     <.input name="review[note]" type="textarea" label="Review note" value={@review_note} errors={@errors[:note] || []} />
   </.form>
   <.button phx-click="block-release-check" phx-target={@myself}>Mark blocked</.button>

@@ -18,10 +18,9 @@ reapply without losing the current LiveView state.
     label="Search accounts"
     value={@query}
   />
-  <ExoUI.Components.Form.input
+  <ExoUI.Components.Form.select
     id="account-status"
     name="filters[status]"
-    type="select"
     label="Status"
     value={@status}
     options={[{"All statuses", "all"}, {"Blocked", "blocked"}]}

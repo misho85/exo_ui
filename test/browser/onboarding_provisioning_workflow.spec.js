@@ -1,6 +1,7 @@
 const { test, expect } = require("@playwright/test");
 
 const {
+  chooseSelect,
   expectAttribute,
   gotoStory,
   story
@@ -70,7 +71,7 @@ test.describe("onboarding provisioning workflow", () => {
     );
 
     await drawer.getByLabel("Setup note").fill("SSO role mapping and workspace defaults are approved.");
-    await drawer.getByLabel("Provisioner").selectOption("identity");
+    await chooseSelect(drawer, "onboarding-provisioner", "identity");
     await drawer.getByRole("button", { name: "Request setup info" }).click();
     await expectAttribute(root, "data-info-count", "1");
     await expectAttribute(root, "data-info-total", "1");

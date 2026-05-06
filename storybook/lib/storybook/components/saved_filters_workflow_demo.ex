@@ -141,18 +141,16 @@ defmodule ExoUI.Storybook.Components.SavedFiltersWorkflowDemo do
             value={@query}
             placeholder="Account, owner, or region"
           />
-          <ExoUI.Components.Form.input
+          <ExoUI.Components.Form.select
             id="saved-filter-status"
             name="filters[status]"
-            type="select"
             label="Status"
             value={@status}
             options={status_options()}
           />
-          <ExoUI.Components.Form.input
+          <ExoUI.Components.Form.select
             id="saved-filter-owner"
             name="filters[owner]"
-            type="select"
             label="Owner"
             value={@owner}
             options={owner_options()}

@@ -1,6 +1,7 @@
 const { test, expect } = require("@playwright/test");
 
 const {
+  chooseSelect,
   expectAttribute,
   gotoStory,
   story
@@ -55,7 +56,7 @@ test.describe("incident response workflow", () => {
     await expect(state).toHaveAttribute("data-last-action", "blocked incident escalation");
 
     await drawer.getByLabel("Triage note").fill("Payments rollback is ready.");
-    await drawer.getByLabel("Response owner").selectOption("payments");
+    await chooseSelect(drawer, "incident-owner", "payments");
     await drawer.getByRole("button", { name: "Escalate incident" }).click();
     await expectAttribute(root, "data-escalation-count", "1");
     await expect(detail).toHaveAttribute("data-status", "escalated");
@@ -74,7 +75,7 @@ test.describe("incident response workflow", () => {
 
     await root.getByRole("tab", { name: "Open" }).click();
     await expectAttribute(root, "data-active-tab", "open");
-    await root.getByLabel("Severity").selectOption("all");
+    await chooseSelect(root, "incident-severity", "all");
     await expectAttribute(root, "data-severity-filter", "all");
     await expectAttribute(root, "data-visible-count", "3");
 

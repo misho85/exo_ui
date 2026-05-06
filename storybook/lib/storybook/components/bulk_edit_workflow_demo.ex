@@ -187,10 +187,9 @@ defmodule ExoUI.Storybook.Components.BulkEditWorkflowDemo do
                 value={@query}
                 placeholder="Account or owner"
               />
-              <ExoUI.Components.Form.input
+              <ExoUI.Components.Form.select
                 id="bulk-edit-status-filter"
                 name="filters[status]"
-                type="select"
                 label="Status filter"
                 value={@status}
                 options={filter_status_options()}
@@ -283,18 +282,16 @@ defmodule ExoUI.Storybook.Components.BulkEditWorkflowDemo do
               phx-target={@myself}
               style="display: flex; flex-direction: column; gap: 0.875rem;"
             >
-              <ExoUI.Components.Form.input
+              <ExoUI.Components.Form.select
                 id="bulk-edit-owner"
                 name="bulk_edit[owner]"
-                type="select"
                 label="New owner"
                 value={@edit_owner}
                 options={owner_options()}
               />
-              <ExoUI.Components.Form.input
+              <ExoUI.Components.Form.select
                 id="bulk-edit-status"
                 name="bulk_edit[status]"
-                type="select"
                 label="New status"
                 value={@edit_status}
                 options={edit_status_options()}

@@ -282,10 +282,9 @@ defmodule ExoUI.Storybook.Components.ReleaseReadinessWorkflowDemo do
                 value={@query}
                 placeholder="Search owner, lane, evidence..."
               />
-              <ExoUI.Components.Form.input
+              <ExoUI.Components.Form.select
                 id="release-lane"
                 name="release[lane]"
-                type="select"
                 label="Lane"
                 value={@lane_filter}
                 options={lane_options()}
@@ -430,10 +429,9 @@ defmodule ExoUI.Storybook.Components.ReleaseReadinessWorkflowDemo do
             phx-target={@myself}
             style="display: flex; flex-direction: column; gap: 1rem;"
           >
-            <ExoUI.Components.Form.input
+            <ExoUI.Components.Form.select
               id="release-reviewer"
               name="review[reviewer]"
-              type="select"
               label="Reviewer"
               value={@reviewer}
               options={reviewer_options()}

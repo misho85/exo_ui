@@ -12,10 +12,9 @@ rows, and apply a successful bulk update without leaving the page.
   phx-change="filter-bulk-edit"
   phx-target={@myself}
 >
-  <ExoUI.Components.Form.input
+  <ExoUI.Components.Form.select
     id="bulk-edit-status-filter"
     name="filters[status]"
-    type="select"
     label="Status filter"
     value={@status}
     options={[{"All statuses", "all"}, {"Needs review", "needs_review"}]}
@@ -55,10 +54,9 @@ rows, and apply a successful bulk update without leaving the page.
   phx-change="change-bulk-edit"
   phx-target={@myself}
 >
-  <ExoUI.Components.Form.input
+  <ExoUI.Components.Form.select
     id="bulk-edit-owner"
     name="bulk_edit[owner]"
-    type="select"
     label="New owner"
     value={@edit_owner}
     options={[{"Mina", "Mina"}, {"Sara", "Sara"}]}

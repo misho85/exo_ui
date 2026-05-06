@@ -8,9 +8,9 @@ multiple rows, and run a guarded server action.
 ```heex
 <.form for={%{}} as={:filters} phx-change="filter-queue">
   <.input name="filters[query]" label="Search queue" value={@query} />
-  <.input
+  <.select
+    id="queue-status"
     name="filters[status]"
-    type="select"
     label="Status"
     value={@status}
     options={[{"All statuses", "all"}, {"Blocked", "blocked"}]}

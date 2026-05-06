@@ -264,10 +264,9 @@ defmodule ExoUI.Storybook.Components.OnboardingProvisioningWorkflowDemo do
                 value={@query}
                 placeholder="Search user, team, workspace..."
               />
-              <ExoUI.Components.Form.input
+              <ExoUI.Components.Form.select
                 id="onboarding-team"
                 name="onboarding[team]"
-                type="select"
                 label="Team"
                 value={@team_filter}
                 options={team_options()}
@@ -416,10 +415,9 @@ defmodule ExoUI.Storybook.Components.OnboardingProvisioningWorkflowDemo do
             phx-target={@myself}
             style="display: flex; flex-direction: column; gap: 1rem;"
           >
-            <ExoUI.Components.Form.input
+            <ExoUI.Components.Form.select
               id="onboarding-provisioner"
               name="review[provisioner]"
-              type="select"
               label="Provisioner"
               value={@provisioner}
               options={provisioner_options()}

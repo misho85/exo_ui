@@ -161,10 +161,9 @@ defmodule ExoUI.Storybook.Components.BulkActionWorkflowDemo do
             value={@query}
             placeholder="Account or owner"
           />
-          <ExoUI.Components.Form.input
+          <ExoUI.Components.Form.select
             id="bulk-filter-status"
             name="filters[status]"
-            type="select"
             label="Status"
             value={@status}
             options={status_options()}

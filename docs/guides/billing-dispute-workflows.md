@@ -53,7 +53,7 @@ component used by production forms.
 <.drawer id="billing-dispute-drawer" side="right">
   <:title>Review {@selected_dispute.customer}</:title>
   <.form for={%{}} as={:review} phx-change="change-billing-review" phx-target={@myself}>
-    <.input name="review[reviewer]" type="select" label="Reviewer" value={@reviewer} options={reviewer_options()} />
+    <.select id="review-reviewer" name="review[reviewer]" label="Reviewer" value={@reviewer} options={reviewer_options()} />
     <.input name="review[note]" type="textarea" label="Review note" value={@review_note} errors={@errors[:note] || []} />
   </.form>
   <.button phx-click="request-billing-evidence" phx-target={@myself}>Request evidence</.button>

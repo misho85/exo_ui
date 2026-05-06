@@ -24,6 +24,44 @@ defmodule ExoUI.Components.SelectTest do
     assert html =~ "Inactive"
   end
 
+  test "renders select from options attr" do
+    assigns = %{roles: [{"Admin", "admin"}, {"Editor", "editor"}]}
+
+    html =
+      rendered_to_string(~H"""
+      <.select id="s-options" name="role" value="editor" label="Role" options={@roles} />
+      """)
+
+    assert html =~ ~s(data-exo="select-option")
+    assert html =~ ~s(data-value="admin")
+    assert html =~ ~s(data-value="editor")
+    assert html =~ ~s(value="editor")
+
+    [trigger_part | _] = String.split(html, ~s(popover="auto"))
+    assert trigger_part =~ "Editor"
+  end
+
+  test "renders grouped and disabled option maps from options attr" do
+    assigns = %{
+      roles: [
+        {"Admin", [%{label: "Owner", value: "owner", disabled: true}]},
+        {"Team", [%{label: "Member", value: "member"}]}
+      ]
+    }
+
+    html =
+      rendered_to_string(~H"""
+      <.select id="s-grouped-options" name="role" options={@roles} />
+      """)
+
+    assert html =~ ~s(role="group")
+    assert html =~ ~s(aria-label="Admin")
+    assert html =~ ~s(data-value="owner")
+    assert html =~ ~s(data-disabled)
+    assert html =~ ~s(aria-disabled="true")
+    assert html =~ "Member"
+  end
+
   test "renders hidden input for form" do
     assigns = %{}
 

@@ -1,6 +1,7 @@
 const { test, expect } = require("@playwright/test");
 
 const {
+  chooseSelect,
   expectAttribute,
   gotoStory,
   story
@@ -21,9 +22,9 @@ test.describe("data table workflow", () => {
     await expect(state).toHaveAttribute("data-page-count", "3");
     await expect(root.locator("#data-table-row-northstar")).toContainText("$182k");
 
-    await root.getByLabel("Segment").selectOption("emea");
-    await root.getByLabel("Sort").selectOption("risk_desc");
-    await root.getByLabel("Rows per page").selectOption("2");
+    await chooseSelect(root, "data-table-segment", "emea");
+    await chooseSelect(root, "data-table-sort", "risk_desc");
+    await chooseSelect(root, "data-table-page-size", "2");
     await expectAttribute(root, "data-segment", "emea");
     await expectAttribute(root, "data-sort", "risk_desc");
     await expectAttribute(root, "data-page-size", "2");

@@ -1,6 +1,7 @@
 const { test, expect } = require("@playwright/test");
 
 const {
+  chooseSelect,
   expectAttribute,
   expectFocused,
   gotoStory,
@@ -87,7 +88,7 @@ test.describe("drawer recipes", () => {
     await expectAttribute(filters, "data-state", "open");
     await expect(filterDialog).toHaveAttribute("aria-label", "Segment filters drawer");
     await expect(filterDialog).not.toHaveAttribute("aria-labelledby", /.*/);
-    await filters.getByLabel("Account segment").selectOption("enterprise");
+    await chooseSelect(filters, "drawer-recipe-segment", "enterprise");
     await filters.getByText("Include archived accounts", { exact: true }).click();
     await expectAttribute(root, "data-segment", "enterprise");
     await expectAttribute(root, "data-include-archived", "true");

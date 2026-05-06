@@ -256,10 +256,9 @@ defmodule ExoUI.Storybook.Components.IncidentResponseWorkflowDemo do
                 value={@query}
                 placeholder="Service, owner, or summary"
               />
-              <ExoUI.Components.Form.input
+              <ExoUI.Components.Form.select
                 id="incident-severity"
                 name="incident[severity]"
-                type="select"
                 label="Severity"
                 value={@severity_filter}
                 options={severity_options()}
@@ -442,10 +441,9 @@ defmodule ExoUI.Storybook.Components.IncidentResponseWorkflowDemo do
             phx-target={@myself}
             style="display: grid; gap: 0.875rem;"
           >
-            <ExoUI.Components.Form.input
+            <ExoUI.Components.Form.select
               id="incident-owner"
               name="triage[owner]"
-              type="select"
               label="Response owner"
               value={@owner}
               options={owner_options()}

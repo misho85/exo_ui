@@ -1,6 +1,7 @@
 const { test, expect } = require("@playwright/test");
 
 const {
+  chooseSelect,
   expectAttribute,
   gotoStory,
   story
@@ -47,7 +48,7 @@ test.describe("import export workflow", () => {
     await expect(state).toHaveAttribute("data-committed-count", "3");
     await expect(root.locator('[data-exo="progress"]')).toHaveAttribute("aria-valuenow", "100");
 
-    await root.getByLabel("Export format").selectOption("json");
+    await chooseSelect(root, "export-format", "json");
     await expectAttribute(root, "data-export-format", "json");
     await root.getByRole("button", { name: "Prepare export" }).click();
     await expectAttribute(root, "data-export-state", "ready");

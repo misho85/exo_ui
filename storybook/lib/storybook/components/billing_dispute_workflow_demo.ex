@@ -249,10 +249,9 @@ defmodule ExoUI.Storybook.Components.BillingDisputeWorkflowDemo do
                 value={@query}
                 placeholder="Search customer, evidence, invoice..."
               />
-              <ExoUI.Components.Form.input
+              <ExoUI.Components.Form.select
                 id="billing-queue"
                 name="billing[queue]"
-                type="select"
                 label="Queue"
                 value={@queue_filter}
                 options={queue_options()}
@@ -406,10 +405,9 @@ defmodule ExoUI.Storybook.Components.BillingDisputeWorkflowDemo do
             phx-target={@myself}
             style="display: flex; flex-direction: column; gap: 1rem;"
           >
-            <ExoUI.Components.Form.input
+            <ExoUI.Components.Form.select
               id="billing-reviewer"
               name="review[reviewer]"
-              type="select"
               label="Reviewer"
               value={@reviewer}
               options={reviewer_options()}

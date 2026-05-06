@@ -320,6 +320,7 @@ defmodule ExoUI.Components.Form do
   attr :id, :string, required: true
   attr :name, :any
   attr :value, :any, default: nil
+  attr :options, :list, default: [], doc: "list of {label, value} tuples or option maps"
   attr :field, Phoenix.HTML.FormField, default: nil
   attr :label, :string, default: nil
   attr :description, :string, default: nil
@@ -372,7 +373,11 @@ defmodule ExoUI.Components.Form do
           disabled={@disabled}
         >
           <span id={@value_id} data-exo="select-value" data-placeholder={!@selected_opt && ""}>
-            {if @selected_opt, do: render_slot(@selected_opt), else: @prompt}
+            <%= if @selected_opt do %>
+              <.choice_option_label option={@selected_opt} />
+            <% else %>
+              {@prompt}
+            <% end %>
           </span>
           <svg
             data-exo="select-icon"
@@ -675,8 +680,20 @@ defmodule ExoUI.Components.Form do
         <.icon name={opt.icon} class="size-4" />
       </span>
       <span data-exo={@kind <> "-check"}><.icon name="check" class="size-4" /></span>
-      {render_slot(opt)}
+      <.choice_option_label option={opt} />
     </div>
+    """
+  end
+
+  attr :option, :any, required: true
+
+  defp choice_option_label(assigns) do
+    ~H"""
+    <%= if slot_option?(@option) do %>
+      {render_slot(@option)}
+    <% else %>
+      {@option[:label]}
+    <% end %>
     """
   end
 
@@ -702,15 +719,52 @@ defmodule ExoUI.Components.Form do
 
   defp prepare_choice(assigns) do
     assigns = prepare_basic_field(assigns)
+    options = normalized_choice_options(assigns.option, assigns[:options])
 
     assign(assigns,
-      grouped: group_options(assigns.option),
+      grouped: group_options(options),
       label_id: choice_label_id(assigns),
       value_id: choice_value_id(assigns),
       trigger_labelledby: choice_trigger_labelledby(assigns),
-      selected_opt: selected_option(assigns.option, assigns[:value])
+      selected_opt: selected_option(options, assigns[:value])
     )
   end
+
+  defp normalized_choice_options(slot_options, options) do
+    slot_options ++ normalized_choice_options(options || [])
+  end
+
+  defp normalized_choice_options(options) do
+    Enum.flat_map(options, fn
+      {group, grouped_options} when is_list(grouped_options) ->
+        Enum.map(grouped_options, &normalize_choice_option(&1, group))
+
+      option ->
+        [normalize_choice_option(option, nil)]
+    end)
+  end
+
+  defp normalize_choice_option({label, value}, group) do
+    %{label: label, value: value, group: group}
+  end
+
+  defp normalize_choice_option(%{} = option, group) do
+    %{
+      label:
+        Map.get(option, :label) || Map.get(option, "label") || Map.get(option, :value) ||
+          Map.get(option, "value"),
+      value: Map.get(option, :value) || Map.get(option, "value"),
+      icon: Map.get(option, :icon) || Map.get(option, "icon"),
+      disabled: Map.get(option, :disabled) || Map.get(option, "disabled"),
+      group: Map.get(option, :group) || Map.get(option, "group") || group
+    }
+  end
+
+  defp normalize_choice_option(value, group) do
+    %{label: value, value: value, group: group}
+  end
+
+  defp slot_option?(option), do: Map.has_key?(option, :inner_block)
 
   defp group_options(options) do
     options

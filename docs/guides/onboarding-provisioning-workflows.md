@@ -54,7 +54,7 @@ input components used in production forms.
 <.drawer id="onboarding-user-drawer" side="right">
   <:title>Review {@selected_user.name}</:title>
   <.form for={%{}} as={:review} phx-change="change-onboarding-review" phx-target={@myself}>
-    <.input name="review[provisioner]" type="select" label="Provisioner" value={@provisioner} options={provisioner_options()} />
+    <.select id="review-provisioner" name="review[provisioner]" label="Provisioner" value={@provisioner} options={provisioner_options()} />
     <.input name="review[note]" type="textarea" label="Setup note" value={@review_note} errors={@errors[:note] || []} />
   </.form>
   <.button phx-click="request-onboarding-info" phx-target={@myself}>Request setup info</.button>

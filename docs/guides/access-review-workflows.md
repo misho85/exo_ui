@@ -15,9 +15,9 @@ or revokes access through a guarded confirmation.
 
 <.form for={%{}} as={:access} phx-change="change-access-filters">
   <.input name="access[query]" label="Search access" value={@query} />
-  <.input
+  <.select
+    id="access-risk"
     name="access[risk]"
-    type="select"
     label="Risk"
     value={@risk_filter}
     options={[{"All risks", "all"}, {"High", "high"}, {"Medium", "medium"}, {"Low", "low"}]}

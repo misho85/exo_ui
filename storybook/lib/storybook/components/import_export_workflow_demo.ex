@@ -244,10 +244,9 @@ defmodule ExoUI.Storybook.Components.ImportExportWorkflowDemo do
                 phx-change="change-export-format"
                 phx-target={@myself}
               >
-                <ExoUI.Components.Form.input
+                <ExoUI.Components.Form.select
                   id="export-format"
                   name="export[format]"
-                  type="select"
                   label="Export format"
                   value={@export_format}
                   options={export_options()}

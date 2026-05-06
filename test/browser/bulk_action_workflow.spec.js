@@ -1,6 +1,7 @@
 const { test, expect } = require("@playwright/test");
 
 const {
+  chooseSelect,
   expectAttribute,
   gotoStory,
   story
@@ -24,7 +25,7 @@ test.describe("bulk action workflow", () => {
 
     await root.getByLabel("Search queue").fill("north");
     await expect(state).toHaveAttribute("data-query", "north");
-    await root.getByLabel("Status").selectOption("blocked");
+    await chooseSelect(root, "bulk-filter-status", "blocked");
     await expect(state).toHaveAttribute("data-status", "blocked");
     await expect(tableRows).toHaveCount(1);
     await expect(root.locator("#bulk-record-northstar")).toContainText("Unassigned");

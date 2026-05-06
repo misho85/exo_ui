@@ -135,26 +135,23 @@ defmodule ExoUI.Storybook.Components.DataTableWorkflowDemo do
             value={@query}
             placeholder="Account, owner, or region"
           />
-          <ExoUI.Components.Form.input
+          <ExoUI.Components.Form.select
             id="data-table-segment"
             name="table[segment]"
-            type="select"
             label="Segment"
             value={@segment}
             options={segment_options()}
           />
-          <ExoUI.Components.Form.input
+          <ExoUI.Components.Form.select
             id="data-table-sort"
             name="table[sort]"
-            type="select"
             label="Sort"
             value={@sort}
             options={sort_options()}
           />
-          <ExoUI.Components.Form.input
+          <ExoUI.Components.Form.select
             id="data-table-page-size"
             name="table[page_size]"
-            type="select"
             label="Rows per page"
             value={Integer.to_string(@page_size)}
             options={page_size_options()}

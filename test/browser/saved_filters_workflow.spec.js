@@ -1,6 +1,7 @@
 const { test, expect } = require("@playwright/test");
 
 const {
+  chooseSelect,
   expectAttribute,
   gotoStory,
   story
@@ -21,8 +22,8 @@ test.describe("saved filters workflow", () => {
     await expect(state).toHaveAttribute("data-active-filter", "");
 
     await root.getByLabel("Search accounts").fill("north");
-    await root.getByLabel("Status").selectOption("blocked");
-    await root.getByLabel("Owner").selectOption("unassigned");
+    await chooseSelect(root, "saved-filter-status", "blocked");
+    await chooseSelect(root, "saved-filter-owner", "unassigned");
     await expectAttribute(root, "data-query", "north");
     await expectAttribute(root, "data-status", "blocked");
     await expectAttribute(root, "data-owner", "unassigned");

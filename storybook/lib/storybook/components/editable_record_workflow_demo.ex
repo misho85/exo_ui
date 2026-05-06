@@ -238,10 +238,9 @@ defmodule ExoUI.Storybook.Components.EditableRecordWorkflowDemo do
             description="Required before saving or deleting the record."
             errors={field_errors(@errors, :owner)}
           />
-          <ExoUI.Components.Form.input
+          <ExoUI.Components.Form.select
             id="editable-record-stage"
             name="record[stage]"
-            type="select"
             label="Stage"
             value={@draft.stage}
             options={stage_options()}

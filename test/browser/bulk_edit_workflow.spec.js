@@ -1,6 +1,7 @@
 const { test, expect } = require("@playwright/test");
 
 const {
+  chooseSelect,
   expectAttribute,
   gotoStory,
   story
@@ -21,7 +22,7 @@ test.describe("bulk edit workflow", () => {
     await expectAttribute(root, "data-edit-state", "ready");
     await expect(state).toHaveAttribute("data-selected-count", "0");
 
-    await root.getByLabel("Status filter").selectOption("needs_review");
+    await chooseSelect(root, "bulk-edit-status-filter", "needs_review");
     await expectAttribute(root, "data-status", "needs_review");
     await expectAttribute(root, "data-filtered-count", "3");
     await expect(tableRows).toHaveCount(3);
@@ -31,8 +32,8 @@ test.describe("bulk edit workflow", () => {
     await expectAttribute(root, "data-edit-state", "selected");
     await expect(root.getByRole("checkbox", { name: "Select Atlas Labs" })).toBeChecked();
 
-    await root.getByLabel("New owner").selectOption("Mina");
-    await root.getByLabel("New status").selectOption("ready");
+    await chooseSelect(root, "bulk-edit-owner", "Mina");
+    await chooseSelect(root, "bulk-edit-status", "ready");
     await expectAttribute(root, "data-edit-owner", "Mina");
     await expectAttribute(root, "data-edit-status", "ready");
 

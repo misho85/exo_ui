@@ -211,9 +211,7 @@ async function componentDemo(page, name) {
         node.fill("north", { timeout: 1500 })
       );
       await page.waitForTimeout(250);
-      await safe(page.locator('#story-live #bulk-filter-status'), (node) =>
-        node.selectOption("blocked", { timeout: 1500 })
-      );
+      await chooseSelectOption(page, "bulk-filter-status", "blocked");
       await page.waitForTimeout(300);
       await clickButton(page, "Select filtered");
       await page.waitForTimeout(250);
@@ -223,19 +221,13 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(400);
       break;
     case "bulk_edit_workflow":
-      await safe(page.locator('#story-live #bulk-edit-status-filter'), (node) =>
-        node.selectOption("needs_review", { timeout: 1500 })
-      );
+      await chooseSelectOption(page, "bulk-edit-status-filter", "needs_review");
       await page.waitForTimeout(300);
       await clickButton(page, "Select filtered");
       await page.waitForTimeout(300);
-      await safe(page.locator('#story-live #bulk-edit-owner'), (node) =>
-        node.selectOption("Mina", { timeout: 1500 })
-      );
+      await chooseSelectOption(page, "bulk-edit-owner", "Mina");
       await page.waitForTimeout(250);
-      await safe(page.locator('#story-live #bulk-edit-status'), (node) =>
-        node.selectOption("ready", { timeout: 1500 })
-      );
+      await chooseSelectOption(page, "bulk-edit-status", "ready");
       await page.waitForTimeout(250);
       await clickButton(page, "Apply bulk edit");
       await page.waitForTimeout(450);
@@ -343,9 +335,7 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(350);
       await clickButton(page, "Open filter drawer");
       await page.waitForTimeout(300);
-      await safe(page.locator('#story-live #drawer-recipe-segment'), (node) =>
-        node.selectOption("enterprise", { timeout: 1500 })
-      );
+      await chooseSelectOption(page, "drawer-recipe-segment", "enterprise");
       await page.waitForTimeout(250);
       await checkByLabel(page, "Include archived accounts");
       await page.waitForTimeout(300);
@@ -408,9 +398,7 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(250);
       await fillByLabel(page, "Decision note", "Manager approval is missing.");
       await page.waitForTimeout(250);
-      await safe(page.locator('#story-live #access-review-owner'), (node) =>
-        node.selectOption("manager", { timeout: 1500 })
-      );
+      await chooseSelectOption(page, "access-review-owner", "manager");
       await page.waitForTimeout(250);
       await clickButton(page, "Request evidence");
       await page.waitForTimeout(300);
@@ -435,9 +423,7 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(250);
       await fillByLabel(page, "Triage note", "Payments rollback is ready.");
       await page.waitForTimeout(250);
-      await safe(page.locator('#story-live #incident-owner'), (node) =>
-        node.selectOption("payments", { timeout: 1500 })
-      );
+      await chooseSelectOption(page, "incident-owner", "payments");
       await page.waitForTimeout(250);
       await clickButton(page, "Escalate incident");
       await page.waitForTimeout(300);
@@ -468,9 +454,7 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(250);
       await fillByLabel(page, "Review note", "Smoke test reviewed and approved.");
       await page.waitForTimeout(250);
-      await safe(page.locator('#story-live #release-reviewer'), (node) =>
-        node.selectOption("engineering-lead", { timeout: 1500 })
-      );
+      await chooseSelectOption(page, "release-reviewer", "engineering-lead");
       await page.waitForTimeout(250);
       await clickButton(page, "Approve check");
       await page.waitForTimeout(300);
@@ -499,9 +483,7 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(350);
       await fillByLabel(page, "Review note", "Duplicate charge confirmed by invoice retry logs.");
       await page.waitForTimeout(250);
-      await safe(page.locator('#story-live #billing-reviewer'), (node) =>
-        node.selectOption("manager", { timeout: 1500 })
-      );
+      await chooseSelectOption(page, "billing-reviewer", "manager");
       await page.waitForTimeout(250);
       await clickButton(page, "Request evidence");
       await page.waitForTimeout(300);
@@ -530,9 +512,7 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(250);
       await fillByLabel(page, "Setup note", "SSO role mapping and workspace defaults are approved.");
       await page.waitForTimeout(250);
-      await safe(page.locator('#story-live #onboarding-provisioner'), (node) =>
-        node.selectOption("identity", { timeout: 1500 })
-      );
+      await chooseSelectOption(page, "onboarding-provisioner", "identity");
       await page.waitForTimeout(250);
       await clickButton(page, "Request setup info");
       await page.waitForTimeout(300);
@@ -630,17 +610,11 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(400);
       break;
     case "data_table_workflow":
-      await safe(page.locator('#story-live #data-table-segment'), (node) =>
-        node.selectOption("emea", { timeout: 1500 })
-      );
+      await chooseSelectOption(page, "data-table-segment", "emea");
       await page.waitForTimeout(250);
-      await safe(page.locator('#story-live #data-table-sort'), (node) =>
-        node.selectOption("risk_desc", { timeout: 1500 })
-      );
+      await chooseSelectOption(page, "data-table-sort", "risk_desc");
       await page.waitForTimeout(250);
-      await safe(page.locator('#story-live #data-table-page-size'), (node) =>
-        node.selectOption("2", { timeout: 1500 })
-      );
+      await chooseSelectOption(page, "data-table-page-size", "2");
       await page.waitForTimeout(300);
       await clickButton(page, "Next page");
       await page.waitForTimeout(400);
@@ -660,9 +634,7 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(300);
       await clickButton(page, "Commit import");
       await page.waitForTimeout(300);
-      await safe(page.locator('#story-live #export-format'), (node) =>
-        node.selectOption("json", { timeout: 1500 })
-      );
+      await chooseSelectOption(page, "export-format", "json");
       await page.waitForTimeout(250);
       await clickButton(page, "Prepare export");
       await page.waitForTimeout(400);
@@ -687,13 +659,9 @@ async function componentDemo(page, name) {
         node.fill("north", { timeout: 1500 })
       );
       await page.waitForTimeout(250);
-      await safe(page.locator('#story-live #saved-filter-status'), (node) =>
-        node.selectOption("blocked", { timeout: 1500 })
-      );
+      await chooseSelectOption(page, "saved-filter-status", "blocked");
       await page.waitForTimeout(250);
-      await safe(page.locator('#story-live #saved-filter-owner'), (node) =>
-        node.selectOption("unassigned", { timeout: 1500 })
-      );
+      await chooseSelectOption(page, "saved-filter-owner", "unassigned");
       await page.waitForTimeout(300);
       await clickButton(page, "Save current filter");
       await page.waitForTimeout(300);

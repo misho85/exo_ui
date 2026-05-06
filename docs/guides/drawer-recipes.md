@@ -59,7 +59,7 @@ accessible name.
 
 ```heex
 <.drawer id="filter-drawer" side="right" label="Segment filters drawer">
-  <.input name="filters[segment]" label="Account segment" type="select" options={@segments} />
+  <.select id="filter-segment" name="filters[segment]" label="Account segment" options={@segments} />
   <.input name="filters[archived]" label="Include archived accounts" type="checkbox" />
 </.drawer>
 ```

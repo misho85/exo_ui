@@ -341,12 +341,11 @@ custom selects.
 </.form>
 ```
 
-Native select through `input/1` is kept for compatibility:
+Use the dedicated `select/1` primitive for option fields:
 
 ```heex
-<.input
+<.select
   field={@form[:status]}
-  type="select"
   label="Status"
   prompt="Choose status"
   options={[{"Draft", "draft"}, {"Published", "published"}]}
@@ -370,7 +369,18 @@ Use for boolean form fields.
 Use the custom select for single-value selection with optional icons, groups,
 disabled options, and field integration. When a label and value are present, the
 trigger exposes both to assistive tech; a disabled select also disables its hidden
-submitted value to match native form behavior.
+submitted value to match native form behavior. Use `options` for simple lists,
+or slots when you need icons, groups, or disabled rows.
+
+```heex
+<.select
+  id="project-status"
+  field={@form[:status]}
+  label="Status"
+  prompt="Choose status"
+  options={[{"Draft", "draft"}, {"Active", "active"}, {"Archived", "archived"}]}
+/>
+```
 
 ```heex
 <.select
