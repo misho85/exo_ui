@@ -19,6 +19,7 @@ import { ExoTabs } from './hooks/tabs.js'
 import { ExoSwap } from './hooks/swap.js'
 import { ExoTable } from './hooks/table.js'
 import { ExoSlider } from './hooks/slider.js'
+import { ExoFileInput } from './hooks/file_input.js'
 
 const hooks = {
   ExoAccordion,
@@ -41,7 +42,8 @@ const hooks = {
   ExoTabs,
   ExoSwap,
   ExoTable,
-  ExoSlider
+  ExoSlider,
+  ExoFileInput
 }
 
 export { hooks }

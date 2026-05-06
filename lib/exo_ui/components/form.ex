@@ -1532,6 +1532,8 @@ defmodule ExoUI.Components.Form do
   attr :errors, :list, default: []
   attr :accept, :string, default: nil
   attr :multiple, :boolean, default: false
+  attr :show_selected, :boolean, default: false
+  attr :empty_label, :string, default: "No file selected"
   attr :class, :any, default: nil
   attr :rest, :global, include: ~w(disabled required)
 
@@ -1546,10 +1548,17 @@ defmodule ExoUI.Components.Form do
   end
 
   def file_input(assigns) do
-    assigns = prepare_basic_field(assigns)
+    assigns =
+      assigns
+      |> prepare_basic_field()
+      |> prepare_file_input()
 
     ~H"""
-    <div data-exo="field">
+    <div
+      id={if @show_selected && @id, do: "#{@id}-file-field"}
+      data-exo="field"
+      phx-hook={if @show_selected && @id, do: "ExoFileInput"}
+    >
       <label :if={@label} data-exo="label" for={@id}>{@label}</label>
       <input
         type="file"
@@ -1558,16 +1567,39 @@ defmodule ExoUI.Components.Form do
         accept={@accept}
         multiple={@multiple}
         data-exo="file-input"
+        data-exo-file-input="input"
         data-invalid={@errors != [] && ""}
         aria-invalid={if @errors != [], do: "true"}
         aria-describedby={@describedby}
         class={@class}
         {@rest}
       />
+      <output
+        :if={@show_selected}
+        id={@selected_id}
+        data-exo="file-input-selected"
+        data-exo-file-input="selected"
+        data-empty-label={@empty_label}
+        for={@id}
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {@empty_label}
+      </output>
       <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
       <.field_errors id={@error_id} errors={@errors} />
     </div>
     """
+  end
+
+  defp prepare_file_input(assigns) do
+    selected_id = if assigns.show_selected && present?(assigns.id), do: "#{assigns.id}-selected"
+
+    assign(assigns,
+      selected_id: selected_id,
+      describedby: describedby([assigns.description_id, selected_id, assigns.error_id])
+    )
   end
 
   @doc """

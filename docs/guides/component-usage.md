@@ -572,6 +572,15 @@ Use with LiveView uploads or a normal multipart form.
   accept="image/png,image/jpeg"
   description="PNG or JPEG up to 2MB."
 />
+
+<.file_input
+  name="documents"
+  label="Documents"
+  multiple
+  show_selected
+  empty_label="No documents selected"
+  description="Attach PDF, DOCX, or image files."
+/>
 ```
 
 ### Translate Error

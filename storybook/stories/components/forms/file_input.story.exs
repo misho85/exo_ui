@@ -24,7 +24,9 @@ defmodule Storybook.Components.FileInput do
           name: "documents",
           label: "Upload documents",
           description: "PDF, DOCX, or image files are accepted.",
-          multiple: true
+          multiple: true,
+          show_selected: true,
+          empty_label: "No documents selected"
         }
       },
       %Variation{
@@ -38,6 +40,7 @@ defmodule Storybook.Components.FileInput do
           name: "required_upload",
           label: "Required upload",
           description: "Attach at least one file before continuing.",
+          show_selected: true,
           errors: ["is required"]
         }
       }

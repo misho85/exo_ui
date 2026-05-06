@@ -26,6 +26,25 @@ defmodule ExoUI.Components.FileInputTest do
     assert html =~ "multiple"
   end
 
+  test "renders selected-file summary output" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.file_input name="documents" label="Documents" show_selected empty_label="Nothing attached" />
+      """)
+
+    assert html =~ ~s(id="documents-file-field")
+    assert html =~ ~s(phx-hook="ExoFileInput")
+    assert html =~ ~s(data-exo-file-input="input")
+    assert html =~ ~s(id="documents-selected")
+    assert html =~ ~s(data-exo="file-input-selected")
+    assert html =~ ~s(for="documents")
+    assert html =~ ~s(role="status")
+    assert html =~ ~s(aria-describedby="documents-selected")
+    assert html =~ "Nothing attached"
+  end
+
   test "connects description and errors with aria-describedby" do
     assigns = %{}
 
@@ -42,6 +61,24 @@ defmodule ExoUI.Components.FileInputTest do
     assert html =~ ~s(aria-invalid="true")
     assert html =~ ~s(data-invalid)
     assert html =~ ~s(role="alert")
+  end
+
+  test "connects selected-file summary with description and errors" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.file_input
+        name="avatar"
+        label="Avatar"
+        show_selected
+        description="PNG or JPG"
+        errors={["is required"]}
+      />
+      """)
+
+    assert html =~ ~s(id="avatar-selected")
+    assert html =~ ~s(aria-describedby="avatar-description avatar-selected avatar-error")
   end
 
   test "renders file input with field struct" do

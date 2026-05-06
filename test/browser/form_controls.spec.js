@@ -74,9 +74,33 @@ test.describe("form controls", () => {
 
     const file = story(page).locator('[data-exo="file-input"][name="required_upload"]');
     const fileId = await file.getAttribute("id");
+    const documents = story(page).locator('[data-exo="file-input"][name="documents"]');
+    const documentsId = await documents.getAttribute("id");
+    const selected = story(page).locator(`[data-exo="file-input-selected"][for="${documentsId}"]`);
 
     await expectAttribute(file, "aria-invalid", "true");
-    await expectAttribute(file, "aria-describedby", `${fileId}-description ${fileId}-error`);
+    await expectAttribute(
+      file,
+      "aria-describedby",
+      `${fileId}-description ${fileId}-selected ${fileId}-error`
+    );
+    await expectAttribute(documents, "aria-describedby", `${documentsId}-description ${documentsId}-selected`);
+    await expect(selected).toHaveText("No documents selected");
+
+    await documents.setInputFiles([
+      {
+        name: "accounts.csv",
+        mimeType: "text/csv",
+        buffer: Buffer.from("account,owner\nNorthstar,Iva\n")
+      },
+      {
+        name: "contracts.pdf",
+        mimeType: "application/pdf",
+        buffer: Buffer.from("%PDF-1.4\n")
+      }
+    ]);
+
+    await expect(selected).toHaveText("accounts.csv, contracts.pdf");
   });
 
   test("select and combobox triggers expose description and error ids", async ({ page }) => {

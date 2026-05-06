@@ -37,6 +37,13 @@
   outline-offset: 2px;
 }
 
+:where([data-exo="file-input-selected"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-xs);
+  color: var(--exo-muted-foreground);
+  overflow-wrap: anywhere;
+}
+
 :where([data-exo="file-input"]:disabled) {
   opacity: 0.5;
   cursor: not-allowed;
