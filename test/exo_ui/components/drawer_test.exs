@@ -87,9 +87,13 @@ defmodule ExoUI.Components.DrawerTest do
   test "renders drawer close button" do
     assigns = %{}
     html = rendered_to_string(~H|<.drawer id="d1">Content</.drawer>|)
+    {:ok, tree} = Floki.parse_fragment(html)
+
     assert html =~ ~s(data-exo="drawer-close")
     assert html =~ ~s(type="button")
     assert html =~ ~s(aria-label="Close")
+    assert Floki.find(tree, ~s([data-exo="drawer-close"] [data-exo="icon"])) != []
+    refute html =~ "✕"
   end
 
   test "renders drawer header" do

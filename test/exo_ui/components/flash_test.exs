@@ -7,11 +7,15 @@ defmodule ExoUI.Components.FlashTest do
   test "renders flash" do
     assigns = %{}
     html = rendered_to_string(~H|<.flash kind={:info} flash={%{"info" => "Saved!"}} />|)
+    {:ok, tree} = Floki.parse_fragment(html)
+
     assert html =~ ~s(data-exo="flash")
     assert html =~ ~s(data-kind="info")
     assert html =~ ~s(role="status")
     assert html =~ ~s(aria-live="polite")
     assert html =~ ~s(type="button")
+    assert Floki.find(tree, ~s([data-exo="flash-close"] [data-exo="icon"])) != []
+    refute html =~ "✕"
     assert html =~ "Saved!"
   end
 
@@ -56,12 +60,16 @@ defmodule ExoUI.Components.FlashTest do
   test "renders toast_container" do
     assigns = %{toasts: [{"t1", %{kind: :success, title: "Done", message: "Saved"}}]}
     html = rendered_to_string(~H|<.toast_container toasts={@toasts} />|)
+    {:ok, tree} = Floki.parse_fragment(html)
+
     assert html =~ ~s(data-exo="toast-container")
     assert html =~ ~s(data-exo="toast")
     assert html =~ ~s(id="toast-container")
     assert html =~ ~s(data-placement="bottom-right")
     assert html =~ ~s(role="status")
     assert html =~ ~s(aria-describedby="t1-message")
+    assert Floki.find(tree, ~s([data-exo="toast-close"] [data-exo="icon"])) != []
+    refute html =~ "✕"
     assert html =~ "Saved"
   end
 

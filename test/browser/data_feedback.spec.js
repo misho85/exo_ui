@@ -249,6 +249,7 @@ test.describe("data and feedback components", () => {
     await expectAttribute(warning, "role", "alert");
     await expectAttribute(error, "aria-live", "assertive");
     await expect(error.locator('[data-exo="flash-close"]')).toHaveAttribute("type", "button");
+    await expect(error.locator('[data-exo="flash-close"] [data-exo="icon"]')).toHaveCount(1);
 
     await gotoStory(page, "/components/feedback/toast_container");
 
@@ -260,5 +261,6 @@ test.describe("data and feedback components", () => {
     await expectAttribute(errorToast, "role", "alert");
     await expectAttribute(errorToast, "aria-live", "assertive");
     await expect(errorToast.locator('[data-exo="toast-close"]')).toHaveAttribute("type", "button");
+    await expect(errorToast.locator('[data-exo="toast-close"] [data-exo="icon"]')).toHaveCount(1);
   });
 });

@@ -16,7 +16,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Storybook story types | 81 component stories, 27 live component stories, 6 aggregate example stories, 0 component/layout page-mode stories |
 | Playwright component capture | 114 Storybook routes captured |
 | Capture artifacts | 114 screenshots, 114 WebM videos, 114 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-06T17-43-33-246Z/viewer.html` |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-06T17-56-08-245Z/viewer.html` |
 | Browser suite | 95 Playwright tests passing |
 | ExUnit suite | 531 tests passing |
 | Visual regression | 114 committed screenshot baselines with pixel-diff checking |
@@ -62,6 +62,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `empty_state/1` and `stat_card/1` now render their decorative `icon` attrs through ExoUI's Lucide `<.icon>` wrapper instead of plain text or emoji, so they share the same sizing, fallback, and accessibility behavior as other icon-bearing components.
 - `theme_toggle/1` now uses ExoUI Lucide icons for light, dark, and system buttons instead of raw glyph text, while keeping button labels and `aria-pressed` owned by the control.
 - `spinner/1` now keeps the status semantics on the wrapper while marking its animated SVG as decorative with `aria-hidden="true"` and `focusable="false"`.
+- Modal, sheet, drawer, flash, and toast close controls now render their close glyphs through ExoUI's shared Lucide `<.icon>` wrapper; command palette search also uses the same icon path instead of a hand-authored SVG.
 - `Flash`, `FlashGroup`, and `ToastContainer` are now component-mode stories, keeping role/live-region coverage while exposing placements, close labels, flash maps, and toast data as Storybook attrs.
 - Chart stories are now mostly component-mode: sparkline/trend badge plus radial, pie/donut, bar, line, area, and radar variants expose data, dimensions, colors, legends, and empty states as PhoenixStorybook attrs.
 - `ExoUI.Charts` now keeps its public facade while exposing Phoenix component `attr` metadata directly on the public wrapper functions, so Storybook can load chart controls without delegating through metadata-blind `defdelegate` functions.
@@ -183,10 +184,12 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `mix test test/exo_ui/components/icon_test.exs` -> 5 tests, 0 failures after adding default icon accessibility attrs, scoped size CSS, and a stable missing-icon fallback.
 - `bunx playwright test test/browser/actions_core.spec.js -g "theme toggle syncs"` -> 1 test, 0 failures after replacing raw theme-toggle glyphs with ExoUI Lucide icons.
 - `mix test test/exo_ui/components/spinner_test.exs` -> 3 tests, 0 failures after marking the spinner SVG decorative while keeping the wrapper status semantics.
+- `mix test test/exo_ui/components/flash_test.exs test/exo_ui/components/modal_test.exs test/exo_ui/components/drawer_test.exs test/exo_ui/components/sheet_test.exs test/exo_ui/components/command_palette_test.exs` -> 39 tests, 0 failures after replacing raw overlay/feedback close glyphs and command-palette search SVG with ExoUI icons.
 - `mix test test/exo_ui/components/structural_test.exs test/exo_ui/components/visual_test.exs` -> 10 tests, 0 failures after moving `stat_card.icon` and `empty_state.icon` to the shared Lucide icon wrapper.
 - `bunx playwright test test/browser/visual_styles.spec.js -g "navigation and layout"` -> 1 test, 0 failures after verifying known and fallback icons render with `data-exo="icon"` and `size-6` dimensions.
 - `bunx playwright test test/browser/data_feedback.spec.js -g "card components"` and `bunx playwright test test/browser/visual_styles.spec.js -g "data display and feedback"` -> 2 focused browser checks, 0 failures after verifying StatCard and EmptyState render real ExoUI SVG icons.
 - `bunx playwright test test/browser/visual_styles.spec.js -g "data display and feedback"` -> 1 test, 0 failures after verifying the spinner status wrapper and decorative SVG attributes.
+- `bunx playwright test test/browser/overlay.spec.js test/browser/command_palette.spec.js test/browser/data_feedback.spec.js -g "modal traps|sheet traps|drawer traps|opens with Ctrl\\+K|flash and toast"` -> 5 focused browser checks, 0 failures after verifying overlay, command palette, flash, and toast icons in Storybook DOM.
 - `mix test test/exo_ui/components/input_test.exs` -> 17 tests, 0 failures after adding text-like input prefix/suffix and icon adornments.
 - `bunx playwright test test/browser/form_controls.spec.js -g "input and checkbox expose error descriptions"` -> 1 test, 0 failures after verifying the Storybook input adornment wrapper and hidden decorative icons.
 - `mix test test/exo_ui/components/table_test.exs` -> 8 tests, 0 failures after adding table loading status support.
@@ -213,8 +216,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js` -> 1 focused workflow check, 0 failures after event-mode pagination and bottom-nav targeting.
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js test/browser/onboarding_provisioning_workflow.spec.js` -> 2 focused workflow checks, 0 failures.
 - `PLAYWRIGHT_TEST_TIMEOUT=180000 bun run test:browser` -> 95 tests, 0 failures.
-- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T17-43-33-246Z`.
+- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T17-56-08-245Z`.
 - `bun run capture:validate` -> 114 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the spinner decorative-SVG pass.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the overlay/feedback icon pass.
 - `bun run visual:check` -> 114 current screenshots matched the committed baseline.
 - `docs/guides/component-usage.md` now links to button, input, select, combobox, table, modal, drawer, command-palette, date-picker, access-review, incident-response, release-readiness, billing-dispute, onboarding-provisioning, app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, import-export, async-save, command-routing, navigation-shell, role-operations, saved-filter, action/form, table/overlay/menu, component-state, and token guides.

@@ -77,6 +77,7 @@ test.describe("overlay dialogs", () => {
     await expect(dialog).toHaveAttribute("aria-labelledby", `${modalId}-title`);
     await expect(dialog).toHaveAttribute("aria-describedby", `${modalId}-body`);
     await expect(dialog.locator('[data-exo="modal-close"]')).toHaveAttribute("type", "button");
+    await expect(closeButton.locator('[data-exo="icon"]')).toHaveCount(1);
     await expect(labelledModal.locator('[data-exo="modal-content"]')).toHaveAttribute(
       "aria-label",
       "Invite teammate dialog"
@@ -129,6 +130,7 @@ test.describe("overlay dialogs", () => {
     const closeButton = dialog.locator('[data-exo="sheet-close"]');
     const cancelButton = dialog.getByRole("button", { name: "Cancel" });
     const saveButton = dialog.getByRole("button", { name: "Save" });
+    await expect(closeButton.locator('[data-exo="icon"]')).toHaveCount(1);
     await expectFocused(cancelButton);
 
     await page.keyboard.press("Shift+Tab");
@@ -340,6 +342,7 @@ test.describe("overlay dialogs", () => {
     await expectWithinInert(trigger, true);
 
     const closeButton = dialog.locator('[data-exo="drawer-close"]');
+    await expect(closeButton.locator('[data-exo="icon"]')).toHaveCount(1);
     await expectFocused(closeButton);
 
     await page.keyboard.press("Tab");

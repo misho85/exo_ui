@@ -16,6 +16,9 @@ defmodule ExoUI.Components.CommandPaletteTest do
       </.command_palette>
       """)
 
+    {:ok, tree} = Floki.parse_fragment(html)
+    [search_icon] = Floki.find(tree, ~s([data-exo="command-palette-search-icon"]))
+
     assert html =~ ~s(data-exo="command-palette")
     assert html =~ ~s(phx-hook="ExoCommandPalette")
     assert html =~ ~s(aria-hidden="true")
@@ -25,6 +28,8 @@ defmodule ExoUI.Components.CommandPaletteTest do
     assert html =~ ~s(data-value="docs")
     assert html =~ ~s(data-exo="command-palette-shortcut")
     assert html =~ ~s(role="dialog")
+    assert Floki.attribute(search_icon, "aria-hidden") == ["true"]
+    assert Floki.attribute(search_icon, "focusable") == ["false"]
     assert html =~ "Search docs"
     assert html =~ "Settings"
   end

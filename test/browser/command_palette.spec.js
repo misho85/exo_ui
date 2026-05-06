@@ -23,9 +23,12 @@ test.describe("command palette", () => {
     const canvas = story(page);
     const palette = canvas.locator("#command-palette-single-default");
     const input = canvas.locator('#command-palette-single-default [data-exo="command-palette-input"]');
+    const searchIcon = palette.locator('[data-exo="command-palette-search-icon"]');
 
     await expectAttribute(palette, "data-state", "closed");
     await expect(palette).toBeHidden();
+    await expect(searchIcon).toHaveAttribute("aria-hidden", "true");
+    await expect(searchIcon).toHaveAttribute("focusable", "false");
 
     await page.keyboard.press("Control+k");
 

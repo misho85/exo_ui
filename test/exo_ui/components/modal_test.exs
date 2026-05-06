@@ -8,6 +8,8 @@ defmodule ExoUI.Components.ModalTest do
   test "renders modal with data-exo attributes" do
     assigns = %{}
     html = rendered_to_string(~H|<.modal id="test-modal">Content</.modal>|)
+    {:ok, tree} = Floki.parse_fragment(html)
+
     assert html =~ ~s(data-exo="modal")
     assert html =~ ~s(data-state="closed")
     assert html =~ ~s(aria-hidden="true")
@@ -21,6 +23,8 @@ defmodule ExoUI.Components.ModalTest do
     assert html =~ ~s(id="test-modal-body")
     assert html =~ ~s(type="button")
     assert html =~ ~s(aria-label="Close")
+    assert Floki.find(tree, ~s([data-exo="modal-close"] [data-exo="icon"])) != []
+    refute html =~ "✕"
     assert html =~ "Content"
   end
 

@@ -54,7 +54,7 @@ defmodule ExoUI.Components.Overlay do
             phx-click={maybe_hide_modal(@on_cancel, @id, @close_on_cancel)}
             aria-label="Close"
           >
-            ✕
+            <.icon name="x" class="size-4" />
           </button>
         </div>
         <div id={"#{@id}-body"} data-exo="modal-body">
@@ -457,7 +457,7 @@ defmodule ExoUI.Components.Overlay do
             phx-click={@on_cancel |> hide_drawer(@id)}
             aria-label="Close"
           >
-            ✕
+            <.icon name="x" class="size-4" />
           </button>
         </div>
         <div id={"#{@id}-body"} data-exo="drawer-body">
@@ -537,7 +537,7 @@ defmodule ExoUI.Components.Overlay do
           aria-label="Close"
           phx-click={hide_sheet(@on_cancel, @id)}
         >
-          ✕
+          <.icon name="x" class="size-4" />
         </button>
       </div>
     </div>
@@ -682,18 +682,11 @@ defmodule ExoUI.Components.Overlay do
       <div data-exo="command-palette-backdrop" />
       <div data-exo="command-palette-dialog" role="dialog" aria-modal="true" aria-label={@label}>
         <div data-exo="command-palette-input-wrapper">
-          <svg
+          <.icon
+            name="search"
             data-exo="command-palette-search-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.3-4.3" />
-          </svg>
+            class="size-4"
+          />
           <input
             type="text"
             data-exo="command-palette-input"

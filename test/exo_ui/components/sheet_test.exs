@@ -14,6 +14,8 @@ defmodule ExoUI.Components.SheetTest do
       </.sheet>
       """)
 
+    {:ok, tree} = Floki.parse_fragment(html)
+
     assert html =~ ~s(data-exo="sheet")
     assert html =~ ~s(data-side="right")
     assert html =~ ~s(data-state="closed")
@@ -26,6 +28,8 @@ defmodule ExoUI.Components.SheetTest do
     assert html =~ ~s(aria-describedby="test-sheet-body")
     assert html =~ ~s(id="test-sheet-body")
     assert html =~ ~s(id="test-sheet")
+    assert Floki.find(tree, ~s([data-exo="sheet-close"] [data-exo="icon"])) != []
+    refute html =~ "✕"
     assert html =~ "Content"
   end
 
