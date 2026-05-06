@@ -15,9 +15,11 @@ defmodule Storybook.Components.Skeleton do
     [
       %Variation{id: :text, attributes: %{type: "text", rows: 3}},
       %Variation{id: :text_5, attributes: %{type: "text", rows: 5}},
+      %Variation{id: :labelled, attributes: %{type: "card", label: "Loading billing summary"}},
       %Variation{id: :card, attributes: %{type: "card"}},
       %Variation{id: :avatar, attributes: %{type: "avatar"}},
-      %Variation{id: :table, attributes: %{type: "table", rows: 4}}
+      %Variation{id: :table, attributes: %{type: "table", rows: 4}},
+      %Variation{id: :empty_text, attributes: %{type: "text", rows: 0}}
     ]
   end
 end

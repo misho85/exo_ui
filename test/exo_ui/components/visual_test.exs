@@ -22,6 +22,19 @@ defmodule ExoUI.Components.VisualTest do
     html = rendered_to_string(~H|<.skeleton type="text" rows={3} />|)
     assert html =~ ~s(data-exo="skeleton")
     assert html =~ ~s(data-type="text")
+    assert html =~ ~s(role="status")
+    assert html =~ ~s(aria-busy="true")
+    assert html =~ ~s(aria-live="polite")
+    assert html =~ ~s(aria-hidden="true")
+  end
+
+  test "does not render skeleton rows when row count is zero" do
+    assigns = %{}
+
+    html = rendered_to_string(~H|<.skeleton type="text" rows={0} />|)
+    tree = Floki.parse_fragment!(html)
+
+    assert Floki.find(tree, ~s([data-exo="skeleton-line"])) == []
   end
 
   test "renders empty_state" do

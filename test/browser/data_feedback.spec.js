@@ -26,6 +26,20 @@ test.describe("data and feedback components", () => {
     await expect(actionAlert.locator('[data-exo="alert-action"] [data-exo="btn"]')).toHaveText("Review");
   });
 
+  test("skeleton exposes loading semantics without announcing decorative shapes", async ({ page }) => {
+    await gotoStory(page, "/components/feedback/skeleton");
+
+    const canvas = story(page);
+    const labelled = canvas.locator('[data-exo="skeleton"][aria-label="Loading billing summary"]');
+    const emptyText = canvas.locator('[data-exo="skeleton"][data-type="text"]').last();
+
+    await expectAttribute(labelled, "role", "status");
+    await expectAttribute(labelled, "aria-busy", "true");
+    await expectAttribute(labelled, "aria-live", "polite");
+    await expect(labelled.locator('[aria-hidden="true"]')).toHaveCount(3);
+    await expect(emptyText.locator('[data-exo="skeleton-line"]')).toHaveCount(0);
+  });
+
   test("date picker exposes calendar semantics, form value, and error links", async ({ page }) => {
     await gotoStory(page, "/components/forms/date_picker");
 

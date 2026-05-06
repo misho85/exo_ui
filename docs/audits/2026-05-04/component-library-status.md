@@ -16,9 +16,9 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Storybook story types | 81 component stories, 27 live component stories, 6 aggregate example stories, 0 component/layout page-mode stories |
 | Playwright component capture | 114 Storybook routes captured |
 | Capture artifacts | 114 screenshots, 114 WebM videos, 114 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-06T19-56-39-436Z/viewer.html` |
-| Browser suite | 96 Playwright tests passing |
-| ExUnit suite | 540 tests passing |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-06T20-06-28-550Z/viewer.html` |
+| Browser suite | 97 Playwright tests passing |
+| ExUnit suite | 541 tests passing |
 | Visual regression | 114 committed screenshot baselines with pixel-diff checking |
 | Usage documentation | Central copy-paste reference added at `docs/guides/component-usage.md` |
 
@@ -66,6 +66,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `empty_state/1` and `stat_card/1` now render their decorative `icon` attrs through ExoUI's Lucide `<.icon>` wrapper instead of plain text or emoji, so they share the same sizing, fallback, and accessibility behavior as other icon-bearing components.
 - `theme_toggle/1` now uses ExoUI Lucide icons for light, dark, and system buttons instead of raw glyph text, while keeping button labels and `aria-pressed` owned by the control.
 - `spinner/1` now keeps the status semantics on the wrapper while marking its animated SVG as decorative with `aria-hidden="true"` and `focusable="false"`.
+- `skeleton/1` now exposes loading placeholders as polite busy status regions, hides decorative skeleton shapes from assistive tech, and clamps `rows={0}` to zero rendered rows instead of producing an invalid range.
 - Modal, sheet, drawer, flash, and toast close controls now render their close glyphs through ExoUI's shared Lucide `<.icon>` wrapper; command palette search also uses the same icon path instead of a hand-authored SVG.
 - `toast_container/1` now exposes toast stacks as labelled regions and adds opt-in `ExoToast` auto-dismiss behavior with pause-on-hover/focus, Escape dismissal, and Storybook/browser metadata coverage.
 - `alert/1` now derives polite status vs assertive alert semantics from `kind`, links title/message IDs when callers provide an `id`, supports optional Lucide icons, and documents action-slot usage in Storybook.
@@ -187,7 +188,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 
 ## Verification used
 
-- `mix test` -> 540 tests, 0 failures.
+- `mix test` -> 541 tests, 0 failures.
 - `mix compile --warnings-as-errors`.
 - `mix compile --warnings-as-errors` in `storybook`.
 - `mix assets.build` in `storybook` -> refreshed the Playwright Storybook JS bundle so newly added hooks are present when `PLAYWRIGHT=1` disables watchers.
@@ -217,6 +218,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `bunx playwright test test/browser/data_feedback.spec.js -g "flash and toast"` -> 1 focused browser check, 0 failures after verifying `ExoToast` mounts on the Storybook auto-dismiss variation.
 - `mix test test/exo_ui/components/alert_test.exs test/exo_ui/components/visual_test.exs` -> 8 tests, 0 failures after adding alert live-region, icon, and action-slot coverage.
 - `bunx playwright test test/browser/data_feedback.spec.js -g "alert renders"` -> 1 focused browser check, 0 failures after verifying alert status/alert roles, icons, and action slot in Storybook.
+- `mix test test/exo_ui/components/visual_test.exs` -> 6 tests, 0 failures after adding skeleton busy/live semantics and zero-row coverage.
+- `bunx playwright test test/browser/data_feedback.spec.js -g "skeleton exposes"` -> 1 focused browser check, 0 failures after verifying skeleton loading semantics and decorative row handling in Storybook.
 - `mix test test/exo_ui/components/table_test.exs` -> 8 tests, 0 failures after adding table loading status support.
 - `bunx playwright test test/browser/data_feedback.spec.js -g "table renders caption"` -> 1 test, 0 failures after verifying `aria-busy` and the loading status row in Storybook.
 - `mix test test/exo_ui/components/file_input_test.exs` -> 7 tests, 0 failures after adding selected-file summary output support.
@@ -240,9 +243,9 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `mix test test/exo_ui/components/tabs_test.exs test/exo_ui/components/wizard_test.exs` -> 6 tests, 0 failures after the LiveComponent `target` support pass.
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js` -> 1 focused workflow check, 0 failures after event-mode pagination and bottom-nav targeting.
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js test/browser/onboarding_provisioning_workflow.spec.js` -> 2 focused workflow checks, 0 failures.
-- `PLAYWRIGHT_TEST_TIMEOUT=180000 bun run test:browser` -> 96 tests, 0 failures.
-- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T19-56-39-436Z`.
+- `PLAYWRIGHT_TEST_TIMEOUT=180000 bun run test:browser` -> 97 tests, 0 failures.
+- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T20-06-28-550Z`.
 - `bun run capture:validate` -> 114 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the alert live-region/icon/action pass.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the skeleton busy/live and zero-row pass.
 - `bun run visual:check` -> 114 current screenshots matched the committed baseline.
 - `docs/guides/component-usage.md` now links to button, input, select, combobox, table, modal, drawer, command-palette, date-picker, access-review, incident-response, release-readiness, billing-dispute, onboarding-provisioning, app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, import-export, async-save, command-routing, navigation-shell, role-operations, saved-filter, action/form, table/overlay/menu, component-state, and token guides.

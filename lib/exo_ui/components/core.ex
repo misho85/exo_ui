@@ -271,27 +271,39 @@ defmodule ExoUI.Components.Core do
   attr :rest, :global
 
   def skeleton(assigns) do
+    row_count = max(assigns.rows, 0)
+    rows = if row_count > 0, do: 1..row_count, else: []
+
+    assigns = assign(assigns, :rows_range, rows)
+
     ~H"""
     <div
       data-exo="skeleton"
       data-type={@type}
       role="status"
       aria-label={@label}
+      aria-live="polite"
+      aria-busy="true"
       class={@class}
       {@rest}
     >
       <%= case @type do %>
         <% "text" -> %>
-          <div :for={_ <- 1..@rows} data-exo="skeleton-line" />
+          <div :for={_ <- @rows_range} data-exo="skeleton-line" aria-hidden="true" />
         <% "card" -> %>
-          <div data-exo="skeleton-block" style="height: 8rem;" />
-          <div data-exo="skeleton-line" />
-          <div data-exo="skeleton-line" style="width: 60%;" />
+          <div data-exo="skeleton-block" style="height: 8rem;" aria-hidden="true" />
+          <div data-exo="skeleton-line" aria-hidden="true" />
+          <div data-exo="skeleton-line" style="width: 60%;" aria-hidden="true" />
         <% "avatar" -> %>
-          <div data-exo="skeleton-circle" />
+          <div data-exo="skeleton-circle" aria-hidden="true" />
         <% "table" -> %>
-          <div data-exo="skeleton-line" style="height: 2rem;" />
-          <div :for={_ <- 1..@rows} data-exo="skeleton-line" style="height: 3rem;" />
+          <div data-exo="skeleton-line" style="height: 2rem;" aria-hidden="true" />
+          <div
+            :for={_ <- @rows_range}
+            data-exo="skeleton-line"
+            style="height: 3rem;"
+            aria-hidden="true"
+          />
       <% end %>
     </div>
     """
