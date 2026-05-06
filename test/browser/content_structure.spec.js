@@ -20,6 +20,8 @@ test.describe("content structure components", () => {
     await expect(carousel.locator(`#${carouselId}-slide-1`)).toHaveAttribute("aria-label", "Campaign overview");
     await expect(prev).toHaveAttribute("aria-controls", `${carouselId}-viewport`);
     await expect(prev).toHaveAttribute("aria-disabled", "true");
+    await expect(prev.locator('[data-exo="icon"]')).toHaveCount(1);
+    await expect(next.locator('[data-exo="icon"]')).toHaveCount(1);
 
     await next.click();
 

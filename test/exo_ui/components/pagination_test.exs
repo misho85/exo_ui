@@ -7,6 +7,8 @@ defmodule ExoUI.Components.PaginationTest do
   test "renders pagination" do
     assigns = %{patch_fn: &"/items?page=#{&1}"}
     html = rendered_to_string(~H|<.pagination page={1} total_pages={5} patch_fn={@patch_fn} />|)
+    {:ok, tree} = Floki.parse_fragment(html)
+
     assert html =~ ~s(data-exo="pagination")
     assert html =~ ~s(aria-label="Pagination")
     assert html =~ ~s(aria-label="Previous page")
@@ -17,6 +19,9 @@ defmodule ExoUI.Components.PaginationTest do
     assert html =~ "Page 1 of 5"
     assert html =~ ~s(aria-label="Page 1, current page")
     assert html =~ ~s(aria-label="Page 2")
+    assert Floki.find(tree, ~s([data-exo="pagination-btn"] [data-exo="icon"])) |> length() == 2
+    refute html =~ "‹"
+    refute html =~ "›"
   end
 
   test "hides when total_pages is 1" do

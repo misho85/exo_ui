@@ -1212,7 +1212,7 @@ defmodule ExoUI.Components.Form do
             disabled={!@can_prev || @disabled}
             data-disabled={(!@can_prev || @disabled) && ""}
           >
-            ‹
+            <.icon name="chevron-left" class="size-4" />
           </button>
           <span id={@month_id} data-exo="date-picker-month" aria-live="polite">
             {@month_label}
@@ -1226,7 +1226,7 @@ defmodule ExoUI.Components.Form do
             disabled={!@can_next || @disabled}
             data-disabled={(!@can_next || @disabled) && ""}
           >
-            ›
+            <.icon name="chevron-right" class="size-4" />
           </button>
         </div>
 

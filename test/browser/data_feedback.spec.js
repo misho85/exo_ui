@@ -82,6 +82,8 @@ test.describe("data and feedback components", () => {
     const previous = picker.getByRole("button", { name: "Previous month" });
 
     await expectAttribute(picker, "data-ready", "");
+    await expect(previous.locator('[data-exo="icon"]')).toHaveCount(1);
+    await expect(next.locator('[data-exo="icon"]')).toHaveCount(1);
     await expect(picker.locator('[data-exo="date-picker-month"]')).toHaveText("March 2026");
     await expect(state).toHaveAttribute("data-month", "2026-03-01");
     await expect(state).toHaveAttribute("data-selected", "2026-03-15");

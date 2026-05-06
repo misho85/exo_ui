@@ -14,6 +14,8 @@ defmodule ExoUI.Components.WizardTest do
     }
 
     html = rendered_to_string(~H|<.wizard_sidebar steps={@steps} target="#wizard-owner" />|)
+    {:ok, tree} = Floki.parse_fragment(html)
+
     assert html =~ ~s(data-exo="wizard")
     assert html =~ ~s(aria-label="Wizard progress")
     assert html =~ ~s(phx-target="#wizard-owner")
@@ -29,6 +31,12 @@ defmodule ExoUI.Components.WizardTest do
     assert html =~ "Details"
     assert html =~ "Payment"
     assert html =~ "Confirm"
-    assert html =~ "✓"
+
+    assert Floki.find(
+             tree,
+             ~s([data-status="completed"] [data-exo="wizard-indicator"] [data-exo="icon"])
+           ) != []
+
+    refute html =~ "✓"
   end
 end

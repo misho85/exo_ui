@@ -7,10 +7,15 @@ defmodule ExoUI.Components.DatePickerTest do
   test "renders date picker" do
     assigns = %{}
     html = rendered_to_string(~H|<.date_picker id="dp" />|)
+    {:ok, tree} = Floki.parse_fragment(html)
+
     assert html =~ ~s(data-exo="date-picker")
     assert html =~ ~s(phx-hook="ExoDatePicker")
     assert html =~ ~s(data-exo="date-picker-header")
     assert html =~ ~s(data-exo="date-picker-grid")
+    assert Floki.find(tree, ~s([data-exo="date-picker-nav"] [data-exo="icon"])) |> length() == 2
+    refute html =~ "‹"
+    refute html =~ "›"
     assert html =~ "Mon"
     assert html =~ "Sun"
   end

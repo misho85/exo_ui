@@ -58,6 +58,8 @@ test.describe("navigation and progress components", () => {
 
     await expect(disabledPrevious).toHaveAttribute("aria-label", "Previous page");
     await expect(disabledPrevious).toBeDisabled();
+    await expect(disabledPrevious.locator('[data-exo="icon"]')).toHaveCount(1);
+    await expect(firstPagination.locator('[data-exo="pagination-btn"] [data-exo="icon"]')).toHaveCount(2);
     await expect(firstPagination.locator('[data-exo="pagination-status"]')).toHaveText("Page 1 of 5");
     await expect(firstPagination.locator('[aria-current="page"]')).toHaveAttribute(
       "aria-label",
@@ -107,6 +109,7 @@ test.describe("navigation and progress components", () => {
 
     const wizard = story(page).locator('[data-exo="wizard"]').first();
     const currentWizardStep = wizard.locator('[data-exo="wizard-step"][aria-current="step"]');
+    const completedWizardStep = wizard.locator('[data-exo="wizard-step"][data-status="completed"]').first();
     const pendingWizardStep = wizard.locator('[data-exo="wizard-btn"][aria-disabled="true"]').first();
 
     await expectAttribute(wizard, "aria-label", "Checkout progress");
@@ -114,6 +117,9 @@ test.describe("navigation and progress components", () => {
       "aria-label",
       "Step 2, Profile info, current"
     );
+    await expect(
+      completedWizardStep.locator('[data-exo="wizard-indicator"] [data-exo="icon"]')
+    ).toHaveCount(1);
     await expect(pendingWizardStep).toHaveAttribute("aria-label", "Step 3, Billing, pending");
     await expect(pendingWizardStep).toBeDisabled();
   });

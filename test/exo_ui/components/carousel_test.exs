@@ -51,11 +51,17 @@ defmodule ExoUI.Components.CarouselTest do
       </.carousel>
       """)
 
+    {:ok, tree} = Floki.parse_fragment(html)
+
     assert html =~ ~s(data-exo="carousel-prev")
     assert html =~ ~s(data-exo="carousel-next")
     assert html =~ ~s(type="button")
     assert html =~ ~s(disabled)
     assert html =~ ~s(data-disabled)
+    assert Floki.find(tree, ~s([data-exo="carousel-prev"] [data-exo="icon"])) != []
+    assert Floki.find(tree, ~s([data-exo="carousel-next"] [data-exo="icon"])) != []
+    refute html =~ "‹"
+    refute html =~ "›"
   end
 
   test "renders carousel without controls" do

@@ -251,7 +251,7 @@ defmodule ExoUI.Components.DataDisplay do
             aria-current={step.status == :current && "step"}
           >
             <span data-exo="wizard-indicator" aria-hidden="true">
-              <span :if={step.status == :completed}>✓</span>
+              <.icon :if={step.status == :completed} name="check" class="size-4" />
               <span :if={step.status != :completed}>{idx + 1}</span>
             </span>
             <span data-exo="wizard-label">{step.label}</span>
@@ -527,7 +527,7 @@ defmodule ExoUI.Components.DataDisplay do
         patch={@patch_fn.(@page - 1)}
         aria-label={@prev_label}
       >
-        ‹
+        <.icon name="chevron-left" class="size-4" />
       </.link>
       <button
         :if={@page > 1 && @on_click}
@@ -538,7 +538,7 @@ defmodule ExoUI.Components.DataDisplay do
         phx-target={@target}
         aria-label={@prev_label}
       >
-        ‹
+        <.icon name="chevron-left" class="size-4" />
       </button>
       <button
         :if={@page <= 1}
@@ -549,7 +549,7 @@ defmodule ExoUI.Components.DataDisplay do
         aria-label={@prev_label}
         disabled
       >
-        ‹
+        <.icon name="chevron-left" class="size-4" />
       </button>
 
       <%= for item <- @range do %>
@@ -589,7 +589,7 @@ defmodule ExoUI.Components.DataDisplay do
         patch={@patch_fn.(@page + 1)}
         aria-label={@next_label}
       >
-        ›
+        <.icon name="chevron-right" class="size-4" />
       </.link>
       <button
         :if={@page < @total_pages && @on_click}
@@ -600,7 +600,7 @@ defmodule ExoUI.Components.DataDisplay do
         phx-target={@target}
         aria-label={@next_label}
       >
-        ›
+        <.icon name="chevron-right" class="size-4" />
       </button>
       <button
         :if={@page >= @total_pages}
@@ -611,7 +611,7 @@ defmodule ExoUI.Components.DataDisplay do
         aria-label={@next_label}
         disabled
       >
-        ›
+        <.icon name="chevron-right" class="size-4" />
       </button>
     </nav>
     """
@@ -810,7 +810,7 @@ defmodule ExoUI.Components.DataDisplay do
         disabled={@slide_count <= 1}
         data-disabled={@slide_count <= 1 && ""}
       >
-        ‹
+        <.icon name="chevron-left" class="size-4" />
       </button>
       <button
         :if={@controls}
@@ -821,7 +821,7 @@ defmodule ExoUI.Components.DataDisplay do
         disabled={@slide_count <= 1}
         data-disabled={@slide_count <= 1 && ""}
       >
-        ›
+        <.icon name="chevron-right" class="size-4" />
       </button>
     </div>
     """
