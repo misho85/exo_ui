@@ -483,7 +483,11 @@ defmodule ExoUI.Storybook.Components.OnboardingProvisioningWorkflowDemo do
         cancel_text="Keep reviewing"
         variant={if @provision_ready?, do: "primary", else: "danger"}
         close_on_confirm={@provision_ready?}
+        close_on_cancel={false}
         on_confirm={JS.push("provision-onboarding-user", target: @myself)}
+        on_cancel={
+          hide_modal("onboarding-provision-confirm") |> show_drawer_js("onboarding-user-drawer")
+        }
       />
     </div>
     """

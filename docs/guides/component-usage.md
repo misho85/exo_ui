@@ -29,6 +29,7 @@ For full-page examples that combine multiple component families, see
 `docs/guides/import-export-workflows.md`,
 `docs/guides/async-save-workflows.md`,
 `docs/guides/command-routing-workflows.md`,
+`docs/guides/navigation-shell-workflows.md`,
 `docs/guides/role-operations-workflows.md`,
 `docs/guides/saved-filter-workflows.md`,
 `docs/guides/action-form-recipes.md`,

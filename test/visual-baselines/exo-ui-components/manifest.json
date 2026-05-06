@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-06T09:17:48.465Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T09-13-03-907Z",
-  "count": 113,
+  "updatedAt": "2026-05-06T09:40:46.709Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T09-35-30-720Z",
+  "count": 114,
   "entries": [
     {
       "name": "actions/button",
@@ -389,7 +389,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "7745eaac1a8787e882af80285c92ae046ef535d33702eaffb51d96b1eb76db71"
+      "sha256": "9ae49d4c8dcd8430e05e87ae440666bc21dab7a350d7680d2792b86c2441e259"
     },
     {
       "name": "feedback/toast_container",
@@ -966,6 +966,15 @@
       "width": 1280,
       "height": 900,
       "sha256": "f4a125c6481d4e6e83171f2ee546c409197d431d943541fa464baff34a8b37c9"
+    },
+    {
+      "name": "recipes/navigation_shell_workflow",
+      "route": "/components/recipes/navigation_shell_workflow",
+      "screenshot": "screenshots/recipes__navigation_shell_workflow.png",
+      "dataExoCount": 213,
+      "width": 1280,
+      "height": 900,
+      "sha256": "5451798ccf1f8be783919d256eb494ff75c19622832d3d02606c55fdd246b1f9"
     },
     {
       "name": "recipes/onboarding_provisioning_workflow",

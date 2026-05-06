@@ -13,9 +13,10 @@ defmodule ExoUI.Components.WizardTest do
       ]
     }
 
-    html = rendered_to_string(~H|<.wizard_sidebar steps={@steps} />|)
+    html = rendered_to_string(~H|<.wizard_sidebar steps={@steps} target="#wizard-owner" />|)
     assert html =~ ~s(data-exo="wizard")
     assert html =~ ~s(aria-label="Wizard progress")
+    assert html =~ ~s(phx-target="#wizard-owner")
     assert html =~ ~s(data-status="completed")
     assert html =~ ~s(data-status="current")
     assert html =~ ~s(data-status="pending")

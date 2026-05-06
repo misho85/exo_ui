@@ -63,11 +63,6 @@ test.describe("onboarding provisioning workflow", () => {
 
     await confirm.getByRole("button", { name: "Keep reviewing" }).click();
     await expectAttribute(confirm, "data-state", "closed");
-
-    await root
-      .locator("#onboarding-user-ana-enterprise")
-      .getByRole("button", { name: "Review Ana Markovic" })
-      .click();
     await expectAttribute(drawer, "data-state", "open");
     await expect(drawer.locator("#onboarding-note")).toHaveAttribute("aria-invalid", "true");
     await expect(drawer.locator("#onboarding-note-error")).toHaveText(

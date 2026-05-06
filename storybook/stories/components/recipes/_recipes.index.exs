@@ -32,4 +32,5 @@ defmodule Storybook.Components.Recipes do
   def entry("command_routing_workflow"), do: [name: "Command Routing Workflow", index: 21]
   def entry("role_operations_workflow"), do: [name: "Role Operations Workflow", index: 22]
   def entry("saved_filters_workflow"), do: [name: "Saved Filters Workflow", index: 23]
+  def entry("navigation_shell_workflow"), do: [name: "Navigation Shell Workflow", index: 24]
 end

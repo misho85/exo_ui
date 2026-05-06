@@ -35,13 +35,14 @@ defmodule ExoUI.Components.TabsTest do
 
     html =
       rendered_to_string(~H"""
-      <.tabs active="a">
+      <.tabs active="a" target="#owner">
         <:tab id="a" label="Tab A" click="switch_tab" />
       </.tabs>
       """)
 
     assert html =~ "phx-click"
     assert html =~ "switch_tab"
+    assert html =~ ~s(phx-target="#owner")
     assert html =~ ~s(type="button")
   end
 

@@ -205,6 +205,7 @@ defmodule ExoUI.Components.DataDisplay do
   attr :steps, :list, required: true, doc: "list of %{id: string, label: string, status: atom}"
   attr :on_click, :string, default: "goto-step", doc: "phx-click event name"
   attr :aria_label, :string, default: "Wizard progress"
+  attr :target, :any, default: nil, doc: "optional phx-target for step click events"
   attr :class, :any, default: nil
   attr :rest, :global
 
@@ -227,6 +228,7 @@ defmodule ExoUI.Components.DataDisplay do
             data-status={step.status}
             phx-click={@on_click}
             phx-value-step={step.id}
+            phx-target={@target}
             aria-label={wizard_step_label(step, idx)}
             aria-current={step.status == :current && "step"}
           >
@@ -333,6 +335,7 @@ defmodule ExoUI.Components.DataDisplay do
   attr :aria_label, :string, default: "Tabs"
   attr :orientation, :string, values: ~w(horizontal vertical), default: "horizontal"
   attr :activation, :string, values: ~w(manual automatic), default: "manual"
+  attr :target, :any, default: nil, doc: "optional phx-target for click-based tabs"
   attr :class, :any, default: nil
   attr :rest, :global
 
@@ -394,6 +397,7 @@ defmodule ExoUI.Components.DataDisplay do
           data-exo="tab"
           data-active={tab.id == @active && ""}
           phx-click={tab[:click]}
+          phx-target={@target}
           phx-value-tab={tab[:click_value] || tab.id}
           role="tab"
           aria-selected={to_string(tab.id == @active)}

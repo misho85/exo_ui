@@ -528,8 +528,6 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(300);
       await clickButton(page, "Keep reviewing");
       await page.waitForTimeout(250);
-      await clickButton(page, "Review Ana Markovic");
-      await page.waitForTimeout(350);
       await fillByLabel(page, "Setup note", "SSO role mapping and workspace defaults are approved.");
       await page.waitForTimeout(250);
       await safe(page.locator('#story-live #onboarding-provisioner'), (node) =>
@@ -599,6 +597,16 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(250);
       await page.keyboard.press("Enter");
       await page.waitForTimeout(450);
+      break;
+    case "navigation_shell_workflow":
+      await clickFirst(page, '#story-live #navigation-shell-tabs-tab-teams');
+      await page.waitForTimeout(300);
+      await clickButton(page, "Plan");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Next route page");
+      await page.waitForTimeout(300);
+      await clickButton(page, "Rollout");
+      await page.waitForTimeout(350);
       break;
     case "command_surface_stack":
       await clickButton(page, "Open command surface");
