@@ -56,6 +56,9 @@ end
   `getByRole("table", name: ...)`.
 - Use `row_label` when row cells are clickable so assistive tech gets an
   action-oriented label.
+- `row_click` is attached to the row, not duplicated across every data cell;
+  keep per-row navigation there and put explicit row actions in the `:action`
+  slot.
 - Keep row actions in the `:action` slot instead of hiding buttons inside data
   columns.
 - Use `align="right"` for numeric values and `align="center"` for compact

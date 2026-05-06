@@ -90,5 +90,38 @@ defmodule ExoUI.Components.TableTest do
     assert html =~ ~s(data-clickable)
     assert html =~ ~s(aria-label="Open John")
     assert html =~ ~s(phx-click="select-user")
+    assert html =~ ~s(phx-hook="ExoTable")
+    assert html =~ ~s(tabindex="0")
+    refute html =~ ~s(phx-keydown="select-user")
+    refute html =~ ~s(phx-key="Enter")
+  end
+
+  test "binds row click to the row rather than each data cell" do
+    assigns = %{users: [%{id: 1, name: "John", email: "john@example.com"}]}
+
+    html =
+      rendered_to_string(~H"""
+      <.table
+        id="users"
+        rows={@users}
+        row_click={fn _u -> "select-user" end}
+        row_label={fn u -> "Open #{u.name}" end}
+      >
+        <:col :let={u} label="Name">{u.name}</:col>
+        <:col :let={u} label="Email">
+          <button type="button">Email {u.name}</button>
+        </:col>
+      </.table>
+      """)
+
+    {:ok, document} = Floki.parse_document(html)
+
+    row = document |> Floki.find(~s([data-exo="table-row"])) |> List.first()
+    cells = Floki.find(document, ~s([data-exo="table-cell"]))
+
+    assert Floki.attribute(row, "phx-click") == ["select-user"]
+    assert Floki.attribute(row, "tabindex") == ["0"]
+    assert Floki.attribute(row, "phx-keydown") == []
+    assert Enum.all?(cells, &(Floki.attribute(&1, "phx-click") == []))
   end
 end

@@ -28,11 +28,14 @@ test.describe("table recipes", () => {
       "ARR"
     );
     await expect(northstar).toHaveAttribute("aria-label", "Open Northstar CRM");
+    await expect(northstar).toHaveAttribute("tabindex", "0");
+    await expect(northstar).not.toHaveAttribute("phx-keydown", /.+/);
     await expect(northstar.locator('[data-exo="table-cell"][data-align="right"]')).toContainText(
       "$128k"
     );
 
-    await northstar.locator('[data-exo="table-cell"]').first().click();
+    await northstar.focus();
+    await page.keyboard.press("Enter");
     await expectAttribute(root, "data-selected-row", "northstar");
     await expect(state).toHaveAttribute("data-last-action", "opened Northstar CRM");
 

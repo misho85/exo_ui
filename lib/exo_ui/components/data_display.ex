@@ -64,6 +64,7 @@ defmodule ExoUI.Components.DataDisplay do
         </thead>
         <tbody
           id={@id}
+          phx-hook="ExoTable"
           phx-update={is_struct(@rows, Phoenix.LiveView.LiveStream) && "stream"}
         >
           <tr :if={@empty?} data-exo="table-empty-row">
@@ -83,13 +84,14 @@ defmodule ExoUI.Components.DataDisplay do
             data-exo="table-row"
             data-clickable={@row_click && ""}
             aria-label={@row_label && @row_label.(@row_item.(row))}
+            tabindex={@row_click && "0"}
+            phx-click={@row_click && @row_click.(row)}
           >
             <td
               :for={col <- @col}
               data-exo="table-cell"
               data-align={col[:align]}
               class={col[:class]}
-              phx-click={@row_click && @row_click.(row)}
             >
               {render_slot(col, @row_item.(row))}
             </td>

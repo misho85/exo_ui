@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-06T08:41:18.509Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T08-36-46-394Z",
+  "updatedAt": "2026-05-06T09:17:48.465Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T09-13-03-907Z",
   "count": 113,
   "entries": [
     {
@@ -389,7 +389,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "038ff4a507041b69f74e79c304f6c70f0f032d42fed4b927369a591d0cf7d9d9"
+      "sha256": "7745eaac1a8787e882af80285c92ae046ef535d33702eaffb51d96b1eb76db71"
     },
     {
       "name": "feedback/toast_container",

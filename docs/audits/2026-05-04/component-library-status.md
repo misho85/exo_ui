@@ -16,9 +16,9 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Storybook story types | 81 component stories, 26 live component stories, 6 aggregate example stories, 0 component/layout page-mode stories |
 | Playwright component capture | 113 Storybook routes captured |
 | Capture artifacts | 113 screenshots, 113 WebM videos, 113 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-06T08-36-46-394Z/viewer.html` |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-06T09-13-03-907Z/viewer.html` |
 | Browser suite | 93 Playwright tests passing |
-| ExUnit suite | 504 tests passing |
+| ExUnit suite | 505 tests passing |
 | Visual regression | 113 committed screenshot baselines with pixel-diff checking |
 | Usage documentation | Central copy-paste reference added at `docs/guides/component-usage.md` |
 
@@ -134,6 +134,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `pagination/1` now renders disabled previous/next controls as real disabled buttons instead of non-focusable spans, and exposes a polite page status for assistive tech.
 - `wizard_sidebar/1` now renders pending steps as disabled buttons instead of divs, keeping one consistent control shape across completed, current, and unavailable steps.
 - `accordion/1` no longer renders a hidden checkbox as a second state mirror; the button `aria-expanded` state is the single source for CSS and hook behavior.
+- `table/1` now binds `row_click` once on the row instead of duplicating it across every data cell; clickable rows are focusable and Enter/Space-activatable while action-slot controls keep their own handlers.
 
 ## Comparison vs shadcn/daisyUI
 
@@ -156,12 +157,14 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 
 ## Verification used
 
-- `mix test` -> 504 tests, 0 failures.
+- `mix test` -> 505 tests, 0 failures.
 - `mix compile --warnings-as-errors` in `storybook`.
 - `bunx playwright test test/browser/navigation_progress.spec.js test/browser/content_structure.spec.js` -> 9 tests, 0 failures after the pagination, wizard, and accordion semantics pass.
+- `mix test test/exo_ui/components/table_test.exs` -> 6 tests, 0 failures after the row-level table click semantics pass.
+- `bunx playwright test test/browser/data_feedback.spec.js -g "table renders caption"` and `bunx playwright test test/browser/table_recipes.spec.js` -> 2 focused table browser checks, 0 failures.
 - `bun run test:browser` -> 93 tests, 0 failures.
-- `bun run capture:components` -> 113 entries, 0 failed, 113 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T08-36-46-394Z`.
+- `bun run capture:components` -> 113 entries, 0 failed, 113 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T09-13-03-907Z`.
 - `bun run capture:validate` -> 113 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the pagination, wizard, and accordion semantics pass.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the table row-click semantics pass.
 - `bun run visual:check` -> 113 current screenshots matched the committed baseline.
 - `docs/guides/component-usage.md` now links to button, input, select, combobox, table, modal, drawer, command-palette, date-picker, access-review, incident-response, release-readiness, billing-dispute, onboarding-provisioning, app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, import-export, async-save, command-routing, role-operations, saved-filter, action/form, table/overlay/menu, component-state, and token guides.

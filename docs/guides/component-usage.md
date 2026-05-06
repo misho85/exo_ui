@@ -984,6 +984,7 @@ Use with lists or LiveView streams. Pass `row_id` for stable DOM IDs and
   rows={@users}
   row_id={fn user -> "user-#{user.id}" end}
   row_label={fn user -> "Open user #{user.name}" end}
+  row_click={fn user -> JS.push("open-user", value: %{id: user.id}) end}
 >
   <:col :let={user} label="Name">{user.name}</:col>
   <:col :let={user} label="Role">{user.role}</:col>
@@ -999,7 +1000,8 @@ Use with lists or LiveView streams. Pass `row_id` for stable DOM IDs and
 </.table>
 ```
 
-For captions, row click state, action slots, aligned numeric cells, and empty
+`row_click` is bound on the table row and becomes Enter/Space-activatable. For
+captions, row click state, action slots, aligned numeric cells, and empty
 states, see `docs/guides/table-recipes.md`.
 
 ### List

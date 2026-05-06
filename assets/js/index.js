@@ -17,6 +17,7 @@ import { ExoMenubar } from './hooks/menubar.js'
 import { ExoOverlay } from './hooks/overlay.js'
 import { ExoTabs } from './hooks/tabs.js'
 import { ExoSwap } from './hooks/swap.js'
+import { ExoTable } from './hooks/table.js'
 
 const hooks = {
   ExoAccordion,
@@ -37,7 +38,8 @@ const hooks = {
   ExoMenubar,
   ExoOverlay,
   ExoTabs,
-  ExoSwap
+  ExoSwap,
+  ExoTable
 }
 
 export { hooks }
