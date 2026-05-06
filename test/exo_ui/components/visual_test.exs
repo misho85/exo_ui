@@ -8,6 +8,10 @@ defmodule ExoUI.Components.VisualTest do
     assigns = %{}
     html = rendered_to_string(~H|<.avatar name="John Doe" />|)
     assert html =~ ~s(data-exo="avatar")
+    assert html =~ ~s(role="img")
+    assert html =~ ~s(aria-label="John Doe")
+    assert html =~ ~s(data-exo="avatar-initials")
+    assert html =~ ~s(aria-hidden="true")
     assert html =~ "JD"
   end
 
@@ -15,6 +19,14 @@ defmodule ExoUI.Components.VisualTest do
     assigns = %{}
     html = rendered_to_string(~H|<.avatar name="John" src="/img.jpg" />|)
     assert html =~ ~s(src="/img.jpg")
+    assert html =~ ~s(alt="John")
+    refute html =~ ~s(role="img")
+  end
+
+  test "renders avatar image with custom alt text" do
+    assigns = %{}
+    html = rendered_to_string(~H|<.avatar name="John" src="/img.jpg" alt="Account owner" />|)
+    assert html =~ ~s(alt="Account owner")
   end
 
   test "renders skeleton" do

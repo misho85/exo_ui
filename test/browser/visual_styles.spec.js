@@ -24,6 +24,19 @@ test.describe("component visual styles", () => {
     await expect(footer).toHaveCSS("border-top-style", "solid");
     await expect(footerColumns).toHaveCSS("display", "grid");
 
+    await gotoStory(page, "/components/layout/separator");
+
+    const separatorCanvas = story(page);
+    const decorativeSeparator = separatorCanvas.locator('[data-exo="separator"][data-decorative="true"]').first();
+    const semanticSeparator = separatorCanvas.locator('[data-exo="separator"][data-decorative="false"]').first();
+
+    await expect(decorativeSeparator).toHaveAttribute("aria-hidden", "true");
+    await expect(decorativeSeparator).not.toHaveAttribute("role", "separator");
+    await expect(decorativeSeparator).toHaveCSS("height", "1px");
+    await expect(semanticSeparator).toHaveAttribute("role", "separator");
+    await expect(semanticSeparator).toHaveAttribute("aria-orientation", "horizontal");
+    await expect(semanticSeparator).toHaveAttribute("aria-label", "Panel sections");
+
     await gotoStory(page, "/components/navigation/bottom_nav");
 
     const bottomNav = story(page).locator('[data-exo="bottom-nav"]').first();
@@ -69,6 +82,25 @@ test.describe("component visual styles", () => {
       (node) => window.getComputedStyle(node).lineHeight
     );
     expect(Number.parseFloat(chatLineHeight)).toBeGreaterThan(0);
+
+    await gotoStory(page, "/components/data_display/avatar");
+
+    const avatarCanvas = story(page);
+    const fallbackAvatar = avatarCanvas.locator('[data-exo="avatar"][role="img"]').first();
+    const avatarImage = avatarCanvas.locator('[data-exo="avatar-img"]').first();
+
+    await expect(fallbackAvatar).toHaveAttribute("aria-label", "Alice Smith");
+    await expect(fallbackAvatar.locator('[data-exo="avatar-initials"]')).toHaveAttribute(
+      "aria-hidden",
+      "true"
+    );
+    await expect(avatarImage).toHaveAttribute("alt", "Frank Ocean");
+
+    await gotoStory(page, "/components/data_display/kbd");
+
+    const commandKey = story(page).locator('[data-exo="kbd"][aria-label="Command"]').first();
+
+    await expect(commandKey).toHaveText("⌘");
 
     await gotoStory(page, "/components/feedback/indicator");
 

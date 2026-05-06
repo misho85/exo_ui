@@ -126,13 +126,16 @@ Use for status labels, counts, and compact metadata. Variants are `primary`,
 
 ### Separator
 
-Use instead of raw border dividers.
+Use instead of raw border dividers. Separators are decorative by default; pass
+`decorative={false}` when the divider communicates a real section boundary to
+assistive tech.
 
 ```heex
 <.separator />
 <div style="height: 2rem">
   <.separator orientation="vertical" />
 </div>
+<.separator decorative={false} label="Panel sections" />
 ```
 
 ### Icon
@@ -178,11 +181,13 @@ Use for page titles with optional subtitle and action slots.
 ### Avatar
 
 Always pass `name`; the fallback initials are derived from it when `src` is not
-present.
+present and the fallback is labelled with the full name. Pass `alt` when the
+image should announce text different from `name`.
 
 ```heex
 <.avatar name="Ada Lovelace" size="sm" />
 <.avatar name="Grace Hopper" src={~p"/images/grace.png"} size="lg" />
+<.avatar name="Grace Hopper" src={~p"/images/grace.png"} alt="Project owner" />
 ```
 
 ### Skeleton
@@ -228,7 +233,7 @@ Use inside pending states or standalone loading regions.
 Use for keyboard shortcuts.
 
 ```heex
-<span>Open command palette <.kbd>Cmd</.kbd> <.kbd>K</.kbd></span>
+<span>Open command palette <.kbd label="Command">⌘</.kbd> <.kbd>K</.kbd></span>
 ```
 
 ### Scroll Area

@@ -11,4 +11,11 @@ defmodule ExoUI.Components.KbdTest do
     assert html =~ "K"
     assert html =~ "<kbd"
   end
+
+  test "renders optional accessible label for symbolic keys" do
+    assigns = %{}
+    html = rendered_to_string(~H|<.kbd label="Command">⌘</.kbd>|)
+    assert html =~ ~s(aria-label="Command")
+    assert html =~ "⌘"
+  end
 end

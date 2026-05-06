@@ -1,21 +1,37 @@
 defmodule ExoUI.Components.SeparatorTest do
-  use ExUnit.Case, async: true
+  use ExoUI.ComponentCase, async: true
 
-  import Phoenix.LiveViewTest
-  import Phoenix.Component
-  import ExoUI.Components
-
-  test "renders horizontal separator by default" do
+  test "renders a decorative horizontal separator by default" do
     assigns = %{}
-    html = rendered_to_string(~H"<.separator />")
-    assert html =~ ~s(data-exo="separator")
-    assert html =~ ~s(data-orientation="horizontal")
-    assert html =~ ~s(role="separator")
+
+    ~H"<.separator />"
+    |> parse_component()
+    |> assert_component(~s([data-exo="separator"]))
+    |> assert_attribute("data-orientation", "horizontal")
+    |> assert_attribute("data-decorative", "true")
+    |> assert_attribute("aria-hidden", "true")
+    |> refute_attribute("role", "separator")
+    |> refute_attribute("aria-orientation", "horizontal")
   end
 
   test "renders vertical separator" do
     assigns = %{}
-    html = rendered_to_string(~H|<.separator orientation="vertical" />|)
-    assert html =~ ~s(data-orientation="vertical")
+
+    ~H|<.separator orientation="vertical" />|
+    |> parse_component()
+    |> assert_attribute("data-orientation", "vertical")
+    |> assert_attribute("aria-hidden", "true")
+  end
+
+  test "renders semantic separator when decorative is false" do
+    assigns = %{}
+
+    ~H|<.separator decorative={false} orientation="vertical" label="Panel sections" />|
+    |> parse_component()
+    |> assert_attribute("data-decorative", "false")
+    |> assert_attribute("role", "separator")
+    |> assert_attribute("aria-orientation", "vertical")
+    |> assert_attribute("aria-label", "Panel sections")
+    |> refute_attribute("aria-hidden", "true")
   end
 end

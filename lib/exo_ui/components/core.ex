@@ -85,6 +85,8 @@ defmodule ExoUI.Components.Core do
 
   @doc "Renders a horizontal or vertical separator line."
   attr :orientation, :string, values: ~w(horizontal vertical), default: "horizontal"
+  attr :decorative, :boolean, default: true
+  attr :label, :string, default: nil
   attr :class, :any, default: nil
   attr :rest, :global
 
@@ -93,8 +95,11 @@ defmodule ExoUI.Components.Core do
     <div
       data-exo="separator"
       data-orientation={@orientation}
-      role="separator"
-      aria-orientation={@orientation}
+      data-decorative={if @decorative, do: "true", else: "false"}
+      role={if @decorative, do: nil, else: "separator"}
+      aria-hidden={if @decorative, do: "true"}
+      aria-orientation={if @decorative, do: nil, else: @orientation}
+      aria-label={if @decorative, do: nil, else: @label}
       class={@class}
       {@rest}
     />
@@ -243,6 +248,7 @@ defmodule ExoUI.Components.Core do
   @doc "Renders an avatar with image or initials fallback."
   attr :name, :string, required: true
   attr :src, :string, default: nil
+  attr :alt, :string, default: nil
   attr :size, :string, values: ~w(xs sm md lg xl), default: "md"
   attr :class, :any, default: nil
   attr :rest, :global
@@ -256,12 +262,22 @@ defmodule ExoUI.Components.Core do
       |> Enum.join()
       |> String.upcase()
 
-    assigns = assign(assigns, :initials, initials)
+    assigns =
+      assigns
+      |> assign(:initials, initials)
+      |> assign(:avatar_label, if(is_nil(assigns.alt), do: assigns.name, else: assigns.alt))
 
     ~H"""
-    <span data-exo="avatar" data-size={@size} class={@class} {@rest}>
-      <img :if={@src} src={@src} alt={@name} data-exo="avatar-img" />
-      <span :if={!@src} data-exo="avatar-initials">{@initials}</span>
+    <span
+      data-exo="avatar"
+      data-size={@size}
+      role={if @src, do: nil, else: "img"}
+      aria-label={if @src, do: nil, else: @avatar_label}
+      class={@class}
+      {@rest}
+    >
+      <img :if={@src} src={@src} alt={@avatar_label} data-exo="avatar-img" />
+      <span :if={!@src} data-exo="avatar-initials" aria-hidden="true">{@initials}</span>
     </span>
     """
   end
@@ -369,13 +385,14 @@ defmodule ExoUI.Components.Core do
   end
 
   @doc "Renders a keyboard shortcut indicator."
+  attr :label, :string, default: nil
   attr :class, :any, default: nil
   attr :rest, :global
   slot :inner_block, required: true
 
   def kbd(assigns) do
     ~H"""
-    <kbd data-exo="kbd" class={@class} {@rest}>{render_slot(@inner_block)}</kbd>
+    <kbd data-exo="kbd" aria-label={@label} class={@class} {@rest}>{render_slot(@inner_block)}</kbd>
     """
   end
 

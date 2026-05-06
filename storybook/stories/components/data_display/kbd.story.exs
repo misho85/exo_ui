@@ -13,10 +13,10 @@ defmodule Storybook.Components.Kbd do
 
   def variations do
     [
-      %Variation{id: :command, slots: ["⌘"]},
+      %Variation{id: :command, attributes: %{label: "Command"}, slots: ["⌘"]},
       %Variation{id: :letter, slots: ["K"]},
-      %Variation{id: :modifier, slots: ["Ctrl"]},
-      %Variation{id: :escape, slots: ["Esc"]}
+      %Variation{id: :modifier, attributes: %{label: "Control"}, slots: ["Ctrl"]},
+      %Variation{id: :escape, attributes: %{label: "Escape"}, slots: ["Esc"]}
     ]
   end
 end
