@@ -14,6 +14,15 @@ defmodule Storybook.Components.Icon do
   def variations do
     [
       %VariationGroup{
+        id: :fallback,
+        variations: [
+          %Variation{
+            id: :missing_icon,
+            attributes: %{name: "missing-icon", class: "size-6"}
+          }
+        ]
+      },
+      %VariationGroup{
         id: :common,
         variations:
           Enum.map(

@@ -137,10 +137,16 @@ Use instead of raw border dividers.
 
 ### Icon
 
-Renders a Lucide icon by name.
+Renders a Lucide icon by name. Icons are decorative by default
+(`aria-hidden="true"`, `focusable="false"`). Pass `role`, `aria-label`, and
+`aria-hidden="false"` only when the icon itself carries meaning. Unknown names
+render a visible fallback SVG with `data-missing-icon` instead of crashing the
+page, which keeps Storybook and production views inspectable during
+misconfiguration.
 
 ```heex
 <.icon name="search" />
+<.icon name="circle-alert" role="img" aria-hidden="false" aria-label="Warning" />
 <.button>
   <.icon name="plus" />
   Add item

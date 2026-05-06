@@ -1,0 +1,36 @@
+:where([data-exo="icon"]) {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+:where([data-exo="icon"].size-3) {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+:where([data-exo="icon"].size-4) {
+  width: 1rem;
+  height: 1rem;
+}
+
+:where([data-exo="icon"].size-5) {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+:where([data-exo="icon"].size-6) {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+:where([data-exo="icon"].size-8) {
+  width: 2rem;
+  height: 2rem;
+}
+
+:where([data-exo="icon"][data-missing-icon]) {
+  color: var(--exo-muted-foreground);
+}

@@ -32,6 +32,18 @@ test.describe("component visual styles", () => {
     await expect(bottomNav).toHaveCSS("display", "grid");
     await expect(bottomNav).toHaveCSS("border-top-style", "solid");
     await expect(bottomNavItem).toHaveCSS("text-decoration-line", "none");
+
+    await gotoStory(page, "/components/layout/icon");
+
+    const iconCanvas = story(page);
+    const knownIcon = iconCanvas.locator('[data-exo="icon"]:not([data-missing-icon])').first();
+    const missingIcon = iconCanvas.locator('[data-missing-icon="missing-icon"]').first();
+
+    await expect(knownIcon).toHaveAttribute("aria-hidden", "true");
+    await expect(knownIcon).toHaveAttribute("focusable", "false");
+    await expect(knownIcon).toHaveCSS("width", "24px");
+    await expect(missingIcon).toHaveAttribute("data-exo", "icon");
+    await expect(missingIcon).toHaveCSS("width", "24px");
   });
 
   test("data display and feedback components load their component CSS", async ({ page }) => {

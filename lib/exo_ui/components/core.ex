@@ -101,11 +101,77 @@ defmodule ExoUI.Components.Core do
   @doc "Renders a Lucide icon by name."
   attr :name, :string, required: true
   attr :class, :any, default: "size-4"
+  attr :rest, :global, include: ~w(focusable role)
 
   def icon(assigns) do
     Code.ensure_loaded!(ExoUI.Lucide)
-    icon_fn = assigns.name |> String.replace("-", "_") |> String.to_existing_atom()
-    ExoUI.Lucide.render(icon_fn, Map.delete(assigns, :name))
+
+    assigns = assign(assigns, :icon_rest, icon_rest(assigns))
+
+    case icon_name_to_existing_atom(assigns.name) do
+      {:ok, icon_fn} -> render_lucide_icon(icon_fn, assigns)
+      :error -> missing_icon(assigns)
+    end
+  end
+
+  defp render_lucide_icon(icon_fn, assigns) do
+    lucide_assigns =
+      assigns
+      |> Map.drop([:name, :rest, :icon_rest])
+      |> Map.merge(assigns.icon_rest)
+
+    ExoUI.Lucide.render(icon_fn, lucide_assigns)
+  rescue
+    ArgumentError -> missing_icon(assigns)
+  end
+
+  defp icon_name_to_existing_atom(name) when is_binary(name) do
+    {:ok, name |> String.replace("-", "_") |> String.to_existing_atom()}
+  rescue
+    ArgumentError -> :error
+  end
+
+  defp icon_name_to_existing_atom(name) when is_atom(name), do: {:ok, name}
+  defp icon_name_to_existing_atom(_name), do: :error
+
+  defp icon_rest(assigns) do
+    assigns.rest
+    |> Map.put(:class, assigns.class)
+    |> put_rest_default(:"data-exo", "icon")
+    |> put_rest_default(:"aria-hidden", "true")
+    |> put_rest_default(:focusable, "false")
+  end
+
+  defp put_rest_default(rest, key, value) when is_atom(key) do
+    string_key = Atom.to_string(key)
+
+    if Map.has_key?(rest, key) || Map.has_key?(rest, string_key) do
+      rest
+    else
+      Map.put(rest, key, value)
+    end
+  end
+
+  defp missing_icon(assigns) do
+    ~H"""
+    <svg
+      {@icon_rest}
+      data-missing-icon={@name}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <circle cx="12" cy="12" r="9" />
+      <path d="M9.1 9a3 3 0 1 1 5.8 1.1c-.8 1.3-2.4 1.4-2.8 3" />
+      <path d="M12 17h.01" />
+    </svg>
+    """
   end
 
   @doc "Renders light/dark/system theme toggle buttons."

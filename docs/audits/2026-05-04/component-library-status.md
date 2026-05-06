@@ -16,9 +16,9 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Storybook story types | 81 component stories, 27 live component stories, 6 aggregate example stories, 0 component/layout page-mode stories |
 | Playwright component capture | 114 Storybook routes captured |
 | Capture artifacts | 114 screenshots, 114 WebM videos, 114 MP4 videos |
-| Latest capture | `output/playwright/exo-ui-components/2026-05-06T16-23-24-915Z/viewer.html` |
+| Latest capture | `output/playwright/exo-ui-components/2026-05-06T16-44-18-723Z/viewer.html` |
 | Browser suite | 95 Playwright tests passing |
-| ExUnit suite | 529 tests passing |
+| ExUnit suite | 531 tests passing |
 | Visual regression | 114 committed screenshot baselines with pixel-diff checking |
 | Usage documentation | Central copy-paste reference added at `docs/guides/component-usage.md` |
 
@@ -58,6 +58,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - Overlay stacking is more robust when a second modal/sheet/drawer-style overlay opens programmatically while another overlay is already active; the registry no longer inert-hides an overlay root that is already opening, and focus now moves after the overlay is registered as topmost.
 - `ChatBubble`, `List`, and `Table` are now component-mode stories. The table story keeps real row slots and function attrs via `{:eval, ...}` helpers so row IDs and ARIA row labels still render in the actual Storybook DOM.
 - `table/1` now supports a server-owned loading state with `loading`, `loading_label`, and `:loading_state`, exposing `aria-busy` plus a polite status row without forcing callers to wrap the table in custom markup.
+- `icon/1` now defaults Lucide SVGs to decorative accessibility attributes, ships scoped `size-*` CSS for standalone library usage, and renders a visible `data-missing-icon` fallback instead of crashing Storybook or a LiveView when a name is wrong.
 - `Flash`, `FlashGroup`, and `ToastContainer` are now component-mode stories, keeping role/live-region coverage while exposing placements, close labels, flash maps, and toast data as Storybook attrs.
 - Chart stories are now mostly component-mode: sparkline/trend badge plus radial, pie/donut, bar, line, area, and radar variants expose data, dimensions, colors, legends, and empty states as PhoenixStorybook attrs.
 - `ExoUI.Charts` now keeps its public facade while exposing Phoenix component `attr` metadata directly on the public wrapper functions, so Storybook can load chart controls without delegating through metadata-blind `defdelegate` functions.
@@ -162,7 +163,7 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 | Overlays/menus | Browser-tested popover, dropdown, context menu, menubar, modal/confirm-modal/sheet/drawer focus traps, command palette trigger open/focus trap/focus restore, shared overlay registry participation, topmost Escape/backdrop handling, outside inerting, scroll lock, same-type and cross-type stacking order, lower-overlay inerting, focus restore, long-form stacked drawer scrolling, stacked validation errors, command-surface stacks, destructive confirm flows inside stacked overlays, public show/hide helpers for modal/drawer/sheet/command palette, configurable command palette shortcuts, and guarded confirm actions that can stay open for server validation | Keep tightening primitive APIs and browser tests instead of adding more broad example pages |
 | Keyboard support | Covered for major actions, menus, select/combobox, rating, targeted tabs/wizard flows, event-owned bottom navigation, event-owned pagination, date picker grid movement, parent-controlled date picker month changes, pagination disabled-button semantics, wizard disabled-step semantics, accordion button state, and command palette driven multi-screen routing | Needs deeper primitive-level shortcut and focus-state coverage |
 | Visual proof | Automated screenshots and videos for 114 routes, committed visual baselines, a CI-friendly diff command, and GitHub Actions wiring | Needs review tuning once real PR diffs start producing visual changes |
-| Composability | Slots and `data-exo` styling are consistent | No shadcn-style `asChild`/polymorphic root pattern for advanced composition |
+| Composability | Slots and `data-exo` styling are consistent, and core icon rendering now fails visibly without taking down a composed control | No shadcn-style `asChild`/polymorphic root pattern for advanced composition |
 | Usage docs | Central copy-paste usage reference exists for the current public component surface, plus button, input, select, combobox, table, modal, drawer, command-palette, date-picker, access-review, incident-response, release-readiness, billing-dispute, onboarding-provisioning, app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, async-save, saved-filter, command-routing, role-operations, action/form, table/overlay/menu, component-state, and token recipes | Still needs more narrow per-component pages as new high-traffic primitives emerge |
 
 ## Remaining priorities
@@ -173,9 +174,11 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 
 ## Verification used
 
-- `mix test` -> 529 tests, 0 failures.
+- `mix test` -> 531 tests, 0 failures.
 - `mix compile --warnings-as-errors`.
 - `mix compile --warnings-as-errors` in `storybook`.
+- `mix test test/exo_ui/components/icon_test.exs` -> 5 tests, 0 failures after adding default icon accessibility attrs, scoped size CSS, and a stable missing-icon fallback.
+- `bunx playwright test test/browser/visual_styles.spec.js -g "navigation and layout"` -> 1 test, 0 failures after verifying known and fallback icons render with `data-exo="icon"` and `size-6` dimensions.
 - `mix test test/exo_ui/components/input_test.exs` -> 17 tests, 0 failures after adding text-like input prefix/suffix and icon adornments.
 - `bunx playwright test test/browser/form_controls.spec.js -g "input and checkbox expose error descriptions"` -> 1 test, 0 failures after verifying the Storybook input adornment wrapper and hidden decorative icons.
 - `mix test test/exo_ui/components/table_test.exs` -> 8 tests, 0 failures after adding table loading status support.
@@ -202,8 +205,8 @@ ExoUI is no longer in the "many components have no story or no CSS" state captur
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js` -> 1 focused workflow check, 0 failures after event-mode pagination and bottom-nav targeting.
 - `bunx playwright test test/browser/navigation_shell_workflow.spec.js test/browser/onboarding_provisioning_workflow.spec.js` -> 2 focused workflow checks, 0 failures.
 - `PLAYWRIGHT_TEST_TIMEOUT=180000 bun run test:browser` -> 95 tests, 0 failures.
-- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T16-23-24-915Z`.
+- `bun run capture:components` -> 114 entries, 0 failed, 114 MP4 conversions in `output/playwright/exo-ui-components/2026-05-06T16-44-18-723Z`.
 - `bun run capture:validate` -> 114 entries with non-empty screenshot, WebM, and MP4 files.
-- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the file-input selected summary pass.
+- `bun run visual:update` -> refreshed the expected screenshot baselines from the latest capture after the icon fallback pass.
 - `bun run visual:check` -> 114 current screenshots matched the committed baseline.
 - `docs/guides/component-usage.md` now links to button, input, select, combobox, table, modal, drawer, command-palette, date-picker, access-review, incident-response, release-readiness, billing-dispute, onboarding-provisioning, app-shell, editable-record, bulk-action, bulk-edit, dashboard-drilldown, data-table, import-export, async-save, command-routing, navigation-shell, role-operations, saved-filter, action/form, table/overlay/menu, component-state, and token guides.
