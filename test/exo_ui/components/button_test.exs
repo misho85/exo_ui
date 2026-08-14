@@ -43,6 +43,18 @@ defmodule ExoUI.Components.ButtonTest do
     assert html =~ ~s(popovertargetaction="hide")
   end
 
+  test "passes target and rel through on link buttons" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(
+        ~H|<.button href="/invoice.pdf" target="_blank" rel="noopener">Preuzmi</.button>|
+      )
+
+    assert html =~ ~s(target="_blank")
+    assert html =~ ~s(rel="noopener")
+  end
+
   test "renders disabled links without href navigation" do
     assigns = %{}
     html = rendered_to_string(~H|<.button href="/billing" disabled>Billing</.button>|)
