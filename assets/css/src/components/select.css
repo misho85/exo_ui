@@ -1,3 +1,25 @@
+/* --- Native value carrier ---
+ *
+ * `select/1` renders a real <select> next to the popover; it is what the form
+ * submits and what `phx-change` / Phoenix.LiveViewTest bind to. It must stay
+ * rendered and form-associated, so it is CLIPPED rather than removed:
+ * `display: none` would still submit, but a clipped control keeps the
+ * browser's `required` validation bubble anchored near the field instead of
+ * being suppressed for an unrenderable element.
+ */
+:where([data-exo="select-native"]) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
 /* --- Trigger --- */
 
 :where([data-exo-select="trigger"]) {

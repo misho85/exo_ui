@@ -85,11 +85,18 @@ defmodule ExoUI.Components.InputTest do
     assert html =~ ~s(data-exo="popover")
     assert html =~ ~s(data-exo-select="trigger")
     assert html =~ ~s(role="listbox")
-    assert html =~ ~s(type="hidden")
     assert html =~ ~s(name="status")
-    assert html =~ ~s(value="active")
     assert html =~ "Active"
-    refute html =~ "<select"
+
+    # The popover is the UI; the value rides on a real <select> underneath it
+    # (see ExoUI.Components.Form.select/1). This used to assert the opposite —
+    # a hidden input, and `refute html =~ "<select"` — which is exactly the
+    # shape that made `phx-change` inert and blocked Phoenix.LiveViewTest.
+    refute html =~ ~s(type="hidden")
+
+    {:ok, doc} = Floki.parse_document(html)
+    [native] = Floki.find(doc, ~s(select[data-exo="select-native"][name="status"]))
+    assert Floki.attribute(Floki.find([native], "option[selected]"), "value") == ["active"]
   end
 
   test "keeps native select fallback for multiple select input" do

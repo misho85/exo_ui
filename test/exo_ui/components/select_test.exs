@@ -78,7 +78,7 @@ defmodule ExoUI.Components.SelectTest do
     assert html =~ "Member"
   end
 
-  test "renders hidden input for form" do
+  test "carries the value in a real <select>, not a hidden input" do
     assigns = %{}
 
     html =
@@ -88,9 +88,73 @@ defmodule ExoUI.Components.SelectTest do
       </.select>
       """)
 
-    assert html =~ ~s(type="hidden")
-    assert html =~ ~s(name="status")
-    assert html =~ ~s(value="active")
+    # A hidden input can be driven by neither `phx-change` (LiveView reads the
+    # binding off the element that fired the event) nor
+    # `Phoenix.LiveViewTest.form/3` (it refuses to change hidden values), so
+    # the value MUST sit on a control that can actually change.
+    refute html =~ ~s(type="hidden")
+
+    {:ok, doc} = Floki.parse_document(html)
+    [native] = Floki.find(doc, ~s(select[data-exo="select-native"][name="status"]))
+    assert Floki.attribute([native], "tabindex") == ["-1"]
+    assert Floki.attribute([native], "aria-hidden") == ["true"]
+
+    selected = Floki.find([native], "option[selected]")
+    assert Floki.attribute(selected, "value") == ["active"]
+  end
+
+  test "prompt is a selectable empty option, in both the listbox and the native select" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.select id="s2b" name="status" prompt="All statuses" options={[{"Active", "active"}]} />
+      """)
+
+    {:ok, doc} = Floki.parse_document(html)
+
+    # Native <select>: an empty option the browser can select — clearing works.
+    first_native = doc |> Floki.find(~s(select[data-exo="select-native"] option)) |> hd()
+    assert Floki.attribute([first_native], "value") == [""]
+
+    # Listbox: the same entry, so the popover UI can clear the field too.
+    # Without it a filter could be set but never unset.
+    first_listbox = doc |> Floki.find(~s([data-exo="select-option"])) |> hd()
+    assert Floki.attribute([first_listbox], "data-value") == [""]
+    assert Floki.text([first_listbox]) =~ "All statuses"
+  end
+
+  test "forwards phx-* to the native select and everything else to the wrapper" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.select id="s2c" name="s" options={[{"Active", "active"}]} phx-change="pick" data-x="1" />
+      """)
+
+    {:ok, doc} = Floki.parse_document(html)
+
+    # `phx-change` on the wrapper would never fire: LiveView looks it up on the
+    # element that dispatched the event, or on that element's <form>.
+    [native] = Floki.find(doc, ~s(select[data-exo="select-native"]))
+    assert Floki.attribute([native], "phx-change") == ["pick"]
+
+    [field] = Floki.find(doc, ~s(div[data-exo="field"]))
+    assert Floki.attribute([field], "data-x") == ["1"]
+    assert Floki.attribute([field], "phx-change") == []
+  end
+
+  test "required lands on the native select so the browser enforces it" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.select id="s2d" name="s" options={[{"A", "a"}]} prompt="Pick one" required />
+      """)
+
+    {:ok, doc} = Floki.parse_document(html)
+    [native] = Floki.find(doc, ~s(select[data-exo="select-native"]))
+    assert Floki.attribute([native], "required") == ["required"]
   end
 
   test "renders aria-selected on options" do
@@ -353,9 +417,11 @@ defmodule ExoUI.Components.SelectTest do
     assert html =~ ~s(disabled)
 
     {:ok, doc} = Floki.parse_document(html)
-    [hidden] = Floki.find(doc, ~s(input[type="hidden"][name="x"]))
-    assert Floki.attribute(hidden, "disabled") == ["disabled"]
-    assert Floki.attribute(hidden, "value") == ["a"]
+    [native] = Floki.find(doc, ~s(select[data-exo="select-native"][name="x"]))
+    assert Floki.attribute([native], "disabled") == ["disabled"]
+
+    selected = Floki.find([native], "option[selected]")
+    assert Floki.attribute(selected, "value") == ["a"]
   end
 
   test "defaults to bottom/start alignment" do
@@ -386,7 +452,7 @@ defmodule ExoUI.Components.SelectTest do
     refute html =~ ~s(role="group")
   end
 
-  test "hidden input has empty value when no value set" do
+  test "with no value and no prompt, submits the first option — like any <select>" do
     assigns = %{}
 
     html =
@@ -396,8 +462,28 @@ defmodule ExoUI.Components.SelectTest do
       </.select>
       """)
 
-    assert html =~ ~s(name="status")
-    assert html =~ ~s(value="")
+    {:ok, doc} = Floki.parse_document(html)
+    [native] = Floki.find(doc, ~s(select[data-exo="select-native"][name="status"]))
+
+    # Deliberate: the hidden input this replaced always submitted "", which no
+    # `<select>` ever does. A caller who needs an empty value asks for one —
+    # that is what `prompt` is (see the prompt test above). The trigger still
+    # shows the placeholder styling, because nothing was actively chosen.
+    assert Floki.find([native], "option[selected]") == []
+    assert html =~ ~s(data-placeholder="")
+  end
+
+  test "an explicit empty value selects the prompt option" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.select id="s20b" name="status" value="" prompt="Any" options={[{"A", "a"}]} />
+      """)
+
+    {:ok, doc} = Floki.parse_document(html)
+    [selected] = Floki.find(doc, ~s(select[data-exo="select-native"] option[selected]))
+    assert Floki.attribute([selected], "value") == [""]
   end
 
   test "renders with custom side and align" do

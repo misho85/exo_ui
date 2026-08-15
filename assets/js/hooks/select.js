@@ -10,7 +10,12 @@ const ExoSelect = {
     const popoverId = this._trigger?.getAttribute('popovertarget')
     this._popover = popoverId ? document.getElementById(popoverId) : null
     this._listbox = this.el.querySelector('[role="listbox"]')
-    this._hidden = this.el.closest('[data-exo="field"]')?.querySelector('input[type="hidden"]')
+    // The value lives in a real <select> (see ExoUI.Components.Form.select/1),
+    // not a hidden input: `phx-change` and Phoenix.LiveViewTest both need a
+    // form-associated control whose value can actually be changed.
+    this._native = this.el
+      .closest('[data-exo="field"]')
+      ?.querySelector('select[data-exo="select-native"]')
 
     if (!this._popover || !this._listbox) return
 
@@ -117,10 +122,14 @@ const ExoSelect = {
     const value = opt.getAttribute('data-value')
     const text = opt.textContent.trim()
 
-    // Update hidden input
-    if (this._hidden) {
-      this._hidden.value = value
-      this._hidden.dispatchEvent(new Event('input', { bubbles: true }))
+    // Drive the native <select> exactly as a user would: set the value, then
+    // fire both events a real select fires. LiveView listens for `input` and
+    // `change`; it already ignores a `change` that immediately follows an
+    // `input` from the same element, so this does not double-push.
+    if (this._native) {
+      this._native.value = value
+      this._native.dispatchEvent(new Event('input', { bubbles: true }))
+      this._native.dispatchEvent(new Event('change', { bubbles: true }))
     }
 
     // Update aria-selected and data-selected on all options
@@ -136,11 +145,17 @@ const ExoSelect = {
 
     this._setActiveOption(opt)
 
-    // Update trigger display text
+    // Update trigger display text. Picking the prompt (value "") clears the
+    // field, so the trigger must go back to looking like a placeholder —
+    // otherwise "All statuses" would render as a chosen value.
     const valueEl = this._trigger.querySelector('[data-exo="select-value"]')
     if (valueEl) {
       valueEl.textContent = text
-      valueEl.removeAttribute('data-placeholder')
+      if (value === '') {
+        valueEl.setAttribute('data-placeholder', '')
+      } else {
+        valueEl.removeAttribute('data-placeholder')
+      }
     }
 
     // Close popover
@@ -177,7 +192,7 @@ const ExoSelect = {
     this._trigger = null
     this._popover = null
     this._listbox = null
-    this._hidden = null
+    this._native = null
     this._activeOption = null
     this._onToggle = null
     this._onClick = null

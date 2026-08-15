@@ -375,7 +375,36 @@ defmodule ExoUI.Components.Form do
     """
   end
 
-  @doc "Renders a custom select dropdown with option slots and optional grouping."
+  @doc """
+  Renders a custom select dropdown with option slots and optional grouping.
+
+  ## The value is carried by a REAL `<select>`, not a hidden input
+
+  The popover/listbox above is presentation; the form value lives in a native
+  `<select name={@name}>` rendered alongside it (`data-exo="select-native"`,
+  visually hidden by `select.css`). `ExoSelect` writes the chosen value onto
+  that element and dispatches `input`+`change`, exactly as a user operating a
+  native select would.
+
+  This is deliberate, and it buys three things a hidden input cannot:
+
+    * **`phx-change` works.** LiveView looks the binding up on the element that
+      fired the event, or on its `<form>` — never on an ancestor `<div>`. Any
+      `phx-*` attribute passed to this component is therefore forwarded to the
+      native `<select>`, not to the field wrapper.
+    * **`Phoenix.LiveViewTest` can drive it.** `form/3` refuses to change
+      `<input type="hidden">` values, so with a hidden input every test that
+      submitted a select value raised `ArgumentError`, forcing tests to bypass
+      form serialization entirely.
+    * **`required`, and value validation, are the browser's job again.**
+
+  ## `prompt` is a real, selectable option
+
+  `prompt` renders as `<option value="">` in the native select AND as the first
+  entry of the listbox — matching `<select>` semantics, where picking the empty
+  option clears the field. Before this it was only placeholder text on the
+  trigger, so a filter could be set but never unset.
+  """
   attr :id, :string, required: true
   attr :name, :any
   attr :value, :any, default: nil
@@ -383,13 +412,16 @@ defmodule ExoUI.Components.Form do
   attr :field, Phoenix.HTML.FormField, default: nil
   attr :label, :string, default: nil
   attr :description, :string, default: nil
-  attr :prompt, :string, default: nil
+  attr :prompt, :string, default: nil, doc: "empty-value option; selectable, clears the field"
   attr :errors, :list, default: []
   attr :disabled, :boolean, default: false
+  attr :required, :boolean, default: false
   attr :side, :string, values: ~w(top bottom left right), default: "bottom"
   attr :align, :string, values: ~w(start center end), default: "start"
   attr :class, :any, default: nil
-  attr :rest, :global
+
+  attr :rest, :global,
+    doc: "`phx-*` go to the native <select> (see moduledoc); everything else to the wrapper"
 
   slot :option do
     attr :value, :any, required: true
@@ -410,10 +442,10 @@ defmodule ExoUI.Components.Form do
   end
 
   def select(assigns) do
-    assigns = prepare_choice(assigns)
+    assigns = assigns |> prepare_choice() |> split_phx_rest()
 
     ~H"""
-    <div data-exo="field" class={@class} {@rest}>
+    <div data-exo="field" class={@class} {@wrapper_rest}>
       <label :if={@label} data-exo="label" id={@label_id}>{@label}</label>
       <div data-exo="popover" phx-hook="ExoSelect" id={"#{@id}-select"}>
         <button
@@ -456,11 +488,33 @@ defmodule ExoUI.Components.Form do
             role="listbox"
             aria-labelledby={if @label_id, do: @label_id}
           >
+            <div
+              :if={@prompt}
+              data-exo="select-option"
+              role="option"
+              data-value=""
+              data-selected={blank_choice?(@value) && ""}
+              aria-selected={to_string(blank_choice?(@value))}
+              aria-disabled="false"
+              tabindex="-1"
+            >
+              <span data-exo="select-check"><.icon name="check" class="size-4" /></span>
+              {@prompt}
+            </div>
             <.choice_option_groups kind="select" grouped={@grouped} value={@value} />
           </div>
         </div>
       </div>
-      <.choice_hidden_input name={@name} value={@value} disabled={@disabled} />
+      <.choice_native_select
+        id={"#{@id}-native"}
+        name={@name}
+        value={@value}
+        grouped={@grouped}
+        prompt={@prompt}
+        disabled={@disabled}
+        required={@required}
+        rest={@phx_rest}
+      />
       <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
       <.field_errors id={@error_id} errors={@errors} />
     </div>
@@ -743,6 +797,83 @@ defmodule ExoUI.Components.Form do
       {@option[:label]}
     <% end %>
     """
+  end
+
+  # The form-bearing element behind `select/1` — see that function's @doc for
+  # why this is a real `<select>` and not a hidden input.
+  #
+  # `tabindex="-1"` + `aria-hidden` keep it out of the tab order and off the
+  # accessibility tree: the popover trigger is the exposed control, and exposing
+  # both would announce the field twice. Hidden form controls are still
+  # submitted (only `disabled` excludes them), so the value always travels.
+  attr :id, :string, required: true
+  attr :name, :any, default: nil
+  attr :value, :any, default: nil
+  attr :grouped, :list, required: true
+  attr :prompt, :string, default: nil
+  attr :disabled, :boolean, default: false
+  attr :required, :boolean, default: false
+  attr :rest, :map, default: %{}
+
+  defp choice_native_select(assigns) do
+    ~H"""
+    <select
+      :if={@name}
+      id={@id}
+      name={@name}
+      data-exo="select-native"
+      disabled={@disabled}
+      required={@required}
+      tabindex="-1"
+      aria-hidden="true"
+      {@rest}
+    >
+      <option :if={@prompt} value="" selected={blank_choice?(@value)}>{@prompt}</option>
+      <%= for {group_name, opts} <- @grouped do %>
+        <%= if group_name do %>
+          <optgroup label={group_name}>
+            <.choice_native_options options={opts} value={@value} />
+          </optgroup>
+        <% else %>
+          <.choice_native_options options={opts} value={@value} />
+        <% end %>
+      <% end %>
+    </select>
+    """
+  end
+
+  attr :options, :list, required: true
+  attr :value, :any, default: nil
+
+  defp choice_native_options(assigns) do
+    ~H"""
+    <option
+      :for={opt <- @options}
+      value={opt[:value]}
+      selected={option_selected?(opt[:value], @value)}
+      disabled={opt[:disabled] == true}
+    >
+      {native_option_label(opt)}
+    </option>
+    """
+  end
+
+  # `<option>` may only contain text, so a slot-based option falls back to its
+  # `value`. Slot options are a presentation feature (icons, descriptions);
+  # what matters here is that the value round-trips.
+  defp native_option_label(opt), do: opt[:label] || opt[:value]
+
+  defp blank_choice?(value), do: value in [nil, ""]
+
+  # `phx-*` must land on the element that fires the event — see `select/1`
+  # @doc. Everything else (`data-*`, `aria-*`, `id`…) keeps going to the field
+  # wrapper, where callers have always put it.
+  defp split_phx_rest(assigns) do
+    {phx, wrapper} =
+      assigns.rest
+      |> Enum.split_with(fn {key, _} -> String.starts_with?(to_string(key), "phx-") end)
+
+    assign(assigns, phx_rest: Map.new(phx), wrapper_rest: Map.new(wrapper))
   end
 
   attr :name, :any, default: nil
