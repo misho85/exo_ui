@@ -35,8 +35,21 @@ defmodule ExoUI.Components.Form do
   attr :field, Phoenix.HTML.FormField, doc: "a form field struct"
   attr :id, :any, default: nil
   attr :type, :string, default: "text"
-  attr :name, :any, default: nil
-  attr :value, :any, default: nil
+  # `attr :name` i `attr :value` NEMAJU `default:` — namjerno, i to je popravka
+  # kvara, ne stilska sitnica.
+  #
+  # Deklarisan `attr` sa `default:` upisuje kljuc u `assigns` PRIJE tijela
+  # funkcije, a `assign_new/3` ne zove funkciju za kljuc koji vec postoji. Zato
+  # `assign_new(:value, fn -> field.value end)` u `field` klauzuli ispod NIKAD
+  # nije okidao: komponenta pozvana sa `field={f[:polje]}` je gubila i ime i
+  # vrijednost polja i ponasala se kao da je prazna.
+  #
+  # Bez `default:`, kljuc je odsutan kad ga pozivalac ne zada, pa `assign_new`
+  # radi kako i treba, a eksplicitno zadato `value=` i dalje pobjedjuje nad
+  # `field`-om. Pozivaoci koji ne salju ni `field` ni `value`/`name` pokriveni su
+  # normalizujucom klauzulom odmah ispod `field` klauzule.
+  attr :name, :any
+  attr :value, :any
   attr :label, :string, default: nil
   attr :description, :string, default: nil
   attr :errors, :list, default: []
@@ -64,6 +77,17 @@ defmodule ExoUI.Components.Form do
       if assigns.multiple, do: field.name <> "[]", else: field.name
     end)
     |> assign_new(:value, fn -> field.value end)
+    |> input()
+  end
+
+  # Pozivalac bez `field`-a i bez `name`/`value`: kljucevi su odsutni (attr bez
+  # `default:`), pa bi `@name`/`@value` u tijelu podigli `KeyError`. Ovdje se
+  # popunjavaju `nil`-om — isto ponasanje koje je `default: nil` davao, samo bez
+  # obaranja `assign_new`-a u `field` klauzuli iznad.
+  def input(assigns) when not is_map_key(assigns, :value) or not is_map_key(assigns, :name) do
+    assigns
+    |> assign_new(:value, fn -> nil end)
+    |> assign_new(:name, fn -> nil end)
     |> input()
   end
 
@@ -407,7 +431,10 @@ defmodule ExoUI.Components.Form do
   """
   attr :id, :string, required: true
   attr :name, :any
-  attr :value, :any, default: nil
+  # `attr :value` NEMA `default:` — v. objasnjenje uz `input/1`. Sa `default:`
+  # bi `assign_new(:value, fn -> field.value end)` ispod bio mrtav, pa bi
+  # `<.select field={...}>` renderovao prazno umjesto vrijednosti polja.
+  attr :value, :any
   attr :options, :list, default: [], doc: "list of {label, value} tuples or option maps"
   attr :field, Phoenix.HTML.FormField, default: nil
   attr :label, :string, default: nil
@@ -439,6 +466,11 @@ defmodule ExoUI.Components.Form do
     |> assign_new(:name, fn -> field.name end)
     |> assign_new(:value, fn -> field.value end)
     |> select()
+  end
+
+  # Pozivalac bez `field`-a i bez `value`: v. istu klauzulu uz `input/1`.
+  def select(assigns) when not is_map_key(assigns, :value) do
+    assigns |> assign_new(:value, fn -> nil end) |> select()
   end
 
   def select(assigns) do
@@ -524,7 +556,10 @@ defmodule ExoUI.Components.Form do
   @doc "Renders a searchable combobox with client or server-side filtering."
   attr :id, :string, required: true
   attr :name, :any
-  attr :value, :any, default: nil
+  # `attr :value` NEMA `default:` — v. objasnjenje uz `input/1`. Sa `default:`
+  # bi `assign_new(:value, fn -> field.value end)` ispod bio mrtav, pa bi
+  # `<.combobox field={...}>` renderovao prazno umjesto vrijednosti polja.
+  attr :value, :any
   attr :options, :list, default: [], doc: "list of {label, value} tuples or option maps"
   attr :field, Phoenix.HTML.FormField, default: nil
   attr :label, :string, default: nil
@@ -565,6 +600,11 @@ defmodule ExoUI.Components.Form do
     |> assign_new(:name, fn -> field.name end)
     |> assign_new(:value, fn -> field.value end)
     |> combobox()
+  end
+
+  # Pozivalac bez `field`-a i bez `value`: v. istu klauzulu uz `input/1`.
+  def combobox(assigns) when not is_map_key(assigns, :value) do
+    assigns |> assign_new(:value, fn -> nil end) |> combobox()
   end
 
   def combobox(%{trigger: "input"} = assigns) do
