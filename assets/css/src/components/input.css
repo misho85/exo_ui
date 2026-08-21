@@ -75,51 +75,10 @@
   font-size: var(--exo-text-base);
 }
 
-/* Kad je polje u okviru (prefiks/sufiks/ikona), visinu drzi OKVIR, a polje u
-   njemu gubi svoj vodoravni razmak (pravilo nize). Zato okvir nosi isti
-   `data-size`. */
-:where([data-exo="input-frame"][data-size="sm"]) {
-  line-height: 1rem;
-  padding: var(--exo-space-1) var(--exo-space-2);
-  font-size: var(--exo-text-xs);
-}
-
-:where([data-exo="input-frame"][data-size="md"]) {
-  line-height: 1.25rem;
-  padding: var(--exo-space-2) var(--exo-space-3);
-  font-size: var(--exo-text-sm);
-}
-
-:where([data-exo="input-frame"][data-size="lg"]) {
-  line-height: 1.5rem;
-  padding: var(--exo-space-3) var(--exo-space-4);
-  font-size: var(--exo-text-base);
-}
-
-/* Polje unutar okvira ne dodaje SVOJ okomiti razmak — inace bi se sabrao sa
-   razmakom okvira i `sm` polje bi bilo vise od `md` samostalnog. */
-:where([data-exo="input-frame"] [data-exo="input"][data-size]) {
-  padding-block: 0;
-}
-
-/* Prefiks/sufiks prate velicinu okvira, ne fiksni `sm`. */
-:where([data-exo="input-frame"][data-size] [data-exo="input-prefix"]),
-:where([data-exo="input-frame"][data-size] [data-exo="input-suffix"]) {
-  font-size: inherit;
-}
-
-/* Zvjezdica uz natpis obaveznog polja. `aria-hidden` je u komponenti — ovdje
-   je samo boja i razmak. */
-:where([data-exo="label-required"]) {
-  color: var(--exo-danger);
-  margin-inline-start: 0.125rem;
-}
-
 :where([data-exo="input-frame"]) {
   display: flex;
   align-items: center;
   gap: var(--exo-space-2);
-  padding: 0 var(--exo-space-3);
   border: 1px solid var(--exo-input);
   border-radius: var(--exo-radius);
   background: var(--exo-background);
@@ -186,4 +145,55 @@
   font-family: var(--exo-font);
   font-size: var(--exo-text-xs);
   color: var(--exo-danger);
+}
+
+/* Kad je polje u okviru (prefiks/sufiks/ikona), visinu drzi OKVIR, a polje u
+   njemu gubi svoj okomiti razmak (pravilo nize). Zato okvir nosi isti
+   `data-size`.
+
+   Razmak je NAMJERNO skinut sa osnovnog pravila okvira i zive samo ovdje. Dok
+   je stajao i gore, dva pravila iste (nulte) specificnosti su se otimala o
+   isti svojstvo i odlucivao je REDOSLIJED u fajlu — osnovno je bilo nize, pa
+   je gazilo velicine i okvir je izlazio 22px umjesto 38px. Ovako redoslijed
+   ne igra ulogu. Okvir bez `data-size` (rucno napisan, mimo komponente)
+   pokriven je pravilom `:not([data-size])` ispod. */
+:where([data-exo="input-frame"]:not([data-size])) {
+  padding: var(--exo-space-2) var(--exo-space-3);
+}
+
+:where([data-exo="input-frame"][data-size="sm"]) {
+  line-height: 1rem;
+  padding: var(--exo-space-1) var(--exo-space-2);
+  font-size: var(--exo-text-xs);
+}
+
+:where([data-exo="input-frame"][data-size="md"]) {
+  line-height: 1.25rem;
+  padding: var(--exo-space-2) var(--exo-space-3);
+  font-size: var(--exo-text-sm);
+}
+
+:where([data-exo="input-frame"][data-size="lg"]) {
+  line-height: 1.5rem;
+  padding: var(--exo-space-3) var(--exo-space-4);
+  font-size: var(--exo-text-base);
+}
+
+/* Polje unutar okvira ne dodaje SVOJ okomiti razmak — inace bi se sabrao sa
+   razmakom okvira i `sm` polje bi bilo vise od `md` samostalnog. */
+:where([data-exo="input-frame"] [data-exo="input"][data-size]) {
+  padding-block: 0;
+}
+
+/* Prefiks/sufiks prate velicinu okvira, ne fiksni `sm`. */
+:where([data-exo="input-frame"][data-size] [data-exo="input-prefix"]),
+:where([data-exo="input-frame"][data-size] [data-exo="input-suffix"]) {
+  font-size: inherit;
+}
+
+/* Zvjezdica uz natpis obaveznog polja. `aria-hidden` je u komponenti — ovdje
+   je samo boja i razmak. */
+:where([data-exo="label-required"]) {
+  color: var(--exo-danger);
+  margin-inline-start: 0.125rem;
 }
