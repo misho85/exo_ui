@@ -46,6 +46,63 @@
   color: var(--exo-muted-foreground);
 }
 
+/* Gustina — ista ljestvica kao `btn` i `badge`, pa polje i dugme jedan pored
+   drugog stoje u istom redu bez rucnog stimovanja. `md` ponavlja vrijednosti
+   iz osnovnog pravila iznad namjerno: `data-size` je uvijek prisutan (attr ima
+   `default: "md"`), pa je ovdje eksplicitan da se ljestvica cita na jednom
+   mjestu. */
+:where([data-exo="input"][data-size="sm"]) {
+  padding: var(--exo-space-1) var(--exo-space-2);
+  font-size: var(--exo-text-xs);
+}
+
+:where([data-exo="input"][data-size="md"]) {
+  padding: var(--exo-space-2) var(--exo-space-3);
+  font-size: var(--exo-text-sm);
+}
+
+:where([data-exo="input"][data-size="lg"]) {
+  padding: var(--exo-space-3) var(--exo-space-4);
+  font-size: var(--exo-text-base);
+}
+
+/* Kad je polje u okviru (prefiks/sufiks/ikona), visinu drzi OKVIR, a polje u
+   njemu gubi svoj vodoravni razmak (pravilo nize). Zato okvir nosi isti
+   `data-size`. */
+:where([data-exo="input-frame"][data-size="sm"]) {
+  padding: var(--exo-space-1) var(--exo-space-2);
+  font-size: var(--exo-text-xs);
+}
+
+:where([data-exo="input-frame"][data-size="md"]) {
+  padding: var(--exo-space-2) var(--exo-space-3);
+  font-size: var(--exo-text-sm);
+}
+
+:where([data-exo="input-frame"][data-size="lg"]) {
+  padding: var(--exo-space-3) var(--exo-space-4);
+  font-size: var(--exo-text-base);
+}
+
+/* Polje unutar okvira ne dodaje SVOJ okomiti razmak — inace bi se sabrao sa
+   razmakom okvira i `sm` polje bi bilo vise od `md` samostalnog. */
+:where([data-exo="input-frame"] [data-exo="input"][data-size]) {
+  padding-block: 0;
+}
+
+/* Prefiks/sufiks prate velicinu okvira, ne fiksni `sm`. */
+:where([data-exo="input-frame"][data-size] [data-exo="input-prefix"]),
+:where([data-exo="input-frame"][data-size] [data-exo="input-suffix"]) {
+  font-size: inherit;
+}
+
+/* Zvjezdica uz natpis obaveznog polja. `aria-hidden` je u komponenti — ovdje
+   je samo boja i razmak. */
+:where([data-exo="label-required"]) {
+  color: var(--exo-danger);
+  margin-inline-start: 0.125rem;
+}
+
 :where([data-exo="input-frame"]) {
   display: flex;
   align-items: center;

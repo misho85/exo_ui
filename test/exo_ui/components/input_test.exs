@@ -30,9 +30,10 @@ defmodule ExoUI.Components.InputTest do
   value="1250"
   description="Monthly cap"
   errors={["is too high"]}
-  prefix="$"
-  suffix="USD"
-/>|)
+>
+  <:prefix>$</:prefix>
+  <:suffix>USD</:suffix>
+</.input>|)
 
     assert html =~ ~s(data-exo="input-frame")
     assert html =~ ~s(data-invalid)

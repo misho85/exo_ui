@@ -42,6 +42,27 @@
               box-shadow var(--exo-duration) var(--exo-easing);
 }
 
+/* Gustina okidaca — ista ljestvica kao `input` i `btn`. Visina je ovdje
+   FIKSNA (ne izvedena iz razmaka) jer je okidac dugme sa ikonom: bez fiksne
+   visine bi prazan izbor bio nizi od popunjenog. */
+:where([data-exo-select="trigger"][data-size="sm"]) {
+  height: 2rem;
+  padding: var(--exo-space-1) var(--exo-space-2);
+  font-size: var(--exo-text-xs);
+}
+
+:where([data-exo-select="trigger"][data-size="md"]) {
+  height: 2.5rem;
+  padding: var(--exo-space-2) var(--exo-space-3);
+  font-size: var(--exo-text-sm);
+}
+
+:where([data-exo-select="trigger"][data-size="lg"]) {
+  height: 3rem;
+  padding: var(--exo-space-3) var(--exo-space-4);
+  font-size: var(--exo-text-base);
+}
+
 :where([data-exo-select="trigger"]):focus {
   border-color: var(--exo-ring);
   box-shadow: 0 0 0 2px color-mix(in oklch, var(--exo-ring) 25%, transparent);
@@ -182,4 +203,55 @@
   [data-exo="popover-content"]:has([data-exo="select-menu"]) {
     min-width: 10rem;
   }
+}
+
+/* --- Nativni visestruki izbor ---
+ *
+ * `input/1` sa `type="select" multiple` NE moze kroz `select/1` (ExoUI-jev
+ * izbor je jednovrijednosni), pa pada na pravi <select multiple>. Do sada taj
+ * element nije imao NIJEDNO pravilo: stajao je kao golo polje brauzera medju
+ * stilizovanim poljima. Ovdje dobija istu ivicu, isti fokus i istu ljestvicu
+ * velicina kao `input`.
+ */
+:where([data-exo="select"]) {
+  width: 100%;
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  padding: var(--exo-space-2) var(--exo-space-3);
+  border: 1px solid var(--exo-input);
+  border-radius: var(--exo-radius);
+  background: var(--exo-background);
+  color: var(--exo-foreground);
+  outline: none;
+  transition: border-color var(--exo-duration) var(--exo-easing),
+    box-shadow var(--exo-duration) var(--exo-easing);
+}
+
+:where([data-exo="select"]):focus {
+  border-color: var(--exo-ring);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--exo-ring) 25%, transparent);
+}
+
+:where([data-exo="select"][data-invalid]) {
+  border-color: var(--exo-danger);
+}
+
+:where([data-exo="select"]):disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+:where([data-exo="select"][data-size="sm"]) {
+  padding: var(--exo-space-1) var(--exo-space-2);
+  font-size: var(--exo-text-xs);
+}
+
+:where([data-exo="select"][data-size="md"]) {
+  padding: var(--exo-space-2) var(--exo-space-3);
+  font-size: var(--exo-text-sm);
+}
+
+:where([data-exo="select"][data-size="lg"]) {
+  padding: var(--exo-space-3) var(--exo-space-4);
+  font-size: var(--exo-text-base);
 }

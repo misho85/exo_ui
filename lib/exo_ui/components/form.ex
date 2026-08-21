@@ -57,15 +57,29 @@ defmodule ExoUI.Components.Form do
   attr :prompt, :string, default: nil, doc: "the prompt for select inputs"
   attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
   attr :multiple, :boolean, default: false, doc: "the multiple flag for select inputs"
-  attr :prefix, :string, default: nil, doc: "text displayed before a text-like input value"
-  attr :suffix, :string, default: nil, doc: "text displayed after a text-like input value"
   attr :leading_icon, :string, default: nil, doc: "Lucide icon displayed before a text-like input"
   attr :trailing_icon, :string, default: nil, doc: "Lucide icon displayed after a text-like input"
   attr :class, :any, default: nil
 
+  attr :size, :string,
+    values: ~w(sm md lg),
+    default: "md",
+    doc: """
+    Visual density — height, padding and font-size, same scale as `button/1`
+    and `badge/1`. Emitted as `data-size`, styled by zero-specificity CSS.
+
+    Declaring this attr means `size=` no longer falls through to `@rest`, so
+    it shadows the native HTML `size=` (character width on text and select).
+    That native attribute is a legacy sizing hint the CSS overrides anyway —
+    use `class` if you genuinely need a character-width input.
+    """
+
   attr :rest, :global,
     include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
-    pattern placeholder readonly required rows size step)
+    pattern placeholder readonly required rows step)
+
+  slot :prefix, doc: "content rendered before a text-like input value, inside the same frame"
+  slot :suffix, doc: "content rendered after a text-like input value, inside the same frame"
 
   def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
     errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
@@ -139,10 +153,13 @@ defmodule ExoUI.Components.Form do
 
     ~H"""
     <div data-exo="field">
-      <label :if={@label} data-exo="label" for={@id}>{@label}</label>
+      <label :if={@label} data-exo="label" for={@id}>
+        {@label}<.required_marker :if={@rest[:required]} />
+      </label>
       <textarea
         id={@id}
         data-exo="input"
+        data-size={@size}
         data-invalid={@errors != [] && ""}
         aria-invalid={if @errors != [], do: "true"}
         aria-describedby={@describedby}
@@ -162,10 +179,13 @@ defmodule ExoUI.Components.Form do
 
     ~H"""
     <div data-exo="field">
-      <label :if={@label} data-exo="label" for={@id}>{@label}</label>
+      <label :if={@label} data-exo="label" for={@id}>
+        {@label}<.required_marker :if={@rest[:required]} />
+      </label>
       <select
         id={@id}
         data-exo="select"
+        data-size={@size}
         data-invalid={@errors != [] && ""}
         aria-invalid={if @errors != [], do: "true"}
         aria-describedby={@describedby}
@@ -202,6 +222,8 @@ defmodule ExoUI.Components.Form do
       prompt={@prompt}
       errors={@errors}
       disabled={@select_disabled}
+      required={@rest[:required] == true}
+      size={@size}
       class={@class}
       {@select_rest}
     />
@@ -216,22 +238,26 @@ defmodule ExoUI.Components.Form do
 
     ~H"""
     <div data-exo="field">
-      <label :if={@label} data-exo="label" for={@id}>{@label}</label>
+      <label :if={@label} data-exo="label" for={@id}>
+        {@label}<.required_marker :if={@rest[:required]} />
+      </label>
 
       <div
         :if={@adorned}
         data-exo="input-frame"
+        data-size={@size}
         data-invalid={@errors != [] && ""}
         data-disabled={@rest[:disabled] && ""}
       >
         <span :if={@leading_icon} data-exo="input-icon" data-position="leading" aria-hidden="true">
           <.icon name={@leading_icon} class="size-4" />
         </span>
-        <span :if={@prefix} data-exo="input-prefix">{@prefix}</span>
+        <span :if={@prefix != []} data-exo="input-prefix">{render_slot(@prefix)}</span>
         <input
           id={@id}
           data-exo="input"
           data-adorned
+          data-size={@size}
           data-invalid={@errors != [] && ""}
           aria-invalid={if @errors != [], do: "true"}
           aria-describedby={@describedby}
@@ -241,7 +267,7 @@ defmodule ExoUI.Components.Form do
           class={@class}
           {@rest}
         />
-        <span :if={@suffix} data-exo="input-suffix">{@suffix}</span>
+        <span :if={@suffix != []} data-exo="input-suffix">{render_slot(@suffix)}</span>
         <span :if={@trailing_icon} data-exo="input-icon" data-position="trailing" aria-hidden="true">
           <.icon name={@trailing_icon} class="size-4" />
         </span>
@@ -251,6 +277,7 @@ defmodule ExoUI.Components.Form do
         :if={!@adorned}
         id={@id}
         data-exo="input"
+        data-size={@size}
         data-invalid={@errors != [] && ""}
         aria-invalid={if @errors != [], do: "true"}
         aria-describedby={@describedby}
@@ -447,6 +474,11 @@ defmodule ExoUI.Components.Form do
   attr :align, :string, values: ~w(start center end), default: "start"
   attr :class, :any, default: nil
 
+  attr :size, :string,
+    values: ~w(sm md lg),
+    default: "md",
+    doc: "visual density of the trigger — same scale as `input/1` and `button/1`"
+
   attr :rest, :global,
     doc: "`phx-*` go to the native <select> (see moduledoc); everything else to the wrapper"
 
@@ -478,13 +510,16 @@ defmodule ExoUI.Components.Form do
 
     ~H"""
     <div data-exo="field" class={@class} {@wrapper_rest}>
-      <label :if={@label} data-exo="label" id={@label_id}>{@label}</label>
+      <label :if={@label} data-exo="label" id={@label_id}>
+        {@label}<.required_marker :if={@required} />
+      </label>
       <div data-exo="popover" phx-hook="ExoSelect" id={"#{@id}-select"}>
         <button
           type="button"
           popovertarget={@id}
           data-exo="popover-trigger"
           data-exo-select="trigger"
+          data-size={@size}
           data-invalid={@errors != [] && ""}
           aria-invalid={if @errors != [], do: "true"}
           aria-describedby={@describedby}
@@ -1067,11 +1102,32 @@ defmodule ExoUI.Components.Form do
     end
   end
 
+  # `prefix`/`suffix` su SLOTOVI, pa je prazan slot `[]` — a `present?([])` je
+  # `true` (prazna lista nije ni `nil` ni `""`). Zato se slotovi provjeravaju
+  # `!= []`, ne kroz `present?/1`: inace bi SVAKI input dobio okvir
+  # (`input-frame`) i dvostruku ivicu.
+  @doc """
+  Marks a required field on its label.
+
+  Rendered by `input/1` and `select/1` when the caller passes `required`, so
+  every required field in an app is marked the same way instead of each call
+  site appending its own asterisk.
+
+  The marker is `aria-hidden` ON PURPOSE and carries no text. Requiredness is
+  already announced from the native `required` attribute on the control
+  itself, so a screen reader that also read the marker would say it twice —
+  and any wording here would be a hardcoded English string in a library that
+  has no say in the host application's language.
+  """
+  def required_marker(assigns) do
+    ~H"""
+    <span data-exo="label-required" aria-hidden="true">*</span>
+    """
+  end
+
   defp input_adorned?(assigns) do
-    Enum.any?(
-      [assigns[:prefix], assigns[:suffix], assigns[:leading_icon], assigns[:trailing_icon]],
-      &present?/1
-    )
+    assigns[:prefix] not in [nil, []] or assigns[:suffix] not in [nil, []] or
+      present?(assigns[:leading_icon]) or present?(assigns[:trailing_icon])
   end
 
   defp radio_item_id(nil, _value), do: nil
