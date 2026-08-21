@@ -184,7 +184,7 @@ defmodule ExoUI.Components.DataDisplay do
           <span data-exo="stat-card-value">{@value}</span>
         </div>
         <div :if={@icon} data-exo="stat-card-icon" aria-hidden="true">
-          <.icon name={@icon} class="size-5" />
+          <.icon name={@icon} size="md" />
         </div>
       </div>
       <div :if={@subtitle || @trend} data-exo="stat-card-bottom">
@@ -257,7 +257,7 @@ defmodule ExoUI.Components.DataDisplay do
             aria-current={step.status == :current && "step"}
           >
             <span data-exo="wizard-indicator" aria-hidden="true">
-              <.icon :if={step.status == :completed} name="check" class="size-4" />
+              <.icon :if={step.status == :completed} name="check" size="sm" />
               <span :if={step.status != :completed}>{idx + 1}</span>
             </span>
             <span data-exo="wizard-label">{step.label}</span>
@@ -316,7 +316,7 @@ defmodule ExoUI.Components.DataDisplay do
       <ol>
         <li :for={{item, idx} <- Enum.with_index(@item)} data-exo="breadcrumb-item">
           <span :if={idx > 0 && @render_separator} data-exo="breadcrumb-separator" aria-hidden="true">
-            <.icon :if={@separator == nil} name={@separator_icon} class="size-3" />
+            <.icon :if={@separator == nil} name={@separator_icon} size="xs" />
             <span :if={@separator != nil}>{@separator}</span>
           </span>
           <.link
@@ -415,7 +415,7 @@ defmodule ExoUI.Components.DataDisplay do
           tabindex="-1"
         >
           <span :if={tab[:icon]} data-exo="tab-icon" aria-hidden="true">
-            <.icon name={tab.icon} class="size-4" />
+            <.icon name={tab.icon} size="sm" />
           </span>
           {tab.label}
         </span>
@@ -434,7 +434,7 @@ defmodule ExoUI.Components.DataDisplay do
           tabindex={tab_tabindex(tab, @active)}
         >
           <span :if={tab[:icon]} data-exo="tab-icon" aria-hidden="true">
-            <.icon name={tab.icon} class="size-4" />
+            <.icon name={tab.icon} size="sm" />
           </span>
           {tab.label}
         </button>
@@ -451,7 +451,7 @@ defmodule ExoUI.Components.DataDisplay do
           tabindex={tab_tabindex(tab, @active)}
         >
           <span :if={tab[:icon]} data-exo="tab-icon" aria-hidden="true">
-            <.icon name={tab.icon} class="size-4" />
+            <.icon name={tab.icon} size="sm" />
           </span>
           {tab.label}
         </.link>
@@ -538,7 +538,7 @@ defmodule ExoUI.Components.DataDisplay do
         patch={@patch_fn.(@page - 1)}
         aria-label={@prev_label}
       >
-        <.icon name="chevron-left" class="size-4" />
+        <.icon name="chevron-left" size="sm" />
       </.link>
       <button
         :if={@page > 1 && @on_click}
@@ -549,7 +549,7 @@ defmodule ExoUI.Components.DataDisplay do
         phx-target={@target}
         aria-label={@prev_label}
       >
-        <.icon name="chevron-left" class="size-4" />
+        <.icon name="chevron-left" size="sm" />
       </button>
       <button
         :if={@page <= 1}
@@ -560,7 +560,7 @@ defmodule ExoUI.Components.DataDisplay do
         aria-label={@prev_label}
         disabled
       >
-        <.icon name="chevron-left" class="size-4" />
+        <.icon name="chevron-left" size="sm" />
       </button>
 
       <%= for item <- @range do %>
@@ -600,7 +600,7 @@ defmodule ExoUI.Components.DataDisplay do
         patch={@patch_fn.(@page + 1)}
         aria-label={@next_label}
       >
-        <.icon name="chevron-right" class="size-4" />
+        <.icon name="chevron-right" size="sm" />
       </.link>
       <button
         :if={@page < @total_pages && @on_click}
@@ -611,7 +611,7 @@ defmodule ExoUI.Components.DataDisplay do
         phx-target={@target}
         aria-label={@next_label}
       >
-        <.icon name="chevron-right" class="size-4" />
+        <.icon name="chevron-right" size="sm" />
       </button>
       <button
         :if={@page >= @total_pages}
@@ -622,7 +622,7 @@ defmodule ExoUI.Components.DataDisplay do
         aria-label={@next_label}
         disabled
       >
-        <.icon name="chevron-right" class="size-4" />
+        <.icon name="chevron-right" size="sm" />
       </button>
     </nav>
     """
@@ -821,7 +821,7 @@ defmodule ExoUI.Components.DataDisplay do
         disabled={@slide_count <= 1}
         data-disabled={@slide_count <= 1 && ""}
       >
-        <.icon name="chevron-left" class="size-4" />
+        <.icon name="chevron-left" size="sm" />
       </button>
       <button
         :if={@controls}
@@ -832,7 +832,7 @@ defmodule ExoUI.Components.DataDisplay do
         disabled={@slide_count <= 1}
         data-disabled={@slide_count <= 1 && ""}
       >
-        <.icon name="chevron-right" class="size-4" />
+        <.icon name="chevron-right" size="sm" />
       </button>
     </div>
     """

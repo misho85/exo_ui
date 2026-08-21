@@ -250,7 +250,7 @@ defmodule ExoUI.Components.Form do
         data-disabled={@rest[:disabled] && ""}
       >
         <span :if={@leading_icon} data-exo="input-icon" data-position="leading" aria-hidden="true">
-          <.icon name={@leading_icon} class="size-4" />
+          <.icon name={@leading_icon} size="sm" />
         </span>
         <span :if={@prefix != []} data-exo="input-prefix">{render_slot(@prefix)}</span>
         <input
@@ -269,7 +269,7 @@ defmodule ExoUI.Components.Form do
         />
         <span :if={@suffix != []} data-exo="input-suffix">{render_slot(@suffix)}</span>
         <span :if={@trailing_icon} data-exo="input-icon" data-position="trailing" aria-hidden="true">
-          <.icon name={@trailing_icon} class="size-4" />
+          <.icon name={@trailing_icon} size="sm" />
         </span>
       </div>
 
@@ -321,7 +321,7 @@ defmodule ExoUI.Components.Form do
         {@rest}
       />
       <span data-exo="checkbox-indicator" aria-hidden="true">
-        <.icon name="check" class="size-3" />
+        <.icon name="check" size="xs" />
       </span>
       <span :if={@label}>{@label}</span>
     </label>
@@ -538,7 +538,7 @@ defmodule ExoUI.Components.Form do
             <% end %>
           </span>
           <span data-exo="select-icon" aria-hidden="true">
-            <.icon name="chevron-down" class="size-4" />
+            <.icon name="chevron-down" size="sm" />
           </span>
         </button>
         <div
@@ -565,7 +565,7 @@ defmodule ExoUI.Components.Form do
               aria-disabled="false"
               tabindex="-1"
             >
-              <span data-exo="select-check"><.icon name="check" class="size-4" /></span>
+              <span data-exo="select-check"><.icon name="check" size="sm" /></span>
               {@prompt}
             </div>
             <.choice_option_groups kind="select" grouped={@grouped} value={@value} />
@@ -754,7 +754,7 @@ defmodule ExoUI.Components.Form do
               <% end %>
             </span>
             <span data-exo="combobox-icon" aria-hidden="true">
-              <.icon name="chevrons-up-down" class="size-4" />
+              <.icon name="chevrons-up-down" size="sm" />
             </span>
           </button>
           <button
@@ -764,7 +764,7 @@ defmodule ExoUI.Components.Form do
             aria-label="Clear"
             disabled={@disabled}
           >
-            <.icon name="x" class="size-3" />
+            <.icon name="x" size="xs" />
           </button>
         </div>
         <div
@@ -854,9 +854,9 @@ defmodule ExoUI.Components.Form do
       tabindex="-1"
     >
       <span :if={opt[:icon]} data-exo={@kind <> "-option-icon"}>
-        <.icon name={opt.icon} class="size-4" />
+        <.icon name={opt.icon} size="sm" />
       </span>
-      <span data-exo={@kind <> "-check"}><.icon name="check" class="size-4" /></span>
+      <span data-exo={@kind <> "-check"}><.icon name="check" size="sm" /></span>
       <.choice_option_label option={opt} />
     </div>
     """
@@ -1451,7 +1451,7 @@ defmodule ExoUI.Components.Form do
             disabled={!@can_prev || @disabled}
             data-disabled={(!@can_prev || @disabled) && ""}
           >
-            <.icon name="chevron-left" class="size-4" />
+            <.icon name="chevron-left" size="sm" />
           </button>
           <span id={@month_id} data-exo="date-picker-month" aria-live="polite">
             {@month_label}
@@ -1465,7 +1465,7 @@ defmodule ExoUI.Components.Form do
             disabled={!@can_next || @disabled}
             data-disabled={(!@can_next || @disabled) && ""}
           >
-            <.icon name="chevron-right" class="size-4" />
+            <.icon name="chevron-right" size="sm" />
           </button>
         </div>
 

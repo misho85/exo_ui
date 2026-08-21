@@ -68,7 +68,7 @@ defmodule ExoUI.Components.Feedback do
         <p id={@message_id} data-exo="flash-message">{msg}</p>
       </div>
       <button type="button" data-exo="flash-close" aria-label={@close_label} phx-click={@dismiss}>
-        <.icon name="x" class="size-4" />
+        <.icon name="x" size="sm" />
       </button>
     </div>
     """
@@ -158,7 +158,7 @@ defmodule ExoUI.Components.Feedback do
           phx-click={Phoenix.LiveView.JS.hide(to: "##{dom_id}")}
           aria-label={@close_label}
         >
-          <.icon name="x" class="size-4" />
+          <.icon name="x" size="sm" />
         </button>
       </div>
     </div>
@@ -214,7 +214,7 @@ defmodule ExoUI.Components.Feedback do
       {@rest}
     >
       <div :if={@icon} data-exo="alert-icon">
-        <.icon name={@icon} class="size-4" />
+        <.icon name={@icon} size="sm" />
       </div>
       <div data-exo="alert-content">
         <p :if={@title} id={@title_id} data-exo="alert-title">{@title}</p>

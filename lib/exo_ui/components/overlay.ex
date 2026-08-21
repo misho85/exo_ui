@@ -54,7 +54,7 @@ defmodule ExoUI.Components.Overlay do
             phx-click={maybe_hide_modal(@on_cancel, @id, @close_on_cancel)}
             aria-label="Close"
           >
-            <.icon name="x" class="size-4" />
+            <.icon name="x" size="sm" />
           </button>
         </div>
         <div id={"#{@id}-body"} data-exo="modal-body">
@@ -230,11 +230,11 @@ defmodule ExoUI.Components.Overlay do
                 tabindex={if entry[:disabled], do: "-1"}
               >
                 <span :if={entry[:icon]} data-exo="dropdown-item-icon">
-                  <.icon name={entry.icon} class="size-4" />
+                  <.icon name={entry.icon} size="sm" />
                 </span>
                 <span data-exo="dropdown-item-label">{render_slot(entry)}</span>
                 <span data-exo="dropdown-item-chevron" aria-hidden="true">
-                  <.icon name="chevron-right" class="size-4" />
+                  <.icon name="chevron-right" size="sm" />
                 </span>
               </button>
             <% entry[:navigate] || entry[:patch] || entry[:href] -> %>
@@ -250,7 +250,7 @@ defmodule ExoUI.Components.Overlay do
                 href={entry[:href]}
               >
                 <span :if={entry[:icon]} data-exo="dropdown-item-icon">
-                  <.icon name={entry.icon} class="size-4" />
+                  <.icon name={entry.icon} size="sm" />
                 </span>
                 <span data-exo="dropdown-item-label">{render_slot(entry)}</span>
                 <kbd :if={entry[:shortcut]} data-exo="dropdown-item-shortcut">{entry.shortcut}</kbd>
@@ -270,7 +270,7 @@ defmodule ExoUI.Components.Overlay do
                 tabindex={if entry[:disabled], do: "-1"}
               >
                 <span :if={entry[:icon]} data-exo="dropdown-item-icon">
-                  <.icon name={entry.icon} class="size-4" />
+                  <.icon name={entry.icon} size="sm" />
                 </span>
                 <span data-exo="dropdown-item-label">{render_slot(entry)}</span>
                 <kbd :if={entry[:shortcut]} data-exo="dropdown-item-shortcut">{entry.shortcut}</kbd>
@@ -447,7 +447,7 @@ defmodule ExoUI.Components.Overlay do
             phx-click={@on_cancel |> hide_drawer(@id)}
             aria-label="Close"
           >
-            <.icon name="x" class="size-4" />
+            <.icon name="x" size="sm" />
           </button>
         </div>
         <div id={"#{@id}-body"} data-exo="drawer-body">
@@ -527,7 +527,7 @@ defmodule ExoUI.Components.Overlay do
           aria-label="Close"
           phx-click={hide_sheet(@on_cancel, @id)}
         >
-          <.icon name="x" class="size-4" />
+          <.icon name="x" size="sm" />
         </button>
       </div>
     </div>
@@ -689,7 +689,7 @@ defmodule ExoUI.Components.Overlay do
           <.icon
             name="search"
             data-exo="command-palette-search-icon"
-            class="size-4"
+            size="sm"
           />
           <input
             type="text"

@@ -11,7 +11,11 @@ defmodule ExoUI.Components.IconTest do
     assert html =~ ~s(data-exo="icon")
     assert html =~ ~s(aria-hidden="true")
     assert html =~ ~s(focusable="false")
-    assert html =~ "size-4"
+    # Do 2026-08-21 je podrazumijevana velicina bila KLASA `size-4`. Sada je
+    # `size="sm"` -> `data-size="sm"`, iste mjere (1rem), ali kroz atribut kao
+    # kod svakog drugog primitiva.
+    assert html =~ ~s(data-size="sm")
+    refute html =~ "size-4"
     refute html =~ ~s(data-missing-icon=)
   end
 
@@ -19,6 +23,25 @@ defmodule ExoUI.Components.IconTest do
     assigns = %{}
     html = rendered_to_string(~H|<.icon name="check" class="size-6" />|)
     assert html =~ "size-6"
+  end
+
+  describe "size=" do
+    test "svaka velicina stize do ispisa" do
+      for size <- ~w(xs sm md lg xl) do
+        assigns = %{s: size}
+        html = rendered_to_string(~H|<.icon name="check" size={@s} />|)
+        assert html =~ ~s(data-size="#{size}")
+      end
+    end
+
+    test "`class` i dalje radi, za mjeru van ljestvice" do
+      assigns = %{}
+      html = rendered_to_string(~H|<.icon name="check" size="xl" class="size-20" />|)
+      # oba su u ispisu; u CSS-u `.size-N` dolazi poslije `data-size`, pa klasa
+      # pobjedjuje — `class` je izlaz iz ljestvice, ne njena zamjena
+      assert html =~ ~s(data-size="xl")
+      assert html =~ "size-20"
+    end
   end
 
   test "renders accessible icon when aria attributes are provided" do

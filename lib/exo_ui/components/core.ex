@@ -77,7 +77,7 @@ defmodule ExoUI.Components.Core do
   def badge(assigns) do
     ~H"""
     <span data-exo="badge" data-variant={@variant} data-size={@size} class={@class} {@rest}>
-      <.icon :if={@icon} name={@icon} class="size-3" />
+      <.icon :if={@icon} name={@icon} size="xs" />
       {render_slot(@inner_block)}
     </span>
     """
@@ -106,9 +106,31 @@ defmodule ExoUI.Components.Core do
     """
   end
 
-  @doc "Renders a Lucide icon by name."
+  @doc """
+  Renders a Lucide icon by name.
+
+  ## `size`, not a class
+
+  Until 2026-08-21 the only way to size an icon was `class="size-4"` — and the
+  attr's own DEFAULT was that class. Two things were wrong with it.
+
+  First, it made the library speak Tailwind. `icon/1` is the only primitive
+  whose size did not go through `size=` + `data-size` like `button/1`,
+  `badge/1`, `avatar/1` and `spinner/1`, so it was also the only one an
+  application had to size by hand at every call site — 156 of them in trg24.
+
+  Second, a class is a different kind of thing from an attribute when the
+  cascade changes. `:where()` rules carry zero specificity, so the moment an
+  application puts `exo.css` into a Tailwind layer, every stray utility class
+  on a primitive wakes up at once. That is not hypothetical: it happened, and
+  it shrank every control on 41 screens (trg24 §7.13).
+
+  `class` still works and still wins — for the rare icon that needs a size
+  outside the scale.
+  """
   attr :name, :string, required: true
-  attr :class, :any, default: "size-4"
+  attr :size, :string, values: ~w(xs sm md lg xl), default: "sm"
+  attr :class, :any, default: nil
   attr :rest, :global, include: ~w(focusable role)
 
   def icon(assigns) do
@@ -145,6 +167,7 @@ defmodule ExoUI.Components.Core do
   defp icon_rest(assigns) do
     assigns.rest
     |> Map.put(:class, assigns.class)
+    |> Map.put(:"data-size", assigns[:size])
     |> put_rest_default(:"data-exo", "icon")
     |> put_rest_default(:"aria-hidden", "true")
     |> put_rest_default(:focusable, "false")
@@ -202,7 +225,7 @@ defmodule ExoUI.Components.Core do
         aria-label="Light theme"
         aria-pressed="false"
       >
-        <.icon name="sun" class="size-4" />
+        <.icon name="sun" size="sm" />
       </button>
       <button
         type="button"
@@ -211,7 +234,7 @@ defmodule ExoUI.Components.Core do
         aria-label="Dark theme"
         aria-pressed="false"
       >
-        <.icon name="moon" class="size-4" />
+        <.icon name="moon" size="sm" />
       </button>
       <button
         type="button"
@@ -220,7 +243,7 @@ defmodule ExoUI.Components.Core do
         aria-label="System theme"
         aria-pressed="false"
       >
-        <.icon name="monitor" class="size-4" />
+        <.icon name="monitor" size="sm" />
       </button>
     </div>
     """
@@ -524,7 +547,7 @@ defmodule ExoUI.Components.Core do
         aria-current={item[:active] && "page"}
       >
         <span :if={item[:icon]} data-exo="bottom-nav-icon" aria-hidden="true">
-          <.icon name={item.icon} class="size-5" />
+          <.icon name={item.icon} size="md" />
         </span>
         <span data-exo="bottom-nav-label">{item.label}</span>
       </button>
@@ -539,7 +562,7 @@ defmodule ExoUI.Components.Core do
         aria-current={item[:active] && "page"}
       >
         <span :if={item[:icon]} data-exo="bottom-nav-icon" aria-hidden="true">
-          <.icon name={item.icon} class="size-5" />
+          <.icon name={item.icon} size="md" />
         </span>
         <span data-exo="bottom-nav-label">{item.label}</span>
       </.link>
