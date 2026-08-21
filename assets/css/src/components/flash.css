@@ -161,3 +161,20 @@
 :where([data-exo="toast-close"]):hover {
   color: var(--exo-foreground);
 }
+
+/* Ikona nosi VRSTU poruke kad boja ne moze — daltonisti, i u temi u kojoj su
+   „uspjeh" i „upozorenje" blizu. Zato je podrazumijevana, a ne opcija.
+   Velicina je zadana ovdje, ne klasom na komponenti: klasa bi zavisila od toga
+   da li domacin uopste ima Tailwind. */
+:where([data-exo="flash-icon"]) {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  /* poravnato sa prvim redom teksta, ne sa sredinom kutije */
+  margin-top: 0.125rem;
+}
+
+:where([data-exo="flash-icon"]) svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}

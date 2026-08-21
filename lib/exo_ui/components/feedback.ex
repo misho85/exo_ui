@@ -13,6 +13,19 @@ defmodule ExoUI.Components.Feedback do
   attr :title, :string, default: nil
   attr :kind, :atom, required: true, values: [:info, :success, :warning, :error]
   attr :close_label, :string, default: "Dismiss notification"
+
+  attr :icon, :any,
+    default: :default,
+    doc: """
+    Lucide icon name shown before the message. `:default` picks one from
+    `kind`; `nil` renders no icon.
+
+    A flash is read at a glance, often while the eye is somewhere else on the
+    page. The icon is what carries `kind` when colour cannot — for a
+    colour-blind reader, and in any theme where success and warning sit close
+    together.
+    """
+
   attr :rest, :global
   slot :inner_block
 
@@ -28,7 +41,8 @@ defmodule ExoUI.Components.Feedback do
         message_id: "#{id}-message",
         dismiss:
           Phoenix.LiveView.JS.push("lv:clear-flash", value: %{key: assigns.kind})
-          |> Phoenix.LiveView.JS.hide(to: "##{id}")
+          |> Phoenix.LiveView.JS.hide(to: "##{id}"),
+        icon_name: flash_icon(assigns[:icon], assigns.kind)
       )
 
     ~H"""
@@ -46,6 +60,9 @@ defmodule ExoUI.Components.Feedback do
       aria-describedby={@message_id}
       {@rest}
     >
+      <span :if={@icon_name} data-exo="flash-icon" aria-hidden="true">
+        <.icon name={@icon_name} />
+      </span>
       <div data-exo="flash-content">
         <p :if={@title} id={@title_id} data-exo="flash-title">{@title}</p>
         <p id={@message_id} data-exo="flash-message">{msg}</p>
@@ -147,6 +164,14 @@ defmodule ExoUI.Components.Feedback do
     </div>
     """
   end
+
+  # `:default` bira ikonu po vrsti; `nil` je izricito „bez ikone".
+  defp flash_icon(:default, :info), do: "info"
+  defp flash_icon(:default, :success), do: "circle-check"
+  defp flash_icon(:default, :warning), do: "triangle-alert"
+  defp flash_icon(:default, :error), do: "circle-alert"
+  defp flash_icon(:default, _), do: "info"
+  defp flash_icon(name, _kind), do: name
 
   defp feedback_role(kind) when kind in [:error, :warning, "error", "warning"], do: "alert"
   defp feedback_role(_kind), do: "status"
