@@ -20,6 +20,39 @@
 :where([data-exo="icon"][data-size="lg"]) { width: 1.5rem; height: 1.5rem; }
 :where([data-exo="icon"][data-size="xl"]) { width: 2rem; height: 2rem; }
 
+/* Ikona u dugmetu prati DUGME, ne svoju zadanu mjeru.
+ *
+ * Do 2026-08-21 je bila fiksnih 16px, a dugme ima `line-height: 1` — pa je
+ * ikona bila visa od reda teksta i sama je odredjivala visinu dugmeta. Dvije
+ * posljedice, obje izmjerene u trg24 na /products:
+ *
+ *   1. Isto dugme sa ikonom je bilo 26px, bez ikone 24px — u istom redu.
+ *   2. `xs` i `sm` dugme su bili ISTE visine cim imaju ikonu, jer im je
+ *      okomiti razmak isti (`space-1`) a razlikuju se samo po velicini pisma.
+ *      Skala je time bila prividna.
+ *
+ * `1em` rjesava oboje: ikona je tacno visoka koliko i red teksta, pa visinu
+ * dugmeta odredjuje iskljucivo njegova sopstvena mjera.
+ *
+ * Pravilo gadja SAMO ikone na podrazumijevanoj velicini (`sm`). Ko izricito
+ * napise `size="lg"` unutar dugmeta i dalje dobija veliku ikonu — to je onda
+ * njegova odluka, ne slucajnost. */
+:where([data-exo="btn"] [data-exo="icon"][data-size="sm"]) {
+  width: 1em;
+  height: 1em;
+}
+
+/* Pravilo NAMJERNO zivi u `icon.css`, ne u `button.css`.
+ *
+ * Oba su `:where()` (nulta specificnost), pa odlucuje REDOSLIJED u
+ * `exo.css` — a `icon.css` se uvozi POSLIJE `button.css`. Dok je stajalo
+ * tamo, ikonino sopstveno `[data-size="sm"] { width: 1rem }` ga je gazilo i
+ * pravilo nije radilo nista.
+ *
+ * Ovdje stoji IZA `data-size` pravila (pa ih nadjacava) i ISPRED `.size-N`
+ * kompatibilnosti (pa `class="size-6"` u dugmetu i dalje pobjedjuje —
+ * izlaz iz ljestvice ostaje otvoren). */
+
 /* Zatecena `.size-N` pravila OSTAJU: pozivalac kojem treba mjera van ljestvice
    (`size-10`, `size-20` za veliku ikonu praznog stanja) i dalje pise klasu, a
    ova pravila mu je poklapaju i kad domacin nema Tailwind. Klasa dolazi POSLIJE
