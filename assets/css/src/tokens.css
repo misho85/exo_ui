@@ -40,6 +40,12 @@
   --exo-text-base: 1rem;
   --exo-text-lg: 1.125rem;
   --exo-text-xl: 1.25rem;
+  /* 2xl i 3xl su dodati 2026-08-21: ljestvica je stajala na `xl`, pa je svaki
+     naslov strane i svaka velika brojka morala da se zada mimo tokena. trg24 ih
+     je zbog toga dopisivao u svom `tokens.css` — a token koji aplikacija mora
+     sama da izmisli nije token nego rupa. Vrijednosti su iste. */
+  --exo-text-2xl: 1.5rem;
+  --exo-text-3xl: 1.875rem;
   --exo-shadow-sm: 0 1px 2px oklch(0% 0 0 / 0.05);
   --exo-shadow-md: 0 4px 6px -1px oklch(0% 0 0 / 0.1);
   --exo-shadow-lg: 0 10px 15px -3px oklch(0% 0 0 / 0.1);

@@ -226,19 +226,35 @@ defmodule ExoUI.Components.Core do
     """
   end
 
-  @doc "Renders a page header with title, optional subtitle, and action buttons."
+  @doc """
+  Renders a page header with title, optional subtitle, and action buttons.
+
+  A page header is separated from the content below it by a rule. That is the
+  default, not an option: without it the title floats and the page reads as one
+  undifferentiated column. Pass `separator={false}` for the rare header that
+  sits inside a card or panel that already provides its own edge.
+  """
   attr :class, :any, default: nil
+
+  attr :separator, :boolean,
+    default: true,
+    doc: "draws the rule below the header; turn off inside a bordered container"
+
   attr :rest, :global
   slot :inner_block, required: true
   slot :subtitle
   slot :actions
+  slot :leading, doc: "sits LEFT of the title — a back button, an avatar, a status dot"
 
   def header(assigns) do
     ~H"""
-    <header data-exo="header" class={@class} {@rest}>
-      <div data-exo="header-text">
-        <h1 data-exo="header-title">{render_slot(@inner_block)}</h1>
-        <p :if={@subtitle != []} data-exo="header-subtitle">{render_slot(@subtitle)}</p>
+    <header data-exo="header" data-separator={@separator && ""} class={@class} {@rest}>
+      <div data-exo="header-lead">
+        <div :if={@leading != []} data-exo="header-leading">{render_slot(@leading)}</div>
+        <div data-exo="header-text">
+          <h1 data-exo="header-title">{render_slot(@inner_block)}</h1>
+          <p :if={@subtitle != []} data-exo="header-subtitle">{render_slot(@subtitle)}</p>
+        </div>
       </div>
       <div :if={@actions != []} data-exo="header-actions">{render_slot(@actions)}</div>
     </header>
