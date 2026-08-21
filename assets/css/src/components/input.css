@@ -14,6 +14,12 @@
 :where([data-exo="input"]) {
   font-family: var(--exo-font);
   font-size: var(--exo-text-sm);
+  /* `line-height` je EKSPLICITAN namjerno. Bez njega kontrola nasljedjuje
+     prored stranice domacina, pa je ista komponenta u dvije aplikacije razlicito
+     visoka — a i u istoj aplikaciji se pomjeri kad neko promijeni prored na
+     `body`. Vrijednosti prate istu ljestvicu kao velicine teksta:
+     xs->1rem, sm->1.25rem, base->1.5rem. */
+  line-height: 1.25rem;
   padding: var(--exo-space-2) var(--exo-space-3);
   border: 1px solid var(--exo-input);
   border-radius: var(--exo-radius);
@@ -52,16 +58,19 @@
    `default: "md"`), pa je ovdje eksplicitan da se ljestvica cita na jednom
    mjestu. */
 :where([data-exo="input"][data-size="sm"]) {
+  line-height: 1rem;
   padding: var(--exo-space-1) var(--exo-space-2);
   font-size: var(--exo-text-xs);
 }
 
 :where([data-exo="input"][data-size="md"]) {
+  line-height: 1.25rem;
   padding: var(--exo-space-2) var(--exo-space-3);
   font-size: var(--exo-text-sm);
 }
 
 :where([data-exo="input"][data-size="lg"]) {
+  line-height: 1.5rem;
   padding: var(--exo-space-3) var(--exo-space-4);
   font-size: var(--exo-text-base);
 }
@@ -70,16 +79,19 @@
    njemu gubi svoj vodoravni razmak (pravilo nize). Zato okvir nosi isti
    `data-size`. */
 :where([data-exo="input-frame"][data-size="sm"]) {
+  line-height: 1rem;
   padding: var(--exo-space-1) var(--exo-space-2);
   font-size: var(--exo-text-xs);
 }
 
 :where([data-exo="input-frame"][data-size="md"]) {
+  line-height: 1.25rem;
   padding: var(--exo-space-2) var(--exo-space-3);
   font-size: var(--exo-text-sm);
 }
 
 :where([data-exo="input-frame"][data-size="lg"]) {
+  line-height: 1.5rem;
   padding: var(--exo-space-3) var(--exo-space-4);
   font-size: var(--exo-text-base);
 }
