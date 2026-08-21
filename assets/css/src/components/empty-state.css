@@ -7,10 +7,31 @@
   text-align: center;
 }
 
+/* Ikona stoji u prigusenom krugu, ne gola.
+ *
+ * Razlog nije ukus nego mjera: prazno stanje je najcesce JEDINI sadrzaj na
+ * ekranu, pa gola ikona ostavlja stranicu koja izgleda kao da se nije ucitala.
+ * Krug daje sidro oku i cini da prazno stanje izgleda kao NAMJERA, a ne kao
+ * kvar.
+ *
+ * Velicina ikone je zadana OVDJE, a ne klasom na komponenti: klasa bi zavisila
+ * od toga da li domacin uopste ima Tailwind i da li je bas ta klasa ispala u
+ * njegov izlaz. Biblioteka ne smije da racuna na tudji build. */
 :where([data-exo="empty-state-icon"]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  background: var(--exo-muted);
   color: var(--exo-muted-foreground);
   margin-bottom: var(--exo-space-4);
-  font-size: 2rem;
+}
+
+:where([data-exo="empty-state-icon"]) svg {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 :where([data-exo="empty-state-title"]) {
