@@ -379,7 +379,7 @@ defmodule ExoUI.Components.Core do
     ~H"""
     <div data-exo="empty-state" class={@class} {@rest}>
       <div :if={@icon} data-exo="empty-state-icon" aria-hidden="true">
-        <.icon name={@icon} />
+        <.icon name={@icon} size="lg" />
       </div>
       <h3 data-exo="empty-state-title">{@title}</h3>
       <p :if={@subtitle} data-exo="empty-state-subtitle">{@subtitle}</p>

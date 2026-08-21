@@ -29,10 +29,12 @@
   margin-bottom: var(--exo-space-4);
 }
 
-:where([data-exo="empty-state-icon"]) svg {
-  width: 1.5rem;
-  height: 1.5rem;
-}
+/* Velicinu ikone zada KOMPONENTA (`size="lg"`), ne ovaj CSS.
+ *
+ * Dok je stajala ovdje, `data-size` na ikoni je govorio „sm" (16px) a ikona se
+ * crtala 24px — atribut je lagao. To nije sitnica: provjera velicina u
+ * vizuelnom prolazu cita bas taj atribut, pa bi laz u njemu ucinila provjeru
+ * beskorisnom tacno tamo gdje najvise treba. */
 
 :where([data-exo="empty-state-title"]) {
   font-family: var(--exo-font);

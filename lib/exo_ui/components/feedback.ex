@@ -61,7 +61,7 @@ defmodule ExoUI.Components.Feedback do
       {@rest}
     >
       <span :if={@icon_name} data-exo="flash-icon" aria-hidden="true">
-        <.icon name={@icon_name} />
+        <.icon name={@icon_name} size="md" />
       </span>
       <div data-exo="flash-content">
         <p :if={@title} id={@title_id} data-exo="flash-title">{@title}</p>
