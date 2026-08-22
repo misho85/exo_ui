@@ -109,4 +109,24 @@ defmodule ExoUI.Components.TableStreamTest do
       assert html =~ "IZ KOLONE"
     end
   end
+
+  describe "stream + redovi stanja" do
+    test "red za ucitavanje i prazan red imaju `id` — inace stream puca" do
+      assigns = %{}
+
+      html =
+        rendered_to_string(~H|<.table id="t" rows={[]} loading rows_empty={true}>
+  <:col :let={r} label="Naziv">{r.naziv}</:col>
+</.table>|)
+
+      assert html =~ ~s(id="t-loading")
+
+      html2 =
+        rendered_to_string(~H|<.table id="t" rows={[]} rows_empty={true}>
+  <:col :let={r} label="Naziv">{r.naziv}</:col>
+</.table>|)
+
+      assert html2 =~ ~s(id="t-empty")
+    end
+  end
 end

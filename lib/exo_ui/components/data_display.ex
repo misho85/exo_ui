@@ -125,7 +125,12 @@ defmodule ExoUI.Components.DataDisplay do
           phx-update={is_struct(@rows, Phoenix.LiveView.LiveStream) && "stream"}
           {@body_rest}
         >
-          <tr :if={@loading} data-exo="table-loading-row">
+          <%!-- `id` na OVIM redovima je obavezan, ne kozmetika: uz
+                `phx-update="stream"` LiveView trazi id na SVAKOM djetetu
+                `<tbody>`-ja i bez njega dize `ArgumentError` cim se tabela
+                strimuje. Do 2026-08-21 ga nisu imali, pa je tabela sa
+                stream-om i redom za ucitavanje/prazno stanje pucala. --%>
+          <tr :if={@loading} id={"#{@id}-loading"} data-exo="table-loading-row">
             <td data-exo="table-loading-cell" colspan={@column_count}>
               <div data-exo="table-loading" role="status" aria-live="polite" aria-atomic="true">
                 <%= if @loading_state != [] do %>
@@ -136,7 +141,7 @@ defmodule ExoUI.Components.DataDisplay do
               </div>
             </td>
           </tr>
-          <tr :if={!@loading && @empty?} data-exo="table-empty-row">
+          <tr :if={!@loading && @empty?} id={"#{@id}-empty"} data-exo="table-empty-row">
             <td data-exo="table-empty-cell" colspan={@column_count}>
               <div data-exo="table-empty">
                 <%= if @empty != [] do %>
