@@ -77,4 +77,36 @@ defmodule ExoUI.Components.TableStreamTest do
     # ExoTable je presao na omot — inace bi se dva hooka otimala o isti element
     assert html =~ ~r/data-exo="table-wrapper"[^>]*phx-hook="ExoTable"/
   end
+
+  describe "head_row" do
+    test "zamjenjuje izvedeni red zaglavlja" do
+      assigns = %{}
+
+      html =
+        rendered_to_string(~H|<.table id="t" rows={[]}>
+  <:head_row>
+    <th data-exo="table-head-cell"><input type="checkbox" /></th>
+    <th data-exo="table-head-cell">Naziv</th>
+  </:head_row>
+  <:col :let={r} label="IZ KOLONE">{r.naziv}</:col>
+</.table>|)
+
+      assert html =~ ~s(<input type="checkbox")
+      # natpis iz `:col` se NE crta kad je zaglavlje zadato rucno
+      refute html =~ "IZ KOLONE"
+      # i dalje tacno JEDAN red zaglavlja
+      assert length(String.split(html, ~s(data-exo="table-head-row"))) == 2
+    end
+
+    test "bez njega zaglavlje i dalje dolazi iz `:col`" do
+      assigns = %{}
+
+      html =
+        rendered_to_string(~H|<.table id="t" rows={[]}>
+  <:col :let={r} label="IZ KOLONE">{r.naziv}</:col>
+</.table>|)
+
+      assert html =~ "IZ KOLONE"
+    end
+  end
 end

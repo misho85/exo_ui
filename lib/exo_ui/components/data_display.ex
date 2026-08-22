@@ -65,6 +65,18 @@ defmodule ExoUI.Components.DataDisplay do
     so this slot in the DOM is free for the caller.
     """
 
+  slot :head_row,
+    doc: """
+    Replaces the header row derived from `:col`.
+
+    For the header that a per-column `label` string cannot express — a
+    "select all" checkbox in the first column, a sort control, a column
+    spanning two. Mark your cells `data-exo="table-head-cell"` and they keep
+    the table's own styling instead of each call site restating it.
+
+    Prefer `:col` labels. This is the exit, not the door.
+    """
+
   slot :action
   slot :empty
   slot :loading_state
@@ -90,7 +102,8 @@ defmodule ExoUI.Components.DataDisplay do
       <table data-exo="table">
         <caption :if={@caption} data-exo="table-caption">{@caption}</caption>
         <thead>
-          <tr data-exo="table-head-row">
+          <tr :if={@head_row != []} data-exo="table-head-row">{render_slot(@head_row)}</tr>
+          <tr :if={@head_row == []} data-exo="table-head-row">
             <th
               :for={col <- @col}
               data-exo="table-head-cell"
