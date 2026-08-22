@@ -147,7 +147,10 @@ defmodule ExoUI.Components.Core do
   defp render_lucide_icon(icon_fn, assigns) do
     lucide_assigns =
       assigns
-      |> Map.drop([:name, :rest, :icon_rest])
+      # `:size` MORA ovdje: on je nas attr, ne HTML atribut. Bez njega je
+      # curio u ispis kao `<svg size="sm">` — nepostojeci SVG atribut, na
+      # svakoj ikoni.
+      |> Map.drop([:name, :size, :rest, :icon_rest])
       |> Map.merge(assigns.icon_rest)
 
     ExoUI.Lucide.render(icon_fn, lucide_assigns)

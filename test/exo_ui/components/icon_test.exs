@@ -16,6 +16,8 @@ defmodule ExoUI.Components.IconTest do
     # kod svakog drugog primitiva.
     assert html =~ ~s(data-size="sm")
     refute html =~ "size-4"
+    # `size=` je NAS attr, ne HTML atribut — ne smije da procuri na `<svg>`
+    refute html =~ ~s(<svg size=)
     refute html =~ ~s(data-missing-icon=)
   end
 
