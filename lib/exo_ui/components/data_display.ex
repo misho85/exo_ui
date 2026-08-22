@@ -14,8 +14,33 @@ defmodule ExoUI.Components.DataDisplay do
   attr :row_click, :any, default: nil
   attr :row_item, :any, default: &Function.identity/1
   attr :row_label, :any, default: nil
+
+  attr :row_class, :any,
+    default: nil,
+    doc: """
+    `fn row_item -> class end` — classes added to that one row. For state that
+    lives in the DATA, not in the column: a low-stock row, a cancelled order.
+    Without it the caller has to leave the component to say it.
+    """
+
   attr :caption, :string, default: nil
   attr :empty_label, :string, default: "No results."
+
+  attr :rows_empty, :boolean,
+    default: nil,
+    doc: """
+    Whether there are no rows, when the component cannot tell.
+
+    It cannot tell for a `LiveStream`: a stream is not enumerable, so
+    emptiness is simply not readable from it — and until 2026-08-21 a streamed
+    table therefore NEVER showed its empty state. The table silently rendered
+    nothing where it had a perfectly good "no results" row to give.
+
+    A caller that streams already knows the count (it ran the query), so it
+    passes it here. `nil` keeps deriving it from `rows`, which is right for a
+    plain list.
+    """
+
   attr :loading, :boolean, default: false
   attr :loading_label, :string, default: "Loading..."
   attr :actions_label, :string, default: "Actions"
@@ -28,6 +53,17 @@ defmodule ExoUI.Components.DataDisplay do
     attr :class, :any
     attr :header_class, :any
   end
+
+  attr :body_rest, :map,
+    default: %{},
+    doc: """
+    Attributes for the `<tbody>` — most usefully the application's own
+    `phx-hook`, e.g. a bulk-select hook that needs the DOM of every row.
+
+    It exists because an element can carry only ONE hook, and `ExoTable` used
+    to sit here. It now sits on the wrapper (it delegates by `closest` anyway),
+    so this slot in the DOM is free for the caller.
+    """
 
   slot :action
   slot :empty
@@ -42,11 +78,15 @@ defmodule ExoUI.Components.DataDisplay do
     assigns =
       assign(assigns,
         column_count: length(assigns.col) + if(assigns.action == [], do: 0, else: 1),
-        empty?: table_empty?(assigns.rows)
+        empty?:
+          if(is_nil(assigns.rows_empty),
+            do: table_empty?(assigns.rows),
+            else: assigns.rows_empty
+          )
       )
 
     ~H"""
-    <div data-exo="table-wrapper" class={@class} {@rest}>
+    <div data-exo="table-wrapper" phx-hook="ExoTable" id={"#{@id}-wrapper"} class={@class} {@rest}>
       <table data-exo="table">
         <caption :if={@caption} data-exo="table-caption">{@caption}</caption>
         <thead>
@@ -69,8 +109,8 @@ defmodule ExoUI.Components.DataDisplay do
           id={@id}
           data-loading={@loading && ""}
           aria-busy={@loading && "true"}
-          phx-hook="ExoTable"
           phx-update={is_struct(@rows, Phoenix.LiveView.LiveStream) && "stream"}
+          {@body_rest}
         >
           <tr :if={@loading} data-exo="table-loading-row">
             <td data-exo="table-loading-cell" colspan={@column_count}>
@@ -98,6 +138,7 @@ defmodule ExoUI.Components.DataDisplay do
             :for={row <- @rows}
             id={@row_id && @row_id.(row)}
             data-exo="table-row"
+            class={@row_class && @row_class.(@row_item.(row))}
             data-clickable={@row_click && ""}
             aria-label={@row_label && @row_label.(@row_item.(row))}
             tabindex={@row_click && "0"}
@@ -123,6 +164,8 @@ defmodule ExoUI.Components.DataDisplay do
     """
   end
 
+  # Stream nije nabrojiv, pa se praznina iz njega NE MOZE procitati. Pozivalac
+  # koji strimuje to zna (izvrsio je upit) i javlja kroz `rows_empty`.
   defp table_empty?(%Phoenix.LiveView.LiveStream{}), do: false
   defp table_empty?(rows), do: Enum.empty?(rows)
 
