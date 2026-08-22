@@ -118,18 +118,14 @@ defmodule ExoUI.Components.DataDisplay do
             </th>
           </tr>
         </thead>
-        <tbody
-          id={@id}
-          data-loading={@loading && ""}
-          aria-busy={@loading && "true"}
-          phx-update={is_struct(@rows, Phoenix.LiveView.LiveStream) && "stream"}
-          {@body_rest}
-        >
-          <%!-- `id` na OVIM redovima je obavezan, ne kozmetika: uz
-                `phx-update="stream"` LiveView trazi id na SVAKOM djetetu
-                `<tbody>`-ja i bez njega dize `ArgumentError` cim se tabela
-                strimuje. Do 2026-08-21 ga nisu imali, pa je tabela sa
-                stream-om i redom za ucitavanje/prazno stanje pucala. --%>
+        <%!-- Redovi STANJA su u SVOM `<tbody>`-ju, odvojeni od stream-a.
+              Nije stilska podjela nego ispravka: kontejner sa
+              `phx-update="stream"` brise dijete SAMO na izricit `stream_delete`,
+              pa red za ucitavanje ubacen u njega ostaje zauvijek — skeleton se
+              vidi i kad su podaci odavno stigli.
+
+              Dvije `<tbody>` oznake u jednoj tabeli su ispravan HTML. --%>
+        <tbody data-exo="table-state-body">
           <tr :if={@loading} id={"#{@id}-loading"} data-exo="table-loading-row">
             <td data-exo="table-loading-cell" colspan={@column_count}>
               <div data-exo="table-loading" role="status" aria-live="polite" aria-atomic="true">
@@ -152,10 +148,14 @@ defmodule ExoUI.Components.DataDisplay do
               </div>
             </td>
           </tr>
-          <%!-- Dok traje ucitavanje redovi se NE crtaju. Inace bi se skeleton i
-                zatecen sadrzaj vidjeli istovremeno, pa bi tabela tvrdila i
-                „ucitavam" i „evo podataka" u istom trenutku — a stariji podaci
-                pored indikatora ucitavanja se citaju kao svjezi. --%>
+        </tbody>
+        <tbody
+          id={@id}
+          data-loading={@loading && ""}
+          aria-busy={@loading && "true"}
+          phx-update={is_struct(@rows, Phoenix.LiveView.LiveStream) && "stream"}
+          {@body_rest}
+        >
           <tr
             :for={row <- if(@loading, do: [], else: @rows)}
             id={@row_id && @row_id.(row)}

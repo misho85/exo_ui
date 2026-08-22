@@ -156,4 +156,35 @@ defmodule ExoUI.Components.TableStreamTest do
       assert html =~ "Naziv"
     end
   end
+
+  describe "redovi stanja i stream" do
+    test "red za ucitavanje NIJE u stream kontejneru" do
+      # Kontejner sa `phx-update="stream"` brise dijete samo na izricit
+      # `stream_delete`. Red za ucitavanje ubacen u njega ostaje ZAUVIJEK — pa
+      # se skeleton vidi i kad su podaci odavno stigli. Zato ide u svoj
+      # `<tbody>`, koji stream ne dira.
+      assigns = %{}
+
+      html =
+        rendered_to_string(~H|<.table id="t" rows={[]} loading>
+  <:col :let={r} label="Naziv">{r.naziv}</:col>
+</.table>|)
+
+      [state_body] = Regex.run(~r/<tbody data-exo="table-state-body">.*?<\/tbody>/s, html)
+      assert state_body =~ ~s(data-exo="table-loading-row")
+      refute state_body =~ "phx-update"
+    end
+
+    test "prazan red je u istom, odvojenom `<tbody>`-ju" do
+      assigns = %{}
+
+      html =
+        rendered_to_string(~H|<.table id="t" rows={[]} rows_empty={true}>
+  <:col :let={r} label="Naziv">{r.naziv}</:col>
+</.table>|)
+
+      [state_body] = Regex.run(~r/<tbody data-exo="table-state-body">.*?<\/tbody>/s, html)
+      assert state_body =~ ~s(data-exo="table-empty-row")
+    end
+  end
 end
