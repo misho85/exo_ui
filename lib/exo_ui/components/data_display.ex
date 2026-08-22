@@ -152,8 +152,12 @@ defmodule ExoUI.Components.DataDisplay do
               </div>
             </td>
           </tr>
+          <%!-- Dok traje ucitavanje redovi se NE crtaju. Inace bi se skeleton i
+                zatecen sadrzaj vidjeli istovremeno, pa bi tabela tvrdila i
+                „ucitavam" i „evo podataka" u istom trenutku — a stariji podaci
+                pored indikatora ucitavanja se citaju kao svjezi. --%>
           <tr
-            :for={row <- @rows}
+            :for={row <- if(@loading, do: [], else: @rows)}
             id={@row_id && @row_id.(row)}
             data-exo="table-row"
             class={@row_class && @row_class.(@row_item.(row))}

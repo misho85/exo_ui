@@ -129,4 +129,31 @@ defmodule ExoUI.Components.TableStreamTest do
       assert html2 =~ ~s(id="t-empty")
     end
   end
+
+  describe "ucitavanje" do
+    test "dok traje ucitavanje redovi se ne crtaju" do
+      assigns = %{rows: rows()}
+
+      html =
+        rendered_to_string(~H|<.table id="t" rows={@rows} loading>
+  <:col :let={r} label="Naziv">{r.naziv}</:col>
+</.table>|)
+
+      assert html =~ ~s(data-exo="table-loading-row")
+      # zatecen sadrzaj pored indikatora ucitavanja se cita kao svjez
+      refute html =~ "Prvi"
+    end
+
+    test "zaglavlje OSTAJE vidljivo dok se ucitava — raspored ne poskakuje" do
+      assigns = %{rows: rows()}
+
+      html =
+        rendered_to_string(~H|<.table id="t" rows={@rows} loading>
+  <:col :let={r} label="Naziv">{r.naziv}</:col>
+</.table>|)
+
+      assert html =~ ~s(data-exo="table-head-row")
+      assert html =~ "Naziv"
+    end
+  end
 end
