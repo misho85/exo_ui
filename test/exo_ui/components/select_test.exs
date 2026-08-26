@@ -185,6 +185,47 @@ defmodule ExoUI.Components.SelectTest do
     assert html =~ "Pick one"
   end
 
+  # Trake i alatne trake nemaju mjesta za natpis iznad polja, a kontrola bez
+  # imena se citacu ekrana javlja samo vrijednoscu — „Srpski", bez ijedne rijeci
+  # o tome sta bira.
+  test "aria_label daje ime kontroli bez vidljivog natpisa" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.select id="lang" name="locale" value="sr" aria_label="Jezik">
+        <:option value="sr">Srpski</:option>
+        <:option value="de">Deutsch</:option>
+      </.select>
+      """)
+
+    # Natpis je u DOM-u ali skriven: tekst elementa na koji `aria-labelledby`
+    # DIREKTNO pokazuje ulazi u ime i kad je element skriven (accname 2B), pa
+    # ime ostaje „Jezik Srpski" — natpis I vrijednost, isto kao sa vidljivim.
+    assert html =~ ~s(id="lang-label" hidden)
+    assert html =~ ~s(aria-labelledby="lang-label lang-value")
+
+    # `aria-label` na okidacu bi POTISNUO vrijednost iz imena — namjerno ga nema.
+    refute html =~ ~s(aria-label="Jezik")
+  end
+
+  test "vidljiv natpis nadjacava aria_label — dva imena za istu kontrolu su greska" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.select id="lang2" name="locale" value="sr" label="Jezik sajta" aria_label="Jezik">
+        <:option value="sr">Srpski</:option>
+      </.select>
+      """)
+
+    assert html =~ "Jezik sajta"
+    # NE golo `hidden`: nativni `<select>` ispod popovera nosi `aria-hidden`,
+    # pa bi provjera prolazila iz pogresnog razloga.
+    refute html =~ ~s(id="lang2-label" hidden)
+    assert html =~ ~s(aria-labelledby="lang2-label lang2-value")
+  end
+
   test "renders label and aria-labelledby" do
     assigns = %{}
 

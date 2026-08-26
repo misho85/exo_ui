@@ -465,6 +465,25 @@ defmodule ExoUI.Components.Form do
   attr :options, :list, default: [], doc: "list of {label, value} tuples or option maps"
   attr :field, Phoenix.HTML.FormField, default: nil
   attr :label, :string, default: nil
+
+  attr :aria_label, :string,
+    default: nil,
+    doc: """
+    Pristupacno ime kad kontrola nema VIDLJIV natpis (isti pojam kao kod
+    `toggle/1`). Trake i alatne trake nemaju mjesta za natpis iznad polja, a
+    kontrola bez imena se citacu ekrana javlja samo svojom vrijednoscu —
+    „Srpski", bez ijedne rijeci o tome sta bira.
+
+    Ne postavlja `aria-label` na okidac: to bi POTISNULO vrijednost iz imena.
+    Umjesto toga renderuje `<label hidden>` i drzi isti `aria-labelledby`
+    mehanizam kao vidljiv natpis, pa ime ostaje „<natpis> <vrijednost>".
+    Tekst skrivenog elementa na koji `aria-labelledby` DIREKTNO pokazuje ulazi
+    u ime (accname, korak 2B) — zato ovdje nema nijednog CSS trika.
+
+    Ignorise se kad je `label` postavljen — dva imena za istu kontrolu su
+    greska, ne izbor.
+    """
+
   attr :description, :string, default: nil
   attr :prompt, :string, default: nil, doc: "empty-value option; selectable, clears the field"
   attr :errors, :list, default: []
@@ -506,13 +525,14 @@ defmodule ExoUI.Components.Form do
   end
 
   def select(assigns) do
-    assigns = assigns |> prepare_choice() |> split_phx_rest()
+    assigns = assigns |> prepare_choice() |> prepare_hidden_label() |> split_phx_rest()
 
     ~H"""
     <div data-exo="field" class={@class} {@wrapper_rest}>
       <label :if={@label} data-exo="label" id={@label_id}>
         {@label}<.required_marker :if={@required} />
       </label>
+      <label :if={@hidden_label} data-exo="label" id={@label_id} hidden>{@hidden_label}</label>
       <div data-exo="popover" phx-hook="ExoSelect" id={"#{@id}-select"}>
         <button
           type="button"
@@ -1045,6 +1065,22 @@ defmodule ExoUI.Components.Form do
   end
 
   defp choice_value_id(assigns), do: "#{assigns.id}-value"
+
+  # Bez vidljivog natpisa `prepare_basic_field/1` ne pravi `label_id`, pa okidac
+  # ostaje bez imena. Ovdje se ime vraca kroz skriven `<label>` i ISTI
+  # `aria-labelledby` par (natpis + vrijednost) koji vidljiv natpis daje.
+  defp prepare_hidden_label(%{label: nil, aria_label: aria_label} = assigns)
+       when is_binary(aria_label) and aria_label != "" do
+    label_id = "#{assigns.id}-label"
+
+    assign(assigns,
+      hidden_label: aria_label,
+      label_id: label_id,
+      trigger_labelledby: "#{label_id} #{assigns.value_id}"
+    )
+  end
+
+  defp prepare_hidden_label(assigns), do: assign(assigns, :hidden_label, nil)
 
   defp choice_trigger_labelledby(%{label_id: label_id} = assigns) when is_binary(label_id) do
     "#{label_id} #{choice_value_id(assigns)}"
