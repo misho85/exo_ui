@@ -70,4 +70,10 @@
   align-items: center;
   gap: var(--exo-space-2);
   flex-shrink: 0;
+  /* I sam red akcija mora da se prelama, ne samo zaglavlje oko njega.
+     Prelom na `header` je u trg24 skinuo preklapanje sa naslovom, ali je
+     cetvrta akcija i dalje bjezala desno: /products @390px je primarno dugme
+     („Dodaj proizvod") sjekao na slovo „D". `flex-shrink: 0` ostaje — dugmad
+     se ne gnjece — pa je prelom jedini izlaz koji ne kvari siroki raspored. */
+  flex-wrap: wrap;
 }
