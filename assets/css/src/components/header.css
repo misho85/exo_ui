@@ -69,11 +69,15 @@
   display: flex;
   align-items: center;
   gap: var(--exo-space-2);
-  flex-shrink: 0;
-  /* I sam red akcija mora da se prelama, ne samo zaglavlje oko njega.
-     Prelom na `header` je u trg24 skinuo preklapanje sa naslovom, ali je
-     cetvrta akcija i dalje bjezala desno: /products @390px je primarno dugme
-     („Dodaj proizvod") sjekao na slovo „D". `flex-shrink: 0` ostaje — dugmad
-     se ne gnjece — pa je prelom jedini izlaz koji ne kvari siroki raspored. */
+  /* I sam red akcija mora da se prelama, ne samo zaglavlje oko njega — i zato
+     ovdje NEMA `flex-shrink: 0`, koliko god djelovalo da stiti dugmad.
+     Izmjereno u trg24 na /products @390px: sa `flex-shrink: 0` kutija akcija
+     ostaje na max-content sirini, pa unutrasnji prelom NIKAD ne okine i
+     cetvrto dugme („Dodaj proizvod") se sjece na slovo „D". Tek kad kutija
+     smije da se suzi, prelom radi.
+     Dugmad se i dalje ne gnjece: tekst u njima je `nowrap`, pa je njihova
+     min-content sirina puna sirina natpisa — stavka koja ne stane prelazi u
+     novi red umjesto da se stisne. */
+  min-width: 0;
   flex-wrap: wrap;
 }
