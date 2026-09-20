@@ -8,6 +8,14 @@
   gap: var(--exo-space-4);
   padding-bottom: var(--exo-space-4);
   margin-bottom: var(--exo-space-6);
+  /* Bez preloma red akcija nema izlaz: `header-actions` je `flex-shrink: 0`
+     (namjerno — dugmad se ne gnjece), pa kad ne stane, PRERASTE kontejner i
+     legne preko naslova. Mjereno u trg24 na /products @390px: cetiri akcije
+     (Izvezi / Generisi PDF katalog / Uvezi / Dodaj proizvod), „Izvezi"
+     odstampan preko naslova „Proizvodi", primarno dugme odsjeceno desnom
+     ivicom. Ekran sa dvije akcije je izgledao uredno samo zato sto je uzi.
+     Prelom ne mijenja siroki raspored — dok akcije staju, red je isti. */
+  flex-wrap: wrap;
 }
 
 /* Crta ispod zaglavlja je PODRAZUMIJEVANA, ne opcija.
