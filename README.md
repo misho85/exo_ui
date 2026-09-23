@@ -313,7 +313,7 @@ bun run test:browser
 bun run capture:components
 bun run capture:validate
 bun run visual:check
-cd storybook && mix compile --warnings-as-errors
+cd storybook && mix compile --warnings-as-errors && mix test
 ```
 
 ## License
