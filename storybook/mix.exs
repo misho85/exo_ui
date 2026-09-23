@@ -27,7 +27,7 @@ defmodule ExoUI.Storybook.MixProject do
       {:phoenix_html, "~> 4.3"},
       {:phoenix_live_view, "~> 1.1.27"},
       {:phoenix_live_reload, "~> 1.6"},
-      {:phoenix_storybook, "~> 1.0"},
+      {:phoenix_storybook, "~> 1.1.0"},
       {:esbuild, "~> 0.10", runtime: false},
       {:jason, "~> 1.4"},
       {:bandit, "~> 1.10"}
