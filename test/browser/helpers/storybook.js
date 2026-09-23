@@ -7,7 +7,7 @@ const STORYBOOK_CONNECTION_TIMEOUT = Number.parseInt(
 
 async function gotoStory(page, path) {
   await page.goto(path, { waitUntil: "domcontentloaded", timeout: 30_000 });
-  await expect(page.locator("#story-live")).toBeVisible();
+  await expect(page.locator("#psb-story-live")).toBeVisible();
   await expect(page.locator("[data-phx-main]").first()).toHaveClass(/phx-connected/, {
     timeout: STORYBOOK_CONNECTION_TIMEOUT
   });
@@ -20,7 +20,7 @@ async function expectAttribute(locator, name, value) {
 }
 
 function story(page) {
-  return page.locator("#story-live");
+  return page.locator("#psb-story-live");
 }
 
 async function expectPopoverState(locator, open) {
