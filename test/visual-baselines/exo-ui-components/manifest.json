@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-06T21:18:14.809Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-05-06T21-12-47-949Z",
+  "updatedAt": "2026-09-27T19:14:44.693Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-09-27T18-54-25-676Z",
   "count": 114,
   "entries": [
     {
@@ -11,7 +11,7 @@
       "dataExoCount": 11,
       "width": 1280,
       "height": 900,
-      "sha256": "c8d0e6aa1c2fec415cc5f457c71c7b9cb2e5b8a4d2f84bc38a42faec47a7b127"
+      "sha256": "c0668f83d0c06189af53cf45ae359f0f2f0df84e2df1f53f2fc3a29dd9a20e16"
     },
     {
       "name": "actions/swap",
@@ -20,7 +20,7 @@
       "dataExoCount": 12,
       "width": 1280,
       "height": 900,
-      "sha256": "de5d00c459236efd5211659b5b3e54d0de6950cdb0778e3066a34cb5637cab44"
+      "sha256": "67827e6b0b7c10024284c065b015779b23ca76a67c06a38d53a52c545ccf6322"
     },
     {
       "name": "actions/theme_toggle",
@@ -29,7 +29,7 @@
       "dataExoCount": 14,
       "width": 1280,
       "height": 900,
-      "sha256": "c286c3d2a028632c97b9cb51b737ff2dfe7722be59a53cc004ad9efb08bf70fa"
+      "sha256": "b686d5a6f165c35d846f7b988d7be3eaa98eb7f5131483c94fd4b038a4d97c25"
     },
     {
       "name": "actions/toggle",
@@ -38,7 +38,7 @@
       "dataExoCount": 16,
       "width": 1280,
       "height": 900,
-      "sha256": "a78dfb52ab5f9923da0d58662a92613e8c80484c3601d86a6c1afe34b3f512d7"
+      "sha256": "f82ba21349eb52f4c47966c63f8cdf19b8b17338878aa26fc3b436dbe2151044"
     },
     {
       "name": "charts/area_chart",
@@ -47,7 +47,7 @@
       "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "9f5fb2618e9f246ef143183cdf03ae87380b01cf9b8c3e790ca86095eb9d71a7"
+      "sha256": "012d7e1b306f06e036d2e9329fd6ee330f96a4e1d238a195690321c700c191ec"
     },
     {
       "name": "charts/area_chart_stacked",
@@ -56,7 +56,7 @@
       "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "1cd9383d13415d5bad70b9531bc1181bfb4be35d3841587989556c39a555306c"
+      "sha256": "5b452c8ec433d30d833c3137f31710807420d8d4198d03c655d702ad984e91b2"
     },
     {
       "name": "charts/bar_charts/bar_chart",
@@ -65,7 +65,7 @@
       "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "3bf8d2e560164b45cc8e068d27bc4f7db6f1d2c00bacdc86e4cc77779fde5032"
+      "sha256": "6734c6b9495d270aa21321a44692c4c358551bb205983858488d430e5c1a7988"
     },
     {
       "name": "charts/bar_charts/bar_chart_label",
@@ -74,7 +74,7 @@
       "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "1036e60485f123768fa3fcc61826ae7bfb432c17e997a2d61482aad780fdf3a1"
+      "sha256": "4a2a393394e4f4bdad24270ea27557b2c9dacd69b3a67d07b1b702c0be20bb71"
     },
     {
       "name": "charts/bar_charts/bar_chart_multiple",
@@ -83,7 +83,7 @@
       "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "e950f85472e3c9fb0d95d5e3d4df697eefaf68177fd39dbb6bccdb7f91a7e665"
+      "sha256": "3a5724f95ed275aa7b3a721b5a74f4fe6268834a038ca681b3d3cbc7360be586"
     },
     {
       "name": "charts/bar_charts/bar_chart_negative",
@@ -92,7 +92,7 @@
       "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "d14174993f647be1ac2f014579e1ea74376366e5bdd1eac3e3ba0701f00c5f80"
+      "sha256": "aa158f3333bdccd3c0e0f2636b93e62c43ddcf51abe63b819f21cf287b336ad4"
     },
     {
       "name": "charts/bar_charts/horizontal_bar_chart",
@@ -101,7 +101,7 @@
       "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "ca727860b81d176c6ab3887128ba90c1b2fbfb8e4321e14a3b96ae4f52d9a7cc"
+      "sha256": "79291e37f622bb8a5d575925f649f24e73812fea5de4dae3ca7f0bc42a1d02ad"
     },
     {
       "name": "charts/bar_charts/stacked_bar_chart",
@@ -110,7 +110,7 @@
       "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "879f6a328f1a3b96f90e2b692a1df7173cc7177d7c0edb29947c51f52bed7792"
+      "sha256": "fc26a8e5748b44adb0206f80e37cec21d49a6b210df0d794ab4e598419b40a93"
     },
     {
       "name": "charts/donut_chart",
@@ -119,7 +119,7 @@
       "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "053cfe6787818035aec79d4f9b0462126cc7de5e7169cff9e17491319b68d27e"
+      "sha256": "cdf5bedb927f2ed229724e8b8e70b35f4bf1eb77158a49d4f3b83409b707c740"
     },
     {
       "name": "charts/donut_chart_text",
@@ -128,7 +128,7 @@
       "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "0ee1762e604017d126c25a74d7723afd7b571e6c8fdad7ee4b40fb88c6597c05"
+      "sha256": "9c1b804bae5a45e670a45da1f81c97a66cd34420326a04bb90f6e064a6d3dd1e"
     },
     {
       "name": "charts/line_chart",
@@ -137,7 +137,7 @@
       "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "4fbc93e5bddfd55ded0f6af7f7085cb35d7e056a0bfd869a4831fe5b4bc65e85"
+      "sha256": "c246bcb3881d3a6a142b78be0242d1845b0430ce7bd7b6c2a42de375fe1191b4"
     },
     {
       "name": "charts/line_chart_multiple",
@@ -146,7 +146,7 @@
       "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "30e7ac066b79648bc06eb0a457b34d44bb2964eac495a1e80fa17857a13c4683"
+      "sha256": "ee2503f6b313634bbd31e4beca025e3cd6e1622e6adcb1507b005e12715ea9de"
     },
     {
       "name": "charts/overview",
@@ -155,7 +155,7 @@
       "dataExoCount": 81,
       "width": 1280,
       "height": 900,
-      "sha256": "b5c720df0e3de2236a71ef7995c9a44fd6bb401c313fefc2ab1e1bd2ef936978"
+      "sha256": "f9267e9a67ac2d9c379e686fe639ac187452b3cfac9d689c4eb377f3473e123f"
     },
     {
       "name": "charts/pie_chart",
@@ -164,7 +164,7 @@
       "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "dc735d0138741fa7d55987fdc2806923ce198c54ac92d0ad38d92fd515067f15"
+      "sha256": "af95eb318885d4e3a5b6b22b63007e984491a383eca195a6b04dc674634a9684"
     },
     {
       "name": "charts/progress_bar",
@@ -173,7 +173,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "f7b9af85d62adf6011dd2621a74ab0f641064dcdb17a124a08214a8264273dae"
+      "sha256": "4b07654ec0b3546e073db091390a2a1661fe74e37ef2e93f07d8a4aae0313433"
     },
     {
       "name": "charts/radar_chart",
@@ -182,7 +182,7 @@
       "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "eadee5e76cb96480ab4d5a3cf726ce984d92ba53cabf36b9c5672a3f59d7920f"
+      "sha256": "ee990cf043aae5a2ea26d9cfb01590c675d1137d7852ae11d2b6b27821e63da3"
     },
     {
       "name": "charts/radial_chart",
@@ -191,7 +191,7 @@
       "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "652ebfd7915a0563223384f9db9a053e6b1af32e2ac13b8280aa22d9cb5a21e0"
+      "sha256": "754309ff62fa44d6a45fd29dac24aa57af8f5bfe78deb854fd8a22a7c065fd47"
     },
     {
       "name": "charts/sparkline",
@@ -200,7 +200,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "51b18d6c44e0b1df38a9bf0502fcba361be1fbd45fbb16fadf231a20d40259b2"
+      "sha256": "bebedc000f39b049d6abcca61a298f7dc887dc6bb42df2d4b0291d8866a8f029"
     },
     {
       "name": "charts/trend_badge",
@@ -209,7 +209,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "a8418df3a4f205dec13c2c60bf2dc8bcbd6b9ac3e58a722c6b003807e824ab23"
+      "sha256": "ba26159714fbbf03ee4364c9b854dc7119b34ac857d60379e9f59efd8ffd4e0e"
     },
     {
       "name": "data_display/avatar",
@@ -218,7 +218,7 @@
       "dataExoCount": 16,
       "width": 1280,
       "height": 900,
-      "sha256": "eda738d46928b1bba61e5a87f10e49eb031eb1db19a9a3d35aaf563a1ef06e05"
+      "sha256": "ca636401dc55fd62d831f633b27a788428861d69ebeea5a515a863241236ce32"
     },
     {
       "name": "data_display/chat_bubble",
@@ -227,7 +227,7 @@
       "dataExoCount": 18,
       "width": 1280,
       "height": 900,
-      "sha256": "127ac55672a76613a3579683aface70f891cd04ef499b9ba25c0d8da9b5e294d"
+      "sha256": "9757a283abf7ab650bbcdcc4e1dccfab72b146a36048119ba8607632d3cb5b0a"
     },
     {
       "name": "data_display/content_card",
@@ -236,16 +236,16 @@
       "dataExoCount": 12,
       "width": 1280,
       "height": 900,
-      "sha256": "c3f8a422c4485054bae3aefd3bfdbad2bd38269bcca560068a90e686c8ad640d"
+      "sha256": "2fbdd0de975d0ea1a6e937b3f08d0b288f7b43a8abe6903cbc80eeb75caf0a6d"
     },
     {
       "name": "data_display/editable_record_workflow",
       "route": "/components/data_display/editable_record_workflow",
       "screenshot": "screenshots/data_display__editable_record_workflow.png",
-      "dataExoCount": 269,
+      "dataExoCount": 272,
       "width": 1280,
       "height": 900,
-      "sha256": "d0bbd5660ab391b54279a2a90735cc28cb2c174e7e6990c2d86933c78143afdf"
+      "sha256": "692c5d90aef32a409756abc1d6f3c0cc6fcf079d9bec23e4643b63d367509bce"
     },
     {
       "name": "data_display/kbd",
@@ -254,7 +254,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "a8648150f2121c90794c8a9f5855032381b23aeeb5a3c5c3de03fc7925d15a4e"
+      "sha256": "8a5cc5141cd1329722b312fe4d498d2c49d8df627a44d14a38beb427019179e5"
     },
     {
       "name": "data_display/list",
@@ -263,7 +263,7 @@
       "dataExoCount": 16,
       "width": 1280,
       "height": 900,
-      "sha256": "afe1157ac64069dda80cb1d07f3491303a4428503df8f98b81d29b881fe4d988"
+      "sha256": "2f09e09bf7a8beb2eb5aa463e095faebf8d714511fee0393d4ce77daa0c7d5e1"
     },
     {
       "name": "data_display/metric_card",
@@ -272,7 +272,7 @@
       "dataExoCount": 11,
       "width": 1280,
       "height": 900,
-      "sha256": "a425a74648d8e517e7aaa747492979a9d409b17233dc3e369ac31e1c2ec35214"
+      "sha256": "f051063eb3cdb094bfcf19fdfe603531dc1cfa201048e14951c26008efbc796c"
     },
     {
       "name": "data_display/stat_card",
@@ -281,16 +281,16 @@
       "dataExoCount": 25,
       "width": 1280,
       "height": 900,
-      "sha256": "a9b0613a907661f0b193d14ac2dd5a6578503899396e964e0f7b9e0b5423dc81"
+      "sha256": "d6ab59016bad5620bb1afcf6f795805208617b308fc0910803d9ed6e713cdad7"
     },
     {
       "name": "data_display/table",
       "route": "/components/data_display/table",
       "screenshot": "screenshots/data_display__table.png",
-      "dataExoCount": 72,
+      "dataExoCount": 75,
       "width": 1280,
       "height": 900,
-      "sha256": "53fd784b892cdb6a870a665e87ddc76b56d5533d5d1541a5ec5abc72f3a4f972"
+      "sha256": "0f418bd7e1fbb4ab7c86cc4cb3dc545bd293c5dad20a74b64aa051dda7eccbd5"
     },
     {
       "name": "data_display/timeline",
@@ -299,7 +299,7 @@
       "dataExoCount": 44,
       "width": 1280,
       "height": 900,
-      "sha256": "54e0b18d3f1b322bc00469a4fa345d9c89f319a164e817aa152abf68f69defcd"
+      "sha256": "6667639b6392aa6b1905f0651c7a07083fbce724a6504c49c070adf2d6eaf66e"
     },
     {
       "name": "feedback/alert",
@@ -308,7 +308,7 @@
       "dataExoCount": 31,
       "width": 1280,
       "height": 900,
-      "sha256": "e05962ce23cfc88bf6d3f9b1d8a426a761335d83a798a6caf3e31b74367e0a6d"
+      "sha256": "4462226f78bd39bd1a696a94bf939ec8e403fd4118e6fcd73b7c40bc8f1686fc"
     },
     {
       "name": "feedback/badge",
@@ -317,7 +317,7 @@
       "dataExoCount": 11,
       "width": 1280,
       "height": 900,
-      "sha256": "0243187a5d5566981bd5b177fbdbb67d4ded574316e69e4cc4f43b801b974f65"
+      "sha256": "0af169c7440affb6a6b6ad410b3cb1d7769b58fb8780a3f4e04e0d449ac677d9"
     },
     {
       "name": "feedback/empty_state",
@@ -326,25 +326,25 @@
       "dataExoCount": 16,
       "width": 1280,
       "height": 900,
-      "sha256": "3c842efead9772d2915d1f79b7c19466767a09581c263d8b76bbf187f9194779"
+      "sha256": "7daee69bbd7dcd4b99f666803261b65b0f169fe0fb63e771f3536dc9d4a27bf0"
     },
     {
       "name": "feedback/flash",
       "route": "/components/feedback/flash",
       "screenshot": "screenshots/feedback__flash.png",
-      "dataExoCount": 24,
+      "dataExoCount": 32,
       "width": 1280,
       "height": 900,
-      "sha256": "29cb7992d5d903a550ba12d3705413142e4729770273b1603ac711bb90ec1d3b"
+      "sha256": "9c4f0bdf8f2d7d440df3529e1608c577dc1ec3b783be9a341bb77e42e7b01b49"
     },
     {
       "name": "feedback/flash_group",
       "route": "/components/feedback/flash_group",
       "screenshot": "screenshots/feedback__flash_group.png",
-      "dataExoCount": 38,
+      "dataExoCount": 50,
       "width": 1280,
       "height": 900,
-      "sha256": "7577f7b030c69bb5b8f966268c1c4a2f454f1988887a6429654af7ba1bdb082b"
+      "sha256": "0d3dea79e6ec32a3f30308052062be6370373f894d61fce7d6bc41f567972ff5"
     },
     {
       "name": "feedback/indicator",
@@ -353,7 +353,7 @@
       "dataExoCount": 26,
       "width": 1280,
       "height": 900,
-      "sha256": "73d2f7a9ae595667daa44f623a691061d71838c0eba72e91775bd3ebd2cfcb25"
+      "sha256": "c2aab5d80e5a943e513d94dc01247ce38ca44e771773a22e0711dc52ae72c761"
     },
     {
       "name": "feedback/progress",
@@ -362,7 +362,7 @@
       "dataExoCount": 33,
       "width": 1280,
       "height": 900,
-      "sha256": "dd1cd3de153b7abf2d7577a1819f4dceb0186875485277becf4767620c0b75ed"
+      "sha256": "973c14c3a0d7c12fc1e440fd5ff7dd51c6cd8830702c66c18066acbc0e052937"
     },
     {
       "name": "feedback/radial_progress",
@@ -371,7 +371,7 @@
       "dataExoCount": 39,
       "width": 1280,
       "height": 900,
-      "sha256": "789bdeb8f2d0e45eb5003d40b5511f31ff75c3a8591c959146528c35c81baad6"
+      "sha256": "5f6536cb9d0d4739e87de03062f5b30e06692f597f6b60eb0a47b2ade3597006"
     },
     {
       "name": "feedback/skeleton",
@@ -380,7 +380,7 @@
       "dataExoCount": 27,
       "width": 1280,
       "height": 900,
-      "sha256": "732961c27e3af03b08c0dc6d60a38bf8afa87134bf42ab1d00726840a50687d1"
+      "sha256": "4459d3af85a9962535bd8d6ae370c6ec700b47ca98448113bbc184d459dd04a6"
     },
     {
       "name": "feedback/spinner",
@@ -389,7 +389,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "48bd861475f4e3332525a410677ab663adfd7e9852d9cdaa96915d0ebe6c4126"
+      "sha256": "5a8fc4dc67a2a92c55d2b54e0cea5b05620d8cdd6ecd1c103d2eb45ec714366d"
     },
     {
       "name": "feedback/toast_container",
@@ -398,7 +398,7 @@
       "dataExoCount": 38,
       "width": 1280,
       "height": 900,
-      "sha256": "9c87cc93745cc2356d4665bf60ec3f1136a67112e70e7f46ca4f1ed6f6e1c526"
+      "sha256": "d3c2a9c107d536c7e908256ad9fb4252b53f4a96a5e0dda370bbff84fabb5a81"
     },
     {
       "name": "forms/combobox",
@@ -407,7 +407,7 @@
       "dataExoCount": 218,
       "width": 1280,
       "height": 900,
-      "sha256": "b4facdcf8a21e97195c6b03241bec4e728affd1394a9145fe78c5d7609452069"
+      "sha256": "cf5307851289cb0122cf5327ef32080c3a10fed1c89c49e92513ad6a0aa2921e"
     },
     {
       "name": "forms/combobox_async",
@@ -416,7 +416,7 @@
       "dataExoCount": 20,
       "width": 1280,
       "height": 900,
-      "sha256": "ea1e019689ea356d6c6590a2931c1c997a7f1b6391c1f9e270e432377f2e5742"
+      "sha256": "01378f1dd2a226f884e310391cd6353a33c9ad6cfbd8040e543613480d210b6c"
     },
     {
       "name": "forms/date_picker",
@@ -425,7 +425,7 @@
       "dataExoCount": 465,
       "width": 1280,
       "height": 900,
-      "sha256": "3c28add5134cdd8bcab32efca40def0ca39066b2be7fa454110b7494367f38da"
+      "sha256": "20210b039a593f8cbeba585aa3f69a17da0932fd79ab6d71b7112e720b461b6f"
     },
     {
       "name": "forms/date_picker_controlled",
@@ -434,7 +434,7 @@
       "dataExoCount": 69,
       "width": 1280,
       "height": 900,
-      "sha256": "39891063a053bb140da428b71961a0bf7aa71ec34155c455518432fccd0f227a"
+      "sha256": "7b35332b6b19b263272527bf227157fda46abb3eb9dc40c09ff954e09d8ed01d"
     },
     {
       "name": "forms/fieldset",
@@ -443,7 +443,7 @@
       "dataExoCount": 29,
       "width": 1280,
       "height": 900,
-      "sha256": "6c0fd5b834fbdbaa5e7fc3614cf37fdeb6e8277d6db7f5c42c59eabd71fe3b87"
+      "sha256": "0cf5fd05365615e60926438506a0c198d1a44d7972746b3dde1ea5cb54cbf214"
     },
     {
       "name": "forms/file_input",
@@ -452,7 +452,7 @@
       "dataExoCount": 17,
       "width": 1280,
       "height": 900,
-      "sha256": "f2fbe8ba3020d26473753261654001ae691613f04a00bf979463e9e37d10f8b8"
+      "sha256": "2ffc7c85fefb5da5f65cab1a611ef5da3941e11ceae5f321220a103e532f5bb7"
     },
     {
       "name": "forms/form",
@@ -461,7 +461,7 @@
       "dataExoCount": 16,
       "width": 1280,
       "height": 900,
-      "sha256": "183b0ff522e6177c085f039319d3823c7c801a4c5dedf6009ee515cc6a1410a0"
+      "sha256": "51654bf69d6f42f2762240ac63c37eaaeabde8c9a27b37b7b05ea8963abbe980"
     },
     {
       "name": "forms/input",
@@ -470,7 +470,7 @@
       "dataExoCount": 50,
       "width": 1280,
       "height": 900,
-      "sha256": "e6900c74d585b9d266cde6e394d95d0221f09b36e3320064a5bf01a3af863e30"
+      "sha256": "738267a37d54279a704a45bc731f6ff06e8f0765d395a62b85975366f9f0e90e"
     },
     {
       "name": "forms/radio_group",
@@ -479,7 +479,7 @@
       "dataExoCount": 72,
       "width": 1280,
       "height": 900,
-      "sha256": "81a6ad4d9c369f0523ce8bd0ff52be73853e662967d0d8b13def0742aa118609"
+      "sha256": "77e32ca47dbc16c4cd860d6104e9f03effad25be4c450ce826034fb9acc04e93"
     },
     {
       "name": "forms/rating",
@@ -488,16 +488,16 @@
       "dataExoCount": 87,
       "width": 1280,
       "height": 900,
-      "sha256": "6408712b346c38711ff5431b798bb0b3b3e8bfc85893569f842bfe99f7ee7372"
+      "sha256": "67f0c6dee97cdb7cf6b7dc79231a51f5d6cbe2fbfccfa59acb9cf8cd458da4d2"
     },
     {
       "name": "forms/select",
       "route": "/components/forms/select",
       "screenshot": "screenshots/forms__select.png",
-      "dataExoCount": 135,
+      "dataExoCount": 157,
       "width": 1280,
       "height": 900,
-      "sha256": "ea723dc03d2d83a2ff7f01b16a81818c58caf0f60a695301c5851161b307d8ca"
+      "sha256": "ee299805319d17dfd2248acf3c4cc708f38d44c535ed6f3f783bdd5a2e17e776"
     },
     {
       "name": "forms/slider",
@@ -506,7 +506,7 @@
       "dataExoCount": 28,
       "width": 1280,
       "height": 900,
-      "sha256": "bc9eb194e8584058913d56380f48ee1ab32a293c6275fc2c3624b7d8397a9222"
+      "sha256": "90eb1b4b47f64cb21978f132e3325a4e1b8cbc89509974b682b2e8488a75ba2f"
     },
     {
       "name": "layout/accordion",
@@ -515,16 +515,16 @@
       "dataExoCount": 78,
       "width": 1280,
       "height": 900,
-      "sha256": "ab0a3a16ee30921c8c103b8cbd4ba5a79f400931c47e670eb60c4562c1b1da75"
+      "sha256": "57c1518615b07800e48c944526187add02370fb9c4c9fd4bf9a4bc080b0eedef"
     },
     {
       "name": "layout/app_shell_workflow",
       "route": "/components/layout/app_shell_workflow",
       "screenshot": "screenshots/layout__app_shell_workflow.png",
-      "dataExoCount": 215,
+      "dataExoCount": 217,
       "width": 1280,
       "height": 900,
-      "sha256": "6255b92872991721a8b28b6fe4ff61459f48d05537c72f7712029fa8e95f07b6"
+      "sha256": "4ecdedbd8893f93f9b761b0850c0c46e16526e91f274add753ed190b349f4afb"
     },
     {
       "name": "layout/card",
@@ -533,7 +533,7 @@
       "dataExoCount": 58,
       "width": 1280,
       "height": 900,
-      "sha256": "1f381885fa45df246eb06b9e0def209eb63fbfc9e07304e91fc190d579e9bbb6"
+      "sha256": "d084dca3f0a27bde3923dd0868e17c1077fdd11d1f944a3eaea385b7ffb343e1"
     },
     {
       "name": "layout/carousel",
@@ -542,7 +542,7 @@
       "dataExoCount": 32,
       "width": 1280,
       "height": 900,
-      "sha256": "d4118a3ba41fbf696a103a232659be2f3bd3c8159be08c9810354f9e93e2c103"
+      "sha256": "5b60f6c703642f53e803e576b14557a8b2e68c9790d7a3c1c377f51dca785685"
     },
     {
       "name": "layout/collapsible",
@@ -551,7 +551,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "b448ab90cec0a2315cc8c20de60d006016f647ddc4ced9ee708449d19ed28442"
+      "sha256": "773bb254d8e3d73a6d914c76fb5bb748379c9cfc78999a4052dfe7583f5f256b"
     },
     {
       "name": "layout/footer",
@@ -560,16 +560,16 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "dc4a24bcf4054ec080f6959f1edcd59a08f453750a5c3c6d542f5c289adb2399"
+      "sha256": "d655db79ae6a0a6eaf57a8a8003a6abadd9525d1f2fd811a488a1ea580da341d"
     },
     {
       "name": "layout/header",
       "route": "/components/layout/header",
       "screenshot": "screenshots/layout__header.png",
-      "dataExoCount": 13,
+      "dataExoCount": 16,
       "width": 1280,
       "height": 900,
-      "sha256": "1cd1425a1f9a3912bd26b4349f01da11e60dc99fb63c18281d82842ccd93b3b1"
+      "sha256": "41189947494c059fd977a5e956713e9f07cda63f2d6976338360b6cdf15a2fdf"
     },
     {
       "name": "layout/hero",
@@ -578,7 +578,7 @@
       "dataExoCount": 14,
       "width": 1280,
       "height": 900,
-      "sha256": "8c36b9e6ba9e096da5761bbbd0363408eb427ca8072c8226675b17a3b6dbfe96"
+      "sha256": "2fafc1891cf3a238596fac36a0df98a36d470ff9a6b570b1a605cd4658c98719"
     },
     {
       "name": "layout/icon",
@@ -587,7 +587,7 @@
       "dataExoCount": 17,
       "width": 1280,
       "height": 900,
-      "sha256": "8ea7b5b0bdaf93a2f3178af4c805431ac61d575d87c921b93ad2f07d427da67c"
+      "sha256": "ce69733a914e97d70bbd9a1ead75192bad9a79d065297010afa3940b93bf6677"
     },
     {
       "name": "layout/scroll_area",
@@ -596,7 +596,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "fcbcf7fcf3b0bebb5150563546df7f9a1d90af551228f1e661e19de698c22a9b"
+      "sha256": "c7b522ddc5fb06f826d46dffe8282baeb072ceb5ef86e8d98daf3e94ac85d562"
     },
     {
       "name": "layout/separator",
@@ -605,16 +605,16 @@
       "dataExoCount": 3,
       "width": 1280,
       "height": 900,
-      "sha256": "005f00cd44ff7e1e5268ebc0ac8f00487aad8e17f8cb02e70464809cc0447d50"
+      "sha256": "528966a9f5c96d93b41d8bea140a270a315cc8a8fe6bb1dbcab440d5252e7517"
     },
     {
       "name": "layouts/sidebar_layout",
       "route": "/layouts/sidebar_layout",
       "screenshot": "screenshots/layouts__sidebar_layout.png",
-      "dataExoCount": 59,
+      "dataExoCount": 60,
       "width": 1280,
       "height": 900,
-      "sha256": "9935bac9de9758af662ffd76380f42e72be227da195dd076155b7be686c5df4c"
+      "sha256": "9bf379ee0fabc25f80b160dd5e00e0d68759d21df1e34a43a09083c4218e60b5"
     },
     {
       "name": "menus/command_palette",
@@ -623,7 +623,7 @@
       "dataExoCount": 53,
       "width": 1280,
       "height": 900,
-      "sha256": "04e91971e8fbdea8dcb0752dccdb29926868a1bb62dd9d6755aae0d59babaef0"
+      "sha256": "ba8d772d37f9c8491bda83f65c26800d0df5aa8f3a2a89d96f823eabf9c7d6e4"
     },
     {
       "name": "menus/command_surface_stack",
@@ -632,7 +632,7 @@
       "dataExoCount": 60,
       "width": 1280,
       "height": 900,
-      "sha256": "9291d923c28a3975f3958e9d60a19ff84397f4d3ae0488475bfd38715209c531"
+      "sha256": "61b8aedef3e4a115a6627e819ea0a4b35ad2687ded575d01f7482264f49e09d7"
     },
     {
       "name": "menus/context_menu",
@@ -641,7 +641,7 @@
       "dataExoCount": 8,
       "width": 1280,
       "height": 900,
-      "sha256": "74532ccb827e97c7d4ba2c705b90d0023cee817b21168e115077aad61c9b09f3"
+      "sha256": "3fdbee65f0dc2fc204ffdd3a4f585f80ad17882def97b32a01ec42d9006db632"
     },
     {
       "name": "menus/dropdown",
@@ -650,7 +650,7 @@
       "dataExoCount": 65,
       "width": 1280,
       "height": 900,
-      "sha256": "9665bb609b100772583d3748dbe9979f83e3faff35fb326fb8bdcbc9e42b7eb9"
+      "sha256": "1bad55964ee2b7ecdb448f8d1054300d4e31b2d3b70a0df316e5009b232cdbfe"
     },
     {
       "name": "menus/dropdown_menu",
@@ -659,7 +659,7 @@
       "dataExoCount": 61,
       "width": 1280,
       "height": 900,
-      "sha256": "595e43fd591465ffe181b23fdb58093ba93299fbe461bae7063f3f626a94b327"
+      "sha256": "09f05927dd4edde31bbefb97f1f288e49ee2ad4975cf016965cbbb5e04714048"
     },
     {
       "name": "menus/menubar",
@@ -668,7 +668,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "8a60adcf2f1758be1e5d359c4eb9f168c8ef84b7849a51eeaa071949007d8727"
+      "sha256": "1e8d1db5a53d22d687ade0db588dcf1bfd2c1dbf252c1df683dc675c076101c1"
     },
     {
       "name": "navigation/bottom_nav",
@@ -677,7 +677,7 @@
       "dataExoCount": 45,
       "width": 1280,
       "height": 900,
-      "sha256": "53e5686dabfc29d2cb5135091a2a54e69bcea2e90631a1b8b608f31beccaf837"
+      "sha256": "ce5c9d462575d7beb88bb3b38f516ef260af54f0891e82292de0257e3843aa9a"
     },
     {
       "name": "navigation/breadcrumb",
@@ -686,7 +686,7 @@
       "dataExoCount": 27,
       "width": 1280,
       "height": 900,
-      "sha256": "01c587bc8c3cae72a507a10a96d0db7b1183678da5f5af2f5e27a3fad5606303"
+      "sha256": "4f849f192b67fe03467c1c02d77b96ed39910c6f8782550d1a173553b6f5fc2c"
     },
     {
       "name": "navigation/navbar",
@@ -695,7 +695,7 @@
       "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "2398ca0fd66531c2020e570d726d0af15f15cb1494bf36d8d4f3e3669a8d5d46"
+      "sha256": "3deb437487ea1511a1669c93ebf436617035fae69abfe259a0dbbbe5426c3d6a"
     },
     {
       "name": "navigation/pagination",
@@ -704,7 +704,7 @@
       "dataExoCount": 56,
       "width": 1280,
       "height": 900,
-      "sha256": "95d11e693c210851681d76629a7341b7a466947caea559a8e8b9d32cbe043461"
+      "sha256": "860c2d9be0cb2a10aaa03517169d0f1497a83a1e6747cb0ef698bb465feede6b"
     },
     {
       "name": "navigation/steps",
@@ -713,7 +713,7 @@
       "dataExoCount": 33,
       "width": 1280,
       "height": 900,
-      "sha256": "7e1eadd46d42649c9e7256edccb378c34fcb108a048afa4cc60408a4d4064d24"
+      "sha256": "1ba22fc59b68ecc521b45679eb5049c7b89702ef063c3f75105bca05a3083c54"
     },
     {
       "name": "navigation/tabs",
@@ -722,7 +722,7 @@
       "dataExoCount": 29,
       "width": 1280,
       "height": 900,
-      "sha256": "85a7fef8abfffba7e1622378e7cbf88620a83dc6b5da5748bf08f4d636f75d4c"
+      "sha256": "f322e72a2620b214593b5fcb287e854384649d4576d72958682916d6ba4982c3"
     },
     {
       "name": "navigation/wizard_sidebar",
@@ -731,7 +731,7 @@
       "dataExoCount": 39,
       "width": 1280,
       "height": 900,
-      "sha256": "a1a16f079bded401c87126c33d8a896b38101667e2aafae5ac3674da591b1001"
+      "sha256": "e91be6736a21c06d353f7b6d68f96a5d8794f2690d167c30d6285b7708f9f8d4"
     },
     {
       "name": "overlays/confirm_modal",
@@ -740,7 +740,7 @@
       "dataExoCount": 24,
       "width": 1280,
       "height": 900,
-      "sha256": "32d099f359cec0bfcd5489d82750dd4ba18f4cc01b66caf0fea2df5fe1720e35"
+      "sha256": "34d0879fac6af4a7a17e8748ef731ba656288327c8c26e89c74e0426c8ae849d"
     },
     {
       "name": "overlays/drawer",
@@ -749,7 +749,7 @@
       "dataExoCount": 26,
       "width": 1280,
       "height": 900,
-      "sha256": "95e8bb739d68c318767f912f0bbdfbe4fdc5c460036c610c905f75fb3c23090f"
+      "sha256": "e8309fe8328dc915d9a1a243ec9f9c090fffe117a00062140b1736a50934eb7c"
     },
     {
       "name": "overlays/hover_card",
@@ -758,7 +758,7 @@
       "dataExoCount": 3,
       "width": 1280,
       "height": 900,
-      "sha256": "2b98ba5b31fa8af0d9fa25d8e8de45b328d3c894f5a3cd3a56f5d346d9e4bb17"
+      "sha256": "35ea030db4bae78590bfea0b81e0fc1defced00f6a5ad1ca819c757ad24c5d8b"
     },
     {
       "name": "overlays/modal",
@@ -767,7 +767,7 @@
       "dataExoCount": 31,
       "width": 1280,
       "height": 900,
-      "sha256": "b524298b1711271031e2eb6d2bcf3b38305bf4413ebafcbd61acd270f3e2d3ba"
+      "sha256": "a3b0272543f1b9379f8a4c47e8bd3ab556447123b9f639fa13dc03796b1b65f7"
     },
     {
       "name": "overlays/overlay_stack",
@@ -776,7 +776,7 @@
       "dataExoCount": 123,
       "width": 1280,
       "height": 900,
-      "sha256": "abea100a31f17b6c477b0e9ddb6fb0dbc7ee2924a5b9cff23abd38466b8e3d43"
+      "sha256": "c34c9b65ceb71f0f833a808374f1cac597fea765647abd13ff9de4f868bdedcb"
     },
     {
       "name": "overlays/popover",
@@ -785,7 +785,7 @@
       "dataExoCount": 13,
       "width": 1280,
       "height": 900,
-      "sha256": "14c7fafbcee70801935982e3ca88d4258dc1274a8e677246e02edc815620365a"
+      "sha256": "c3cecd1241993591dba4635ebfb98a32747e69f430b6b784354373a819ee43df"
     },
     {
       "name": "overlays/sheet",
@@ -794,7 +794,7 @@
       "dataExoCount": 37,
       "width": 1280,
       "height": 900,
-      "sha256": "66f942e688633ce10fbcfc3010418605e4a8c201c4f74526ed72480f1b5ba9f5"
+      "sha256": "a4c7fbc3e80adc9605c6e22e5a683c2da6413216bb5a87d8815b879dae5c702c"
     },
     {
       "name": "overlays/tooltip",
@@ -803,232 +803,232 @@
       "dataExoCount": 36,
       "width": 1280,
       "height": 900,
-      "sha256": "4f50bdce9e3d427208c55afe7ef7ebca78a3920199276cc733f087803bba0a5f"
+      "sha256": "3bdb3cca4b029ebdaa1942e7daab3307f503b91cdb6f01f085b72f8b97c4c5d6"
     },
     {
       "name": "recipes/access_review_workflow",
       "route": "/components/recipes/access_review_workflow",
       "screenshot": "screenshots/recipes__access_review_workflow.png",
-      "dataExoCount": 245,
+      "dataExoCount": 249,
       "width": 1280,
       "height": 900,
-      "sha256": "76e1e095afd54861590bd5a741b8780b1bca8abbc36f07efc1d25f25d9b960a4"
+      "sha256": "c06a19088e71c0b6669ae967f81ab142ad754ee58d2fd09f8fd4ae8e74c1f79f"
     },
     {
       "name": "recipes/async_save_workflow",
       "route": "/components/recipes/async_save_workflow",
       "screenshot": "screenshots/recipes__async_save_workflow.png",
-      "dataExoCount": 64,
+      "dataExoCount": 66,
       "width": 1280,
       "height": 900,
-      "sha256": "e12074b4c887b641ce227b3dfd3024ad3f3067278a7068aff045aa6245c53f60"
+      "sha256": "174c80c05605981db2164d66fa3200f3440257add151948f376faad48a5830df"
     },
     {
       "name": "recipes/billing_dispute_workflow",
       "route": "/components/recipes/billing_dispute_workflow",
       "screenshot": "screenshots/recipes__billing_dispute_workflow.png",
-      "dataExoCount": 244,
+      "dataExoCount": 248,
       "width": 1280,
       "height": 900,
-      "sha256": "5637ad530c438c1240f7780ea14de257d12fef7c51569e75fe64367c01e63be3"
+      "sha256": "80a8f69cb14f025362de4062d307b5219962d8e915443fba1f798296df0ca5c5"
     },
     {
       "name": "recipes/bulk_action_workflow",
       "route": "/components/recipes/bulk_action_workflow",
       "screenshot": "screenshots/recipes__bulk_action_workflow.png",
-      "dataExoCount": 101,
+      "dataExoCount": 104,
       "width": 1280,
       "height": 900,
-      "sha256": "b06b895879f9f7c0cfdde2daf853f2ffe2892eb5a3f04a3e55ee0e5023cdfdff"
+      "sha256": "1f0eafed5fb7941fb5163f0d090c0a764fe20c8747f436ac401ccada4f75414e"
     },
     {
       "name": "recipes/bulk_edit_workflow",
       "route": "/components/recipes/bulk_edit_workflow",
       "screenshot": "screenshots/recipes__bulk_edit_workflow.png",
-      "dataExoCount": 192,
+      "dataExoCount": 197,
       "width": 1280,
       "height": 900,
-      "sha256": "015cc400d50967d78fcd7f3acf444c7aa7fad81c52886d3e3a0cd8d7f8292090"
+      "sha256": "89f46cfcb662ca2641323d04524a2544fa8de6b872a6a692ead6418f79f8b9e1"
     },
     {
       "name": "recipes/button_recipes",
       "route": "/components/recipes/button_recipes",
       "screenshot": "screenshots/recipes__button_recipes.png",
-      "dataExoCount": 99,
+      "dataExoCount": 100,
       "width": 1280,
       "height": 900,
-      "sha256": "bd5ceecd8617146a29b77cce2136193ef8598c3699ee51a54684c3b5daee3f6f"
+      "sha256": "ad48dc5a1e959c5568bfa8e50440c6bbd341ff6918f31abfd5e27b56559518ca"
     },
     {
       "name": "recipes/combobox_recipes",
       "route": "/components/recipes/combobox_recipes",
       "screenshot": "screenshots/recipes__combobox_recipes.png",
-      "dataExoCount": 202,
+      "dataExoCount": 203,
       "width": 1280,
       "height": 900,
-      "sha256": "bf577c0e8ea1f136e2e13f4bb3a2700c33feccb0bae8dcc6e15b79521ffa0ec9"
+      "sha256": "6b20b3e40bf044466a39d5b43d94a4a11bdc7fe30a4409f989bfe5955ed39098"
     },
     {
       "name": "recipes/command_palette_recipes",
       "route": "/components/recipes/command_palette_recipes",
       "screenshot": "screenshots/recipes__command_palette_recipes.png",
-      "dataExoCount": 106,
+      "dataExoCount": 107,
       "width": 1280,
       "height": 900,
-      "sha256": "deb53c3264da6c43953a2643f1fbd346d636d000b96daabe6e62261ff1d579da"
+      "sha256": "8afc1d404042070d2c0d342b656a37982eaf2281259ba6554ef7f73625a4d4fc"
     },
     {
       "name": "recipes/command_routing_workflow",
       "route": "/components/recipes/command_routing_workflow",
       "screenshot": "screenshots/recipes__command_routing_workflow.png",
-      "dataExoCount": 76,
+      "dataExoCount": 77,
       "width": 1280,
       "height": 900,
-      "sha256": "fdd61ba9dc4d1b1ec87ae0e0883db63acc02d97ae192c373fc4ca3ceb399c48a"
+      "sha256": "b4d322e660459ed68ff9d0bb3d11821cd062aef988129374f10e808f4093c390"
     },
     {
       "name": "recipes/component_recipe_matrix",
       "route": "/components/recipes/component_recipe_matrix",
       "screenshot": "screenshots/recipes__component_recipe_matrix.png",
-      "dataExoCount": 166,
+      "dataExoCount": 170,
       "width": 1280,
       "height": 900,
-      "sha256": "235b58a47debfe9a86ca1af94c4f1d2203d008e0864f37ba26806bf992fd9399"
+      "sha256": "1fc36c6298aaf48b692f092b265efc375bdf0b54e789be9486f12037735d2324"
     },
     {
       "name": "recipes/dashboard_drilldown_workflow",
       "route": "/components/recipes/dashboard_drilldown_workflow",
       "screenshot": "screenshots/recipes__dashboard_drilldown_workflow.png",
-      "dataExoCount": 137,
+      "dataExoCount": 139,
       "width": 1280,
       "height": 900,
-      "sha256": "8981e38ce69020f8f1657f26b6be09673b059aa2196436e51be361db99fc459b"
+      "sha256": "e58fb224a46f3d68556b2e86703e9deba6bfcbd024b390b2c5f35ff7e9af94d6"
     },
     {
       "name": "recipes/data_table_workflow",
       "route": "/components/recipes/data_table_workflow",
       "screenshot": "screenshots/recipes__data_table_workflow.png",
-      "dataExoCount": 143,
+      "dataExoCount": 148,
       "width": 1280,
       "height": 900,
-      "sha256": "2603ff421df1031ffb8253750423b6a458cdb074388e2ce65d7e757ef9630f4d"
+      "sha256": "eb3a917fd488cea3ce377d36a2cfd2bad6feac008c9a66b66a1c6783fed03cbf"
     },
     {
       "name": "recipes/date_picker_recipes",
       "route": "/components/recipes/date_picker_recipes",
       "screenshot": "screenshots/recipes__date_picker_recipes.png",
-      "dataExoCount": 223,
+      "dataExoCount": 224,
       "width": 1280,
       "height": 900,
-      "sha256": "6584b0eec507d285ea1dd2106f76cb8877855e20beac7e51d1a374a0fd205084"
+      "sha256": "d36797d1058e36982ddc5fa4161fd0cff57417e2be29e2b12ebeb7eb23de963a"
     },
     {
       "name": "recipes/drawer_recipes",
       "route": "/components/recipes/drawer_recipes",
       "screenshot": "screenshots/recipes__drawer_recipes.png",
-      "dataExoCount": 215,
+      "dataExoCount": 218,
       "width": 1280,
       "height": 900,
-      "sha256": "1d86ab18f30dafd6d33acae0ff0f2b617870393eb792d174172f525230325aac"
+      "sha256": "e445a0840e573c3ed9c883d25c96f6ab461da0a64566a60162eb299907e32f31"
     },
     {
       "name": "recipes/import_export_workflow",
       "route": "/components/recipes/import_export_workflow",
       "screenshot": "screenshots/recipes__import_export_workflow.png",
-      "dataExoCount": 120,
+      "dataExoCount": 123,
       "width": 1280,
       "height": 900,
-      "sha256": "cf4435f8a673fbb2b17bfb1866437fe4454c562beee104c27edbbfb880c6e35d"
+      "sha256": "d0450e7a189fcc549e4399189f74a276fd6f144ee5b83a80323312d66146caa4"
     },
     {
       "name": "recipes/incident_response_workflow",
       "route": "/components/recipes/incident_response_workflow",
       "screenshot": "screenshots/recipes__incident_response_workflow.png",
-      "dataExoCount": 241,
+      "dataExoCount": 245,
       "width": 1280,
       "height": 900,
-      "sha256": "6c53be5ace38f230bf1a778767fc48f084bc85d73c1a696c326bf2a44077573c"
+      "sha256": "ef028a8c3efd6d9d5bfd11081d1c0ab16307dd1d6f556a2504dee773a5f826b2"
     },
     {
       "name": "recipes/input_recipes",
       "route": "/components/recipes/input_recipes",
       "screenshot": "screenshots/recipes__input_recipes.png",
-      "dataExoCount": 92,
+      "dataExoCount": 95,
       "width": 1280,
       "height": 900,
-      "sha256": "ad869e24ea67b5f140e60c4214362c573e4450c1556eb2dc05d5334f96150361"
+      "sha256": "3595f68d0779156bb9671c9051a3ecd40bb3a987c13cb74ffd11b08e9dd0ad70"
     },
     {
       "name": "recipes/modal_recipes",
       "route": "/components/recipes/modal_recipes",
       "screenshot": "screenshots/recipes__modal_recipes.png",
-      "dataExoCount": 132,
+      "dataExoCount": 133,
       "width": 1280,
       "height": 900,
-      "sha256": "16b8c338474b65238c48a2f7b2452f3c3d9f2ad0c04f7e9558018e16b7296159"
+      "sha256": "9f5871084c1f24fbbd5b1e5a5e6c813fd803b4a27463e6cc119bef2c5b2a0803"
     },
     {
       "name": "recipes/navigation_shell_workflow",
       "route": "/components/recipes/navigation_shell_workflow",
       "screenshot": "screenshots/recipes__navigation_shell_workflow.png",
-      "dataExoCount": 230,
+      "dataExoCount": 232,
       "width": 1280,
       "height": 900,
-      "sha256": "ba9cb4257cbf2563cee160f338ad846464c9aa4aa9bd278cabad7d85d24f00d9"
+      "sha256": "dd9202d30b9c1424bbbacde68e4ce7bf8c15de50174696ed51a6524cc70f8eff"
     },
     {
       "name": "recipes/onboarding_provisioning_workflow",
       "route": "/components/recipes/onboarding_provisioning_workflow",
       "screenshot": "screenshots/recipes__onboarding_provisioning_workflow.png",
-      "dataExoCount": 245,
+      "dataExoCount": 249,
       "width": 1280,
       "height": 900,
-      "sha256": "be0f353abf3343f645ea96fa9022c7afe92f45e112cf1cdd6f10081da497adc7"
+      "sha256": "0d51b8f8440bbc7166240397510d11b417eec3b6fa746e32d910dc24aa9bda38"
     },
     {
       "name": "recipes/release_readiness_workflow",
       "route": "/components/recipes/release_readiness_workflow",
       "screenshot": "screenshots/recipes__release_readiness_workflow.png",
-      "dataExoCount": 242,
+      "dataExoCount": 246,
       "width": 1280,
       "height": 900,
-      "sha256": "3e28a41b8ef4fc3c56a54401ebee6882e0ee647924309e1ac1189142a74689dc"
+      "sha256": "67d0a6ee7df39ba8059fc5516be092b667f9f5e7edf50677a82150ed9124f31a"
     },
     {
       "name": "recipes/role_operations_workflow",
       "route": "/components/recipes/role_operations_workflow",
       "screenshot": "screenshots/recipes__role_operations_workflow.png",
-      "dataExoCount": 150,
+      "dataExoCount": 152,
       "width": 1280,
       "height": 900,
-      "sha256": "58ac2005ca44309f130b53783a382fd74619420ba5b374d03b69bb41a1a40b03"
+      "sha256": "51e4d4189a8ea02abd8cdd96cb2683bc0bbc52f2067749abb2e5057ab13b5cb1"
     },
     {
       "name": "recipes/saved_filters_workflow",
       "route": "/components/recipes/saved_filters_workflow",
       "screenshot": "screenshots/recipes__saved_filters_workflow.png",
-      "dataExoCount": 113,
+      "dataExoCount": 117,
       "width": 1280,
       "height": 900,
-      "sha256": "f9b5399a8741e2c1327603006b34bd5a3ab83fa38e8ce79359597ac7f64352be"
+      "sha256": "7712c249fe2b4c91ca834c4d53bec14122427db94576f212911590dad2f9abe8"
     },
     {
       "name": "recipes/select_recipes",
       "route": "/components/recipes/select_recipes",
       "screenshot": "screenshots/recipes__select_recipes.png",
-      "dataExoCount": 183,
+      "dataExoCount": 194,
       "width": 1280,
       "height": 900,
-      "sha256": "60437a5cde84c5b74ebb0f67706eb533bd7f2818fefc9833bc6d3826adfb087b"
+      "sha256": "b069a0990b57b1670d74ca3be0b4cfd7db881078795f4089e9541a6678a1c278"
     },
     {
       "name": "recipes/table_recipes",
       "route": "/components/recipes/table_recipes",
       "screenshot": "screenshots/recipes__table_recipes.png",
-      "dataExoCount": 84,
+      "dataExoCount": 86,
       "width": 1280,
       "height": 900,
-      "sha256": "23d5ef268e03df0a5b083dd9476000aea247f6f26b416cbe30cc0fd414372d7d"
+      "sha256": "32e6c73014bca0444b9149ee58a436d16c3691bebffac65b78dca32fe2b47520"
     }
   ]
 }

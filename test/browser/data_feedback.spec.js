@@ -222,7 +222,12 @@ test.describe("data and feedback components", () => {
     await expect(canvas.locator('[data-exo="table-head-cell"][data-align="center"]').first()).toHaveText("Status");
     await expect(table.locator('[data-exo="table-row"][aria-label="Open Alice Smith"]')).toHaveCount(1);
     await expect(emptyTable.locator('[data-exo="table-empty"]')).toContainText("No archived members.");
-    await expect(loadingTable.locator("tbody")).toHaveAttribute("aria-busy", "true");
+    // Two <tbody> since the state rows left the stream container (c385921): the
+    // rows body is the one that is busy, the state body only hosts the status row.
+    const stateBody = loadingTable.locator('tbody[data-exo="table-state-body"]');
+    const rowsBody = loadingTable.locator('tbody:not([data-exo="table-state-body"])');
+    await expect(rowsBody).toHaveAttribute("aria-busy", "true");
+    await expect(stateBody).not.toHaveAttribute("aria-busy", /.*/);
     await expect(loadingTable.locator('[data-exo="table-loading"]')).toHaveAttribute("role", "status");
     await expect(loadingTable.locator('[data-exo="table-loading"]')).toContainText("Loading member rows...");
   });

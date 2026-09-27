@@ -16,7 +16,7 @@ test.describe("select", () => {
     const trigger = canvas.locator(`#${selectId}-select [data-exo-select="trigger"]`);
     const selectedOption = canvas.locator(`#${selectId} [data-exo="select-option"][data-selected]`);
     const nextOption = canvas.locator(`#${selectId} [data-exo="select-option"][data-value="inactive"]`);
-    const value = canvas.locator("input[name=\"status\"]");
+    const value = canvas.locator("select[name=\"status\"]");
     const popover = canvas.locator(`#${selectId}`);
     const listbox = canvas.locator(`#${selectId}-listbox`);
 
@@ -52,7 +52,7 @@ test.describe("select", () => {
     const trigger = canvas.locator(`#${selectId}-select [data-exo-select="trigger"]`);
     const popover = canvas.locator(`#${selectId}`);
     const disabledOption = canvas.locator(`#${selectId} [data-exo="select-option"][data-value="date"]`);
-    const value = canvas.locator("input[name=\"fruit\"]");
+    const value = canvas.locator("select[name=\"fruit\"]");
 
     await trigger.click();
 
@@ -72,7 +72,7 @@ test.describe("select", () => {
     const canvas = story(page);
     const selectId = "select-single-disabled";
     const trigger = canvas.locator(`#${selectId}-select [data-exo-select="trigger"]`);
-    const value = canvas.locator("input[name=\"locked\"]");
+    const value = canvas.locator("select[name=\"locked\"]");
 
     await expect(trigger).toBeDisabled();
     await expect(value).toBeDisabled();
