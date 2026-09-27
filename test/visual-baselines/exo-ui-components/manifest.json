@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-27T16:09:10.643Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-09-27T15-39-54-387Z",
+  "updatedAt": "2026-09-27T19:14:44.693Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-09-27T18-54-25-676Z",
   "count": 114,
   "entries": [
     {
@@ -389,7 +389,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "ee1d78fc6a92836ef469236ae73dc22095551379dcb0b6273eea91ad8ace2f2e"
+      "sha256": "5a8fc4dc67a2a92c55d2b54e0cea5b05620d8cdd6ecd1c103d2eb45ec714366d"
     },
     {
       "name": "feedback/toast_container",
@@ -425,7 +425,7 @@
       "dataExoCount": 465,
       "width": 1280,
       "height": 900,
-      "sha256": "471f3a92205e32deb7a3c50a7d57b52051c6bf233b757e8940acaeec70b20846"
+      "sha256": "20210b039a593f8cbeba585aa3f69a17da0932fd79ab6d71b7112e720b461b6f"
     },
     {
       "name": "forms/date_picker_controlled",
@@ -614,7 +614,7 @@
       "dataExoCount": 60,
       "width": 1280,
       "height": 900,
-      "sha256": "2d409fbeddfef1da22a643d2e9f0e5f9af7b7db25117d8442d980b8ec4305200"
+      "sha256": "9bf379ee0fabc25f80b160dd5e00e0d68759d21df1e34a43a09083c4218e60b5"
     },
     {
       "name": "menus/command_palette",
@@ -812,7 +812,7 @@
       "dataExoCount": 249,
       "width": 1280,
       "height": 900,
-      "sha256": "bc69031896e6ea6f6f5620accfa21378c4db5d3999ef20030ee751edf8a7c93a"
+      "sha256": "c06a19088e71c0b6669ae967f81ab142ad754ee58d2fd09f8fd4ae8e74c1f79f"
     },
     {
       "name": "recipes/async_save_workflow",
