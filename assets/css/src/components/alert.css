@@ -29,35 +29,39 @@
   margin-left: auto;
 }
 
+/*
+ * Text is the kind colour mixed half-and-half with the foreground, not the
+ * kind colour itself. On its own 10% tint the pure colour fails WCAG AA for
+ * body text: warning measured 1.9:1 in the light theme, error 2.9:1 in the
+ * dark one. The mix follows the theme (the foreground flips), so one rule
+ * covers both, and stays above 4.5:1 for every kind on card and page
+ * backgrounds. test/browser/data_feedback.spec.js measures it.
+ */
 :where([data-exo="alert"][data-kind="info"]) {
   background: color-mix(in oklch, var(--exo-info) 10%, transparent);
-  color: var(--exo-info);
+  color: color-mix(in oklch, var(--exo-info) 50%, var(--exo-foreground));
   border-color: color-mix(in oklch, var(--exo-info) 30%, transparent);
 }
 
 :where([data-exo="alert"][data-kind="success"]) {
   background: color-mix(in oklch, var(--exo-success) 10%, transparent);
-  color: var(--exo-success);
+  color: color-mix(in oklch, var(--exo-success) 50%, var(--exo-foreground));
   border-color: color-mix(in oklch, var(--exo-success) 30%, transparent);
 }
 
 :where([data-exo="alert"][data-kind="warning"]) {
   background: color-mix(in oklch, var(--exo-warning) 10%, transparent);
-  color: var(--exo-warning);
+  color: color-mix(in oklch, var(--exo-warning) 50%, var(--exo-foreground));
   border-color: color-mix(in oklch, var(--exo-warning) 30%, transparent);
 }
 
 :where([data-exo="alert"][data-kind="error"]) {
   background: color-mix(in oklch, var(--exo-danger) 10%, transparent);
-  color: var(--exo-danger);
+  color: color-mix(in oklch, var(--exo-danger) 50%, var(--exo-foreground));
   border-color: color-mix(in oklch, var(--exo-danger) 30%, transparent);
 }
 
 :where([data-exo="alert-title"]) {
   font-weight: 600;
   margin: 0 0 var(--exo-space-1) 0;
-}
-
-:where([data-exo="alert-message"]) {
-  opacity: 0.9;
 }

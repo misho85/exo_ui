@@ -26,6 +26,81 @@ test.describe("data and feedback components", () => {
     await expect(actionAlert.locator('[data-exo="alert-action"] [data-exo="btn"]')).toHaveText("Review");
   });
 
+  test("alert text meets WCAG AA on its own tint in both themes", async ({ page }) => {
+    await gotoStory(page, "/components/feedback/alert");
+
+    const foregrounds = [];
+
+    for (const theme of ["light", "dark"]) {
+      // The theme is scoped to the wrapper the alerts sit in, so the measurement
+      // does not depend on the Storybook chrome around the story.
+      const result = await story(page).evaluate((root, themeName) => {
+        const rgb = (css, under) => {
+          const canvas = document.createElement("canvas");
+          canvas.width = canvas.height = 1;
+          const context = canvas.getContext("2d", { colorSpace: "srgb" });
+
+          if (under) {
+            context.fillStyle = `rgb(${under.join(",")})`;
+            context.fillRect(0, 0, 1, 1);
+          }
+
+          context.fillStyle = css;
+          context.fillRect(0, 0, 1, 1);
+          return [...context.getImageData(0, 0, 1, 1).data].slice(0, 3);
+        };
+
+        const luminance = (channels) =>
+          channels
+            .map((value) => {
+              const v = value / 255;
+              return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+            })
+            .reduce((sum, v, index) => sum + v * [0.2126, 0.7152, 0.0722][index], 0);
+
+        const ratio = (a, b) => {
+          const [high, low] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+          return (high + 0.05) / (low + 0.05);
+        };
+
+        // Every variation renders in its own wrapper, so each one gets the theme.
+        const alerts = [...root.querySelectorAll('[data-exo="alert"]')];
+
+        for (const alert of alerts) {
+          alert.parentElement.setAttribute("data-theme", themeName);
+          alert.parentElement.style.background = "var(--exo-background)";
+        }
+
+        return {
+          foreground: getComputedStyle(alerts[0]).getPropertyValue("--exo-foreground").trim(),
+          alerts: alerts.map((alert) => {
+            const surface = rgb(getComputedStyle(alert.parentElement).backgroundColor);
+            const background = rgb(getComputedStyle(alert).backgroundColor, surface);
+            const message = alert.querySelector('[data-exo="alert-message"]');
+            const style = getComputedStyle(message);
+
+            return {
+              kind: alert.dataset.kind,
+              opacity: Number.parseFloat(style.opacity),
+              ratio: ratio(rgb(style.color), background)
+            };
+          })
+        };
+      }, theme);
+
+      foregrounds.push(result.foreground);
+      expect(result.alerts.length).toBeGreaterThanOrEqual(4);
+
+      for (const alert of result.alerts) {
+        expect(alert.opacity, `${theme} ${alert.kind} message opacity`).toBe(1);
+        expect(alert.ratio, `${theme} ${alert.kind} text contrast`).toBeGreaterThanOrEqual(4.5);
+      }
+    }
+
+    // Both passes must have measured a different theme, not the same one twice.
+    expect(foregrounds[0]).not.toEqual(foregrounds[1]);
+  });
+
   test("skeleton exposes loading semantics without announcing decorative shapes", async ({ page }) => {
     await gotoStory(page, "/components/feedback/skeleton");
 
