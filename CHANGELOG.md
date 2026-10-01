@@ -5,13 +5,16 @@
 - `alert/1`, `slider/1`: a mix with a neutral keeps the hue of its colour. The
   alert text (kind colour 50/50 with `--exo-foreground`) and the invalid
   slider track (`--exo-danger` 24% with `--exo-muted`) were mixed in `oklch`,
-  which interpolates the hue angle, so a theme whose neutrals carry any chroma
-  pulled the hue towards theirs. With a foreground of `oklch(20% 0.006 106)`
-  error text came out brown (hue 66 instead of 27) and info text teal (175
-  instead of 245). Both mixes are now in `oklab`; with ExoUI's own tokens,
-  whose neutrals have chroma 0, nothing changes. A browser test measures the
-  alert text hue under a tinted foreground, and `ExoUI.ColorMixTest` refuses a
-  polar `color-mix()` with anything but `transparent`.
+  which interpolates the hue angle, and the neutral's hue pulled them even at
+  chroma 0 (Chromium takes the written hue). With the default tokens info text
+  was purple (hue 305 instead of 250) and success text olive (78 instead of
+  155); with a tinted foreground such as `oklch(20% 0.006 106)` error text was
+  brown (66 instead of 27). Both mixes are now in `oklab`, so the text is a
+  darker or lighter shade of its kind. Lightness is the same, and the lowest
+  ratio with the default tokens is 6.80:1 (light warning, was 6.96:1). A
+  browser test measures the alert text hue with the default and a tinted
+  foreground, and `ExoUI.ColorMixTest` refuses a polar `color-mix()` with
+  anything but `transparent`.
 
 - `toggle/1`, `checkbox`, `radio_group/1`: the off state is visible. An off
   toggle was a `--exo-muted` track with a `--exo-background` thumb, about

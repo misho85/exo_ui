@@ -38,12 +38,13 @@
  * backgrounds. test/browser/data_feedback.spec.js measures it.
  *
  * The text mix is in oklab, not oklch. oklch interpolates the hue angle, and
- * a theme whose foreground is a tinted neutral (any chroma above 0, e.g.
- * oklch(20% 0.006 106)) pulls the hue halfway to its own: error text came out
- * brown (hue 66 instead of 27) and info teal (175 instead of 245). oklab has
- * no angle, so the text stays a darker or lighter shade of the kind colour.
- * The tint and border mix with transparent, which has no hue, so oklch is
- * safe there.
+ * the foreground's hue pulls the text halfway to it even at chroma 0 (Chromium
+ * takes the written hue): with the default oklch(15% 0 0) info text came out
+ * purple (hue 305 instead of 250); with a tinted foreground such as trg24's
+ * oklch(20% 0.006 106) error text was brown (66 instead of 27). oklab has no
+ * angle, so the text stays a darker or lighter shade of the kind colour. The
+ * tint and border mix with transparent, which keeps the kind's hue, so oklch
+ * is safe there.
  */
 :where([data-exo="alert"][data-kind="info"]) {
   background: color-mix(in oklch, var(--exo-info) 10%, transparent);

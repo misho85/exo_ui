@@ -101,19 +101,24 @@ test.describe("data and feedback components", () => {
     expect(foregrounds[0]).not.toEqual(foregrounds[1]);
   });
 
-  test("alert text keeps the hue of its kind under a tinted foreground", async ({ page }) => {
+  test("alert text keeps the hue of its kind, with ExoUI's foreground and a tinted one", async ({ page }) => {
     await gotoStory(page, "/components/feedback/alert");
 
-    // ExoUI's own neutrals have chroma 0, and a hue with no chroma is powerless,
-    // so a mix that interpolates hue looks right with them. A theme whose
-    // foreground carries a trace of colour is where it breaks: these are
-    // trg24's, under which the oklch mix turned error text brown (hue 66 for
-    // 27) and info text teal (175 for 245), TRG-346. In oklab the text drifts
-    // at most about 4 degrees from its kind; in oklch at least 14.
-    const tinted = { light: "oklch(20% 0.006 106)", dark: "oklch(96% 0.004 106)" };
+    // An oklch mix interpolates the hue angle, and Chromium takes the neutral's
+    // written hue even at chroma 0: with ExoUI's own oklch(15% 0 0) info text
+    // came out purple (hue 305 for 250). A tinted neutral pulls the same way:
+    // with trg24's foreground error text was brown (66 for 27) and info teal
+    // (178 for 250), TRG-346. In oklab the text drifts at most about 4 degrees
+    // from its kind; in oklch at least 14. null keeps the theme's foreground.
+    const foregrounds = [
+      ["light", null],
+      ["dark", null],
+      ["light", "oklch(20% 0.006 106)"],
+      ["dark", "oklch(96% 0.004 106)"]
+    ];
     const tokens = { info: "--exo-info", success: "--exo-success", warning: "--exo-warning", error: "--exo-danger" };
 
-    for (const [theme, foreground] of Object.entries(tinted)) {
+    for (const [theme, foreground] of foregrounds) {
       const alerts = await story(page).evaluate(
         (root, { themeName, foreground, tokens }) => {
           const rgb = (css) => {
@@ -142,7 +147,12 @@ test.describe("data and feedback components", () => {
           return [...root.querySelectorAll('[data-exo="alert"]')].map((alert) => {
             const wrapper = alert.parentElement;
             wrapper.setAttribute("data-theme", themeName);
-            wrapper.style.setProperty("--exo-foreground", foreground);
+
+            if (foreground) {
+              wrapper.style.setProperty("--exo-foreground", foreground);
+            } else {
+              wrapper.style.removeProperty("--exo-foreground");
+            }
 
             const message = alert.querySelector('[data-exo="alert-message"]');
             const kind = getComputedStyle(wrapper).getPropertyValue(tokens[alert.dataset.kind]).trim();
@@ -161,11 +171,12 @@ test.describe("data and feedback components", () => {
       expect(alerts.length).toBeGreaterThanOrEqual(4);
 
       for (const alert of alerts) {
-        // The override must have reached the alert, or this measures ExoUI's grey.
-        expect(alert.foreground, `${theme} ${alert.kind} foreground`).toBe(foreground);
+        // The override must have reached the alert, or this measures ExoUI's grey twice.
+        if (foreground) expect(alert.foreground, `${theme} ${alert.kind} foreground`).toBe(foreground);
 
         const drift = Math.abs(((alert.actual - alert.expected + 540) % 360) - 180);
-        expect(drift, `${theme} ${alert.kind} text hue ${alert.actual} vs ${alert.expected}`).toBeLessThanOrEqual(8);
+        const label = `${theme} ${alert.kind} under ${alert.foreground}: text hue ${alert.actual} vs ${alert.expected}`;
+        expect(drift, label).toBeLessThanOrEqual(8);
       }
     }
   });

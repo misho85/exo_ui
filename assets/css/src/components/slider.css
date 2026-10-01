@@ -29,8 +29,8 @@
   cursor: pointer;
 }
 
-/* oklab, not oklch: a tinted --exo-muted would pull the danger hue towards
-   its own (see alert.css). */
+/* oklab, not oklch: --exo-muted's hue would pull the danger hue towards its
+   own, even at chroma 0 (see alert.css). */
 :where([data-exo="slider"][data-invalid]) {
   background: color-mix(in oklab, var(--exo-danger) 24%, var(--exo-muted));
 }

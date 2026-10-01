@@ -1,15 +1,15 @@
 defmodule ExoUI.ColorMixTest do
   @moduledoc """
   TRG-346. `color-mix()` in a polar space (`oklch`, `lch`, `hsl`, `hwb`)
-  interpolates the hue angle. Mixing a colour with a neutral that has any
-  chroma at all pulls the hue towards the neutral's: with trg24's foreground,
-  `oklch(20% 0.006 106)`, the alert's error text came out brown (hue 66
-  instead of 27) and info text teal (175 instead of 245). ExoUI's own neutrals
-  have chroma 0, whose hue is powerless, so nothing here showed it; the bug
-  lives in the themes that use ExoUI.
+  interpolates the hue angle, and a neutral pulls the hue towards its own even
+  at chroma 0: Chromium takes the written hue of `oklch(15% 0 0)`, so the
+  alert's info text came out purple (hue 305 instead of 250) with ExoUI's own
+  tokens. A tinted neutral does the same: with trg24's foreground,
+  `oklch(20% 0.006 106)`, error text was brown (hue 66 instead of 27).
 
-  A polar mix is safe only against `transparent`, which has no hue. Anything
-  else mixes in `oklab`, which has no angle to drag.
+  A polar mix is safe only against `transparent`, which keeps the other
+  colour's hue (measured). Anything else mixes in `oklab`, which has no angle
+  to drag.
   """
   use ExUnit.Case, async: true
 
