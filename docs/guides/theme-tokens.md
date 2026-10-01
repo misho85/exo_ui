@@ -36,12 +36,20 @@ Dark mode can be scoped to the full app or one preview container.
 ```css
 :root[data-theme="dark"],
 .exo-dark {
+  color-scheme: dark;
   --exo-background: oklch(16% 0.02 255);
   --exo-foreground: oklch(96% 0.01 255);
   --exo-card: oklch(20% 0.02 255);
   --exo-border: oklch(32% 0.02 255);
 }
 ```
+
+`color-scheme` is not a token: it tells the browser which scheme to paint the
+parts of a control it draws itself (calendar icon of a date input, number
+spinners, scrollbars, a native `<select>` list, autofill). `exo.css` sets it in
+every theme block; a dark theme of your own, or one built on `exo.tokens.css`
+alone (which sets only `light`), has to set `dark` itself, or those parts stay
+light on a dark surface.
 
 ## Practical Rules
 
