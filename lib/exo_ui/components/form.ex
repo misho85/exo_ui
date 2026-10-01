@@ -449,6 +449,11 @@ defmodule ExoUI.Components.Form do
       form serialization entirely.
     * **`required`, and value validation, are the browser's job again.**
 
+  A `form` attribute goes to the native `<select>` as well. It names the
+  `<form>` the value is submitted with, so a select that sits outside that form
+  (a side card next to the main form) still travels with it, and its changes
+  fire that form's `phx-change`. On the wrapper `<div>` it would do nothing.
+
   ## `prompt` is a real, selectable option
 
   `prompt` renders as `<option value="">` in the native select AND as the first
@@ -499,7 +504,9 @@ defmodule ExoUI.Components.Form do
     doc: "visual density of the trigger — same scale as `input/1` and `button/1`"
 
   attr :rest, :global,
-    doc: "`phx-*` go to the native <select> (see moduledoc); everything else to the wrapper"
+    include: ~w(form),
+    doc:
+      "`phx-*` and `form` go to the native <select> (see moduledoc); everything else to the wrapper"
 
   slot :option do
     attr :value, :any, required: true
@@ -525,7 +532,7 @@ defmodule ExoUI.Components.Form do
   end
 
   def select(assigns) do
-    assigns = assigns |> prepare_choice() |> prepare_hidden_label() |> split_phx_rest()
+    assigns = assigns |> prepare_choice() |> prepare_hidden_label() |> split_native_rest()
 
     ~H"""
     <div data-exo="field" class={@class} {@wrapper_rest}>
@@ -600,7 +607,7 @@ defmodule ExoUI.Components.Form do
         prompt={@prompt}
         disabled={@disabled}
         required={@required}
-        rest={@phx_rest}
+        rest={@native_rest}
       />
       <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
       <.field_errors id={@error_id} errors={@errors} />
@@ -960,15 +967,22 @@ defmodule ExoUI.Components.Form do
 
   defp blank_choice?(value), do: value in [nil, ""]
 
-  # `phx-*` must land on the element that fires the event — see `select/1`
-  # @doc. Everything else (`data-*`, `aria-*`, `id`…) keeps going to the field
-  # wrapper, where callers have always put it.
-  defp split_phx_rest(assigns) do
-    {phx, wrapper} =
-      assigns.rest
-      |> Enum.split_with(fn {key, _} -> String.starts_with?(to_string(key), "phx-") end)
+  # `phx-*` must land on the element that fires the event, and `form` on the
+  # control that is submitted — see `select/1` @doc. Both are the native
+  # `<select>`. Everything else (`data-*`, `aria-*`, `id`…) keeps going to the
+  # field wrapper, where callers have always put it.
+  defp split_native_rest(assigns) do
+    {native, wrapper} = Enum.split_with(assigns.rest, &native_attr?/1)
 
-    assign(assigns, phx_rest: Map.new(phx), wrapper_rest: Map.new(wrapper))
+    assign(assigns, native_rest: Map.new(native), wrapper_rest: Map.new(wrapper))
+  end
+
+  defp native_attr?({key, _}) do
+    case to_string(key) do
+      "phx-" <> _ -> true
+      "form" -> true
+      _ -> false
+    end
   end
 
   attr :name, :any, default: nil
