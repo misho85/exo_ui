@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- `select/1`: a `form` attribute now goes to the native `<select>`, next to the
+  `phx-*` bindings. Before, `form` was not an accepted attribute (a compile
+  warning), and passing it through `rest` would have put it on the wrapper
+  `<div>`. A select in a side card can now belong to the main form: its value
+  is submitted with that form and its changes fire that form's `phx-change`.
+
 - `alert/1`: text is now the kind colour mixed 50/50 with `--exo-foreground`
   instead of the kind colour itself, and the message no longer carries
   `opacity: 0.9`. On its own 10% tint the pure colour failed WCAG AA for body

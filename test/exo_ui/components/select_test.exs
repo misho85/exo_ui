@@ -144,6 +144,29 @@ defmodule ExoUI.Components.SelectTest do
     assert Floki.attribute([field], "phx-change") == []
   end
 
+  test "form lands on the native select, so the value travels with the form it names" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <div>
+        <form id="main-form" phx-submit="save"></form>
+        <.select id="s2f" name="s" options={[{"Active", "active"}]} form="main-form" />
+      </div>
+      """)
+
+    {:ok, doc} = Floki.parse_document(html)
+
+    # The browser submits a control with the form it names, wherever it sits.
+    # The wrapper `<div>` is not a form control, so `form` there would leave the
+    # value out of that form's submit and `phx-change`.
+    [native] = Floki.find(doc, ~s(select[data-exo="select-native"]))
+    assert Floki.attribute([native], "form") == ["main-form"]
+
+    [field] = Floki.find(doc, ~s(div[data-exo="field"]))
+    assert Floki.attribute([field], "form") == []
+  end
+
   test "required lands on the native select so the browser enforces it" do
     assigns = %{}
 
