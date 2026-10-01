@@ -205,6 +205,12 @@ Dark mode is activated by setting `data-theme="dark"` (or the class
 `.exo-dark`) on any ancestor — typically `<html>`. The `<.theme_toggle />`
 component handles switching and persistence.
 
+Each theme also sets `color-scheme` (`light` or `dark`), so the parts of a
+control the browser draws itself — the calendar icon of a date input, number
+spinners, scrollbars, a native `<select>` list — follow the theme. A custom
+dark theme that replaces ExoUI's dark tokens should set `color-scheme: dark`
+next to them.
+
 Practical integration modes:
 
 - `exo.css`: ship ExoUI's default theme and component styles.

@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+- Themes set `color-scheme`: `light` on `:root` and on
+  `[data-theme="light"], .exo-default`, `dark` on `[data-theme="dark"],
+  .exo-dark` and in the `prefers-color-scheme: dark` block. Before, no ExoUI
+  CSS set it, so the browser drew the parts of a control it paints itself
+  (calendar icon of `<input type="date">`, number spinners, scrollbars, the
+  list of a native `<select>`, autofill) in the light scheme under the dark
+  theme too: the calendar icon was 1.45:1 on the dark field, now 19.68:1 (the
+  light theme is unchanged at 20.47:1). The property inherits, so a themed
+  wrapper switches what is inside it. If you replace the dark tokens with your
+  own, set `color-scheme: dark` there as well. A browser test checks the
+  computed `color-scheme` for the system theme, a theme pinned on `<html>` and
+  a themed wrapper.
+
 - `alert/1`, `slider/1`: a mix with a neutral keeps the hue of its colour. The
   alert text (kind colour 50/50 with `--exo-foreground`) and the invalid
   slider track (`--exo-danger` 24% with `--exo-muted`) were mixed in `oklch`,
