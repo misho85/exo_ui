@@ -11,33 +11,49 @@
   height: 0;
 }
 
+/*
+ * The off state is an outlined track with a filled thumb, the on state a filled
+ * track with a light thumb. Before, the off track was --exo-muted with a
+ * --exo-background thumb: about 1.1:1 against the card in both themes, so the
+ * switch and its position were close to invisible (WCAG 1.4.11 asks for 3:1).
+ * The outline and the off thumb take --exo-muted-foreground, which is a text
+ * colour and therefore well above 3:1 on every surface. The border is part of
+ * the 1.5rem box, so the thumb keeps its 2px inset and the size is unchanged.
+ * test/browser/form_controls.spec.js measures it.
+ */
 :where([data-exo="toggle-track"]) {
   position: relative;
+  box-sizing: border-box;
   width: 2.5rem;
   height: 1.5rem;
   background: var(--exo-muted);
+  border: 1px solid var(--exo-muted-foreground);
   border-radius: 9999px;
-  transition: background var(--exo-duration) var(--exo-easing);
+  transition: background var(--exo-duration) var(--exo-easing),
+              border-color var(--exo-duration) var(--exo-easing);
 }
 
 :where([data-exo="toggle"][data-checked] [data-exo="toggle-track"],
 [data-exo="toggle"]:has(input[type="checkbox"]:checked) [data-exo="toggle-track"]) {
   background: var(--exo-primary);
+  border-color: var(--exo-primary);
 }
 
 :where([data-exo="toggle-thumb"]) {
   position: absolute;
-  top: 2px;
-  left: 2px;
+  top: 1px;
+  left: 1px;
   width: calc(1.5rem - 4px);
   height: calc(1.5rem - 4px);
-  background: var(--exo-background);
+  background: var(--exo-muted-foreground);
   border-radius: 9999px;
-  transition: transform var(--exo-duration) var(--exo-easing);
+  transition: transform var(--exo-duration) var(--exo-easing),
+              background var(--exo-duration) var(--exo-easing);
 }
 
 :where([data-exo="toggle"][data-checked] [data-exo="toggle-thumb"],
 [data-exo="toggle"]:has(input[type="checkbox"]:checked) [data-exo="toggle-thumb"]) {
+  background: var(--exo-background);
   transform: translateX(1rem);
 }
 
