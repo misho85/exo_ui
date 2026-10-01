@@ -36,28 +36,37 @@
  * dark one. The mix follows the theme (the foreground flips), so one rule
  * covers both, and stays above 4.5:1 for every kind on card and page
  * backgrounds. test/browser/data_feedback.spec.js measures it.
+ *
+ * The text mix is in oklab, not oklch. oklch interpolates the hue angle, and
+ * the foreground's hue pulls the text halfway to it even at chroma 0 (Chromium
+ * takes the written hue): with the default oklch(15% 0 0) info text came out
+ * purple (hue 305 instead of 250); with a tinted foreground such as trg24's
+ * oklch(20% 0.006 106) error text was brown (66 instead of 27). oklab has no
+ * angle, so the text stays a darker or lighter shade of the kind colour. The
+ * tint and border mix with transparent, which keeps the kind's hue, so oklch
+ * is safe there.
  */
 :where([data-exo="alert"][data-kind="info"]) {
   background: color-mix(in oklch, var(--exo-info) 10%, transparent);
-  color: color-mix(in oklch, var(--exo-info) 50%, var(--exo-foreground));
+  color: color-mix(in oklab, var(--exo-info) 50%, var(--exo-foreground));
   border-color: color-mix(in oklch, var(--exo-info) 30%, transparent);
 }
 
 :where([data-exo="alert"][data-kind="success"]) {
   background: color-mix(in oklch, var(--exo-success) 10%, transparent);
-  color: color-mix(in oklch, var(--exo-success) 50%, var(--exo-foreground));
+  color: color-mix(in oklab, var(--exo-success) 50%, var(--exo-foreground));
   border-color: color-mix(in oklch, var(--exo-success) 30%, transparent);
 }
 
 :where([data-exo="alert"][data-kind="warning"]) {
   background: color-mix(in oklch, var(--exo-warning) 10%, transparent);
-  color: color-mix(in oklch, var(--exo-warning) 50%, var(--exo-foreground));
+  color: color-mix(in oklab, var(--exo-warning) 50%, var(--exo-foreground));
   border-color: color-mix(in oklch, var(--exo-warning) 30%, transparent);
 }
 
 :where([data-exo="alert"][data-kind="error"]) {
   background: color-mix(in oklch, var(--exo-danger) 10%, transparent);
-  color: color-mix(in oklch, var(--exo-danger) 50%, var(--exo-foreground));
+  color: color-mix(in oklab, var(--exo-danger) 50%, var(--exo-foreground));
   border-color: color-mix(in oklch, var(--exo-danger) 30%, transparent);
 }
 

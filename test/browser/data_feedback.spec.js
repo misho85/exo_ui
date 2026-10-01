@@ -101,6 +101,86 @@ test.describe("data and feedback components", () => {
     expect(foregrounds[0]).not.toEqual(foregrounds[1]);
   });
 
+  test("alert text keeps the hue of its kind, with ExoUI's foreground and a tinted one", async ({ page }) => {
+    await gotoStory(page, "/components/feedback/alert");
+
+    // An oklch mix interpolates the hue angle, and Chromium takes the neutral's
+    // written hue even at chroma 0: with ExoUI's own oklch(15% 0 0) info text
+    // came out purple (hue 305 for 250). A tinted neutral pulls the same way:
+    // with trg24's foreground error text was brown (66 for 27) and info teal
+    // (178 for 250), TRG-346. In oklab the text drifts at most about 4 degrees
+    // from its kind; in oklch at least 14. null keeps the theme's foreground.
+    const foregrounds = [
+      ["light", null],
+      ["dark", null],
+      ["light", "oklch(20% 0.006 106)"],
+      ["dark", "oklch(96% 0.004 106)"]
+    ];
+    const tokens = { info: "--exo-info", success: "--exo-success", warning: "--exo-warning", error: "--exo-danger" };
+
+    for (const [theme, foreground] of foregrounds) {
+      const alerts = await story(page).evaluate(
+        (root, { themeName, foreground, tokens }) => {
+          const rgb = (css) => {
+            const canvas = document.createElement("canvas");
+            canvas.width = canvas.height = 1;
+            const context = canvas.getContext("2d", { colorSpace: "srgb" });
+            context.fillStyle = css;
+            context.fillRect(0, 0, 1, 1);
+            return [...context.getImageData(0, 0, 1, 1).data].slice(0, 3);
+          };
+
+          // sRGB bytes -> OKLab -> hue angle in degrees.
+          const hue = (channels) => {
+            const [r, g, b] = channels.map((value) => {
+              const v = value / 255;
+              return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+            });
+            const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+            const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+            const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+            const a = 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s;
+            const bb = 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s;
+            return ((Math.atan2(bb, a) * 180) / Math.PI + 360) % 360;
+          };
+
+          return [...root.querySelectorAll('[data-exo="alert"]')].map((alert) => {
+            const wrapper = alert.parentElement;
+            wrapper.setAttribute("data-theme", themeName);
+
+            if (foreground) {
+              wrapper.style.setProperty("--exo-foreground", foreground);
+            } else {
+              wrapper.style.removeProperty("--exo-foreground");
+            }
+
+            const message = alert.querySelector('[data-exo="alert-message"]');
+            const kind = getComputedStyle(wrapper).getPropertyValue(tokens[alert.dataset.kind]).trim();
+
+            return {
+              kind: alert.dataset.kind,
+              foreground: getComputedStyle(alert).getPropertyValue("--exo-foreground").trim(),
+              expected: hue(rgb(kind)),
+              actual: hue(rgb(getComputedStyle(message).color))
+            };
+          });
+        },
+        { themeName: theme, foreground, tokens }
+      );
+
+      expect(alerts.length).toBeGreaterThanOrEqual(4);
+
+      for (const alert of alerts) {
+        // The override must have reached the alert, or this measures ExoUI's grey twice.
+        if (foreground) expect(alert.foreground, `${theme} ${alert.kind} foreground`).toBe(foreground);
+
+        const drift = Math.abs(((alert.actual - alert.expected + 540) % 360) - 180);
+        const label = `${theme} ${alert.kind} under ${alert.foreground}: text hue ${alert.actual} vs ${alert.expected}`;
+        expect(drift, label).toBeLessThanOrEqual(8);
+      }
+    }
+  });
+
   test("skeleton exposes loading semantics without announcing decorative shapes", async ({ page }) => {
     await gotoStory(page, "/components/feedback/skeleton");
 
