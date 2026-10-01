@@ -144,4 +144,109 @@ test.describe("form controls", () => {
       "combobox-single-with-errors-description combobox-single-with-errors-error"
     );
   });
+
+  // WCAG 1.4.11: the boundary of a control, and what tells its state apart, need
+  // 3:1 against what is next to them. Before, an unchecked checkbox or radio and
+  // an off toggle were drawn in --exo-input / --exo-muted: about 1.1–1.3:1.
+  test("toggle, checkbox and radio boundaries meet 3:1 in both themes", async ({ page }) => {
+    const measure = (root, { themeName, selector }) => {
+      const rgb = (css, under) => {
+        const canvas = document.createElement("canvas");
+        canvas.width = canvas.height = 1;
+        const context = canvas.getContext("2d", { colorSpace: "srgb" });
+
+        if (under) {
+          context.fillStyle = `rgb(${under.join(",")})`;
+          context.fillRect(0, 0, 1, 1);
+        }
+
+        context.fillStyle = css;
+        context.fillRect(0, 0, 1, 1);
+        return [...context.getImageData(0, 0, 1, 1).data].slice(0, 3);
+      };
+
+      const luminance = (channels) =>
+        channels
+          .map((value) => {
+            const v = value / 255;
+            return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+          })
+          .reduce((sum, v, index) => sum + v * [0.2126, 0.7152, 0.0722][index], 0);
+
+      const ratio = (a, b) => {
+        const [high, low] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+        return (high + 0.05) / (low + 0.05);
+      };
+
+      const controls = [...root.querySelectorAll(selector)];
+
+      // Every variation renders in its own wrapper, so each one gets the theme.
+      for (const control of controls) {
+        const wrapper = control.closest('[data-exo="toggle"], [data-exo="checkbox-item"], [data-exo="radio-item"]')
+          .parentElement;
+        wrapper.setAttribute("data-theme", themeName);
+        wrapper.style.background = "var(--exo-background)";
+      }
+
+      // The track and thumb transition their colours, so right after the theme
+      // flips the computed colour is still the old theme's. Reading a style
+      // starts the transitions; finishing them measures the settled state.
+      getComputedStyle(controls[0]).borderTopColor;
+      document.getAnimations().forEach((animation) => animation.finish());
+
+      return {
+        foreground: getComputedStyle(controls[0]).getPropertyValue("--exo-foreground").trim(),
+        controls: controls.map((control) => {
+          const item = control.closest('[data-exo="toggle"], [data-exo="checkbox-item"], [data-exo="radio-item"]');
+          const surface = rgb(getComputedStyle(item.parentElement).backgroundColor);
+          const style = getComputedStyle(control);
+          const fill = rgb(style.backgroundColor, surface);
+          const checked = item.querySelector('input[type="checkbox"], input[type="radio"]').checked;
+          // Without a border, `borderTopColor` is `currentColor`, which would pass
+          // for any control; the edge is then the control's own fill.
+          const bordered = style.borderTopStyle !== "none" && Number.parseFloat(style.borderTopWidth) > 0;
+          const edge = bordered ? rgb(style.borderTopColor, surface) : fill;
+          const result = {
+            name: `${item.dataset.exo} ${checked ? "on" : "off"}`,
+            boundary: ratio(edge, surface)
+          };
+
+          if (item.dataset.exo === "toggle") {
+            const thumb = getComputedStyle(control.querySelector('[data-exo="toggle-thumb"]'));
+            result.thumb = ratio(rgb(thumb.backgroundColor, fill), fill);
+          }
+
+          return result;
+        })
+      };
+    };
+
+    const cases = [
+      { path: "/components/actions/toggle", selector: '[data-exo="toggle-track"]', min: 4 },
+      { path: "/components/forms/input", selector: '[data-exo="checkbox-indicator"]', min: 3 },
+      { path: "/components/forms/radio_group", selector: '[data-exo="radio-indicator"]', min: 3 }
+    ];
+
+    for (const { path, selector, min } of cases) {
+      await gotoStory(page, path);
+      const foregrounds = [];
+
+      for (const themeName of ["light", "dark"]) {
+        const result = await story(page).evaluate(measure, { themeName, selector });
+        foregrounds.push(result.foreground);
+        expect(result.controls.length, `${path} controls`).toBeGreaterThanOrEqual(min);
+
+        for (const control of result.controls) {
+          expect(control.boundary, `${themeName} ${control.name} boundary`).toBeGreaterThanOrEqual(3);
+
+          if (control.thumb !== undefined) {
+            expect(control.thumb, `${themeName} ${control.name} thumb on its track`).toBeGreaterThanOrEqual(3);
+          }
+        }
+      }
+
+      // Both passes must have measured a different theme, not the same one twice.
+      expect(foregrounds[0], path).not.toEqual(foregrounds[1]);
+    }
+  });
 });

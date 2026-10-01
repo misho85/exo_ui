@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- `toggle/1`, `checkbox`, `radio_group/1`: the off state is visible. An off
+  toggle was a `--exo-muted` track with a `--exo-background` thumb, about
+  1.1:1 against the card in both themes, and an unchecked checkbox or radio
+  had a `--exo-input` border, about 1.3:1; WCAG 1.4.11 asks 3:1. The off
+  toggle is now an outlined track with a filled thumb, both
+  `--exo-muted-foreground`; on, the track is `--exo-primary` and the thumb
+  `--exo-background`, as before. Checkbox and radio borders are
+  `--exo-muted-foreground`. The toggle keeps its size (the border is inside
+  the box). A browser test measures every control in both themes.
+
 - `select/1`: a `form` attribute now goes to the native `<select>`, next to the
   `phx-*` bindings. Before, `form` was not an accepted attribute (a compile
   warning), and passing it through `rest` would have put it on the wrapper
