@@ -1,0 +1,6 @@
+## VM flags for `bin/exo_ui_storybook start` and `daemon`: https://www.erlang.org/doc/man/erl.html
+## -mode/-name/-sname/-setcookie are set through the env (`env.sh.eex`), not here.
+
+## Distribution port on loopback only (KRF-493). The same line is in
+## `remote.vm.args.eex`, which `rpc` and `remote` read; the reason is in `env.sh.eex`.
+-kernel inet_dist_use_interface {127,0,0,1}
