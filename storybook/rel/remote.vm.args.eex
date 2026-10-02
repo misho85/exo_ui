@@ -1,0 +1,6 @@
+## VM flags for `bin/exo_ui_storybook rpc` and `remote` (a hidden node that attaches to
+## the running one): https://www.erlang.org/doc/man/erl.html
+
+## The client node listens too while the call lasts, so it is on loopback only
+## as well (KRF-493). The same line is in `vm.args.eex`; the reason is in `env.sh.eex`.
+-kernel inet_dist_use_interface {127,0,0,1}

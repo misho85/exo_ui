@@ -44,8 +44,11 @@ COPY storybook/lib ./lib
 COPY storybook/stories ./stories
 RUN mix compile
 
-# Copy runtime config and build release
+# Copy runtime config and build release. `rel/` (env.sh, vm.args) keeps epmd
+# and distribution on loopback only (KRF-493, KRF-509); without it the release
+# listens on 0.0.0.0. Guard: storybook/test/storybook_web/release_distribution_test.exs.
 COPY storybook/config/runtime.exs config/
+COPY storybook/rel ./rel
 RUN mix release
 
 # --- Runner stage ---
