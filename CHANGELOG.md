@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- `radio_group/1`: an option's description goes under its label. The
+  `radio-description` span had no rule, so in the one-row flex item it became
+  a third column next to the label, and in a narrow card the label broke into
+  a column one or two words wide. An item with a description is now a grid:
+  the indicator in the first column, the label and the description in the
+  second, and the indicator centred on the label's row. The description is
+  `--exo-text-xs` in `--exo-muted-foreground`, like a field description, and
+  stays linked to its radio through `aria-describedby`. An item without a
+  description is unchanged. `checkbox` and `toggle/1` have no per-option
+  description; their `description` is a field description under the control.
+  A browser test measures the layout under `content-box` and `border-box`.
+
 - Themes set `color-scheme`: `light` on `:root` and on
   `[data-theme="light"], .exo-default`, `dark` on `[data-theme="dark"],
   .exo-dark` and in the `prefers-color-scheme: dark` block. Before, no ExoUI

@@ -25,6 +25,31 @@
   cursor: pointer;
 }
 
+/*
+ * An option with a description is two columns: the indicator in the first, the
+ * label and the description under it in the second. In the one-row flex above
+ * the description became a third column next to the label, and in a narrow card
+ * the label broke into a column one or two words wide. The radio input is
+ * absolutely positioned, so it takes no grid cell. The indicator and the label
+ * share the first row and are centred in it, as in the one-row item, rather than
+ * the indicator sitting in the middle of both rows. Centring, not a margin worked
+ * out from the line height: the indicator is 16px under `border-box` and 20px
+ * under `content-box`, and the library does not choose the host's box model.
+ */
+:where([data-exo="radio-item"]:has([data-exo="radio-description"])) {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--exo-space-2);
+  row-gap: 0.125rem;
+}
+
+:where([data-exo="radio-description"]) {
+  grid-column: 2;
+  font-size: var(--exo-text-xs);
+  color: var(--exo-muted-foreground);
+}
+
 :where([data-exo="radio"]) {
   position: absolute;
   opacity: 0;

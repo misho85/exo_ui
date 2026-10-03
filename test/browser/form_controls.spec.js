@@ -145,6 +145,61 @@ test.describe("form controls", () => {
     );
   });
 
+  // An option's description goes under its label. It had no rule, so in the
+  // one-row flex item it became a third column, and in a narrow card the label
+  // broke into a column one or two words wide (TRG-392). Measured under both box
+  // models, because the indicator is 20px tall under `content-box` (Storybook)
+  // and 16px under `border-box` (an app with a CSS reset).
+  test("radio option description sits under its label", async ({ page }) => {
+    await gotoStory(page, "/components/forms/radio_group");
+
+    const group = story(page).locator("#radio-group-single-plan");
+    const measure = () =>
+      group.locator('[data-exo="radio-item"]').evaluateAll((nodes) =>
+        nodes.map((item) => {
+          const part = (name) => item.querySelector(`[data-exo="${name}"]`);
+          const box = (name) => part(name).getBoundingClientRect();
+          const range = document.createRange();
+          range.selectNodeContents(part("radio-label"));
+          const firstLine = range.getClientRects()[0];
+
+          return {
+            value: item.dataset.value,
+            item: item.getBoundingClientRect(),
+            indicator: box("radio-indicator"),
+            label: box("radio-label"),
+            description: box("radio-description"),
+            firstLine: { top: firstLine.top, bottom: firstLine.bottom },
+            labelSize: Number.parseFloat(getComputedStyle(part("radio-label")).fontSize),
+            descriptionSize: Number.parseFloat(getComputedStyle(part("radio-description")).fontSize)
+          };
+        })
+      );
+
+    for (const boxModel of ["content-box", "border-box"]) {
+      await group.evaluate((node, sizing) => {
+        for (const element of [node, ...node.querySelectorAll("*")]) element.style.boxSizing = sizing;
+      }, boxModel);
+
+      const items = await measure();
+      expect(items.map((item) => item.value)).toEqual(["free", "pro", "enterprise"]);
+
+      for (const { value, item, indicator, label, description, firstLine, labelSize, descriptionSize } of items) {
+        const at = `${boxModel} ${value}`;
+        expect(description.top, `${at}: description under the label`).toBeGreaterThanOrEqual(label.bottom - 0.5);
+        expect(Math.abs(description.left - label.left), `${at}: description starts where the label does`).toBeLessThanOrEqual(0.5);
+        expect(label.left, `${at}: label right of the indicator`).toBeGreaterThan(indicator.right);
+        expect(item.right - label.right, `${at}: label takes the rest of the row`).toBeLessThanOrEqual(0.5);
+
+        const lineCenter = (firstLine.top + firstLine.bottom) / 2;
+        const indicatorCenter = (indicator.top + indicator.bottom) / 2;
+        expect(Math.abs(indicatorCenter - lineCenter), `${at}: indicator centred on the label's line`).toBeLessThanOrEqual(0.5);
+
+        expect(descriptionSize, `${at}: description smaller than the label`).toBeLessThan(labelSize);
+      }
+    }
+  });
+
   // WCAG 1.4.11: the boundary of a control, and what tells its state apart, need
   // 3:1 against what is next to them. Before, an unchecked checkbox or radio and
   // an off toggle were drawn in --exo-input / --exo-muted: about 1.1–1.3:1.
