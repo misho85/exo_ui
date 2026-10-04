@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- `modal/1`, `confirm_modal/1`, `drawer/1`, `sheet/1`: the close button takes
+  `close_label`. It was the only text in these overlays a caller could not
+  replace (`aria-label="Close"`), so on a page in any other language a screen
+  reader announced the way out of the dialog in English. The default stays
+  "Close".
+
 - `radio_group/1`: an option's description goes under its label. The
   `radio-description` span had no rule, so in the one-row flex item it became
   a third column next to the label, and in a narrow card the label broke into

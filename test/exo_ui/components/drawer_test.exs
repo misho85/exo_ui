@@ -125,4 +125,14 @@ defmodule ExoUI.Components.DrawerTest do
     assert html =~ ~s(aria-hidden="false")
     assert Floki.find(tree, "#d1[inert]") == []
   end
+
+  # The close button is the only text the drawer writes itself; a page in
+  # another language names it, or a screen reader reads English there.
+  test "renders drawer close button with the caller's label" do
+    assigns = %{}
+    html = rendered_to_string(~H|<.drawer id="d1" close_label="Zatvori meni">Content</.drawer>|)
+    {:ok, tree} = Floki.parse_fragment(html)
+
+    assert Floki.attribute(tree, ~s([data-exo="drawer-close"]), "aria-label") == ["Zatvori meni"]
+  end
 end
