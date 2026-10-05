@@ -175,7 +175,12 @@
      provjera velicina u vizuelnom prolazu cita bas taj atribut. */
   width: 1rem;
   height: 1rem;
-  color: var(--exo-primary);
+  /* The check is drawn in the option's own text colour, on the list's own
+     surface, the pair a theme keeps readable. It was --exo-primary on
+     --exo-card, and a theme that sets one brand colour for light and dark, as
+     a storefront does, cannot keep that colour visible on both: #111827 was
+     1.06:1 on the dark list, amber 2.15:1 on the light one (TRG-452). */
+  color: currentColor;
   opacity: 0;
 }
 
