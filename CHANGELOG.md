@@ -2,6 +2,23 @@
 
 ## Unreleased
 
+- `select/1`, `combobox/1`: the check of the chosen option is drawn in the
+  option's own text colour. It was `--exo-primary` on the list. A theme that
+  sets one brand colour for light and dark, as a storefront does, cannot keep
+  that colour visible on both: the check was 1.06:1 for `#111827` on the dark
+  list and 2.15:1 for amber on the light one, so which language, currency or
+  variant was chosen showed only in the weight of its label. In the option's
+  colour the check reads as well as the label, on the list and under the
+  pointer.
+
+- `radio_group/1`: a checked radio is filled with `--exo-primary` and keeps a
+  dot of `--exo-primary-foreground`, as a checked checkbox keeps its check.
+  It was a ring and a dot of `--exo-primary` with the page between them, so
+  under one brand colour the chosen option vanished in one theme: the dot was
+  1.11:1 for `#111827` in dark and 2.09:1 for amber in light. A focused
+  checked radio keeps the same look: the focus ring is a box-shadow too, and
+  used to replace the inner ring.
+
 - `steps/1`: the current step is filled like a complete one and keeps its
   number, and its title is semibold. It was an outline with the number in
   `--exo-primary` on the page background. A theme that sets one brand colour

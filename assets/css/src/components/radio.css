@@ -72,10 +72,20 @@
               background var(--exo-duration) var(--exo-easing);
 }
 
+/*
+ * A checked radio is filled with --exo-primary and keeps a dot of
+ * --exo-primary-foreground, as a checked checkbox keeps its check: the pair a
+ * theme keeps readable for its primary buttons. It was a ring and a dot of
+ * --exo-primary with the page showing between them, so the mark was the brand
+ * colour on the page. A theme that sets one brand colour for light and dark, as
+ * a storefront does, cannot keep that visible on both: the dot was 1.11:1 for
+ * #111827 in the dark theme and 2.09:1 for amber in the light one, and the
+ * chosen option looked like no choice at all (TRG-452).
+ */
 :where([data-exo="radio"]:checked + [data-exo="radio-indicator"]) {
   border-color: var(--exo-primary);
-  background: var(--exo-primary);
-  box-shadow: inset 0 0 0 3px var(--exo-background);
+  background: var(--exo-primary-foreground);
+  box-shadow: inset 0 0 0 3px var(--exo-primary);
 }
 
 :where([data-exo="radio-group"][aria-invalid="true"] [data-exo="radio-indicator"]) {
@@ -84,6 +94,14 @@
 
 :where([data-exo="radio"]:focus-visible + [data-exo="radio-indicator"]) {
   box-shadow: 0 0 0 2px color-mix(in oklch, var(--exo-ring) 25%, transparent);
+}
+
+/* The focus ring is a box-shadow too, so on a checked radio it carries the
+   fill as well. Without it the focus rule replaces the fill, and a focused
+   checked radio is a primary outline around a --exo-primary-foreground disc. */
+:where([data-exo="radio"]:checked:focus-visible + [data-exo="radio-indicator"]) {
+  box-shadow: inset 0 0 0 3px var(--exo-primary),
+              0 0 0 2px color-mix(in oklch, var(--exo-ring) 25%, transparent);
 }
 
 :where([data-exo="radio"]:disabled + [data-exo="radio-indicator"]) {

@@ -165,7 +165,9 @@
   justify-content: center;
   width: 0.875rem;
   height: 0.875rem;
-  color: var(--exo-primary);
+  /* The option's text colour, as for the select's check: --exo-primary on the
+     list vanished under a brand colour in one of the themes (TRG-452). */
+  color: currentColor;
   opacity: 0;
 }
 
