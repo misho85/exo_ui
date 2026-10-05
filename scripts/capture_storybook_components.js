@@ -886,6 +886,8 @@ async function captureComponent(browser, runDir, story) {
           fs.copyFileSync(rawPath, videoPath);
         } catch (_copyErr) {}
       }
+      // saveAs creates a copy; the recorder's original is redundant once saved.
+      if (fs.existsSync(videoPath)) await video.delete();
     }
   }
 
@@ -893,7 +895,7 @@ async function captureComponent(browser, runDir, story) {
     name,
     route,
     url,
-    ok,
+    ok: ok && errors.length === 0,
     dataExoCount,
     screenshot: path.relative(runDir, screenshotPath),
     video: fs.existsSync(videoPath) ? path.relative(runDir, videoPath) : null,

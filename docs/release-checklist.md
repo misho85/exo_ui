@@ -14,6 +14,7 @@ Use this checklist before cutting a public ExoUI tag.
 - [ ] `mix test`
 - [ ] `mix compile --warnings-as-errors`
 - [ ] `bun run build:all`
+- [ ] `bun run check:css`
 - [ ] `bun run test:browser`
 - [ ] `bun run capture:components`
 - [ ] `bun run capture:validate`
