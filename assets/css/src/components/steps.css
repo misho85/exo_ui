@@ -67,9 +67,15 @@
   color: var(--exo-primary-foreground);
 }
 
+/* The current step is filled like a complete one and keeps its number, so
+   the number sits on --exo-primary in --exo-primary-foreground, the pair a
+   theme keeps readable. It used to be --exo-primary text on the page
+   background, which a theme with one brand colour for light and dark (a
+   storefront) cannot keep at 4.5:1 on both: black was 1.12:1 in dark. */
 :where([data-exo="step"][data-status="current"] [data-exo="step-indicator"]) {
+  background: var(--exo-primary);
   border-color: var(--exo-primary);
-  color: var(--exo-primary);
+  color: var(--exo-primary-foreground);
 }
 
 :where([data-exo="step-title"]) {
@@ -92,4 +98,8 @@
 
 :where([data-exo="step"][data-status="upcoming"] [data-exo="step-title"]) {
   color: var(--exo-muted-foreground);
+}
+
+:where([data-exo="step"][data-status="current"] [data-exo="step-title"]) {
+  font-weight: 600;
 }

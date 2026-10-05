@@ -138,6 +138,105 @@ test.describe("navigation and progress components", () => {
     await expect(pendingWizardStep).toBeDisabled();
   });
 
+  test("the current step keeps its number readable under one brand colour for both themes", async ({ page }) => {
+    await gotoStory(page, "/components/navigation/steps");
+
+    // A storefront sets one brand colour for light and dark, and pairs it with
+    // a foreground for its buttons. As text on the page background no colour
+    // reaches 4.5:1 on both backgrounds, so the current step's number, drawn
+    // in --exo-primary, vanished: black was 1.12:1 in dark, amber 2.05:1 in
+    // light (TRG-449). null keeps ExoUI's own primary.
+    const brands = [
+      [null, null],
+      ["#111827", "oklch(99% 0 0)"],
+      ["#f59e0b", "oklch(20% 0.006 106)"]
+    ];
+
+    const results = [];
+
+    for (const theme of ["light", "dark"]) {
+      for (const [primary, foreground] of brands) {
+        const result = await story(page).evaluate(
+          (root, { theme, primary, foreground }) => {
+            const rgb = (css, under) => {
+              const canvas = document.createElement("canvas");
+              canvas.width = canvas.height = 1;
+              const context = canvas.getContext("2d", { colorSpace: "srgb" });
+
+              if (under) {
+                context.fillStyle = `rgb(${under.join(",")})`;
+                context.fillRect(0, 0, 1, 1);
+              }
+
+              context.fillStyle = css;
+              context.fillRect(0, 0, 1, 1);
+              return [...context.getImageData(0, 0, 1, 1).data].slice(0, 3);
+            };
+
+            const luminance = (channels) =>
+              channels
+                .map((value) => {
+                  const v = value / 255;
+                  return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+                })
+                .reduce((sum, v, index) => sum + v * [0.2126, 0.7152, 0.0722][index], 0);
+
+            const ratio = (a, b) => {
+              const [high, low] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+              return (high + 0.05) / (low + 0.05);
+            };
+
+            const steps = root.querySelector('[data-exo="steps"]');
+            const wrapper = steps.parentElement;
+            wrapper.setAttribute("data-theme", theme);
+            wrapper.style.background = "var(--exo-background)";
+
+            for (const [name, value] of [
+              ["--exo-primary", primary],
+              ["--exo-primary-foreground", foreground]
+            ]) {
+              if (value) wrapper.style.setProperty(name, value);
+              else wrapper.style.removeProperty(name);
+            }
+
+            const step = (status) => steps.querySelector(`[data-exo="step"][data-status="${status}"]`);
+            const indicator = (status) => step(status).querySelector('[data-exo="step-indicator"]');
+            const weight = (status) =>
+              Number(getComputedStyle(step(status).querySelector('[data-exo="step-title"]')).fontWeight);
+
+            const surface = rgb(getComputedStyle(wrapper).backgroundColor);
+            const fill = rgb(getComputedStyle(indicator("current")).backgroundColor, surface);
+
+            return {
+              number: indicator("current").textContent.trim(),
+              ratio: ratio(rgb(getComputedStyle(indicator("current")).color, fill), fill),
+              sameFillAsComplete:
+                getComputedStyle(indicator("current")).backgroundColor ===
+                getComputedStyle(indicator("complete")).backgroundColor,
+              titleWeights: [weight("complete"), weight("current"), weight("upcoming")]
+            };
+          },
+          { theme, primary, foreground }
+        );
+
+        results.push({ ...result, label: `${theme}, primary ${primary || "ExoUI"}` });
+      }
+    }
+
+    for (const { label, number, ratio } of results) {
+      expect(number, label).toBe("2");
+      expect(ratio, `${label}: number on the fill`).toBeGreaterThanOrEqual(4.5);
+    }
+
+    // The fill says "reached", the number and the heavier title say "here".
+    for (const { label, sameFillAsComplete, titleWeights } of results) {
+      const [complete, current, upcoming] = titleWeights;
+      expect(sameFillAsComplete, label).toBe(true);
+      expect(current, label).toBeGreaterThan(complete);
+      expect(current, label).toBeGreaterThan(upcoming);
+    }
+  });
+
   test("progress components expose bounded values and accessible names", async ({ page }) => {
     await gotoStory(page, "/components/feedback/progress");
 
