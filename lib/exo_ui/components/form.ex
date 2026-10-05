@@ -674,7 +674,7 @@ defmodule ExoUI.Components.Form do
 
     ~H"""
     <div data-exo="field" class={@class} {@rest}>
-      <label :if={@label} data-exo="label" id={@label_id}>{@label}</label>
+      <label :if={@label} data-exo="label" id={@label_id} for={"#{@id}-input"}>{@label}</label>
       <div
         data-exo="popover"
         phx-hook="ExoCombobox"
@@ -686,6 +686,7 @@ defmodule ExoUI.Components.Form do
         phx-target={@on_filter_target}
       >
         <input
+          id={"#{@id}-input"}
           type="text"
           data-exo="popover-trigger"
           data-exo-combobox="input-trigger"
@@ -693,6 +694,8 @@ defmodule ExoUI.Components.Form do
           aria-invalid={if @errors != [], do: "true"}
           aria-describedby={@describedby}
           role="combobox"
+          value={@selected_opt && @selected_opt[:label]}
+          aria-autocomplete="list"
           placeholder={@prompt}
           autocomplete="off"
           aria-haspopup="listbox"
@@ -873,7 +876,7 @@ defmodule ExoUI.Components.Form do
       :for={opt <- @options}
       data-exo={@kind <> "-option"}
       role="option"
-      data-value={opt[:value]}
+      data-value={to_string(opt[:value])}
       data-selected={option_selected?(opt[:value], @value) && ""}
       data-disabled={opt[:disabled] && ""}
       aria-selected={to_string(option_selected?(opt[:value], @value))}
@@ -951,7 +954,7 @@ defmodule ExoUI.Components.Form do
     ~H"""
     <option
       :for={opt <- @options}
-      value={opt[:value]}
+      value={to_string(opt[:value])}
       selected={option_selected?(opt[:value], @value)}
       disabled={opt[:disabled] == true}
     >
@@ -1039,11 +1042,11 @@ defmodule ExoUI.Components.Form do
   end
 
   defp normalize_choice_option(%{} = option, group) do
+    value = Map.get(option, :value, Map.get(option, "value"))
+
     %{
-      label:
-        Map.get(option, :label) || Map.get(option, "label") || Map.get(option, :value) ||
-          Map.get(option, "value"),
-      value: Map.get(option, :value) || Map.get(option, "value"),
+      label: Map.get(option, :label) || Map.get(option, "label") || to_string(value),
+      value: value,
       icon: Map.get(option, :icon) || Map.get(option, "icon"),
       description: Map.get(option, :description) || Map.get(option, "description"),
       disabled:
@@ -1102,7 +1105,7 @@ defmodule ExoUI.Components.Form do
 
   defp choice_trigger_labelledby(_assigns), do: nil
 
-  defp hidden_choice_value(value), do: value || ""
+  defp hidden_choice_value(value), do: to_string(value)
 
   defp prepare_basic_field(assigns) do
     id = assigns[:id] || generated_input_id(assigns[:name]) || generated_input_id(assigns[:label])
@@ -1262,7 +1265,7 @@ defmodule ExoUI.Components.Form do
         :for={option <- @radio_options}
         data-exo="radio-item"
         for={radio_item_id(@id, option[:value])}
-        data-value={option[:value]}
+        data-value={to_string(option[:value])}
         data-disabled={radio_option_disabled?(@disabled, option) && ""}
         aria-disabled={to_string(radio_option_disabled?(@disabled, option))}
       >
@@ -1271,7 +1274,7 @@ defmodule ExoUI.Components.Form do
           type="radio"
           data-exo="radio"
           name={@name}
-          value={option[:value]}
+          value={to_string(option[:value])}
           checked={option_selected?(option[:value], @value)}
           disabled={radio_option_disabled?(@disabled, option)}
           aria-describedby={radio_description_id(@id, option)}

@@ -23,6 +23,7 @@ const ExoSwap = {
       this._toggle()
     }
     this._onKeydown = (event) => {
+      if (event.target !== this.el && event.target !== this.input) return
       if (event.key !== 'Enter' && event.key !== ' ') return
 
       event.preventDefault()
@@ -47,7 +48,7 @@ const ExoSwap = {
   },
 
   _toggle() {
-    if (!this.input) return
+    if (!this.input || this.input.disabled || this.el.getAttribute('aria-disabled') === 'true') return
 
     this.input.checked = !this.input.checked
     this.input.dispatchEvent(new Event('change', { bubbles: true }))
