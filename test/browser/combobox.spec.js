@@ -168,3 +168,55 @@ test.describe("combobox", () => {
     await expect(status).toContainText("No remote users found");
   });
 });
+
+const { mountHook, fixture } = require('./helpers/hooks');
+
+test('input-trigger combobox selects with keyboard and closes an empty result set', async ({ page }) => {
+  await fixture(page, `<div data-exo="field">
+    <div id="combo" data-trigger="input" data-filter="client">
+      <input data-exo-combobox="input-trigger" role="combobox">
+      <div id="choices" data-exo="popover-content" popover="manual">
+        <div role="listbox">
+          <div data-exo="combobox-option" data-value="ana">Ana</div>
+          <div data-exo="combobox-option" data-value="milan">Milan</div>
+        </div>
+        <div data-exo="combobox-empty" hidden>No results found</div>
+      </div>
+      <span data-exo="combobox-status"></span>
+    </div>
+    <input type="hidden" name="owner">
+  </div>`);
+  await mountHook(page, 'ExoCombobox', 'combobox.js', '#combo');
+  const input = page.getByRole('combobox');
+  await input.focus();
+  await input.press('ArrowDown');
+  await input.press('ArrowDown');
+  await input.press('Enter');
+  await expect(input).toHaveValue('Milan');
+  await expect(page.locator('input[name="owner"]')).toHaveValue('milan');
+  await expect(input).toBeFocused();
+  await expect(input).toHaveAttribute('aria-expanded', 'false');
+  await input.fill('unmatched');
+  await expect(input).toHaveAttribute('aria-expanded', 'true');
+  await input.press('Home');
+  expect(await input.evaluate(node => node.selectionStart)).toBe(0);
+  await input.press('Escape');
+  await expect(input).toHaveAttribute('aria-expanded', 'false');
+  await input.press('ArrowDown');
+  await expect(input).toHaveAttribute('aria-expanded', 'true');
+});
+
+
+test('input combobox preserves an empty query across LiveView updates', async ({ page }) => {
+  await fixture(page, `<div data-exo="field"><div id="combo" data-trigger="input" data-filter="client">
+    <input data-exo-combobox="input-trigger" role="combobox">
+    <div id="choices" data-exo="popover-content" popover="manual"><div role="listbox">
+      <div data-exo="combobox-option" data-value="ana" data-selected>Ana</div>
+    </div></div></div><input type="hidden" name="owner" value="ana"></div>`);
+  await mountHook(page, 'ExoCombobox', 'combobox.js', '#combo');
+  const input = page.getByRole('combobox');
+  await expect(input).toHaveValue('Ana');
+  await input.fill('');
+  await page.evaluate(() => window.testHooks['#combo'].updated());
+  await expect(input).toHaveValue('');
+});

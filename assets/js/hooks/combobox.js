@@ -1,8 +1,8 @@
 const ExoCombobox = {
-  mounted() { this._bind() },
+  mounted() { this._bind(true) },
   updated() { this._bind() },
   destroyed() { this._unbind() },
-  _bind() {
+  _bind(initial = false) {
     this._unbind()
     const isInputTrigger = this.el.dataset.trigger === 'input'
     const filter = this.el.dataset.filter || 'server'
@@ -30,6 +30,10 @@ const ExoCombobox = {
 
     if (!this._popover) return
     if (this._listbox) this._syncOptions()
+    if (initial && isInputTrigger && this._search && !this._search.value) {
+      const selected = this._listbox?.querySelector('[data-selected]')
+      if (selected) this._search.value = selected.textContent.trim()
+    }
     this._syncStatusFromState()
 
     const syncExpanded = () => {
@@ -39,12 +43,13 @@ const ExoCombobox = {
     }
 
     const focusSearch = () => {
-      setTimeout(() => {
+      clearTimeout(this._focusTimer)
+      this._focusTimer = setTimeout(() => {
         if (!this._popover?.matches(':popover-open')) return
         this._search?.focus()
 
         if (document.activeElement !== this._search) {
-          requestAnimationFrame(() => {
+          this._focusFrame = requestAnimationFrame(() => {
             if (this._popover?.matches(':popover-open')) this._search?.focus()
           })
         }
@@ -75,6 +80,7 @@ const ExoCombobox = {
           })
         }
         this._clearActiveOption()
+        if (this._clear) this._clear.hidden = true
         this._serverStatus = ''
         this._announceStatus('Selection cleared')
       }
@@ -110,7 +116,8 @@ const ExoCombobox = {
       }
       this._onBlur = () => {
         const popover = this._popover
-        setTimeout(() => {
+        clearTimeout(this._blurTimer)
+        this._blurTimer = setTimeout(() => {
           if (!popover) return
           if (!popover.contains(document.activeElement) && document.activeElement !== this._search) {
             try { popover.hidePopover() } catch(_err) {}
@@ -124,6 +131,9 @@ const ExoCombobox = {
     // Search input handler
     if (this._search) {
       this._onInput = () => {
+        if (isInputTrigger && !this._isOpen()) {
+          try { this._popover.showPopover() } catch (_err) {}
+        }
         const query = this._search.value
         this._lastQuery = query
         this._serverStatus = ''
@@ -134,7 +144,7 @@ const ExoCombobox = {
         } else {
           clearTimeout(this._debounceTimer)
           this._debounceTimer = setTimeout(() => {
-            if (onFilterTarget) this.pushEventTo(onFilterTarget, onFilter, { query })
+            if (onFilter && onFilterTarget) this.pushEventTo(onFilterTarget, onFilter, { query })
             else if (onFilter) this.pushEvent(onFilter, { query })
           }, debounce)
           this._announceStatus(query ? 'Searching results' : '')
@@ -160,6 +170,18 @@ const ExoCombobox = {
 
       // Keyboard
       this._onKeydown = (e) => {
+        if (e.key === 'Escape') {
+          if (!this._isOpen()) return
+          e.preventDefault()
+          e.stopPropagation()
+          try { this._popover.hidePopover() } catch (_err) {}
+          if (!isInputTrigger) triggerBtn?.focus()
+          return
+        }
+        if (!this._isOpen()) {
+          if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
+          try { this._popover.showPopover() } catch (_err) {}
+        }
         const opts = this._visibleOptions()
         if (!opts.length) return
         const idx = Math.max(opts.indexOf(this._activeOption), opts.indexOf(document.activeElement))
@@ -167,13 +189,14 @@ const ExoCombobox = {
         switch (e.key) {
           case 'ArrowDown': next = idx < opts.length - 1 ? idx + 1 : 0; break
           case 'ArrowUp': next = idx > 0 ? idx - 1 : opts.length - 1; break
-          case 'Home': next = 0; break
-          case 'End': next = opts.length - 1; break
+          case 'Home':
+          case 'End':
+            // Preserve caret navigation in the editable search field.
+            if (e.target === this._search) return
+            next = e.key === 'Home' ? 0 : opts.length - 1
+            break
           case 'Enter':
             if (idx >= 0) { this._selectOption(opts[idx]); e.preventDefault() }
-            return
-          case 'Escape':
-            try { this._popover.hidePopover() } catch(_err) {}
             return
           default: return
         }
@@ -181,6 +204,7 @@ const ExoCombobox = {
         this._setActiveOption(opts[next])
       }
       this._popover.addEventListener('keydown', this._onKeydown)
+      if (isInputTrigger) this._search?.addEventListener('keydown', this._onKeydown)
     }
 
     this.el.setAttribute('data-ready', '')
@@ -325,10 +349,20 @@ const ExoCombobox = {
       valSpan.textContent = opt.textContent.trim()
       valSpan.removeAttribute('data-placeholder')
     }
+    if (this.el.dataset.trigger === 'input' && this._search) {
+      this._search.value = opt.textContent.trim()
+    }
+    if (this._clear) this._clear.hidden = false
+    // Keep focus on the owning control before its option surface closes.
+    const control = this.el.querySelector('[data-exo-combobox="trigger"]') || this._search
+    control?.focus({ preventScroll: true })
     try { this._popover?.hidePopover() } catch(_err) {}
   },
   _unbind() {
     clearTimeout(this._debounceTimer)
+    clearTimeout(this._focusTimer)
+    clearTimeout(this._blurTimer)
+    cancelAnimationFrame(this._focusFrame)
     this._debounceTimer = null
     if (this._popover) {
       if (this._onToggle) this._popover.removeEventListener('toggle', this._onToggle)
@@ -336,6 +370,7 @@ const ExoCombobox = {
     }
     if (this._listbox && this._onClick) this._listbox.removeEventListener('click', this._onClick)
     if (this._search) {
+      if (this._onKeydown) this._search.removeEventListener('keydown', this._onKeydown)
       if (this._onInput) this._search.removeEventListener('input', this._onInput)
       if (this._onFocus) this._search.removeEventListener('focus', this._onFocus)
       if (this._onBlur) this._search.removeEventListener('blur', this._onBlur)

@@ -19,6 +19,7 @@
     "capture:components": "node scripts/capture_storybook_components.js",
     "capture:validate": "node scripts/visual_regression.js validate",
     "visual:update": "node scripts/visual_regression.js update",
-    "visual:check": "node scripts/visual_regression.js check"
+    "visual:check": "node scripts/visual_regression.js check",
+    "check:css": "node scripts/check_css.js"
   }
 }

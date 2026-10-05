@@ -45,9 +45,10 @@ jobs:
 
       - name: Compile and test
         run: |
+          bun run check:css
+          mix format --check-formatted
           mix compile --warnings-as-errors
           mix test
-          bun run build:all
           cd storybook
           mix assets.build
           mix compile --warnings-as-errors

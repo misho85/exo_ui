@@ -300,6 +300,7 @@ when contributing to ExoUI:
 ```sh
 bun install
 bun run build:all    # builds exo.css and exo.tokens.css
+bun run check:css    # verifies committed CSS matches the sources
 bun run watch        # rebuilds on change
 ```
 

@@ -35,7 +35,7 @@ const ExoTooltip = {
       const wait = elapsed < SKIP_DELAY_MS ? 0 : this._delay
       this._timeout = setTimeout(() => {
         try { content.showPopover() } catch (_) { return }
-        requestAnimationFrame(() => {
+        this._frame = requestAnimationFrame(() => {
           if (!hasAnchorPos) this._positionFallback()
           this._detectFlip()
         })
@@ -44,6 +44,7 @@ const ExoTooltip = {
 
     const hide = () => {
       clearTimeout(this._timeout)
+      cancelAnimationFrame(this._frame)
       let didHide = false
       try {
         if (content.matches(':popover-open')) {
@@ -116,6 +117,7 @@ const ExoTooltip = {
 
   _unbind() {
     clearTimeout(this._timeout)
+    cancelAnimationFrame(this._frame)
     if (this._wrapper) {
       if (this._show) this._wrapper.removeEventListener('mouseenter', this._show)
       if (this._hide) this._wrapper.removeEventListener('mouseleave', this._hide)
