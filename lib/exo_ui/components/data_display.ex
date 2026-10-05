@@ -764,11 +764,16 @@ defmodule ExoUI.Components.DataDisplay do
   #
   # The `@doc` stays one sentence: Storybook shows it above the stories, and a
   # longer one adds "Read more" and moves the whole page.
+  #
+  # `data-count` is the number of steps. A horizontal list narrower than about
+  # 8.5rem a step shows only the circles and one title (`steps.css`), and the
+  # stylesheet needs the count for that width.
   def steps(assigns) do
     ~H"""
     <ol
       data-exo="steps"
       data-orientation={@orientation}
+      data-count={length(@step)}
       role="list"
       aria-label={@aria_label}
       class={@class}

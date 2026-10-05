@@ -42,7 +42,9 @@ defmodule ExoUI.Components.StepsTest do
       """)
 
     refute html =~ ~r/<li[^>]*aria-label/
-    assert html =~ ~s(<ol data-exo="steps" data-orientation="horizontal" role="list")
+
+    assert html =~
+             ~s(<ol data-exo="steps" data-orientation="horizontal" data-count="4" role="list")
 
     assert sr_only_by_title(html) == [
              {"Address", ["Completed"]},
@@ -72,6 +74,27 @@ defmodule ExoUI.Components.StepsTest do
              {"Dostava", []},
              {"Plaćanje", ["nije završeno"]}
            ]
+  end
+
+  # A horizontal list narrower than about 8.5rem a step goes compact
+  # (`steps.css`), and the stylesheet reads the number of steps from
+  # `data-count`: a step left out with `:if` is not counted, as it is not
+  # drawn.
+  test "data-count is the number of steps drawn" do
+    assigns = %{digital: true}
+
+    html =
+      rendered_to_string(~H"""
+      <.steps aria_label="Checkout">
+        <:step title="Details" status="complete" />
+        <:step :if={!@digital} title="Shipping" />
+        <:step title="Payment" status="current" />
+        <:step title="Review" />
+      </.steps>
+      """)
+
+    assert [_, "3"] = Regex.run(~r/<ol data-exo="steps"[^>]* data-count="(\d+)"/, html)
+    assert length(Regex.scan(~r/<li data-exo="step"/, html)) == 3
   end
 
   test "renders vertical steps" do

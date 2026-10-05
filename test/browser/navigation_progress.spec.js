@@ -237,6 +237,99 @@ test.describe("navigation and progress components", () => {
     }
   });
 
+  test("horizontal steps in a narrow container show the circles and one title, and keep every step for assistive tech", async ({ page }) => {
+    await gotoStory(page, "/components/navigation/steps");
+
+    // Five checkout steps were 555px wide and pushed a 360px phone page
+    // sideways (TRG-451). Below about 8.5rem a step the list draws only the
+    // circles, spread over its width, and one title under them: the current
+    // step's, or the last complete step's in a list without one.
+    const measure = (width, statuses) =>
+      story(page).evaluate(
+        (root, { width, statuses }) => {
+          const [steps, vertical] = root.querySelectorAll('[data-exo="steps"]');
+          steps.parentElement.style.width = width;
+          vertical.parentElement.style.width = width;
+
+          const items = [...steps.querySelectorAll('[data-exo="step"]')];
+          items.forEach((item, index) => {
+            const status = statuses ? statuses[index] : item.dataset.original || item.dataset.status;
+            item.dataset.original = item.dataset.original || item.dataset.status;
+            item.dataset.status = status;
+          });
+
+          const list = steps.getBoundingClientRect();
+          const visible = (node) => {
+            const box = node.getBoundingClientRect();
+            return box.width > 1 && box.height > 1;
+          };
+          const circles = items.map((item) =>
+            item.querySelector('[data-exo="step-indicator"]').getBoundingClientRect()
+          );
+          const shown = items
+            .map((item) => item.querySelector('[data-exo="step-body"]'))
+            .filter(visible)
+            .map((body) => {
+              const box = body.getBoundingClientRect();
+              return {
+                title: body.querySelector('[data-exo="step-title"]').textContent.trim(),
+                top: box.top - list.top,
+                left: box.left - list.left,
+                right: list.right - box.right
+              };
+            });
+
+          return {
+            clientWidth: steps.clientWidth,
+            scrollWidth: steps.scrollWidth,
+            height: list.height,
+            circleBottom: Math.max(...circles.map((box) => box.bottom - list.top)),
+            firstCircleLeft: circles[0].left - list.left,
+            lastCircleRight: list.right - circles[circles.length - 1].right,
+            shown,
+            descriptions: [...steps.querySelectorAll('[data-exo="step-description"]')].filter(visible).length,
+            verticalTitles: [...vertical.querySelectorAll('[data-exo="step-title"]')].filter(visible).length
+          };
+        },
+        { width, statuses }
+      );
+
+    const steps = story(page).locator('[data-exo="steps"]').first();
+    await expectAttribute(steps, "data-count", "3");
+
+    const narrow = await measure("16rem");
+    expect(narrow.scrollWidth).toBeLessThanOrEqual(narrow.clientWidth);
+    expect(narrow.shown.map(({ title }) => title)).toEqual(["Profile"]);
+    expect(narrow.shown[0].top).toBeGreaterThanOrEqual(narrow.circleBottom);
+    expect(narrow.shown[0].left).toBe(0);
+    expect(narrow.shown[0].top + 20).toBeLessThanOrEqual(narrow.height);
+    expect(narrow.descriptions).toBe(0);
+    expect(narrow.firstCircleLeft).toBe(0);
+    expect(Math.abs(narrow.lastCircleRight)).toBeLessThan(1);
+    expect(narrow.verticalTitles).toBe(4);
+
+    // Hidden is not gone: a screen reader still reads every step with its
+    // status and description.
+    await expect(steps).toMatchAriaSnapshot(`
+      - list:
+        - listitem: Account Completed Login details saved
+        - listitem: Profile Add public profile data
+        - listitem: Review Not completed Confirm and submit
+    `);
+
+    // An order's status has no current step: the title is the last one reached.
+    const noCurrent = await measure("16rem", ["complete", "complete", "upcoming"]);
+    expect(noCurrent.shown.map(({ title }) => title)).toEqual(["Profile"]);
+    const nothingReached = await measure("16rem", ["upcoming", "upcoming", "upcoming"]);
+    expect(nothingReached.shown).toEqual([]);
+
+    const wide = await measure("36rem");
+    expect(wide.scrollWidth).toBeLessThanOrEqual(wide.clientWidth);
+    expect(wide.shown.map(({ title }) => title)).toEqual(["Account", "Profile", "Review"]);
+    expect(wide.descriptions).toBe(3);
+    expect(wide.height).toBeLessThan(narrow.height);
+  });
+
   test("progress components expose bounded values and accessible names", async ({ page }) => {
     await gotoStory(page, "/components/feedback/progress");
 
