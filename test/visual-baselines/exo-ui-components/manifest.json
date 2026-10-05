@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-03T13:32:27.338Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-10-03T13-22-10-398Z",
-  "count": 114,
+  "updatedAt": "2026-10-05T00:24:05.043Z",
+  "sourceRun": "../exo_art/output/playwright/exo-ui-components/2026-10-05T00-02-50-518Z",
+  "count": 115,
   "entries": [
     {
       "name": "actions/button",
@@ -389,7 +389,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "9716ca0f859d466a03c0e1f3bc3501f6d221d429489f938c6d30b385e6a4d546"
+      "sha256": "a597741a95c944ce9605a8454546d34bbef3fa7bf0b7db2905bf8733ca24314b"
     },
     {
       "name": "feedback/toast_container",
@@ -623,7 +623,7 @@
       "dataExoCount": 53,
       "width": 1280,
       "height": 900,
-      "sha256": "ba8d772d37f9c8491bda83f65c26800d0df5aa8f3a2a89d96f823eabf9c7d6e4"
+      "sha256": "ba7989868858879df5f01753c39a69fa5fb63031b9c7e4186dd4fde71c9fd362"
     },
     {
       "name": "menus/command_surface_stack",
@@ -632,7 +632,7 @@
       "dataExoCount": 60,
       "width": 1280,
       "height": 900,
-      "sha256": "61b8aedef3e4a115a6627e819ea0a4b35ad2687ded575d01f7482264f49e09d7"
+      "sha256": "d03f894ed7799e555b604f1c34bb751045253f62e644a3e27e41b592ac036c83"
     },
     {
       "name": "menus/context_menu",
@@ -641,7 +641,7 @@
       "dataExoCount": 8,
       "width": 1280,
       "height": 900,
-      "sha256": "3fdbee65f0dc2fc204ffdd3a4f585f80ad17882def97b32a01ec42d9006db632"
+      "sha256": "580d96c63412b2a6e12594a98d9ff070387cdde2da9a40c0bb5993032ecb4bd8"
     },
     {
       "name": "menus/dropdown",
@@ -650,7 +650,7 @@
       "dataExoCount": 65,
       "width": 1280,
       "height": 900,
-      "sha256": "1bad55964ee2b7ecdb448f8d1054300d4e31b2d3b70a0df316e5009b232cdbfe"
+      "sha256": "b58292e73ea6cab737bc0dfea00a2ffea99ae96decd019fd3ce9e6cce26e0582"
     },
     {
       "name": "menus/dropdown_menu",
@@ -659,7 +659,16 @@
       "dataExoCount": 61,
       "width": 1280,
       "height": 900,
-      "sha256": "09f05927dd4edde31bbefb97f1f288e49ee2ad4975cf016965cbbb5e04714048"
+      "sha256": "7c7bbe052df21e1b95d390c1a313eb83b56094c6319d15c0e263196ab950a141"
+    },
+    {
+      "name": "menus/dropdown_menu_choices",
+      "route": "/components/menus/dropdown_menu_choices",
+      "screenshot": "screenshots/menus__dropdown_menu_choices.png",
+      "dataExoCount": 20,
+      "width": 1280,
+      "height": 900,
+      "sha256": "967634427559d69fb8e0f77b3df5b75db5b02b8b153b54cb0d570faf4060e529"
     },
     {
       "name": "menus/menubar",
@@ -668,7 +677,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "1e8d1db5a53d22d687ade0db588dcf1bfd2c1dbf252c1df683dc675c076101c1"
+      "sha256": "1e727b69b77277cc6817a005bb58cfa7c618e89f5b0aef877acb1111702867f9"
     },
     {
       "name": "navigation/bottom_nav",
@@ -1019,7 +1028,7 @@
       "dataExoCount": 194,
       "width": 1280,
       "height": 900,
-      "sha256": "45228c38eb0c71b07ea48f35deac9e935ff6988585ba2423ed2c2f48625a38bc"
+      "sha256": "7d77c263396b820942667e6259a98da75c18aa3c3bebb3976ca1c94ad01c5c69"
     },
     {
       "name": "recipes/table_recipes",
