@@ -45,6 +45,37 @@ defmodule ExoUI.Components.RatingTest do
     assert length(Regex.scan(~r/data-exo="icon"/, html)) == 3
   end
 
+  test "value_label names a read-only rating in the caller's words" do
+    assigns = %{label: fn value, max -> "Ocjena #{value} od #{max}" end}
+
+    html =
+      rendered_to_string(~H"""
+      <.rating value={4} readonly value_label={@label} />
+      """)
+
+    assert html =~ ~s(role="img")
+    assert html =~ ~s(aria-label="Ocjena 4 od 5")
+    refute html =~ "out of"
+  end
+
+  test "value_label names every star of an interactive rating" do
+    assigns = %{label: fn value, max -> "#{value}/#{max}" end}
+
+    html =
+      rendered_to_string(~H"""
+      <.rating name="score" value={2} max={3} value_label={@label} />
+      """)
+
+    assert html =~ ~s(role="radiogroup")
+    assert html =~ ~s(aria-label="2/3")
+
+    assert Regex.scan(~r/data-exo="rating-input" aria-label="([^"]*)"/, html,
+             capture: :all_but_first
+           ) == [["1/3"], ["2/3"], ["3/3"]]
+
+    refute html =~ "out of"
+  end
+
   test "renders readonly" do
     assigns = %{}
 

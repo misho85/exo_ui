@@ -730,6 +730,15 @@ defmodule ExoUI.Components.DataDisplay do
 
   @doc "Renders a multi-step progress indicator."
   attr :aria_label, :string, default: "Progress"
+
+  attr :complete_label, :string,
+    default: "Completed",
+    doc: "visually hidden status of a complete step, read after its title"
+
+  attr :upcoming_label, :string,
+    default: "Not completed",
+    doc: "visually hidden status of an upcoming step, read after its title"
+
   attr :class, :any, default: nil
   attr :orientation, :string, values: ~w(horizontal vertical), default: "horizontal"
   attr :rest, :global
@@ -740,11 +749,27 @@ defmodule ExoUI.Components.DataDisplay do
     attr :description, :string
   end
 
+  # A screen reader reads each step from its content: the title, the status
+  # text, the description. The current step says so through
+  # `aria-current="step"`, which the screen reader announces in its own
+  # language; a complete and an upcoming step carry `complete_label` and
+  # `upcoming_label` as visually hidden text, so a caller passes both in the
+  # page's language, as it passes the title.
+  #
+  # Each step used to be named `aria-label="Step 2, Shipping, complete"`. The
+  # name replaced the step's content, so the title the caller translated was
+  # read inside an English sentence, with the status as an English keyword.
+  # `role="list"` keeps the list in WebKit, which drops it for `list-style:
+  # none`: the screen reader's "2 of 4" now gives the position the label gave.
+  #
+  # The `@doc` stays one sentence: Storybook shows it above the stories, and a
+  # longer one adds "Read more" and moves the whole page.
   def steps(assigns) do
     ~H"""
     <ol
       data-exo="steps"
       data-orientation={@orientation}
+      role="list"
       aria-label={@aria_label}
       class={@class}
       {@rest}
@@ -754,7 +779,6 @@ defmodule ExoUI.Components.DataDisplay do
         data-exo="step"
         data-status={step[:status] || "upcoming"}
         aria-current={step[:status] == "current" && "step"}
-        aria-label={step_label(step, idx)}
       >
         <div data-exo="step-indicator" aria-hidden="true">
           <span :if={step[:status] == "complete"}>&#10003;</span>
@@ -762,16 +786,15 @@ defmodule ExoUI.Components.DataDisplay do
         </div>
         <span data-exo="step-body">
           <span data-exo="step-title">{step.title}</span>
+          <span :if={step[:status] == "complete"} data-exo="sr-only">{@complete_label}</span>
+          <span :if={step[:status] in [nil, "upcoming"]} data-exo="sr-only">
+            {@upcoming_label}
+          </span>
           <span :if={step[:description]} data-exo="step-description">{step.description}</span>
         </span>
       </li>
     </ol>
     """
-  end
-
-  defp step_label(step, idx) do
-    status = step[:status] || "upcoming"
-    "Step #{idx + 1}, #{step.title}, #{status}"
   end
 
   @doc "Renders a chronological timeline of events."
