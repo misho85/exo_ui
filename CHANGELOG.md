@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- `steps/1`: the current step is filled like a complete one and keeps its
+  number, and its title is semibold. It was an outline with the number in
+  `--exo-primary` on the page background. A theme that sets one brand colour
+  for light and dark, as a storefront does, cannot keep that number readable
+  in both: of twelve common brand colours none reached 4.5:1 on both
+  backgrounds, black was 1.12:1 and navy 1.81:1 in dark. On the fill the
+  number is `--exo-primary-foreground`, the pair a theme keeps readable for
+  its primary buttons: eleven of the twelve reach 4.5:1, and the twelfth
+  (4.48:1) is as weak on every primary button.
+
 - `steps/1`: a step is read from its content, and its status is the caller's
   text. Every step carried `aria-label="Step 2, Shipping, complete"`, which
   replaced what the step contains, so on a page in any other language a
