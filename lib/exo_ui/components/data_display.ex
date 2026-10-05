@@ -406,6 +406,15 @@ defmodule ExoUI.Components.DataDisplay do
             {render_slot(item)}
           </.link>
           <span
+            :if={
+              !item[:href] && !item[:navigate] && !item[:patch] &&
+                !breadcrumb_current?(item, idx, @item_count)
+            }
+            data-exo="breadcrumb-label"
+          >
+            {render_slot(item)}
+          </span>
+          <span
             :if={breadcrumb_current?(item, idx, @item_count)}
             data-exo="breadcrumb-current"
             aria-current="page"

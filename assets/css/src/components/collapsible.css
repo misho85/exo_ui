@@ -4,7 +4,7 @@
   transition: grid-template-rows 250ms var(--exo-easing);
 }
 
-:where([data-exo="collapsible"]:has([data-exo="collapsible-state"]:checked)) {
+:where([data-exo="collapsible"]:has(> [data-exo="collapsible-state"]:checked)) {
   grid-template-rows: max-content 1fr;
 }
 
