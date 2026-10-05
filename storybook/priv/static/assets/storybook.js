@@ -1229,6 +1229,7 @@
   };
 
   // ../../assets/js/hooks/dropdown_menu.js
+  var ITEM = '[role="menuitem"], [role="menuitemradio"], [role="menuitemcheckbox"]';
   var ExoDropdownMenu = {
     mounted() {
       this._bind();
@@ -1262,7 +1263,7 @@
       };
       this._popover?.addEventListener("toggle", this._onToggle);
       this._onClick = (e) => {
-        const item = e.target.closest('[role="menuitem"]');
+        const item = e.target.closest(ITEM);
         if (!item || !this._menu.contains(item)) return;
         if (this._isDisabled(item)) {
           e.preventDefault();
@@ -1306,7 +1307,7 @@
       return this._allItems().filter((item) => !this._isDisabled(item));
     },
     _allItems() {
-      return [...this._menu.querySelectorAll('[role="menuitem"]')];
+      return [...this._menu.querySelectorAll(ITEM)];
     },
     _isDisabled(item) {
       return item.disabled || item.dataset.disabled === "true" || item.hasAttribute("data-disabled") || item.getAttribute("aria-disabled") === "true";
