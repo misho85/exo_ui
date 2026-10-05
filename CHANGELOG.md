@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+- `steps/1`: a horizontal list in a narrow container no longer overflows it.
+  A step did not shrink below its circle, title and connector, so five
+  checkout steps were 555px wide and pushed a 360px phone page sideways, with
+  the last two steps off screen; four order statuses in a card did the same.
+  Below about 8.5rem a step the list is compact: the circles and connectors
+  span its width, first circle at the start and last at the end, and one
+  title is shown on a line under them, the current step's or, in a list
+  without one, the last complete step's. The other titles and the
+  descriptions stay in the list as visually hidden text, so a screen reader
+  reads every step with its status at any width. The list is a size container
+  (`container: exo-steps / inline-size`), so it follows the space it has, not
+  the viewport, and takes the width of its container: in a shrink-to-fit
+  context give it a width. The list carries `data-count`, the number of steps
+  drawn, which the stylesheet needs for the width. Above that width the list
+  is drawn as before.
+
 - `select/1`, `combobox/1`: the check of the chosen option is drawn in the
   option's own text colour. It was `--exo-primary` on the list. A theme that
   sets one brand colour for light and dark, as a storefront does, cannot keep

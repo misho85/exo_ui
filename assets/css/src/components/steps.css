@@ -103,3 +103,131 @@
 :where([data-exo="step"][data-status="current"] [data-exo="step-title"]) {
   font-weight: 600;
 }
+
+/* Horizontal steps in a narrow container (TRG-451).
+
+   A step does not shrink below its circle, its title and its connector, so
+   five steps were 555px wide and pushed a 360px phone page sideways, with the
+   last two steps off screen. Below about 8.5rem a step, the list becomes
+   compact: the circles and connectors span the width, the first circle at the
+   start and the last at the end, and only one title is shown, on a line under
+   them: the current step's, or in a list without one (an order's status) the
+   last complete step's. Every other title and description stays in the list
+   as visually hidden text, so a screen reader still reads each step with its
+   status, as it does at any width.
+
+   The list is the size container, so the switch follows the space the list
+   has, not the viewport: the same steps compact sooner in a card. It takes the
+   width of its container; in a shrink-to-fit context (a flex row, an `auto`
+   grid column) give it a width, or it is zero wide.
+
+   The width a step needs is the same for any number of steps, but a container
+   query cannot divide by the number, so `steps/1` writes it as `data-count`
+   and there is one query per count. Each query only switches two custom
+   properties on the steps; the rules below read them:
+   - `--exo-steps-compact` is empty in a compact list and unset otherwise, so
+     `prop: var(--exo-steps-compact) value` is `value` when compact and falls
+     back to the property's initial (or inherited) value when not;
+   - `--exo-steps-wide` is the reverse, for the two values a full list sets.
+   Every property switched this way has its initial value in the full list. */
+:where([data-exo="steps"]:not([data-orientation="vertical"])) {
+  container: exo-steps / inline-size;
+  position: relative;
+}
+
+:where([data-exo="steps"]:not([data-orientation="vertical"]) > [data-exo="step"]) {
+  --exo-steps-wide: ;
+  position: static;
+  padding-bottom: var(--exo-steps-compact) calc(var(--exo-space-2) + 1.25rem);
+}
+
+:where([data-exo="steps"]:not([data-orientation="vertical"]) > [data-exo="step"]:last-child) {
+  flex-grow: var(--exo-steps-wide) 1;
+}
+
+:where([data-exo="steps"]:not([data-orientation="vertical"]) > [data-exo="step"]:not(:last-child))::after {
+  margin-inline-start: var(--exo-steps-wide) var(--exo-space-2);
+}
+
+:where(
+  [data-exo="steps"]:not([data-orientation="vertical"]) [data-exo="step-body"],
+  [data-exo="steps"]:not([data-orientation="vertical"]) [data-exo="step-description"]
+) {
+  position: var(--exo-steps-compact) absolute;
+  width: var(--exo-steps-compact) 1px;
+  height: var(--exo-steps-compact) 1px;
+  margin: var(--exo-steps-compact) -1px;
+  overflow: var(--exo-steps-compact) hidden;
+  clip: var(--exo-steps-compact) rect(0, 0, 0, 0);
+  white-space: var(--exo-steps-compact) nowrap;
+}
+
+/* The one title a compact list shows, under the circles. */
+:where(
+  [data-exo="steps"]:not([data-orientation="vertical"]) > [data-exo="step"][data-status="current"] > [data-exo="step-body"],
+  [data-exo="steps"]:not([data-orientation="vertical"]):not(:has(> [data-status="current"]))
+    > [data-exo="step"][data-status="complete"]:not(:has(~ [data-status="complete"]))
+    > [data-exo="step-body"]
+) {
+  top: var(--exo-steps-compact) calc(1.75rem + var(--exo-space-2));
+  inset-inline: var(--exo-steps-compact) 0;
+  width: var(--exo-steps-compact) auto;
+  height: var(--exo-steps-compact) auto;
+  margin: var(--exo-steps-compact) 0;
+  clip: var(--exo-steps-compact) auto;
+}
+
+:where([data-exo="steps"]:not([data-orientation="vertical"]) [data-exo="step-title"]) {
+  overflow: var(--exo-steps-compact) hidden;
+  text-overflow: var(--exo-steps-compact) ellipsis;
+  line-height: var(--exo-steps-compact) 1.25rem;
+}
+
+@container exo-steps (width < 17rem) {
+  :where([data-exo="steps"][data-count="2"] > [data-exo="step"]) {
+    --exo-steps-compact: ;
+    --exo-steps-wide: initial;
+  }
+}
+
+@container exo-steps (width < 25.5rem) {
+  :where([data-exo="steps"][data-count="3"] > [data-exo="step"]) {
+    --exo-steps-compact: ;
+    --exo-steps-wide: initial;
+  }
+}
+
+@container exo-steps (width < 34rem) {
+  :where([data-exo="steps"][data-count="4"] > [data-exo="step"]) {
+    --exo-steps-compact: ;
+    --exo-steps-wide: initial;
+  }
+}
+
+@container exo-steps (width < 42.5rem) {
+  :where([data-exo="steps"][data-count="5"] > [data-exo="step"]) {
+    --exo-steps-compact: ;
+    --exo-steps-wide: initial;
+  }
+}
+
+@container exo-steps (width < 51rem) {
+  :where([data-exo="steps"][data-count="6"] > [data-exo="step"]) {
+    --exo-steps-compact: ;
+    --exo-steps-wide: initial;
+  }
+}
+
+@container exo-steps (width < 59.5rem) {
+  :where([data-exo="steps"][data-count="7"] > [data-exo="step"]) {
+    --exo-steps-compact: ;
+    --exo-steps-wide: initial;
+  }
+}
+
+@container exo-steps (width < 68rem) {
+  :where([data-exo="steps"][data-count="8"] > [data-exo="step"]) {
+    --exo-steps-compact: ;
+    --exo-steps-wide: initial;
+  }
+}
