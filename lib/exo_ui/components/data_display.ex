@@ -719,16 +719,7 @@ defmodule ExoUI.Components.DataDisplay do
     String.replace(template, "%{page}", to_string(page))
   end
 
-  @doc """
-  Renders a multi-step progress indicator.
-
-  A screen reader reads each step from its content: the title, the status
-  text, the description. The current step says so through
-  `aria-current="step"`, which the screen reader announces in its own
-  language. A complete and an upcoming step carry `complete_label` and
-  `upcoming_label` as visually hidden text, so pass both in the page's
-  language, as you pass the title.
-  """
+  @doc "Renders a multi-step progress indicator."
   attr :aria_label, :string, default: "Progress"
 
   attr :complete_label, :string,
@@ -749,11 +740,21 @@ defmodule ExoUI.Components.DataDisplay do
     attr :description, :string
   end
 
+  # A screen reader reads each step from its content: the title, the status
+  # text, the description. The current step says so through
+  # `aria-current="step"`, which the screen reader announces in its own
+  # language; a complete and an upcoming step carry `complete_label` and
+  # `upcoming_label` as visually hidden text, so a caller passes both in the
+  # page's language, as it passes the title.
+  #
   # Each step used to be named `aria-label="Step 2, Shipping, complete"`. The
   # name replaced the step's content, so the title the caller translated was
   # read inside an English sentence, with the status as an English keyword.
   # `role="list"` keeps the list in WebKit, which drops it for `list-style:
   # none`: the screen reader's "2 of 4" now gives the position the label gave.
+  #
+  # The `@doc` stays one sentence: Storybook shows it above the stories, and a
+  # longer one adds "Read more" and moves the whole page.
   def steps(assigns) do
     ~H"""
     <ol
