@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- `ExoDropdownMenu`: `menuitemradio` and `menuitemcheckbox` are items of the
+  menu. The hook took only `role="menuitem"`, so a choice or a toggle inside a
+  menu (a theme, a density, "show grid") stayed in the tab order while the
+  other items left it, the arrow keys and `Home`/`End` skipped it, and a
+  disabled one was not marked `aria-disabled`. A screen reader user who opens
+  the menu and moves with the arrows, as a menu asks, never reached it. A new
+  example story, Menus › Dropdown Menu Choices, holds a named group of
+  `menuitemradio` items and a `menuitemcheckbox`, and a browser test walks it
+  with the keyboard.
+
 - `modal/1`, `confirm_modal/1`, `drawer/1`, `sheet/1`: the close button takes
   `close_label`. It was the only text in these overlays a caller could not
   replace (`aria-label="Close"`), so on a page in any other language a screen

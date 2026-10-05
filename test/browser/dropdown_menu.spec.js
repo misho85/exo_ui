@@ -62,4 +62,50 @@ test.describe("dropdown menu", () => {
     await page.keyboard.press("End");
     await expectFocused(settings);
   });
+
+  test("reaches menuitemradio and menuitemcheckbox items with the arrow keys", async ({ page }) => {
+    await gotoStory(page, "/components/menus/dropdown_menu_choices");
+
+    const canvas = story(page);
+    const root = canvas.locator("#dropdown-choices-popover");
+    const triggerButton = root.locator('[data-exo="popover-trigger"] [data-exo="btn"]');
+    const popover = page.locator("#dropdown-choices");
+    const refresh = popover.getByRole("menuitem", { name: "Refresh" });
+    const density = popover.getByRole("group", { name: "Density" });
+    const compact = density.getByRole("menuitemradio", { name: "Compact" });
+    const comfortable = density.getByRole("menuitemradio", { name: "Comfortable", checked: true });
+    const spacious = density.getByRole("menuitemradio", { name: "Spacious" });
+    const grid = popover.getByRole("menuitemcheckbox", { name: "Show grid", checked: true });
+    const reset = popover.getByRole("menuitem", { name: "Reset view" });
+
+    await expect(root).toHaveAttribute("data-ready", "");
+    await triggerButton.click();
+    await expectPopoverState(popover, true);
+
+    // Every item of the menu leaves the tab order, the checkable ones too.
+    for (const item of [refresh, compact, comfortable, spacious, grid, reset]) {
+      await expect(item).toHaveAttribute("tabindex", "-1");
+    }
+    await expect(spacious).toHaveAttribute("aria-disabled", "true");
+
+    await expectFocused(refresh);
+    await page.keyboard.press("ArrowDown");
+    await expectFocused(compact);
+    await page.keyboard.press("ArrowDown");
+    await expectFocused(comfortable);
+    // The disabled radio is skipped, the checkbox is the next item.
+    await page.keyboard.press("ArrowDown");
+    await expectFocused(grid);
+    await page.keyboard.press("ArrowDown");
+    await expectFocused(reset);
+    await page.keyboard.press("ArrowUp");
+    await expectFocused(grid);
+    await page.keyboard.press("Home");
+    await expectFocused(refresh);
+    await page.keyboard.press("ArrowUp");
+    await expectFocused(reset);
+    await page.keyboard.press("Escape");
+    await expectPopoverState(popover, false);
+    await expectFocused(triggerButton);
+  });
 });
