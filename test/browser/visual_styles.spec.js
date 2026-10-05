@@ -135,7 +135,8 @@ test.describe("component visual styles", () => {
 
     const emptyStateIcon = story(page).locator('[data-exo="empty-state-icon"] [data-exo="icon"]').first();
 
-    await expect(emptyStateIcon).toHaveCSS("width", "32px");
+    await expect(emptyStateIcon).toHaveAttribute("data-size", "lg");
+    await expect(emptyStateIcon).toHaveCSS("width", "24px");
 
     await gotoStory(page, "/components/feedback/spinner");
 

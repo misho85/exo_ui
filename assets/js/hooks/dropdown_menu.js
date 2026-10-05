@@ -22,8 +22,9 @@ const ExoDropdownMenu = {
     })
 
     this._onToggle = () => {
+      cancelAnimationFrame(this._focusFrame)
       if (!this._popover?.matches(':popover-open')) return
-      requestAnimationFrame(() => this._items()[0]?.focus())
+      this._focusFrame = requestAnimationFrame(() => this._items()[0]?.focus())
     }
     this._popover?.addEventListener('toggle', this._onToggle)
 
@@ -88,6 +89,7 @@ const ExoDropdownMenu = {
   },
 
   _unbind() {
+    cancelAnimationFrame(this._focusFrame)
     if (this._popover && this._onToggle) {
       this._popover.removeEventListener('toggle', this._onToggle)
     }

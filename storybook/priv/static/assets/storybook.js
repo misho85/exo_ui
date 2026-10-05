@@ -2,13 +2,13 @@
   // ../../assets/js/hooks/accordion.js
   var ExoAccordion = {
     mounted() {
-      this._triggers = () => Array.from(this.el.querySelectorAll('[data-exo="accordion-trigger"]:not([disabled])'));
+      this._triggers = () => Array.from(this.el.querySelectorAll('[data-exo="accordion-trigger"]')).filter((trigger) => trigger.closest('[data-exo="accordion"]') === this.el);
       this._isSingle = () => this.el.dataset.type === "single";
       this._isCollapsible = () => this.el.hasAttribute("data-collapsible");
       this.el.addEventListener("keydown", this._onKeydown = (e) => {
         const trigger = this._closestTrigger(e);
         if (!trigger) return;
-        const triggers = this._triggers();
+        const triggers = this._triggers().filter((trigger2) => !trigger2.disabled);
         const idx = triggers.indexOf(trigger);
         if (idx === -1) return;
         let target = null;
@@ -75,15 +75,12 @@
     },
     _closestTrigger(event) {
       const target = event.target instanceof Element ? event.target : event.target?.parentElement;
-      return target?.closest?.('[data-exo="accordion-trigger"]');
+      const trigger = target?.closest?.('[data-exo="accordion-trigger"]');
+      return trigger?.closest('[data-exo="accordion"]') === this.el ? trigger : null;
     },
     _syncAllAria() {
-      const items = this.el.querySelectorAll('[data-exo="accordion-item"]');
-      items.forEach((item) => {
-        const trigger = item.querySelector('[data-exo="accordion-trigger"]');
-        if (trigger) {
-          this._syncAria(trigger, trigger.getAttribute("aria-expanded") === "true");
-        }
+      this._triggers().forEach((trigger) => {
+        this._syncAria(trigger, trigger.getAttribute("aria-expanded") === "true");
       });
     }
   };
@@ -91,73 +88,80 @@
   // ../../assets/js/hooks/carousel.js
   var ExoCarousel = {
     mounted() {
+      this._bind();
+    },
+    updated() {
+      this._bind();
+    },
+    destroyed() {
+      this._unbind();
+    },
+    _bind() {
+      this._unbind();
       this.track = this.el.querySelector('[data-exo="carousel-track"]');
       this.viewport = this.el.querySelector('[data-exo="carousel-viewport"]');
       this.prev = this.el.querySelector('[data-exo="carousel-prev"]');
       this.next = this.el.querySelector('[data-exo="carousel-next"]');
       if (!this.track || !this.viewport) return;
-      const slides = () => Array.from(this.track.querySelectorAll('[data-exo="carousel-slide"]'));
+      this._onPrev = () => this._scroll(-1);
+      this._onNext = () => this._scroll(1);
+      this._onScroll = () => this._updateControls();
+      this._onKey = (event) => {
+        if (![this.el, this.viewport, this.prev, this.next].includes(event.target)) return;
+        if (event.altKey || event.ctrlKey || event.metaKey) return;
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+        event.preventDefault();
+        const direction = event.key === "ArrowRight" ? 1 : -1;
+        this._scroll(direction * this._direction());
+      };
+      this.prev?.addEventListener("click", this._onPrev);
+      this.next?.addEventListener("click", this._onNext);
+      this.viewport.addEventListener("scroll", this._onScroll);
+      this.el.addEventListener("keydown", this._onKey);
+      this._resizeObserver = new ResizeObserver(this._onScroll);
+      this._resizeObserver.observe(this.viewport);
+      this._resizeObserver.observe(this.track);
+      this._updateControls();
+    },
+    _direction() {
+      return getComputedStyle(this.viewport).direction === "rtl" ? -1 : 1;
+    },
+    _bounds() {
+      const max = Math.max(0, this.viewport.scrollWidth - this.viewport.clientWidth);
+      const position = this.viewport.scrollLeft * this._direction();
+      return { max, start: position <= 1, end: position >= max - 1 };
+    },
+    _updateControls() {
+      const { max, start, end } = this._bounds();
       const loop = this.el.hasAttribute("data-loop");
-      const atStart = () => this.viewport.scrollLeft <= 5;
-      const atEnd = () => this.viewport.scrollLeft >= this.viewport.scrollWidth - this.viewport.offsetWidth - 5;
-      const setButtonState = (button, disabled) => {
-        if (!button) return;
+      for (const [button, boundary] of [[this.prev, start], [this.next, end]]) {
+        if (!button) continue;
+        const disabled = max <= 1 || !loop && boundary;
         button.disabled = disabled;
         button.toggleAttribute("data-disabled", disabled);
-        button.setAttribute("aria-disabled", disabled ? "true" : "false");
-      };
-      const updateControls = () => {
-        if (loop) {
-          setButtonState(this.prev, false);
-          setButtonState(this.next, false);
-          return;
-        }
-        setButtonState(this.prev, atStart());
-        setButtonState(this.next, atEnd());
-      };
-      const scrollTo = (direction) => {
-        const s = slides();
-        if (s.length === 0) return;
-        const slideWidth = s[0].offsetWidth;
-        const gap = parseFloat(getComputedStyle(this.track).gap) || 0;
-        const scrollAmount = slideWidth + gap;
-        if (direction === "next") {
-          if (loop && atEnd()) {
-            this.viewport.scrollTo({ left: 0, behavior: "smooth" });
-          } else {
-            this.viewport.scrollBy({ left: scrollAmount, behavior: "smooth" });
-          }
-        } else {
-          if (loop && atStart()) {
-            this.viewport.scrollTo({ left: this.viewport.scrollWidth, behavior: "smooth" });
-          } else {
-            this.viewport.scrollBy({ left: -scrollAmount, behavior: "smooth" });
-          }
-        }
-        window.setTimeout(updateControls, 350);
-      };
-      if (this.prev) this.prev.addEventListener("click", this._onPrev = () => scrollTo("prev"));
-      if (this.next) this.next.addEventListener("click", this._onNext = () => scrollTo("next"));
-      this.viewport.addEventListener("scroll", this._onScroll = () => updateControls());
-      window.addEventListener("resize", this._onResize = () => updateControls());
-      this.el.addEventListener("keydown", this._onKey = (e) => {
-        if (e.key === "ArrowLeft") {
-          e.preventDefault();
-          scrollTo("prev");
-        }
-        if (e.key === "ArrowRight") {
-          e.preventDefault();
-          scrollTo("next");
-        }
-      });
-      updateControls();
+        button.setAttribute("aria-disabled", String(disabled));
+      }
     },
-    destroyed() {
-      if (this.prev && this._onPrev) this.prev.removeEventListener("click", this._onPrev);
-      if (this.next && this._onNext) this.next.removeEventListener("click", this._onNext);
-      if (this.viewport && this._onScroll) this.viewport.removeEventListener("scroll", this._onScroll);
-      if (this._onResize) window.removeEventListener("resize", this._onResize);
-      if (this._onKey) this.el.removeEventListener("keydown", this._onKey);
+    _scroll(direction) {
+      const slide = this.track.querySelector('[data-exo="carousel-slide"]');
+      if (!slide) return;
+      const { max, start, end } = this._bounds();
+      const logicalDirection = this._direction();
+      const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth";
+      if (this.el.hasAttribute("data-loop") && (direction > 0 ? end : start)) {
+        this.viewport.scrollTo({ left: direction > 0 ? 0 : max * logicalDirection, behavior });
+      } else {
+        const gap = parseFloat(getComputedStyle(this.track).columnGap) || 0;
+        this.viewport.scrollBy({ left: (slide.offsetWidth + gap) * direction * logicalDirection, behavior });
+      }
+    },
+    _unbind() {
+      this.prev?.removeEventListener("click", this._onPrev);
+      this.next?.removeEventListener("click", this._onNext);
+      this.viewport?.removeEventListener("scroll", this._onScroll);
+      this.el.removeEventListener("keydown", this._onKey);
+      this._resizeObserver?.disconnect();
+      this._resizeObserver = null;
     }
   };
 
@@ -169,7 +173,7 @@
       this._content = () => this.el.querySelector('[data-exo="collapsible-content"]');
       this.el.addEventListener("click", this._onClick = (e) => {
         const trigger = this._closestTrigger(e);
-        if (!trigger) return;
+        if (!trigger || trigger.disabled) return;
         const checkbox = this._checkbox();
         if (!checkbox) return;
         checkbox.checked = !checkbox.checked;
@@ -202,7 +206,8 @@
     },
     _closestTrigger(event) {
       const target = event.target instanceof Element ? event.target : event.target?.parentElement;
-      return target?.closest?.('[data-exo="collapsible-trigger"]');
+      const trigger = target?.closest?.('[data-exo="collapsible-trigger"]');
+      return trigger?.closest('[data-exo="collapsible"]') === this.el ? trigger : null;
     }
   };
 
@@ -1082,11 +1087,20 @@
         const value = btn.getAttribute("data-theme-value");
         this._apply(value);
         this._writeTheme(value);
+        document.dispatchEvent(new CustomEvent("exo:theme-change", { detail: value }));
       };
       this.el.addEventListener("click", this._onClick);
+      this._onThemeChange = (event) => this._apply(event.detail);
+      this._onStorage = (event) => {
+        if (event.key === "exo-theme" || event.key === null) this._apply(this._current());
+      };
+      document.addEventListener("exo:theme-change", this._onThemeChange);
+      window.addEventListener("storage", this._onStorage);
     },
     _unbind() {
       if (this._onClick) this.el.removeEventListener("click", this._onClick);
+      if (this._onThemeChange) document.removeEventListener("exo:theme-change", this._onThemeChange);
+      if (this._onStorage) window.removeEventListener("storage", this._onStorage);
       if (this.el) this.el.removeAttribute("data-ready");
       this._onClick = null;
     },
@@ -1098,6 +1112,7 @@
       }
     },
     _apply(theme) {
+      if (!["light", "dark", "system"].includes(theme)) theme = "system";
       const root = document.documentElement;
       this.el.querySelectorAll("[data-theme-value]").forEach((btn) => {
         const active = btn.getAttribute("data-theme-value") === theme;
@@ -1241,8 +1256,9 @@
         }
       });
       this._onToggle = () => {
+        cancelAnimationFrame(this._focusFrame);
         if (!this._popover?.matches(":popover-open")) return;
-        requestAnimationFrame(() => this._items()[0]?.focus());
+        this._focusFrame = requestAnimationFrame(() => this._items()[0]?.focus());
       };
       this._popover?.addEventListener("toggle", this._onToggle);
       this._onClick = (e) => {
@@ -1301,6 +1317,7 @@
       return trigger?.matches('button, a[href], input, select, textarea, [role="button"], [tabindex]') ? trigger : trigger?.querySelector('button, a[href], input, select, textarea, [role="button"], [tabindex]') || trigger;
     },
     _unbind() {
+      cancelAnimationFrame(this._focusFrame);
       if (this._popover && this._onToggle) {
         this._popover.removeEventListener("toggle", this._onToggle);
       }
@@ -1336,7 +1353,7 @@
       const popoverId = this._trigger?.getAttribute("popovertarget");
       this._popover = popoverId ? document.getElementById(popoverId) : null;
       this._listbox = this.el.querySelector('[role="listbox"]');
-      this._hidden = this.el.closest('[data-exo="field"]')?.querySelector('input[type="hidden"]');
+      this._native = this.el.closest('[data-exo="field"]')?.querySelector('select[data-exo="select-native"]');
       if (!this._popover || !this._listbox) return;
       this._syncOptions();
       this._onToggle = () => {
@@ -1381,7 +1398,7 @@
             if (idx >= 0) this._selectOption(options[idx]);
             return;
           case "Escape":
-            this._popover.hidePopover();
+            this._closePopover();
             this._trigger.focus();
             return;
           default:
@@ -1424,9 +1441,10 @@
     _selectOption(opt) {
       const value = opt.getAttribute("data-value");
       const text = opt.textContent.trim();
-      if (this._hidden) {
-        this._hidden.value = value;
-        this._hidden.dispatchEvent(new Event("input", { bubbles: true }));
+      if (this._native) {
+        this._native.value = value;
+        this._native.dispatchEvent(new Event("input", { bubbles: true }));
+        this._native.dispatchEvent(new Event("change", { bubbles: true }));
       }
       this._listbox.querySelectorAll('[data-exo="select-option"]').forEach((o) => {
         const isSelected = o.getAttribute("data-value") === value;
@@ -1441,10 +1459,20 @@
       const valueEl = this._trigger.querySelector('[data-exo="select-value"]');
       if (valueEl) {
         valueEl.textContent = text;
-        valueEl.removeAttribute("data-placeholder");
+        if (value === "") {
+          valueEl.setAttribute("data-placeholder", "");
+        } else {
+          valueEl.removeAttribute("data-placeholder");
+        }
       }
-      this._popover.hidePopover();
+      this._closePopover();
       this._trigger.focus();
+    },
+    _closePopover() {
+      try {
+        if (this._popover?.matches(":popover-open")) this._popover.hidePopover();
+      } catch (_err) {
+      }
     },
     _typeAhead(char, options) {
       if (char.length !== 1) return;
@@ -1468,7 +1496,7 @@
       this._trigger = null;
       this._popover = null;
       this._listbox = null;
-      this._hidden = null;
+      this._native = null;
       this._activeOption = null;
       this._onToggle = null;
       this._onClick = null;
@@ -1479,7 +1507,7 @@
   // ../../assets/js/hooks/combobox.js
   var ExoCombobox = {
     mounted() {
-      this._bind();
+      this._bind(true);
     },
     updated() {
       this._bind();
@@ -1487,13 +1515,14 @@
     destroyed() {
       this._unbind();
     },
-    _bind() {
+    _bind(initial = false) {
       this._unbind();
       const isInputTrigger = this.el.dataset.trigger === "input";
       const filter = this.el.dataset.filter || "server";
       const onFilter = this.el.dataset.onFilter;
       const onFilterTarget = this.el.getAttribute("phx-target");
-      const debounce = parseInt(this.el.dataset.debounce || "300", 10);
+      const parsedDebounce = Number.parseInt(this.el.dataset.debounce, 10);
+      const debounce = Number.isFinite(parsedDebounce) ? parsedDebounce : 300;
       this._search = isInputTrigger ? this.el.querySelector('[data-exo-combobox="input-trigger"]') : this.el.querySelector('[data-exo="combobox-search"]');
       const triggerBtn = this.el.querySelector('[data-exo-combobox="trigger"]');
       const popoverId = triggerBtn?.getAttribute("popovertarget") || this.el.querySelector('[data-exo="popover-content"]')?.id;
@@ -1508,6 +1537,10 @@
       this._clear = this.el.querySelector('[data-exo="combobox-clear"]');
       if (!this._popover) return;
       if (this._listbox) this._syncOptions();
+      if (initial && isInputTrigger && this._search && !this._search.value) {
+        const selected = this._listbox?.querySelector("[data-selected]");
+        if (selected) this._search.value = selected.textContent.trim();
+      }
       this._syncStatusFromState();
       const syncExpanded = () => {
         const open = this._popover.matches(":popover-open");
@@ -1515,11 +1548,12 @@
         if (this._search) this._search.setAttribute("aria-expanded", String(open));
       };
       const focusSearch = () => {
-        setTimeout(() => {
+        clearTimeout(this._focusTimer);
+        this._focusTimer = setTimeout(() => {
           if (!this._popover?.matches(":popover-open")) return;
           this._search?.focus();
           if (document.activeElement !== this._search) {
-            requestAnimationFrame(() => {
+            this._focusFrame = requestAnimationFrame(() => {
               if (this._popover?.matches(":popover-open")) this._search?.focus();
             });
           }
@@ -1545,6 +1579,7 @@
             });
           }
           this._clearActiveOption();
+          if (this._clear) this._clear.hidden = true;
           this._serverStatus = "";
           this._announceStatus("Selection cleared");
         };
@@ -1579,7 +1614,8 @@
         };
         this._onBlur = () => {
           const popover = this._popover;
-          setTimeout(() => {
+          clearTimeout(this._blurTimer);
+          this._blurTimer = setTimeout(() => {
             if (!popover) return;
             if (!popover.contains(document.activeElement) && document.activeElement !== this._search) {
               try {
@@ -1594,6 +1630,12 @@
       }
       if (this._search) {
         this._onInput = () => {
+          if (isInputTrigger && !this._isOpen()) {
+            try {
+              this._popover.showPopover();
+            } catch (_err) {
+            }
+          }
           const query = this._search.value;
           this._lastQuery = query;
           this._serverStatus = "";
@@ -1604,7 +1646,7 @@
           } else {
             clearTimeout(this._debounceTimer);
             this._debounceTimer = setTimeout(() => {
-              if (onFilterTarget) this.pushEventTo(onFilterTarget, onFilter, { query });
+              if (onFilter && onFilterTarget) this.pushEventTo(onFilterTarget, onFilter, { query });
               else if (onFilter) this.pushEvent(onFilter, { query });
             }, debounce);
             this._announceStatus(query ? "Searching results" : "");
@@ -1625,6 +1667,24 @@
         };
         this._listbox.addEventListener("click", this._onClick);
         this._onKeydown = (e) => {
+          if (e.key === "Escape") {
+            if (!this._isOpen()) return;
+            e.preventDefault();
+            e.stopPropagation();
+            try {
+              this._popover.hidePopover();
+            } catch (_err) {
+            }
+            if (!isInputTrigger) triggerBtn?.focus();
+            return;
+          }
+          if (!this._isOpen()) {
+            if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+            try {
+              this._popover.showPopover();
+            } catch (_err) {
+            }
+          }
           const opts = this._visibleOptions();
           if (!opts.length) return;
           const idx = Math.max(opts.indexOf(this._activeOption), opts.indexOf(document.activeElement));
@@ -1637,21 +1697,14 @@
               next = idx > 0 ? idx - 1 : opts.length - 1;
               break;
             case "Home":
-              next = 0;
-              break;
             case "End":
-              next = opts.length - 1;
+              if (e.target === this._search) return;
+              next = e.key === "Home" ? 0 : opts.length - 1;
               break;
             case "Enter":
               if (idx >= 0) {
                 this._selectOption(opts[idx]);
                 e.preventDefault();
-              }
-              return;
-            case "Escape":
-              try {
-                this._popover.hidePopover();
-              } catch (_err) {
               }
               return;
             default:
@@ -1661,6 +1714,7 @@
           this._setActiveOption(opts[next]);
         };
         this._popover.addEventListener("keydown", this._onKeydown);
+        if (isInputTrigger) this._search?.addEventListener("keydown", this._onKeydown);
       }
       this.el.setAttribute("data-ready", "");
     },
@@ -1779,6 +1833,12 @@
         valSpan.textContent = opt.textContent.trim();
         valSpan.removeAttribute("data-placeholder");
       }
+      if (this.el.dataset.trigger === "input" && this._search) {
+        this._search.value = opt.textContent.trim();
+      }
+      if (this._clear) this._clear.hidden = false;
+      const control = this.el.querySelector('[data-exo-combobox="trigger"]') || this._search;
+      control?.focus({ preventScroll: true });
       try {
         this._popover?.hidePopover();
       } catch (_err) {
@@ -1786,6 +1846,9 @@
     },
     _unbind() {
       clearTimeout(this._debounceTimer);
+      clearTimeout(this._focusTimer);
+      clearTimeout(this._blurTimer);
+      cancelAnimationFrame(this._focusFrame);
       this._debounceTimer = null;
       if (this._popover) {
         if (this._onToggle) this._popover.removeEventListener("toggle", this._onToggle);
@@ -1793,6 +1856,7 @@
       }
       if (this._listbox && this._onClick) this._listbox.removeEventListener("click", this._onClick);
       if (this._search) {
+        if (this._onKeydown) this._search.removeEventListener("keydown", this._onKeydown);
         if (this._onInput) this._search.removeEventListener("input", this._onInput);
         if (this._onFocus) this._search.removeEventListener("focus", this._onFocus);
         if (this._onBlur) this._search.removeEventListener("blur", this._onBlur);
@@ -1842,7 +1906,8 @@
       this._content = content;
       this._timeout = null;
       this._declaredSide = content.dataset.side;
-      this._delay = parseInt(content.dataset.delay) || 500;
+      const parsedDelay = Number.parseInt(content.dataset.delay, 10);
+      this._delay = Number.isFinite(parsedDelay) ? parsedDelay : 500;
       content.setAttribute("popover", "manual");
       const show = () => {
         clearTimeout(this._timeout);
@@ -1854,7 +1919,7 @@
           } catch (_) {
             return;
           }
-          requestAnimationFrame(() => {
+          this._frame = requestAnimationFrame(() => {
             if (!hasAnchorPos) this._positionFallback();
             this._detectFlip();
           });
@@ -1862,6 +1927,7 @@
       };
       const hide = () => {
         clearTimeout(this._timeout);
+        cancelAnimationFrame(this._frame);
         let didHide = false;
         try {
           if (content.matches(":popover-open")) {
@@ -1928,6 +1994,7 @@
     },
     _unbind() {
       clearTimeout(this._timeout);
+      cancelAnimationFrame(this._frame);
       if (this._wrapper) {
         if (this._show) this._wrapper.removeEventListener("mouseenter", this._show);
         if (this._hide) this._wrapper.removeEventListener("mouseleave", this._hide);
@@ -2096,14 +2163,16 @@
         this.trigger.setAttribute("aria-expanded", "true");
         this._positionWithinViewport(x, y);
         this._bindCloseListeners();
-        requestAnimationFrame(() => {
+        cancelAnimationFrame(this._focusFrame);
+        this._focusFrame = requestAnimationFrame(() => {
           this._items()[0]?.focus();
         });
       };
       this._positionWithinViewport = (x, y) => {
         this.menu.style.left = x + "px";
         this.menu.style.top = y + "px";
-        requestAnimationFrame(() => {
+        cancelAnimationFrame(this._positionFrame);
+        this._positionFrame = requestAnimationFrame(() => {
           if (!this.menu.hasAttribute("data-open")) return;
           const rect = this.menu.getBoundingClientRect();
           const gap = 4;
@@ -2124,6 +2193,8 @@
         document.addEventListener("contextmenu", this._close, true);
       };
       this._hide = () => {
+        cancelAnimationFrame(this._focusFrame);
+        cancelAnimationFrame(this._positionFrame);
         this.menu.removeAttribute("data-open");
         this.trigger.setAttribute("aria-expanded", "false");
         document.removeEventListener("pointerdown", this._close, true);
@@ -2176,6 +2247,8 @@
       return item.disabled || item.dataset.disabled === "true" || item.hasAttribute("data-disabled") || item.getAttribute("aria-disabled") === "true";
     },
     _unbind() {
+      cancelAnimationFrame(this._focusFrame);
+      cancelAnimationFrame(this._positionFrame);
       if (this.trigger && this._onContext) this.trigger.removeEventListener("contextmenu", this._onContext);
       if (this.trigger && this._onTriggerKeydown) this.trigger.removeEventListener("keydown", this._onTriggerKeydown);
       if (this.menu && this._onItemClick) this.menu.removeEventListener("click", this._onItemClick);
@@ -2324,47 +2397,47 @@
       this._unbind();
       this._hidden = this.el.querySelector('[data-exo="rating-value"]');
       this._inputs = [...this.el.querySelectorAll('[data-exo="rating-input"]')];
-      if (!this._hidden || this._inputs.length === 0) return;
+      if (this._inputs.length === 0) return;
       this.el.setAttribute("data-ready", "");
-      this._onClick = (event) => {
-        const star = event.target.closest('[data-exo="rating-star"]');
-        if (!star) return;
-        const input = star.querySelector('[data-exo="rating-input"]');
-        if (!input || input.disabled) return;
-        input.checked = true;
-        this._setValue(input.value, true);
-      };
       this._onChange = (event) => {
         const input = event.target.closest('[data-exo="rating-input"]');
         if (!input || !input.checked) return;
         this._setValue(input.value, true);
       };
-      this.el.addEventListener("click", this._onClick);
       this.el.addEventListener("change", this._onChange);
-      this._setValue(this._hidden.value || this.el.dataset.value || "0", false);
+      this._setValue(this._hidden?.value || this.el.dataset.value || "0", false);
+      this._form = this._inputs[0]?.form;
+      this._onReset = (event) => {
+        clearTimeout(this._resetTimer);
+        this._resetTimer = setTimeout(() => {
+          if (!event.defaultPrevented) this._setValue(this._inputs.find((input) => input.checked)?.value || "0", false);
+        }, 0);
+      };
+      this._form?.addEventListener("reset", this._onReset);
     },
     _setValue(value, notify) {
       const numericValue = parseInt(value || "0", 10) || 0;
       this.el.dataset.value = String(numericValue);
-      this._hidden.value = String(numericValue);
+      if (this._hidden) this._hidden.value = String(numericValue);
       this.el.querySelectorAll('[data-exo="rating-star"]').forEach((star, index) => {
         star.toggleAttribute("data-active", index + 1 <= numericValue);
       });
       this._inputs.forEach((input) => {
         input.checked = input.value === String(numericValue);
       });
-      if (notify) {
+      if (notify && this._hidden) {
         this._hidden.dispatchEvent(new Event("input", { bubbles: true }));
         this._hidden.dispatchEvent(new Event("change", { bubbles: true }));
       }
     },
     _unbind() {
-      if (this._onClick) this.el.removeEventListener("click", this._onClick);
+      clearTimeout(this._resetTimer);
+      this._form?.removeEventListener("reset", this._onReset);
+      this._form = null;
       if (this._onChange) this.el.removeEventListener("change", this._onChange);
       if (this.el) this.el.removeAttribute("data-ready");
       this._hidden = null;
       this._inputs = [];
-      this._onClick = null;
       this._onChange = null;
     }
   };
@@ -2730,6 +2803,7 @@
         this._toggle();
       };
       this._onKeydown = (event) => {
+        if (event.target !== this.el && event.target !== this.input) return;
         if (event.key !== "Enter" && event.key !== " ") return;
         event.preventDefault();
         this._toggle();
@@ -2749,7 +2823,7 @@
       this._onKeydown = null;
     },
     _toggle() {
-      if (!this.input) return;
+      if (!this.input || this.input.disabled || this.el.getAttribute("aria-disabled") === "true") return;
       this.input.checked = !this.input.checked;
       this.input.dispatchEvent(new Event("change", { bubbles: true }));
     },
@@ -2799,8 +2873,19 @@
       this.input.addEventListener("input", this.syncValue);
       this.input.addEventListener("change", this.syncValue);
       this.syncValue();
+      this._form = this.input?.form;
+      this._onReset = (event) => {
+        clearTimeout(this._resetTimer);
+        this._resetTimer = setTimeout(() => {
+          if (!event.defaultPrevented) this.syncValue();
+        }, 0);
+      };
+      this._form?.addEventListener("reset", this._onReset);
     },
     unbindSlider() {
+      clearTimeout(this._resetTimer);
+      this._form?.removeEventListener("reset", this._onReset);
+      this._form = null;
       if (!this.input) return;
       this.input.removeEventListener("input", this.syncValue);
       this.input.removeEventListener("change", this.syncValue);
@@ -2838,8 +2923,19 @@
       if (!this.input || !this.selected) return;
       this.input.addEventListener("change", this.syncSelected);
       this.syncSelected();
+      this._form = this.input?.form;
+      this._onReset = (event) => {
+        clearTimeout(this._resetTimer);
+        this._resetTimer = setTimeout(() => {
+          if (!event.defaultPrevented) this.syncSelected();
+        }, 0);
+      };
+      this._form?.addEventListener("reset", this._onReset);
     },
     unbindFileInput() {
+      clearTimeout(this._resetTimer);
+      this._form?.removeEventListener("reset", this._onReset);
+      this._form = null;
       if (!this.input) return;
       this.input.removeEventListener("change", this.syncSelected);
     },
@@ -2855,79 +2951,98 @@
   // ../../assets/js/hooks/toast.js
   var ExoToast = {
     mounted() {
-      this._bind();
+      this._states = /* @__PURE__ */ new Map();
+      this._onPointerOver = (event) => this._setPaused(event, "pointer", true);
+      this._onPointerOut = (event) => this._setPaused(event, "pointer", false);
+      this._onFocusIn = (event) => this._setPaused(event, "focus", true);
+      this._onFocusOut = (event) => this._setPaused(event, "focus", false);
+      this._onKeydown = (event) => {
+        const toast = this._toastFor(event);
+        if (event.key !== "Escape" || !toast) return;
+        event.preventDefault();
+        event.stopPropagation();
+        this._dismiss(toast);
+      };
+      this._onClick = (event) => {
+        const toast = this._toastFor(event);
+        if (toast && event.target.closest('[data-exo="toast-close"]')) this._dismiss(toast);
+      };
+      this._listeners = {
+        pointerover: this._onPointerOver,
+        pointerout: this._onPointerOut,
+        focusin: this._onFocusIn,
+        focusout: this._onFocusOut,
+        keydown: this._onKeydown,
+        click: this._onClick
+      };
+      for (const [type, listener] of Object.entries(this._listeners)) this.el.addEventListener(type, listener);
+      this._sync();
     },
     updated() {
-      this._bind();
+      this._sync();
     },
     destroyed() {
-      this._clearTimers();
+      for (const [type, listener] of Object.entries(this._listeners)) this.el.removeEventListener(type, listener);
+      this._states.forEach((state) => clearTimeout(state.timer));
+      this._states.clear();
+      delete this.el.dataset.ready;
     },
-    _bind() {
-      this._timers || (this._timers = /* @__PURE__ */ new Map());
-      this._remaining || (this._remaining = /* @__PURE__ */ new Map());
-      this._duration = Number.parseInt(this.el.dataset.duration || "5000", 10);
+    _sync() {
+      const duration = Number.parseInt(this.el.dataset.duration, 10);
+      this._duration = Number.isFinite(duration) ? Math.max(0, duration) : 5e3;
       this._autoDismiss = this.el.dataset.autoDismiss === "true";
-      this.el.dataset.ready = "true";
-      this._toasts().forEach((toast) => {
-        if (!toast.dataset.exoToastBound) this._bindToast(toast);
-        if (this._autoDismiss && !this._timers.has(toast.id)) {
-          this._schedule(toast, this._duration);
+      const toasts = new Set(this.el.querySelectorAll('[data-exo="toast"][id]'));
+      for (const [toast, state] of this._states) {
+        if (!toasts.has(toast)) {
+          clearTimeout(state.timer);
+          this._states.delete(toast);
         }
-      });
+      }
+      for (const toast of toasts) {
+        let state = this._states.get(toast);
+        if (!state) {
+          state = { remaining: this._duration, timer: null, paused: /* @__PURE__ */ new Set() };
+          if (toast.matches(":hover")) state.paused.add("pointer");
+          if (toast.contains(document.activeElement)) state.paused.add("focus");
+          this._states.set(toast, state);
+        }
+        if (!this._autoDismiss || toast.hidden) this._pause(state);
+        else this._schedule(toast, state);
+      }
+      this.el.dataset.ready = "true";
     },
-    _bindToast(toast) {
-      toast.dataset.exoToastBound = "true";
-      toast.addEventListener("pointerenter", () => this._pause(toast));
-      toast.addEventListener("pointerleave", () => this._resume(toast));
-      toast.addEventListener("focusin", () => this._pause(toast));
-      toast.addEventListener("focusout", () => this._resume(toast));
-      toast.addEventListener("keydown", (event) => {
-        if (event.key !== "Escape") return;
-        event.preventDefault();
-        this._dismiss(toast);
-      });
+    _toastFor(event) {
+      const toast = event.target.closest('[data-exo="toast"][id]');
+      return this._states.has(toast) ? toast : null;
     },
-    _toasts() {
-      return Array.from(this.el.querySelectorAll('[data-exo="toast"][id]'));
+    _setPaused(event, reason, paused) {
+      const toast = this._toastFor(event);
+      if (!toast || toast.contains(event.relatedTarget)) return;
+      const state = this._states.get(toast);
+      if (paused) {
+        state.paused.add(reason);
+        this._pause(state);
+      } else {
+        state.paused.delete(reason);
+        this._schedule(toast, state);
+      }
     },
-    _schedule(toast, delay) {
-      if (!this._autoDismiss || !toast?.id || toast.hidden) return;
-      this._clearTimer(toast.id);
-      const timeout = window.setTimeout(() => this._dismiss(toast), delay);
-      this._timers.set(toast.id, { timeout, startedAt: Date.now(), delay });
+    _pause(state) {
+      if (state.timer === null) return;
+      clearTimeout(state.timer);
+      state.timer = null;
+      state.remaining = Math.max(0, state.remaining - (Date.now() - state.startedAt));
     },
-    _pause(toast) {
-      const timer = this._timers?.get(toast.id);
-      if (!timer) return;
-      window.clearTimeout(timer.timeout);
-      this._timers.delete(toast.id);
-      this._remaining.set(toast.id, Math.max(0, timer.delay - (Date.now() - timer.startedAt)));
-    },
-    _resume(toast) {
-      if (!this._autoDismiss || !toast?.id || toast.hidden) return;
-      const delay = this._remaining.get(toast.id) || this._duration;
-      this._remaining.delete(toast.id);
-      this._schedule(toast, delay);
+    _schedule(toast, state) {
+      if (!this._autoDismiss || toast.hidden || state.paused.size || state.timer !== null) return;
+      state.startedAt = Date.now();
+      state.timer = setTimeout(() => this._dismiss(toast), state.remaining);
     },
     _dismiss(toast) {
-      if (!toast?.id) return;
-      this._clearTimer(toast.id);
-      this._remaining.delete(toast.id);
+      const state = this._states.get(toast);
+      if (state) this._pause(state);
       toast.hidden = true;
       toast.setAttribute("data-state", "closed");
-    },
-    _clearTimer(id) {
-      const timer = this._timers?.get(id);
-      if (!timer) return;
-      window.clearTimeout(timer.timeout);
-      this._timers.delete(id);
-    },
-    _clearTimers() {
-      if (!this._timers) return;
-      this._timers.forEach(({ timeout }) => window.clearTimeout(timeout));
-      this._timers.clear();
-      this._remaining?.clear();
     }
   };
 

@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased
+
+- Fix nested accordion/collapsible state isolation, hidden component visibility,
+  mixed link/action navigation order, and missing breadcrumb labels.
+- Improve combobox input keyboard selection, initial labels, focus restoration,
+  and boolean option values across form choice controls.
+- Make carousel controls follow LiveView updates, container resizing, RTL, and
+  reduced-motion preferences without intercepting text input keys.
+- Preserve toast pause state across updates and overlapping hover/focus; clean up
+  removed notifications, deferred menu/tooltip work, and event listeners.
+- Synchronize theme controls and native form resets for sliders, file summaries,
+  and ratings; avoid duplicate rating change notifications.
+- Correct outdated Storybook examples and browser checks. Replace timestamp-based
+  CSS freshness checks with deterministic source/bundle comparison (`check:css`).
+- Refresh 28 visually reviewed Storybook references to match current component
+  styling and corrected examples. Fail captures on browser errors and remove
+  redundant raw video files after saving the named recordings.
+
 ## 0.1.0 — 2026-04-24
 
 Initial public `0.1.0` release:

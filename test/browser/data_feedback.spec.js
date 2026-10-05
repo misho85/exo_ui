@@ -222,7 +222,7 @@ test.describe("data and feedback components", () => {
     await expect(canvas.locator('[data-exo="table-head-cell"][data-align="center"]').first()).toHaveText("Status");
     await expect(table.locator('[data-exo="table-row"][aria-label="Open Alice Smith"]')).toHaveCount(1);
     await expect(emptyTable.locator('[data-exo="table-empty"]')).toContainText("No archived members.");
-    await expect(loadingTable.locator("tbody")).toHaveAttribute("aria-busy", "true");
+    await expect(loadingTable.locator("tbody[id]")).toHaveAttribute("aria-busy", "true");
     await expect(loadingTable.locator('[data-exo="table-loading"]')).toHaveAttribute("role", "status");
     await expect(loadingTable.locator('[data-exo="table-loading"]')).toContainText("Loading member rows...");
   });
@@ -324,4 +324,50 @@ test.describe("data and feedback components", () => {
     await expect(errorToast.locator('[data-exo="toast-close"]')).toHaveAttribute("type", "button");
     await expect(errorToast.locator('[data-exo="toast-close"] [data-exo="icon"]')).toHaveCount(1);
   });
+});
+
+const { mountHook, fixture } = require('./helpers/hooks');
+
+test('toast pause survives updates and overlapping hover and focus', async ({ page }) => {
+  await page.clock.install();
+  await fixture(page, `<button id="outside">Outside</button>
+    <div id="toasts" data-auto-dismiss="true" data-duration="1000">
+      <div id="toast" data-exo="toast"><button id="first">First</button><button id="second">Second</button></div>
+    </div>`);
+  await mountHook(page, 'ExoToast', 'toast.js', '#toasts');
+  await page.clock.fastForward(200);
+  await page.evaluate(() => {
+    const toast = document.querySelector('#toast');
+    toast.dispatchEvent(new PointerEvent('pointerover', { bubbles: true }));
+    document.querySelector('#first').focus();
+    window.testHooks['#toasts'].updated();
+  });
+  await page.clock.fastForward(2000);
+  await expect(page.locator('#toast')).toBeVisible();
+  await page.evaluate(() => {
+    document.querySelector('#second').focus();
+    document.querySelector('#toast').dispatchEvent(new PointerEvent('pointerout', { bubbles: true }));
+  });
+  await page.clock.fastForward(2000);
+  await expect(page.locator('#toast')).toBeVisible();
+  await page.locator('#outside').focus();
+  await page.clock.fastForward(1000);
+  await expect(page.locator('#toast')).toBeHidden();
+});
+
+test('toast cleans removed notifications and listeners without retaining old timers', async ({ page }) => {
+  await page.clock.install();
+  await fixture(page, `<div id="toasts" data-auto-dismiss="true" data-duration="1000">
+    <div id="toast" data-exo="toast"><button>Action</button></div></div>`);
+  await mountHook(page, 'ExoToast', 'toast.js', '#toasts');
+  await page.evaluate(() => {
+    const toast = document.querySelector('#toast');
+    toast.replaceWith(toast.cloneNode(true));
+    window.testHooks['#toasts'].updated();
+  });
+  expect(await page.evaluate(() => window.testHooks['#toasts']._states.size)).toBe(1);
+  await page.evaluate(() => window.testHooks['#toasts'].destroyed());
+  await page.locator('#toast button').press('Escape');
+  await page.clock.fastForward(2000);
+  await expect(page.locator('#toast')).toBeVisible();
 });

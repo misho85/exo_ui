@@ -177,4 +177,25 @@ defmodule ExoUI.Components.BreadcrumbTest do
     assert html =~ "<ol>"
     assert html =~ "<li"
   end
+
+  test "retains non-linked ancestor labels without marking them current" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.breadcrumb>
+        <:item>Workspace</:item>
+        <:item href="/projects">Projects</:item>
+        <:item>Current project</:item>
+      </.breadcrumb>
+      """)
+
+    tree = Floki.parse_fragment!(html)
+
+    assert Floki.find(tree, "[data-exo='breadcrumb-label']") |> Floki.text() |> String.trim() ==
+             "Workspace"
+
+    assert Floki.find(tree, "[aria-current='page']") |> Floki.text() |> String.trim() ==
+             "Current project"
+  end
 end

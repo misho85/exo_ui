@@ -32,10 +32,9 @@ defmodule Storybook.Components.Input do
           id: "input-budget",
           name: "budget",
           value: "1250",
-          label: "Budget",
-          prefix: "$",
-          suffix: "USD"
-        }
+          label: "Budget"
+        },
+        slots: [~s|<:prefix>$</:prefix>|, ~s|<:suffix>USD</:suffix>|]
       },
       %Variation{
         id: :with_icons,

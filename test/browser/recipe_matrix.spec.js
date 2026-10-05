@@ -28,7 +28,7 @@ test.describe("component recipe matrix", () => {
     await expect(root.locator("#recipe-owner-error")).toHaveAttribute("role", "alert");
     await expect(selectTrigger).toHaveAttribute("aria-controls", "recipe-priority-listbox");
     await expect(root.locator("#recipe-state-table [data-exo=\"table-row\"]")).toHaveCount(2);
-    await expect(root.locator("#recipe-empty-table [data-exo=\"table-empty\"]")).toContainText(
+    await expect(root.locator("table:has(#recipe-empty-table) [data-exo=\"table-empty\"]")).toContainText(
       "No archived recipe records"
     );
 
