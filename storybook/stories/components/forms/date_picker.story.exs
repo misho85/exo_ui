@@ -12,14 +12,16 @@ defmodule Storybook.Components.DatePicker do
   end
 
   def variations do
-    today = Date.utc_today()
-    start_of_month = Date.beginning_of_month(today)
+    # A fixed date, not `Date.utc_today()`: the visual baseline is a screenshot
+    # of this page, and a moving "today" changed it every day and every month.
+    anchor = ~D[2026-03-18]
+    start_of_month = Date.beginning_of_month(anchor)
 
     [
       {"dp-default",
        %Variation{
          id: :default,
-         attributes: %{label: "Select a date", current_month: today}
+         attributes: %{label: "Select a date", current_month: anchor}
        }},
       {"dp-selected",
        %Variation{
@@ -28,8 +30,8 @@ defmodule Storybook.Components.DatePicker do
            name: "departure",
            label: "Departure",
            description: "The selected date is submitted as an ISO value.",
-           current_month: today,
-           selected: today
+           current_month: anchor,
+           selected: anchor
          }
        }},
       {"dp-constrained",
@@ -37,9 +39,9 @@ defmodule Storybook.Components.DatePicker do
          id: :constrained,
          attributes: %{
            label: "Available dates",
-           current_month: today,
+           current_month: anchor,
            min: start_of_month,
-           max: Date.add(today, 14)
+           max: Date.add(anchor, 14)
          }
        }},
       {"dp-available",
@@ -47,8 +49,8 @@ defmodule Storybook.Components.DatePicker do
          id: :available_dates,
          attributes: %{
            label: "Interview slots",
-           current_month: today,
-           available_dates: [Date.add(today, 1), Date.add(today, 3), Date.add(today, 7)]
+           current_month: anchor,
+           available_dates: [Date.add(anchor, 1), Date.add(anchor, 3), Date.add(anchor, 7)]
          }
        }},
       {"dp-keyboard",
@@ -67,7 +69,7 @@ defmodule Storybook.Components.DatePicker do
            name: "booking_date",
            label: "Booking date",
            description: "Choose an available day.",
-           current_month: today,
+           current_month: anchor,
            errors: ["Select a booking date."]
          }
        }},
@@ -76,7 +78,7 @@ defmodule Storybook.Components.DatePicker do
          id: :disabled,
          attributes: %{
            label: "Not available",
-           current_month: today,
+           current_month: anchor,
            disabled: true
          }
        }}

@@ -3,6 +3,7 @@ import Config
 config :exo_ui_storybook, ExoUI.Storybook.Web.Endpoint,
   url: [host: "localhost"],
   adapter: Bandit.PhoenixAdapter,
+  render_errors: [formats: [html: ExoUI.Storybook.Web.ErrorHTML], layout: false],
   pubsub_server: ExoUI.Storybook.PubSub,
   live_view: [signing_salt: "exo_storybook"]
 

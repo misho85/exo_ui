@@ -1,3 +1,9 @@
+// A menu item is any of the three ARIA menu item roles. A menu that holds a
+// choice (theme, density, sort order) uses `menuitemradio` inside a `group`,
+// and a toggle uses `menuitemcheckbox`; both are items of the same menu, so
+// the arrow keys reach them, and `Home`/`End` count them.
+const ITEM = '[role="menuitem"], [role="menuitemradio"], [role="menuitemcheckbox"]'
+
 const ExoDropdownMenu = {
   mounted() { this._bind() },
   updated() { this._bind() },
@@ -29,7 +35,7 @@ const ExoDropdownMenu = {
     this._popover?.addEventListener('toggle', this._onToggle)
 
     this._onClick = (e) => {
-      const item = e.target.closest('[role="menuitem"]')
+      const item = e.target.closest(ITEM)
       if (!item || !this._menu.contains(item)) return
       if (this._isDisabled(item)) {
         e.preventDefault()
@@ -69,7 +75,7 @@ const ExoDropdownMenu = {
   },
 
   _allItems() {
-    return [...this._menu.querySelectorAll('[role="menuitem"]')]
+    return [...this._menu.querySelectorAll(ITEM)]
   },
 
   _isDisabled(item) {

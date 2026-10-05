@@ -10,6 +10,8 @@ npm-debug.log
 .elixir_ls/
 .vscode/
 .idea/
+# Claude Code: one machine's own permission list, never shared (KRF-383)
+.claude/settings.local.json
 .playwright-mcp/
 playwright-report/
 test-results/

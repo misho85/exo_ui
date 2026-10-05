@@ -29,15 +29,39 @@ To compare a specific run:
 bun run visual:check -- --run output/playwright/exo-ui-components/<run-id>
 ```
 
+## The Baseline Is A CI Capture
+
+CI renders on Linux (`ubuntu-latest`, Playwright's Chromium). A capture made on macOS
+differs from it on every route, even when nothing changed, because fonts and
+anti-aliasing differ: the first baseline was a macOS capture, and CI failed on 114
+of 114 routes by 1.4–5% until it was replaced (KRF-284). So a local check can only
+tell you what changed *relative to a local capture*, and a local run never produces
+the committed baseline.
+
 ## Update The Baseline
 
-Only update the baseline after reviewing the generated `viewer.html` and confirming the visual change is intentional:
+Only update the baseline after reviewing the capture and confirming the visual change is intentional.
 
-```sh
-bun run visual:update -- --run output/playwright/exo-ui-components/<run-id>
-```
+1. Push the change. CI's **Visual regression** step fails and uploads the capture it
+   compared as the `browser-artifacts` artifact.
+2. Download it into the ignored `output/` tree, so the manifest records a repo-relative
+   `sourceRun`:
 
-Then commit the changed files under `test/visual-baselines/exo-ui-components`.
+   ```sh
+   gh run download <run-id> -n browser-artifacts -D /tmp/exo-ci
+   cp -R /tmp/exo-ci/output/playwright/exo-ui-components/<capture-id> output/playwright/exo-ui-components/
+   ```
+
+3. Review `output/playwright/exo-ui-components/<capture-id>/viewer.html`. The
+   `dataExoCount` of each route in its `manifest.json` must match a local capture of
+   the same commit — equal counts mean the same content, rendered by another platform.
+4. Write and commit the baseline:
+
+   ```sh
+   bun run visual:update -- --run output/playwright/exo-ui-components/<capture-id>
+   ```
+
+   Then commit the changed files under `test/visual-baselines/exo-ui-components`.
 
 ## Tolerances
 

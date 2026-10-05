@@ -10,5 +10,6 @@ defmodule Storybook.Components.Menus do
   def entry("context_menu"), do: [name: "Context Menu", index: 2]
   def entry("dropdown"), do: [name: "Dropdown", index: 3]
   def entry("dropdown_menu"), do: [name: "Dropdown Menu", index: 4]
-  def entry("menubar"), do: [name: "Menubar", index: 5]
+  def entry("dropdown_menu_choices"), do: [name: "Dropdown Menu Choices", index: 5]
+  def entry("menubar"), do: [name: "Menubar", index: 6]
 end

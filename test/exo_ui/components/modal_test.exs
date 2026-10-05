@@ -152,4 +152,21 @@ defmodule ExoUI.Components.ModalTest do
     assert %JS{} = ExoUI.Components.hide_command_palette("command")
     assert %JS{} = ExoUI.Components.hide_command_palette(JS.push("closed"), "command")
   end
+
+  test "renders modal and confirm modal close button with the caller's label" do
+    assigns = %{}
+
+    {:ok, modal} =
+      Floki.parse_fragment(
+        rendered_to_string(~H|<.modal id="m" close_label="Schließen">Content</.modal>|)
+      )
+
+    {:ok, confirm} =
+      Floki.parse_fragment(
+        rendered_to_string(~H|<.confirm_modal id="c" message="Sure?" close_label="Zatvori" />|)
+      )
+
+    assert Floki.attribute(modal, ~s([data-exo="modal-close"]), "aria-label") == ["Schließen"]
+    assert Floki.attribute(confirm, ~s([data-exo="modal-close"]), "aria-label") == ["Zatvori"]
+  end
 end

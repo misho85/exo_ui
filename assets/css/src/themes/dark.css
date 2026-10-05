@@ -1,5 +1,7 @@
+/* `color-scheme`: see the note above `:root` in tokens.css. */
 [data-theme="dark"],
 .exo-dark {
+  color-scheme: dark;
   --exo-background: oklch(15% 0 0);
   --exo-foreground: oklch(90% 0 0);
   --exo-muted: oklch(20% 0 0);
@@ -21,6 +23,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
+    color-scheme: dark;
     --exo-background: oklch(15% 0 0);
     --exo-foreground: oklch(90% 0 0);
     --exo-muted: oklch(20% 0 0);

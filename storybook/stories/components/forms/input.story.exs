@@ -34,7 +34,10 @@ defmodule Storybook.Components.Input do
           value: "1250",
           label: "Budget"
         },
-        slots: [~s|<:prefix>$</:prefix>|, ~s|<:suffix>USD</:suffix>|]
+        slots: [
+          ~s|<:prefix>$</:prefix>|,
+          ~s|<:suffix>USD</:suffix>|
+        ]
       },
       %Variation{
         id: :with_icons,

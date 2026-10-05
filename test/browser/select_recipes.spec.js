@@ -31,7 +31,7 @@ test.describe("select recipes", () => {
       '#select-recipe-status-select [data-exo-select="trigger"]'
     );
     const statusPopover = root.locator("#select-recipe-status");
-    const statusValue = root.locator('select[data-exo="select-native"][name="recipe[status]"]');
+    const statusValue = root.locator('select[name="recipe[status]"]');
     const ownerTrigger = root.locator(
       '#select-recipe-owner-select [data-exo-select="trigger"]'
     );

@@ -12,6 +12,11 @@ defmodule ExoUI.Components.Overlay do
   attr :show, :boolean, default: false
   attr :role, :string, values: ~w(dialog alertdialog), default: "dialog"
   attr :label, :string, default: "Dialog"
+
+  attr :close_label, :string,
+    default: "Close",
+    doc: "accessible name of the close button, in the page's language"
+
   attr :on_cancel, Phoenix.LiveView.JS, default: %Phoenix.LiveView.JS{}
   attr :close_on_cancel, :boolean, default: true
   attr :class, :any, default: nil
@@ -52,7 +57,7 @@ defmodule ExoUI.Components.Overlay do
             type="button"
             data-exo="modal-close"
             phx-click={maybe_hide_modal(@on_cancel, @id, @close_on_cancel)}
-            aria-label="Close"
+            aria-label={@close_label}
           >
             <.icon name="x" size="sm" />
           </button>
@@ -75,6 +80,7 @@ defmodule ExoUI.Components.Overlay do
   attr :message, :string, required: true
   attr :confirm_text, :string, default: "Confirm"
   attr :cancel_text, :string, default: "Cancel"
+  attr :close_label, :string, default: "Close"
   attr :variant, :string, default: "danger"
   attr :on_confirm, Phoenix.LiveView.JS, default: %Phoenix.LiveView.JS{}
   attr :on_cancel, Phoenix.LiveView.JS, default: %Phoenix.LiveView.JS{}
@@ -87,6 +93,7 @@ defmodule ExoUI.Components.Overlay do
       id={@id}
       show={@show}
       role="alertdialog"
+      close_label={@close_label}
       on_cancel={@on_cancel}
       close_on_cancel={@close_on_cancel}
     >
@@ -407,6 +414,11 @@ defmodule ExoUI.Components.Overlay do
   attr :show, :boolean, default: false
   attr :side, :string, values: ~w(left right), default: "right"
   attr :label, :string, default: "Drawer"
+
+  attr :close_label, :string,
+    default: "Close",
+    doc: "accessible name of the close button, in the page's language"
+
   attr :on_cancel, Phoenix.LiveView.JS, default: %Phoenix.LiveView.JS{}
   attr :class, :any, default: nil
   attr :rest, :global
@@ -445,7 +457,7 @@ defmodule ExoUI.Components.Overlay do
             type="button"
             data-exo="drawer-close"
             phx-click={@on_cancel |> hide_drawer(@id)}
-            aria-label="Close"
+            aria-label={@close_label}
           >
             <.icon name="x" size="sm" />
           </button>
@@ -482,6 +494,11 @@ defmodule ExoUI.Components.Overlay do
   attr :side, :string, values: ~w(left right top bottom), default: "right"
   attr :class, :any, default: nil
   attr :label, :string, default: "Sheet"
+
+  attr :close_label, :string,
+    default: "Close",
+    doc: "accessible name of the close button, in the page's language"
+
   attr :on_cancel, Phoenix.LiveView.JS, default: %Phoenix.LiveView.JS{}
   attr :rest, :global
   slot :inner_block, required: true
@@ -524,7 +541,7 @@ defmodule ExoUI.Components.Overlay do
         <button
           type="button"
           data-exo="sheet-close"
-          aria-label="Close"
+          aria-label={@close_label}
           phx-click={hide_sheet(@on_cancel, @id)}
         >
           <.icon name="x" size="sm" />

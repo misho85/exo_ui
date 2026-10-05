@@ -109,8 +109,8 @@ async function uncheckByLabel(page, name) {
 }
 
 async function chooseSelectOption(page, selectId, value) {
-  const trigger = page.locator(`#story-live #${selectId}-select [data-exo-select="trigger"]`);
-  const option = page.locator(`#story-live #${selectId} [data-exo="select-option"][data-value="${value}"]`);
+  const trigger = page.locator(`#psb-story-live #${selectId}-select [data-exo-select="trigger"]`);
+  const option = page.locator(`#psb-story-live #${selectId} [data-exo="select-option"][data-value="${value}"]`);
 
   if (!(await safe(trigger, (node) => node.click({ timeout: 1500 })))) return false;
   await page.waitForTimeout(150);
@@ -118,12 +118,12 @@ async function chooseSelectOption(page, selectId, value) {
 }
 
 async function chooseComboboxOption(page, comboboxId, query, value, trigger = "button") {
-  const hook = page.locator(`#story-live #${comboboxId}-combobox`);
+  const hook = page.locator(`#psb-story-live #${comboboxId}-combobox`);
   const opener =
     trigger === "input"
       ? hook.locator('[data-exo-combobox="input-trigger"]')
       : hook.locator('[data-exo-combobox="trigger"]');
-  const popover = page.locator(`#story-live #${comboboxId}`);
+  const popover = page.locator(`#psb-story-live #${comboboxId}`);
   const search =
     trigger === "input" ? opener : popover.locator('[data-exo="combobox-search"]');
   const option = popover.locator(
@@ -159,7 +159,7 @@ async function waitForLiveView(page) {
 }
 
 async function openOverlayIfClosed(page, overlaySelector, triggerSelector) {
-  const overlay = page.locator(`#story-live ${overlaySelector}`).first();
+  const overlay = page.locator(`#psb-story-live ${overlaySelector}`).first();
 
   if ((await overlay.count()) > 0) {
     const state = await overlay.getAttribute("data-state");
@@ -178,14 +178,14 @@ async function componentDemo(page, name) {
 
   switch (demoName) {
     case "accordion":
-      await clickFirst(page, '#story-live [data-exo="accordion-trigger"]');
+      await clickFirst(page, '#psb-story-live [data-exo="accordion-trigger"]');
       await page.waitForTimeout(300);
-      await clickFirst(page, '#story-live [data-exo="accordion-trigger"] >> nth=1');
+      await clickFirst(page, '#psb-story-live [data-exo="accordion-trigger"] >> nth=1');
       break;
     case "app_shell_workflow":
       await clickButton(page, "Open command palette");
       await page.waitForTimeout(300);
-      await safe(page.locator('#story-live [data-exo="command-palette-input"]'), (node) =>
+      await safe(page.locator('#psb-story-live [data-exo="command-palette-input"]'), (node) =>
         node.fill("filters", { timeout: 1500 })
       );
       await page.waitForTimeout(250);
@@ -199,7 +199,7 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(400);
       break;
     case "async_save_workflow":
-      await safe(page.locator('#story-live #async-save-title'), (node) =>
+      await safe(page.locator('#psb-story-live #async-save-title'), (node) =>
         node.fill("Launch checklist v2", { timeout: 1500 })
       );
       await page.waitForTimeout(300);
@@ -207,7 +207,7 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(900);
       break;
     case "bulk_action_workflow":
-      await safe(page.locator('#story-live #bulk-filter-query'), (node) =>
+      await safe(page.locator('#psb-story-live #bulk-filter-query'), (node) =>
         node.fill("north", { timeout: 1500 })
       );
       await page.waitForTimeout(250);
@@ -289,7 +289,7 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(350);
       break;
     case "table_recipes":
-      await clickFirst(page, '#story-live #table-recipe-northstar [data-exo="table-cell"]');
+      await clickFirst(page, '#psb-story-live #table-recipe-northstar [data-exo="table-cell"]');
       await page.waitForTimeout(250);
       await clickButton(page, "Review Northstar CRM");
       await page.waitForTimeout(300);
@@ -344,7 +344,7 @@ async function componentDemo(page, name) {
       await clickButton(page, "Open command palette");
       await page.waitForTimeout(300);
       await safe(
-        page.locator('#story-live #command-recipe-primary [data-exo="command-palette-input"]'),
+        page.locator('#psb-story-live #command-recipe-primary [data-exo="command-palette-input"]'),
         (node) => node.fill("risk", { timeout: 1500 })
       );
       await page.waitForTimeout(250);
@@ -353,14 +353,14 @@ async function componentDemo(page, name) {
       await clickButton(page, "Open manual commands");
       await page.waitForTimeout(300);
       await safe(
-        page.locator('#story-live #command-recipe-manual [data-exo="command-palette-input"]'),
+        page.locator('#psb-story-live #command-recipe-manual [data-exo="command-palette-input"]'),
         (node) => node.fill("preview", { timeout: 1500 })
       );
       await page.waitForTimeout(250);
       await page.keyboard.press("Enter");
       await page.waitForTimeout(350);
       await safe(
-        page.locator('#story-live #command-recipe-manual [data-exo="command-palette-input"]'),
+        page.locator('#psb-story-live #command-recipe-manual [data-exo="command-palette-input"]'),
         (node) => node.fill("apply", { timeout: 1500 })
       );
       await page.waitForTimeout(250);
@@ -368,11 +368,11 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(400);
       break;
     case "date_picker_recipes":
-      await clickFirst(page, '#story-live #date-recipe-booking-date [aria-label="Next month"]');
+      await clickFirst(page, '#psb-story-live #date-recipe-booking-date [aria-label="Next month"]');
       await page.waitForTimeout(350);
       await clickFirst(
         page,
-        '#story-live #date-recipe-booking-date [data-exo="date-picker-day"][phx-value-date="2026-04-12"]'
+        '#psb-story-live #date-recipe-booking-date [data-exo="date-picker-day"][phx-value-date="2026-04-12"]'
       );
       await page.waitForTimeout(300);
       await clickButton(page, "Save booking date");
@@ -386,7 +386,7 @@ async function componentDemo(page, name) {
       await clickButton(page, "Open access commands");
       await page.waitForTimeout(300);
       await safe(
-        page.locator('#story-live #access-review-command [data-exo="command-palette-input"]'),
+        page.locator('#psb-story-live #access-review-command [data-exo="command-palette-input"]'),
         (node) => node.fill("high risk", { timeout: 1500 })
       );
       await page.waitForTimeout(250);
@@ -411,7 +411,7 @@ async function componentDemo(page, name) {
       await clickButton(page, "Open incident commands");
       await page.waitForTimeout(300);
       await safe(
-        page.locator('#story-live #incident-command [data-exo="command-palette-input"]'),
+        page.locator('#psb-story-live #incident-command [data-exo="command-palette-input"]'),
         (node) => node.fill("critical", { timeout: 1500 })
       );
       await page.waitForTimeout(250);
@@ -442,7 +442,7 @@ async function componentDemo(page, name) {
       await clickButton(page, "Open release commands");
       await page.waitForTimeout(300);
       await safe(
-        page.locator('#story-live #release-command [data-exo="command-palette-input"]'),
+        page.locator('#psb-story-live #release-command [data-exo="command-palette-input"]'),
         (node) => node.fill("engineering", { timeout: 1500 })
       );
       await page.waitForTimeout(250);
@@ -465,7 +465,7 @@ async function componentDemo(page, name) {
       await clickButton(page, "Open billing commands");
       await page.waitForTimeout(300);
       await safe(
-        page.locator('#story-live #billing-command [data-exo="command-palette-input"]'),
+        page.locator('#psb-story-live #billing-command [data-exo="command-palette-input"]'),
         (node) => node.fill("payments", { timeout: 1500 })
       );
       await page.waitForTimeout(250);
@@ -496,7 +496,7 @@ async function componentDemo(page, name) {
       await clickButton(page, "Open onboarding commands");
       await page.waitForTimeout(300);
       await safe(
-        page.locator('#story-live #onboarding-command [data-exo="command-palette-input"]'),
+        page.locator('#psb-story-live #onboarding-command [data-exo="command-palette-input"]'),
         (node) => node.fill("identity", { timeout: 1500 })
       );
       await page.waitForTimeout(250);
@@ -525,7 +525,7 @@ async function componentDemo(page, name) {
       await clickButton(page, "At risk");
       await page.waitForTimeout(300);
       await safe(
-        page.locator('#story-live #dashboard-account-northstar').getByRole("button", {
+        page.locator('#psb-story-live #dashboard-account-northstar').getByRole("button", {
           name: "Open details"
         }),
         (node) => node.click({ timeout: 1500 })
@@ -535,24 +535,24 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(350);
       break;
     case "carousel":
-      await clickFirst(page, '#story-live [data-exo="carousel-next"]');
+      await clickFirst(page, '#psb-story-live [data-exo="carousel-next"]');
       await page.waitForTimeout(500);
-      await clickFirst(page, '#story-live [data-exo="carousel-prev"]');
+      await clickFirst(page, '#psb-story-live [data-exo="carousel-prev"]');
       break;
     case "collapsible":
-      await clickFirst(page, '#story-live [data-exo="collapsible-trigger"]');
+      await clickFirst(page, '#psb-story-live [data-exo="collapsible-trigger"]');
       break;
     case "combobox":
-      await clickFirst(page, '#story-live [data-exo-combobox="trigger"]');
+      await clickFirst(page, '#psb-story-live [data-exo-combobox="trigger"]');
       await page.waitForTimeout(250);
-      await safe(page.locator('#story-live [data-exo="combobox-search"]'), (node) =>
+      await safe(page.locator('#psb-story-live [data-exo="combobox-search"]'), (node) =>
         node.fill("ser", { timeout: 1500 })
       );
       break;
     case "combobox_async":
-      await clickFirst(page, '#story-live [data-exo-combobox="trigger"]');
+      await clickFirst(page, '#psb-story-live [data-exo-combobox="trigger"]');
       await page.waitForTimeout(250);
-      await safe(page.locator('#story-live [data-exo="combobox-search"]'), (node) =>
+      await safe(page.locator('#psb-story-live [data-exo="combobox-search"]'), (node) =>
         node.fill("maria", { timeout: 1500 })
       );
       await page.waitForTimeout(900);
@@ -560,7 +560,7 @@ async function componentDemo(page, name) {
     case "command_palette":
       await clickButton(page, "Open command palette");
       await page.waitForTimeout(400);
-      await safe(page.locator('#story-live [data-exo="command-palette-input"]'), (node) =>
+      await safe(page.locator('#psb-story-live [data-exo="command-palette-input"]'), (node) =>
         node.fill("settings", { timeout: 1500 })
       );
       await page.waitForTimeout(350);
@@ -571,7 +571,7 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(350);
       await clickButton(page, "Open routing commands");
       await page.waitForTimeout(350);
-      await safe(page.locator('#story-live [data-exo="command-palette-input"]'), (node) =>
+      await safe(page.locator('#psb-story-live [data-exo="command-palette-input"]'), (node) =>
         node.fill("risk", { timeout: 1500 })
       );
       await page.waitForTimeout(250);
@@ -579,14 +579,14 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(450);
       break;
     case "navigation_shell_workflow":
-      await clickFirst(page, '#story-live #navigation-shell-tabs-tab-teams');
+      await clickFirst(page, '#psb-story-live #navigation-shell-tabs-tab-teams');
       await page.waitForTimeout(300);
       await clickButton(page, "Plan");
       await page.waitForTimeout(300);
       await clickButton(page, "Next page");
       await page.waitForTimeout(300);
       await safe(
-        page.locator('#story-live [aria-label="Navigation shell mobile navigation"]').getByRole("button", {
+        page.locator('#psb-story-live [aria-label="Navigation shell mobile navigation"]').getByRole("button", {
           name: "Report"
         }),
         (node) => node.click({ timeout: 1500 })
@@ -598,7 +598,7 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(300);
       await clickButton(page, "Open filter commands");
       await page.waitForTimeout(300);
-      await safe(page.locator('#story-live [data-exo="command-palette-input"]'), (node) =>
+      await safe(page.locator('#psb-story-live [data-exo="command-palette-input"]'), (node) =>
         node.fill("risk", { timeout: 1500 })
       );
       await page.waitForTimeout(250);
@@ -620,7 +620,7 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(400);
       break;
     case "import_export_workflow":
-      await safe(page.locator('#story-live #import-export-file'), (node) =>
+      await safe(page.locator('#psb-story-live #import-export-file'), (node) =>
         node.setInputFiles({
           name: "accounts.csv",
           mimeType: "text/csv",
@@ -645,7 +645,7 @@ async function componentDemo(page, name) {
       await clickButton(page, "Blocked");
       await page.waitForTimeout(300);
       await safe(
-        page.locator('#story-live #role-operation-task-helio-domain').getByRole("button", {
+        page.locator('#psb-story-live #role-operation-task-helio-domain').getByRole("button", {
           name: "Open task"
         }),
         (node) => node.click({ timeout: 1500 })
@@ -655,7 +655,7 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(350);
       break;
     case "saved_filters_workflow":
-      await safe(page.locator('#story-live #saved-filter-query'), (node) =>
+      await safe(page.locator('#psb-story-live #saved-filter-query'), (node) =>
         node.fill("north", { timeout: 1500 })
       );
       await page.waitForTimeout(250);
@@ -671,7 +671,7 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(400);
       break;
     case "context_menu": {
-      const trigger = page.locator('#story-live [data-exo="context-menu-trigger"]').first();
+      const trigger = page.locator('#psb-story-live [data-exo="context-menu-trigger"]').first();
       if ((await trigger.count()) > 0) {
         await trigger.click({ button: "right", timeout: 1500 });
         await page.waitForTimeout(400);
@@ -680,29 +680,29 @@ async function componentDemo(page, name) {
       break;
     }
     case "date_picker":
-      await clickFirst(page, '#story-live [data-exo="date-picker-nav"]:not([disabled])');
+      await clickFirst(page, '#psb-story-live [data-exo="date-picker-nav"]:not([disabled])');
       await page.waitForTimeout(250);
-      await clickFirst(page, '#story-live [data-exo="date-picker-day"]:not([disabled])');
+      await clickFirst(page, '#psb-story-live [data-exo="date-picker-day"]:not([disabled])');
       break;
     case "date_picker_controlled":
       await clickButton(page, "Next month");
       await page.waitForTimeout(350);
       await clickFirst(
         page,
-        '#story-live [data-exo="date-picker-day"][phx-value-date="2026-04-12"]'
+        '#psb-story-live [data-exo="date-picker-day"][phx-value-date="2026-04-12"]'
       );
       await page.waitForTimeout(300);
       break;
     case "dropdown":
     case "dropdown_menu":
-      await clickFirst(page, '#story-live [data-exo="popover-trigger"]');
+      await clickFirst(page, '#psb-story-live [data-exo="popover-trigger"]');
       await page.waitForTimeout(400);
       await page.keyboard.press("Escape");
       break;
     case "editable_record_workflow":
       await clickButton(page, "Open record commands");
       await page.waitForTimeout(350);
-      await safe(page.locator('#story-live [data-exo="command-palette-input"]'), (node) =>
+      await safe(page.locator('#psb-story-live [data-exo="command-palette-input"]'), (node) =>
         node.fill("northstar", { timeout: 1500 })
       );
       await page.waitForTimeout(250);
@@ -714,7 +714,7 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(300);
       await clickFirst(
         page,
-        '#story-live [data-exo="date-picker-day"][phx-value-date="2026-08-12"]'
+        '#psb-story-live [data-exo="date-picker-day"][phx-value-date="2026-08-12"]'
       );
       await page.waitForTimeout(300);
       await clickButton(page, "Delete record");
@@ -723,22 +723,22 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(400);
       break;
     case "form":
-      await focusFirst(page, '#story-live [data-exo="input"]');
+      await focusFirst(page, '#psb-story-live [data-exo="input"]');
       await page.keyboard.press(process.platform === "darwin" ? "Meta+A" : "Control+A");
       await page.keyboard.type("Grace Hopper");
       break;
     case "hover_card":
-      await hoverFirst(page, '#story-live [data-exo="hover-card-trigger"]');
+      await hoverFirst(page, '#psb-story-live [data-exo="hover-card-trigger"]');
       await page.waitForTimeout(650);
       break;
     case "sidebar_layout":
-      await clickFirst(page, '#story-live [data-exo="sidebar-hamburger"]');
+      await clickFirst(page, '#psb-story-live [data-exo="sidebar-hamburger"]');
       await page.waitForTimeout(300);
-      await clickFirst(page, '#story-live [data-exo="sidebar-hamburger"]');
+      await clickFirst(page, '#psb-story-live [data-exo="sidebar-hamburger"]');
       break;
     case "confirm_modal":
     case "modal":
-      await openOverlayIfClosed(page, '[data-exo="modal"]', '#story-live button, #story-live [role="button"]');
+      await openOverlayIfClosed(page, '[data-exo="modal"]', '#psb-story-live button, #psb-story-live [role="button"]');
       await page.waitForTimeout(400);
       break;
     case "overlay_stack":
@@ -754,21 +754,21 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(400);
       break;
     case "menubar":
-      await clickFirst(page, '#story-live [data-exo="menubar-trigger"]');
+      await clickFirst(page, '#psb-story-live [data-exo="menubar-trigger"]');
       await page.waitForTimeout(300);
       await page.keyboard.press("ArrowDown");
       await page.waitForTimeout(250);
       await page.keyboard.press("ArrowRight");
       break;
     case "popover":
-      await clickFirst(page, '#story-live [data-exo="popover-trigger"]');
+      await clickFirst(page, '#psb-story-live [data-exo="popover-trigger"]');
       await page.waitForTimeout(400);
       await page.keyboard.press("Escape");
       break;
     case "component_recipe_matrix":
       await clickButton(page, "Open command palette");
       await page.waitForTimeout(350);
-      await safe(page.locator('#story-live [data-exo="command-palette-input"]'), (node) =>
+      await safe(page.locator('#psb-story-live [data-exo="command-palette-input"]'), (node) =>
         node.fill("drawer", { timeout: 1500 })
       );
       await page.waitForTimeout(250);
@@ -780,44 +780,44 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(400);
       break;
     case "rating":
-      await clickFirst(page, '#story-live [data-exo="rating-star"] >> nth=4');
+      await clickFirst(page, '#psb-story-live [data-exo="rating-star"] >> nth=4');
       break;
     case "select":
-      await clickFirst(page, '#story-live [data-exo-select="trigger"]');
+      await clickFirst(page, '#psb-story-live [data-exo-select="trigger"]');
       await page.waitForTimeout(250);
       await page.keyboard.press("ArrowDown");
       await page.keyboard.press("Enter");
       break;
     case "sheet":
-      await openOverlayIfClosed(page, '[data-exo="sheet"]', '#story-live button, #story-live [role="button"]');
+      await openOverlayIfClosed(page, '[data-exo="sheet"]', '#psb-story-live button, #psb-story-live [role="button"]');
       await page.waitForTimeout(400);
       break;
     case "drawer":
-      await openOverlayIfClosed(page, '[data-exo="drawer"]', '#story-live button, #story-live [role="button"]');
+      await openOverlayIfClosed(page, '[data-exo="drawer"]', '#psb-story-live button, #psb-story-live [role="button"]');
       await page.waitForTimeout(400);
       break;
     case "tabs":
-      await clickFirst(page, '#story-live [role="tab"] >> nth=1');
+      await clickFirst(page, '#psb-story-live [role="tab"] >> nth=1');
       break;
     case "theme_toggle":
-      await clickFirst(page, '#story-live [data-theme-value="dark"]');
+      await clickFirst(page, '#psb-story-live [data-theme-value="dark"]');
       await page.waitForTimeout(250);
-      await clickFirst(page, '#story-live [data-theme-value="light"]');
+      await clickFirst(page, '#psb-story-live [data-theme-value="light"]');
       break;
     case "swap":
-      await focusFirst(page, '#story-live [data-exo="swap"]');
+      await focusFirst(page, '#psb-story-live [data-exo="swap"]');
       await page.keyboard.press("Space");
       break;
     case "toggle":
-      await clickFirst(page, '#story-live [data-exo="toggle"], #story-live input[type="checkbox"]');
+      await clickFirst(page, '#psb-story-live [data-exo="toggle"], #psb-story-live input[type="checkbox"]');
       break;
     case "tooltip":
-      await hoverFirst(page, '#story-live [data-exo="tooltip-anchor"]');
+      await hoverFirst(page, '#psb-story-live [data-exo="tooltip-anchor"]');
       await page.waitForTimeout(650);
-      await focusFirst(page, '#story-live [data-exo="tooltip-anchor"]');
+      await focusFirst(page, '#psb-story-live [data-exo="tooltip-anchor"]');
       break;
     default:
-      await hoverFirst(page, "#story-live");
+      await hoverFirst(page, "#psb-story-live");
       await page.waitForTimeout(350);
   }
 
@@ -862,10 +862,10 @@ async function captureComponent(browser, runDir, story) {
       waitUntil: "domcontentloaded",
       timeout: NAVIGATION_TIMEOUT
     });
-    await page.locator("#story-live").waitFor({ state: "visible", timeout: STORY_READY_TIMEOUT });
+    await page.locator("#psb-story-live").waitFor({ state: "visible", timeout: STORY_READY_TIMEOUT });
     await waitForLiveView(page);
     await componentDemo(page, name);
-    dataExoCount = await page.locator("#story-live [data-exo]").count();
+    dataExoCount = await page.locator("#psb-story-live [data-exo]").count();
     await page.screenshot({ path: screenshotPath, fullPage: true });
     ok = Boolean(response?.ok());
   } catch (err) {

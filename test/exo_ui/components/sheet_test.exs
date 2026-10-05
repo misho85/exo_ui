@@ -99,4 +99,12 @@ defmodule ExoUI.Components.SheetTest do
     assert html =~ ~s(class="open")
     assert Floki.find(tree, "#s[inert]") == []
   end
+
+  test "renders sheet close button with the caller's label" do
+    assigns = %{}
+    html = rendered_to_string(~H|<.sheet id="s" close_label="Fermer">Content</.sheet>|)
+    {:ok, tree} = Floki.parse_fragment(html)
+
+    assert Floki.attribute(tree, ~s([data-exo="sheet-close"]), "aria-label") == ["Fermer"]
+  end
 end
