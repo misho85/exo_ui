@@ -100,8 +100,22 @@ test.describe("navigation and progress components", () => {
       };
     });
 
-    await expect(currentStep).toHaveAttribute("aria-label", "Step 2, Profile, current");
+    const steps = canvas.locator('[data-exo="steps"]').first();
+    const upcomingStep = canvas.locator('[data-exo="step"][data-status="upcoming"]').first();
+
+    // A step is read from its content. An English `aria-label` ("Step 2,
+    // Profile, current") used to replace it, title included.
+    await expectAttribute(steps, "role", "list");
+    await expect(canvas.locator('[data-exo="step"][aria-label]')).toHaveCount(0);
+    await expect(currentStep.locator('[data-exo="step-title"]')).toHaveText("Profile");
+    await expect(currentStep.locator('[data-exo="sr-only"]')).toHaveCount(0);
+    await expect(firstStep.locator('[data-exo="sr-only"]')).toHaveText("Completed");
+    await expect(upcomingStep.locator('[data-exo="sr-only"]')).toHaveText("Not completed");
     await expect(currentStep.locator('[data-exo="step-description"]')).toHaveText("Add public profile data");
+
+    const statusBox = await firstStep.locator('[data-exo="sr-only"]').boundingBox();
+    expect(statusBox.width).toBeLessThanOrEqual(1);
+    expect(statusBox.height).toBeLessThanOrEqual(1);
     expect(firstStepConnector.content).toBe('""');
     expect(Number.parseFloat(firstStepConnector.height)).toBeGreaterThan(0);
 

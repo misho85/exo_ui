@@ -2,6 +2,25 @@
 
 ## Unreleased
 
+- `steps/1`: a step is read from its content, and its status is the caller's
+  text. Every step carried `aria-label="Step 2, Shipping, complete"`, which
+  replaced what the step contains, so on a page in any other language a
+  screen reader read the translated title inside an English sentence, with
+  the status as an English keyword, and nothing could change that. The label
+  is gone: a complete step carries `complete_label` (default "Completed") and
+  an upcoming one `upcoming_label` (default "Not completed") as visually
+  hidden text after the title, and the current step keeps
+  `aria-current="step"`, which the screen reader announces in its own
+  language. The list has `role="list"`, because WebKit drops the list role of
+  an `<ol>` with `list-style: none`, and the position ("2 of 4") the label
+  used to give now comes from the list.
+
+- `rating/1`: `value_label`, a `fn value, max -> label end`, names a read-only
+  rating, a rating without `label`, and each star. They were `"3 out of 5"`
+  with no way to replace it. A function rather than a `%{value}` template,
+  so the caller can pick the plural form for the number. The default is
+  unchanged.
+
 - `ExoDropdownMenu`: `menuitemradio` and `menuitemcheckbox` are items of the
   menu. The hook took only `role="menuitem"`, so a choice or a toggle inside a
   menu (a theme, a density, "show grid") stayed in the tab order while the

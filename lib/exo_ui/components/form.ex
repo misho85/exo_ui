@@ -1642,6 +1642,17 @@ defmodule ExoUI.Components.Form do
   attr :name, :string, default: nil
   attr :value, :any, default: nil
   attr :max, :integer, default: 5
+
+  attr :value_label, :any,
+    default: nil,
+    doc: """
+    `fn value, max -> label end` — what a screen reader hears for a value: the
+    name of a read-only rating and of a rating without `label`, and the name
+    of each star. `nil` says `"3 out of 5"`, in English. A function, not a
+    template, so the caller can pick the plural form for the number, which a
+    `%{value}` string handed to a translation function cannot.
+    """
+
   attr :readonly, :boolean, default: false
   attr :disabled, :boolean, default: false
   attr :size, :string, values: ~w(sm md lg), default: "md"
@@ -1683,6 +1694,7 @@ defmodule ExoUI.Components.Form do
         size={@size}
         class={@class}
         stars={@stars}
+        value_label={@value_label}
         label_id={@label_id}
         describedby={@describedby}
         errors={@errors}
@@ -1702,6 +1714,7 @@ defmodule ExoUI.Components.Form do
       size={@size}
       class={@class}
       stars={@stars}
+      value_label={@value_label}
       label_id={@label_id}
       describedby={@describedby}
       errors={@errors}
@@ -1719,6 +1732,7 @@ defmodule ExoUI.Components.Form do
   attr :size, :string, required: true
   attr :class, :any, default: nil
   attr :stars, :list, required: true
+  attr :value_label, :any, default: nil
   attr :label_id, :string, default: nil
   attr :describedby, :string, default: nil
   attr :errors, :list, default: []
@@ -1736,7 +1750,7 @@ defmodule ExoUI.Components.Form do
       data-value={@value}
       data-invalid={@errors != [] && ""}
       role={if @readonly, do: "img", else: "radiogroup"}
-      aria-label={unless @label_id, do: rating_aria_label(@value, @max)}
+      aria-label={unless @label_id, do: rating_value_label(@value_label, @value, @max)}
       aria-labelledby={@label_id}
       aria-describedby={@describedby}
       aria-invalid={if @errors != [], do: "true"}
@@ -1766,7 +1780,7 @@ defmodule ExoUI.Components.Form do
             value={star}
             checked={star == @value}
             data-exo="rating-input"
-            aria-label={rating_star_aria_label(star, @max)}
+            aria-label={rating_value_label(@value_label, star, @max)}
             disabled={@disabled}
           />
           <.icon name="star" />
@@ -1794,8 +1808,8 @@ defmodule ExoUI.Components.Form do
   defp rating_stars(max) when max > 0, do: Enum.to_list(1..max)
   defp rating_stars(_max), do: []
 
-  defp rating_aria_label(value, max), do: "#{value} out of #{max}"
-  defp rating_star_aria_label(star, max), do: "#{star} out of #{max}"
+  defp rating_value_label(nil, value, max), do: "#{value} out of #{max}"
+  defp rating_value_label(label, value, max), do: label.(value, max)
 
   defp parse_integer(value, _default) when is_integer(value), do: value
 
