@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- `dropdown_menu/1` and every `data-exo="dropdown-item"`: the item that has
+  keyboard focus carries a 2px ring in `--exo-ring`, drawn inside the item
+  (`outline-offset: -2px`). Focus was shown only by the hover fill, with
+  `outline: none`, and `--exo-muted` on the menu's `--exo-card` is about
+  1.1:1 (1.12:1 and 1.08:1 under trg24's light and dark tokens), so the item
+  the arrow keys reached looked like every other item. The ring follows
+  `:focus-visible`, so a pointer still sees only the fill. With ExoUI's tokens
+  it is 5.15:1 on the light menu and 3.63:1 on the dark one.
+
 - `steps/1`: a horizontal list in a narrow container no longer overflows it.
   A step did not shrink below its circle, title and connector, so five
   checkout steps were 555px wide and pushed a 360px phone page sideways, with

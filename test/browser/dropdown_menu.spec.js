@@ -1,5 +1,6 @@
 const { test, expect } = require("@playwright/test");
 
+const { focusedMenuItem } = require("./helpers/focus");
 const {
   expectFocused,
   expectPopoverState,
@@ -38,6 +39,60 @@ test.describe("dropdown menu", () => {
     await page.keyboard.press("Escape");
     await expectPopoverState(popover, false);
     await expectFocused(triggerButton);
+  });
+
+  test("the item the keyboard reaches has a ring that stands 3:1 off the menu, in light and dark", async ({ page }) => {
+    await gotoStory(page, "/components/menus/dropdown");
+
+    const canvas = story(page);
+    const root = canvas.locator("#dropdown-single-basic-popover");
+    const triggerButton = root.locator('[data-exo="popover-trigger"] [data-exo="btn"]');
+    const popover = page.locator("#dropdown-single-basic");
+    const items = popover.locator('[role="menuitem"]');
+
+    await expect(root).toHaveAttribute("data-ready", "");
+    await triggerButton.focus();
+    await page.keyboard.press("Enter");
+    await expectPopoverState(popover, true);
+
+    // Until TRG-491 the only sign of focus was the hover fill: --exo-muted on
+    // the menu's --exo-card, 1.12:1 in trg24's light theme and 1.08:1 in its
+    // dark one, with `outline: none`.
+    const results = [];
+
+    for (const theme of ["light", "dark"]) {
+      await page.keyboard.press("Home");
+
+      for (let index = 0; index < (await items.count()); index++) {
+        if (index > 0) await page.keyboard.press("ArrowDown");
+        await expectFocused(items.nth(index));
+        results.push({ theme, ...(await focusedMenuItem(page, { menu: '[data-exo="popover-content"]', theme })) });
+      }
+    }
+
+    expect(results.map(({ theme, name }) => `${theme}: ${name}`)).toEqual([
+      "light: Edit",
+      "light: Duplicate",
+      "light: Delete",
+      "dark: Edit",
+      "dark: Duplicate",
+      "dark: Delete"
+    ]);
+    // The theme reached the menu: two different card colours were measured.
+    expect(new Set(results.map(({ card }) => card)).size).toBe(2);
+
+    for (const result of results) {
+      const label = `${result.theme}, ${result.name}`;
+      expect(result.focusVisible, label).toBe(true);
+      expect(result.outlineStyle, label).toBe("solid");
+      expect(result.outlineWidth, label).toBeGreaterThanOrEqual(2);
+      // Inside the item: the menu's padding and the gap between items are
+      // narrower than a ring drawn outside it.
+      expect(result.outlineOffset, label).toBeLessThanOrEqual(-result.outlineWidth);
+      expect(result.ringOnMenu, `${label}: ring on the menu`).toBeGreaterThanOrEqual(3);
+      expect(result.ringOnIdle, `${label}: ring against an item without focus`).toBeGreaterThanOrEqual(3);
+      expect(result.ringOnFill, `${label}: ring on the item's own fill`).toBeGreaterThanOrEqual(3);
+    }
   });
 
   test("skips disabled link items", async ({ page }) => {

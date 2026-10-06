@@ -30,6 +30,16 @@
   outline: none;
 }
 
+/* Keyboard focus is a ring, not only the hover fill: --exo-muted on the
+   menu's --exo-card was 1.12:1 in a light theme and 1.08:1 in a dark one, so
+   the item the arrow keys reached looked like every other item (TRG-491). The
+   ring sits inside the item, because the menu's padding and the gap between
+   items are narrower than a ring drawn outside it. */
+:where([data-exo="dropdown-item"]):focus-visible {
+  outline: 2px solid var(--exo-ring);
+  outline-offset: -2px;
+}
+
 :where([data-exo="dropdown-item"][data-variant="danger"]) {
   color: var(--exo-danger);
 }
