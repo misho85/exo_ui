@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-05T00:24:05.043Z",
-  "sourceRun": "../exo_art/output/playwright/exo-ui-components/2026-10-05T00-02-50-518Z",
+  "updatedAt": "2026-10-05T03:21:21.296035+00:00",
+  "sourceRun": "output/playwright/ci-hardening-37257978528/output/playwright/exo-ui-components/2026-10-05T03-10-17-895Z",
   "count": 115,
   "entries": [
     {
@@ -587,7 +587,7 @@
       "dataExoCount": 17,
       "width": 1280,
       "height": 900,
-      "sha256": "ce69733a914e97d70bbd9a1ead75192bad9a79d065297010afa3940b93bf6677"
+      "sha256": "fe70afffb1c8bbef3f957a4b614b0c2a85663e9b035249c75c450bd3f339d19a"
     },
     {
       "name": "layout/scroll_area",

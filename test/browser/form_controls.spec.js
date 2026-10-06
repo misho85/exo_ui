@@ -507,3 +507,22 @@ test.describe("form controls", () => {
     expect(radioCards.size, `radio themes: ${[...radioCards].join(", ")}`).toBe(2);
   });
 });
+
+const { mountHook, fixture } = require('./helpers/hooks');
+
+test('slider and file summaries follow native form reset', async ({ page }) => {
+  await fixture(page, `<form>
+    <div id="slider"><input type="range" value="20" data-exo-slider="input"><output data-exo-slider="output" data-suffix="%"></output></div>
+    <div id="file"><input type="file" data-exo-file-input="input"><output data-exo-file-input="selected" data-empty-label="No file"></output></div>
+    <button type="reset">Reset</button></form>`);
+  await mountHook(page, 'ExoSlider', 'slider.js', '#slider');
+  await mountHook(page, 'ExoFileInput', 'file_input.js', '#file');
+  await page.locator('input[type="range"]').fill('70');
+  await page.locator('input[type="file"]').setInputFiles({ name: 'example.txt', mimeType: 'text/plain', buffer: Buffer.from('text') });
+  await expect(page.locator('#slider output')).toHaveText('70%');
+  await expect(page.locator('#file output')).toHaveText('example.txt');
+  await page.getByRole('button', { name: 'Reset' }).click();
+  await expect(page.locator('#slider output')).toHaveText('20%');
+  await expect(page.locator('#slider input')).toHaveAttribute('aria-valuetext', '20%');
+  await expect(page.locator('#file output')).toHaveText('No file');
+});
