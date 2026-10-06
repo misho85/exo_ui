@@ -1,9 +1,12 @@
-// The keyboard focus indicator of the focused menu item, measured against the
-// menu it sits on and against an item without focus (WCAG 1.4.11: 3:1 for the
-// visual information that identifies a state). The colours are oklch(), so a
-// canvas turns them into sRGB. `menu` is the selector of the surface the items
-// are drawn on, and `theme` goes on its parent: the story sandbox carries
-// .exo-default, which sets the light tokens again under the story root.
+// The keyboard focus indicator of the focused menu item or list option,
+// measured against the menu or list it sits on and against an item without
+// focus (WCAG 1.4.11: 3:1 for the visual information that identifies a state).
+// The colours are oklch(), so a canvas turns them into sRGB. `menu` is the
+// selector of the surface the items are drawn on, and `theme` goes on its
+// parent: the story sandbox carries .exo-default, which sets the light tokens
+// again under the story root. A combobox keeps focus in its search field and
+// points at the option through aria-activedescendant, so that option is the
+// one measured.
 async function focusedMenuItem(page, { menu, theme }) {
   return page.evaluate(
     ({ menu, theme }) => {
@@ -37,7 +40,9 @@ async function focusedMenuItem(page, { menu, theme }) {
         return Math.round(((high + 0.05) / (low + 0.05)) * 100) / 100;
       };
 
-      const item = document.activeElement;
+      const focused = document.activeElement;
+      const descendant = focused.getAttribute("aria-activedescendant");
+      const item = descendant ? document.getElementById(descendant) : focused;
       const surface = item.closest(menu);
       const wrapper = surface.parentElement;
 
@@ -54,9 +59,14 @@ async function focusedMenuItem(page, { menu, theme }) {
         }
       }
 
-      const items = [...surface.querySelectorAll('[role^="menuitem"]')];
+      const items = [...surface.querySelectorAll('[role^="menuitem"], [role="option"]')];
       const idleItem = items.find(
-        (el) => el !== item && !el.matches(":hover") && !el.hasAttribute("data-variant")
+        (el) =>
+          el !== item &&
+          !el.hidden &&
+          !el.matches(":hover") &&
+          !el.hasAttribute("data-variant") &&
+          !el.hasAttribute("data-active")
       );
 
       const style = getComputedStyle(item);
@@ -68,7 +78,8 @@ async function focusedMenuItem(page, { menu, theme }) {
       return {
         name: item.textContent.trim().replace(/\s+/g, " "),
         card: getComputedStyle(surface).getPropertyValue("--exo-card").trim(),
-        focusVisible: item.matches(":focus-visible"),
+        focusVisible: focused.matches(":focus-visible"),
+        active: item.hasAttribute("data-active"),
         outlineStyle: style.outlineStyle,
         outlineWidth: Number.parseFloat(style.outlineWidth),
         outlineOffset: Number.parseFloat(style.outlineOffset),

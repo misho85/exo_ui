@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- `select/1` and `combobox/1`: the option the keyboard reached carries the
+  same 2px ring in `--exo-ring` inside it as a menu item. Its only sign was
+  the hover fill, with `outline: none`, and `--exo-secondary` on the list's
+  `--exo-card` is 1.12:1 and 1.08:1 under trg24's light and dark tokens. A
+  select option takes real focus, so its ring follows `:focus-visible` and a
+  pointer still sees only the fill. A combobox keeps focus in its search
+  field and points at the option through `aria-activedescendant`, so its ring
+  follows `[data-active]`; the hover rule no longer sets `outline: none`,
+  which took the ring away while the mouse rested on the active option. With
+  ExoUI's tokens the ring is 5.15:1 on the light list, 3.63:1 on the dark one
+  and 4.47:1 on the option's own fill.
+
 - `dropdown_menu/1` and every `data-exo="dropdown-item"`: the item that has
   keyboard focus carries a 2px ring in `--exo-ring`, drawn inside the item
   (`outline-offset: -2px`). Focus was shown only by the hover fill, with

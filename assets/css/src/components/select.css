@@ -148,6 +148,18 @@
   outline: none;
 }
 
+/* Keyboard focus is a ring, not only the hover fill: --exo-secondary on the
+   list's --exo-card was 1.12:1 in a light theme and 1.08:1 in a dark one, so
+   the option the arrow keys reached looked like every other option. The ring
+   sits inside the option, as on a menu item, because the list's padding and
+   the gap between options are narrower than a ring drawn outside it. The hook
+   moves real focus onto the option, so a pointer still sees only the fill
+   (TRG-496). */
+:where([data-exo="select-option"]):focus-visible {
+  outline: 2px solid var(--exo-ring);
+  outline-offset: -2px;
+}
+
 :where([data-exo="select-option"][data-selected]) {
   font-weight: 500;
 }

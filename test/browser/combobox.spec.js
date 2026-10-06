@@ -1,5 +1,6 @@
 const { test, expect } = require("@playwright/test");
 
+const { focusedMenuItem } = require("./helpers/focus");
 const {
   expectAttribute,
   expectFocused,
@@ -47,6 +48,74 @@ test.describe("combobox", () => {
     await expect(trigger).toHaveAttribute("aria-expanded", "false");
     await expect(value).toHaveValue("hr");
     await expect(trigger.locator("[data-exo=\"combobox-value\"]")).toHaveText("Croatia");
+  });
+
+  test("the active option has a ring that stands 3:1 off the list, in light and dark", async ({ page }) => {
+    await gotoStory(page, "/components/forms/combobox");
+
+    const canvas = story(page);
+    const comboboxId = "combobox-single-with-value";
+    const root = canvas.locator(`#${comboboxId}-combobox`);
+    const trigger = root.locator("[data-exo-combobox=\"trigger\"]");
+    const popover = canvas.locator(`#${comboboxId}`);
+    const search = canvas.locator(`#${comboboxId} [data-exo="combobox-search"]`);
+    const options = popover.locator('[data-exo="combobox-option"]');
+    const list = '[data-exo="popover-content"]';
+
+    await expectAttribute(root, "data-ready", "");
+    await trigger.focus();
+    await page.keyboard.press("Enter");
+    await expectPopoverState(popover, true);
+    await expectFocused(search);
+
+    // Focus stays in the search field; the option the arrow keys reached is
+    // the active descendant, marked data-active. Until TRG-496 it carried only
+    // the hover fill: --exo-secondary on the list's --exo-card, 1.12:1 in
+    // trg24's light theme and 1.08:1 in its dark one, with `outline: none`.
+    const results = [];
+
+    // The list opens on the chosen first option, and ArrowDown wraps from the
+    // last one back to it. Home and End move the caret in the search field.
+    for (const theme of ["light", "dark"]) {
+      for (let index = 0; index < (await options.count()); index++) {
+        if (results.length > 0) await page.keyboard.press("ArrowDown");
+        await expect(search).toHaveAttribute("aria-activedescendant", await options.nth(index).getAttribute("id"));
+        results.push({ theme, ...(await focusedMenuItem(page, { menu: list, theme })) });
+      }
+    }
+
+    // The mouse resting on the active option keeps its ring: the hover rule
+    // used to set `outline: none` and would take it away.
+    await options.last().hover();
+    results.push({ theme: "dark", hovered: true, ...(await focusedMenuItem(page, { menu: list, theme: "dark" })) });
+
+    expect(results.map(({ theme, name, hovered }) => `${theme}: ${name}${hovered ? " (hover)" : ""}`)).toEqual([
+      "light: Elixir",
+      "light: Rust",
+      "light: Go",
+      "light: Python",
+      "dark: Elixir",
+      "dark: Rust",
+      "dark: Go",
+      "dark: Python",
+      "dark: Python (hover)"
+    ]);
+    // The theme reached the list: two different card colours were measured.
+    expect(new Set(results.map(({ card }) => card)).size).toBe(2);
+
+    for (const result of results) {
+      const label = `${result.theme}, ${result.name}${result.hovered ? " (hover)" : ""}`;
+      expect(result.focusVisible, `${label}: the search field has keyboard focus`).toBe(true);
+      expect(result.active, label).toBe(true);
+      expect(result.outlineStyle, label).toBe("solid");
+      expect(result.outlineWidth, label).toBeGreaterThanOrEqual(2);
+      // Inside the option: the list's padding and the gap between options are
+      // narrower than a ring drawn outside it.
+      expect(result.outlineOffset, label).toBeLessThanOrEqual(-result.outlineWidth);
+      expect(result.ringOnMenu, `${label}: ring on the list`).toBeGreaterThanOrEqual(3);
+      expect(result.ringOnIdle, `${label}: ring against an option that is not active`).toBeGreaterThanOrEqual(3);
+      expect(result.ringOnFill, `${label}: ring on the option's own fill`).toBeGreaterThanOrEqual(3);
+    }
   });
 
   test("shows the empty state when client filtering removes every option", async ({ page }) => {
