@@ -136,3 +136,96 @@ test.describe("content structure components", () => {
       .toBe(false);
   });
 });
+
+const { mountHook, fixture } = require('./helpers/hooks');
+
+test('nested accordions keep expansion and keyboard navigation within their own root', async ({ page }) => {
+  await fixture(page, `
+    <div id="outer" data-exo="accordion" data-type="single" data-collapsible>
+      <div data-exo="accordion-item">
+        <button id="outer-trigger" data-exo="accordion-trigger" aria-expanded="true" aria-controls="outer-content">Outer</button>
+        <div id="outer-content" data-exo="accordion-content">
+          <div data-exo="accordion-body">
+            <div id="inner" data-exo="accordion" data-type="single" data-collapsible>
+              <div data-exo="accordion-item">
+                <button id="inner-trigger" data-exo="accordion-trigger" aria-expanded="false" aria-controls="inner-content">Inner</button>
+                <div id="inner-content" data-exo="accordion-content"><div data-exo="accordion-body">Details</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-exo="accordion-item">
+        <button id="sibling" data-exo="accordion-trigger" aria-expanded="false">Sibling</button>
+      </div>
+    </div>`);
+  await mountHook(page, 'ExoAccordion', 'accordion.js', '#inner');
+  await mountHook(page, 'ExoAccordion', 'accordion.js', '#outer');
+  await page.locator('#inner-trigger').click();
+  await expect(page.locator('#inner-trigger')).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.locator('#outer-trigger')).toHaveAttribute('aria-expanded', 'true');
+  await page.locator('#inner-trigger').press('End');
+  await expect(page.locator('#inner-trigger')).toBeFocused();
+  await page.locator('#outer-trigger').click();
+  await expect(page.locator('#outer-trigger')).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.locator('#inner-trigger')).toHaveAttribute('aria-expanded', 'true');
+  await expect.poll(() => page.locator('#outer-content').evaluate(node => node.getBoundingClientRect().height)).toBe(0);
+});
+
+test('nested collapsibles do not toggle or visually expand their parent', async ({ page }) => {
+  const inner = `<div id="inner" data-exo="collapsible">
+    <input type="checkbox" data-exo="collapsible-state" checked>
+    <button id="inner-trigger" data-exo="collapsible-trigger">Inner</button>
+    <div data-exo="collapsible-content">Inner details</div></div>`;
+  await fixture(page, `<div id="outer" data-exo="collapsible">
+    <input type="checkbox" data-exo="collapsible-state" checked>
+    <button id="outer-trigger" data-exo="collapsible-trigger">Outer</button>
+    <div id="outer-content" data-exo="collapsible-content">${inner}</div></div>`);
+  await mountHook(page, 'ExoCollapsible', 'collapsible.js', '#inner');
+  await mountHook(page, 'ExoCollapsible', 'collapsible.js', '#outer');
+  await page.locator('#inner-trigger').click();
+  await expect(page.locator('#outer-trigger')).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.locator('#inner-trigger')).toHaveAttribute('aria-expanded', 'false');
+  await page.locator('#inner-trigger').click();
+  await page.locator('#outer-trigger').click();
+  await expect.poll(() => page.locator('#outer-content').evaluate(node => node.getBoundingClientRect().height)).toBe(0);
+});
+
+test('carousel respects reduced motion, input keys, RTL, and updated controls', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await fixture(page, `<div id="carousel" data-exo="carousel" style="width:300px;margin:30px" tabindex="0">
+    <div data-exo="carousel-viewport"><div data-exo="carousel-track">
+      <div data-exo="carousel-slide"><input value="hello"></div>
+      <div data-exo="carousel-slide">Second</div>
+    </div></div>
+    <button data-exo="carousel-prev">Previous</button><button data-exo="carousel-next">Next</button></div>`);
+  await mountHook(page, 'ExoCarousel', 'carousel.js', '#carousel');
+  const viewport = page.locator('[data-exo="carousel-viewport"]');
+  await page.locator('input').press('ArrowRight');
+  expect(await viewport.evaluate(node => node.scrollLeft)).toBe(0);
+  await page.evaluate(() => {
+    const next = document.querySelector('[data-exo="carousel-next"]');
+    next.replaceWith(next.cloneNode(true));
+    window.testHooks['#carousel'].updated();
+    const viewport = document.querySelector('[data-exo="carousel-viewport"]');
+    const scrollBy = viewport.scrollBy.bind(viewport);
+    viewport.scrollBy = options => { window.scrollBehavior = options.behavior; scrollBy(options); };
+  });
+  await page.locator('[data-exo="carousel-next"]').click();
+  await expect(page.locator('[data-exo="carousel-next"]')).toBeDisabled();
+  expect(await page.evaluate(() => window.scrollBehavior)).toBe('instant');
+  await page.evaluate(() => {
+    document.querySelector('#carousel').dir = 'rtl';
+    document.querySelector('[data-exo="carousel-viewport"]').scrollLeft = 0;
+    window.testHooks['#carousel'].updated();
+  });
+  await page.locator('[data-exo="carousel-next"]').click();
+  await expect.poll(() => viewport.evaluate(node => node.scrollLeft)).toBeLessThan(0);
+  await page.evaluate(() => {
+    document.querySelector('[data-exo="carousel-slide"]:last-child').remove();
+    document.querySelector('#carousel').setAttribute('data-loop', '');
+    window.testHooks['#carousel'].updated();
+  });
+  await expect(page.locator('[data-exo="carousel-next"]')).toBeDisabled();
+  await expect(page.locator('[data-exo="carousel-prev"]')).toBeDisabled();
+});

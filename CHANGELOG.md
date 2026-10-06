@@ -73,6 +73,22 @@
   so the caller can pick the plural form for the number. The default is
   unchanged.
 
+- Fix nested accordion/collapsible state isolation, hidden component visibility,
+  mixed link/action navigation order, and missing breadcrumb labels.
+- Improve combobox input keyboard selection, initial labels, focus restoration,
+  and boolean option values across form choice controls.
+- Make carousel controls follow LiveView updates, container resizing, RTL, and
+  reduced-motion preferences without intercepting text input keys.
+- Preserve toast pause state across updates and overlapping hover/focus; clean up
+  removed notifications, deferred menu/tooltip work, and event listeners.
+- Synchronize theme controls and native form resets for sliders, file summaries,
+  and ratings; avoid duplicate rating change notifications.
+- Correct outdated Storybook examples and browser checks. Replace timestamp-based
+  CSS freshness checks with deterministic source/bundle comparison (`check:css`).
+- Fail captures on browser errors and remove redundant raw video files after
+  saving the named recordings. Preserve the current Linux CI visual references
+  when integrating the latest Storybook updates.
+
 - `ExoDropdownMenu`: `menuitemradio` and `menuitemcheckbox` are items of the
   menu. The hook took only `role="menuitem"`, so a choice or a toggle inside a
   menu (a theme, a density, "show grid") stayed in the tab order while the

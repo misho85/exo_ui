@@ -342,7 +342,10 @@ custom selects.
 <.form for={@form} phx-submit="save">
   <.input field={@form[:name]} label="Name" placeholder="Project name" />
   <.input field={@form[:email]} type="email" label="Owner email" />
-  <.input field={@form[:budget]} label="Budget" prefix="$" suffix="USD" />
+  <.input field={@form[:budget]} label="Budget">
+    <:prefix>$</:prefix>
+    <:suffix>USD</:suffix>
+  </.input>
   <.input field={@form[:query]} type="search" label="Search" leading_icon="search" />
   <.input field={@form[:notes]} type="textarea" label="Notes" rows="4" />
   <.input field={@form[:public]} type="checkbox" label="Public project" />

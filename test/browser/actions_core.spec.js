@@ -113,3 +113,22 @@ test.describe("core action components", () => {
       .not.toBe(before);
   });
 });
+
+const { mountHook, fixture } = require('./helpers/hooks');
+
+test('theme toggles stay synchronized and normalize invalid stored preferences', async ({ page }) => {
+  await gotoStory(page, '/components/actions/theme_toggle');
+  await page.evaluate(() => localStorage.setItem('exo-theme', 'invalid'));
+  await fixture(page, `<div id="one"><button data-theme-value="dark">Dark</button><button data-theme-value="system">System</button></div>
+    <div id="two"><button data-theme-value="dark">Dark</button><button data-theme-value="system">System</button></div>`);
+  await mountHook(page, 'ExoThemeToggle', 'theme_toggle.js', '#one');
+  await mountHook(page, 'ExoThemeToggle', 'theme_toggle.js', '#two');
+  await expect(page.locator('#one [data-theme-value="system"]')).toHaveAttribute('aria-pressed', 'true');
+  await page.locator('#one [data-theme-value="dark"]').click();
+  await expect(page.locator('#two [data-theme-value="dark"]')).toHaveAttribute('aria-pressed', 'true');
+  await page.evaluate(() => {
+    localStorage.setItem('exo-theme', 'system');
+    window.dispatchEvent(new StorageEvent('storage', { key: 'exo-theme', newValue: 'system' }));
+  });
+  await expect(page.locator('#two [data-theme-value="system"]')).toHaveAttribute('aria-pressed', 'true');
+});
