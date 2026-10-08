@@ -55,8 +55,11 @@
   transform: scale(1);
 }
 
+/* Same as the radio: an outline in --exo-ring, not a 25% shadow of it, which
+   was about 1.4:1 against the page (TRG-461). */
 :where([data-exo="checkbox"]:focus-visible + [data-exo="checkbox-indicator"]) {
-  box-shadow: 0 0 0 2px color-mix(in oklch, var(--exo-ring) 25%, transparent);
+  outline: 2px solid var(--exo-ring);
+  outline-offset: 2px;
 }
 
 :where([data-exo="checkbox"]:disabled + [data-exo="checkbox-indicator"]) {
