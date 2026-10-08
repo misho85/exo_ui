@@ -19,10 +19,10 @@ config :exo_ui_storybook, ExoUI.Storybook.Web.Endpoint,
 config :exo_ui_storybook, ExoUI.Storybook.Web.Endpoint,
   live_reload: [
     patterns: [
-      ~r"priv/static/assets/.*(js|css)$",
-      ~r"lib/storybook_web/.*(ex|heex)$",
-      ~r"stories/.*(exs)$",
-      ~r"../lib/.*(ex)$",
-      ~r"../assets/css/.*(css)$"
+      ~r"priv/static/assets/.*(js|css)\z",
+      ~r"lib/storybook_web/.*(ex|heex)\z",
+      ~r"stories/.*(exs)\z",
+      ~r"../lib/.*(ex)\z",
+      ~r"../assets/css/.*(css)\z"
     ]
   ]
