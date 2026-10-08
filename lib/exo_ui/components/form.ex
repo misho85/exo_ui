@@ -489,6 +489,21 @@ defmodule ExoUI.Components.Form do
     greska, ne izbor.
     """
 
+  attr :labelledby, :string,
+    default: nil,
+    doc: """
+    `id` vidljivog natpisa koji pozivalac crta SAM, van komponente (natpis sa
+    oznakom doplate ili stanja, koji `label` kao niska ne moze da nosi).
+    Okidac se tada zove „<natpis> <vrijednost>", a lista natpisom — isti par
+    kao sa `label`, samo sto natpis nije ExoUI-jev.
+
+    Bez ovoga je pozivalac sa svojim natpisom imao dva losa izbora: okidac
+    bez imena (citac ekrana cuje samo „dugme"), ili `aria_label` sa istim
+    tekstom kao skriven duplikat natpisa koji vec stoji na ekranu.
+
+    Ignorise se kad je `label` postavljen, a ima prednost nad `aria_label`.
+    """
+
   attr :description, :string, default: nil
   attr :prompt, :string, default: nil, doc: "empty-value option; selectable, clears the field"
   attr :errors, :list, default: []
@@ -532,7 +547,12 @@ defmodule ExoUI.Components.Form do
   end
 
   def select(assigns) do
-    assigns = assigns |> prepare_choice() |> prepare_hidden_label() |> split_native_rest()
+    assigns =
+      assigns
+      |> prepare_choice()
+      |> prepare_external_label()
+      |> prepare_hidden_label()
+      |> split_native_rest()
 
     ~H"""
     <div data-exo="field" class={@class} {@wrapper_rest}>
@@ -1080,11 +1100,25 @@ defmodule ExoUI.Components.Form do
 
   defp choice_value_id(assigns), do: "#{assigns.id}-value"
 
+  # Natpis koji pozivalac crta sam (`labelledby`): komponenta ne crta svoj, a
+  # okidac i lista pokazuju na tudji `id` istim parom kao na svoj.
+  defp prepare_external_label(%{label: nil, labelledby: labelledby} = assigns)
+       when is_binary(labelledby) and labelledby != "" do
+    assign(assigns,
+      label_id: labelledby,
+      trigger_labelledby: "#{labelledby} #{assigns.value_id}"
+    )
+  end
+
+  defp prepare_external_label(assigns), do: assigns
+
   # Bez vidljivog natpisa `prepare_basic_field/1` ne pravi `label_id`, pa okidac
   # ostaje bez imena. Ovdje se ime vraca kroz skriven `<label>` i ISTI
   # `aria-labelledby` par (natpis + vrijednost) koji vidljiv natpis daje.
-  defp prepare_hidden_label(%{label: nil, aria_label: aria_label} = assigns)
-       when is_binary(aria_label) and aria_label != "" do
+  defp prepare_hidden_label(
+         %{label: nil, labelledby: labelledby, aria_label: aria_label} = assigns
+       )
+       when labelledby in [nil, ""] and is_binary(aria_label) and aria_label != "" do
     label_id = "#{assigns.id}-label"
 
     assign(assigns,
