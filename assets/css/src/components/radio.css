@@ -92,16 +92,17 @@
   border-color: var(--exo-danger);
 }
 
+/*
+ * Keyboard focus is an outline in --exo-ring, 2px wide and 2px off the
+ * indicator, as on a toggle, a button or a tab. It was a 2px box-shadow of
+ * --exo-ring at 25%: 1.43:1 and 1.36:1 against the card under trg24's light and
+ * dark tokens, where WCAG 1.4.11 asks 3:1 of a focus indicator, so the option
+ * the keyboard reached looked like every other one (TRG-461). An outline also
+ * leaves box-shadow to the checked fill, which the focus rule had to repeat.
+ */
 :where([data-exo="radio"]:focus-visible + [data-exo="radio-indicator"]) {
-  box-shadow: 0 0 0 2px color-mix(in oklch, var(--exo-ring) 25%, transparent);
-}
-
-/* The focus ring is a box-shadow too, so on a checked radio it carries the
-   fill as well. Without it the focus rule replaces the fill, and a focused
-   checked radio is a primary outline around a --exo-primary-foreground disc. */
-:where([data-exo="radio"]:checked:focus-visible + [data-exo="radio-indicator"]) {
-  box-shadow: inset 0 0 0 3px var(--exo-primary),
-              0 0 0 2px color-mix(in oklch, var(--exo-ring) 25%, transparent);
+  outline: 2px solid var(--exo-ring);
+  outline-offset: 2px;
 }
 
 :where([data-exo="radio"]:disabled + [data-exo="radio-indicator"]) {

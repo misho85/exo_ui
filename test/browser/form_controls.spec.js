@@ -506,4 +506,161 @@ test.describe("form controls", () => {
 
     expect(radioCards.size, `radio themes: ${[...radioCards].join(", ")}`).toBe(2);
   });
+
+  // WCAG 2.4.7 and 1.4.11: what shows keyboard focus needs 3:1 against what is
+  // next to it. A focused radio, checkbox or slider thumb was marked only by a
+  // 2px shadow of --exo-ring at 25%: 1.43:1 and 1.36:1 against the card under
+  // trg24's light and dark tokens (TRG-461). The ring is --exo-ring itself now,
+  // so it is as visible as the theme's ring colour, and gone without focus.
+  test("a focused radio, checkbox and slider show a solid --exo-ring of 3:1 in both themes", async ({ page }) => {
+    const measure = (root, { selector, theme }) => {
+      const rgb = (css, under) => {
+        const canvas = document.createElement("canvas");
+        canvas.width = canvas.height = 1;
+        const context = canvas.getContext("2d", { colorSpace: "srgb" });
+
+        if (under) {
+          context.fillStyle = `rgb(${under.join(",")})`;
+          context.fillRect(0, 0, 1, 1);
+        }
+
+        context.fillStyle = css;
+        context.fillRect(0, 0, 1, 1);
+        return [...context.getImageData(0, 0, 1, 1).data].slice(0, 3);
+      };
+
+      const luminance = (channels) =>
+        channels
+          .map((value) => {
+            const v = value / 255;
+            return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+          })
+          .reduce((sum, v, index) => sum + v * [0.2126, 0.7152, 0.0722][index], 0);
+
+      const ratio = (a, b) => {
+        const [high, low] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+        return (high + 0.05) / (low + 0.05);
+      };
+
+      const control = root.querySelector(selector);
+      // The theme goes on the control's own wrapper: the story sandbox sets
+      // the light tokens itself, so a theme above it would not reach.
+      const wrapper = control.closest('[data-exo="radio-group"], [data-exo="checkbox-item"], [data-exo="slider-field"]')
+        .parentElement;
+      wrapper.setAttribute("data-theme", theme);
+      wrapper.style.background = "var(--exo-background)";
+
+      const indicator = control.matches('[data-exo="slider"]') ? control : control.nextElementSibling;
+      getComputedStyle(indicator).borderTopColor;
+      document.getAnimations().forEach((animation) => animation.finish());
+
+      const ground = rgb(getComputedStyle(wrapper).backgroundColor);
+      const ring = rgb(getComputedStyle(wrapper).getPropertyValue("--exo-ring").trim(), ground);
+      const style = getComputedStyle(indicator);
+
+      return {
+        background: getComputedStyle(wrapper).getPropertyValue("--exo-background").trim(),
+        focusVisible: control.matches(":focus-visible"),
+        outline: `${style.outlineStyle} ${style.outlineWidth} ${style.outlineColor}`,
+        solid: style.outlineStyle === "solid" && Number.parseFloat(style.outlineWidth) >= 2,
+        isRing: rgb(style.outlineColor, ground).join() === ring.join(),
+        ring,
+        ratio: ratio(rgb(style.outlineColor, ground), ground),
+        ringRatio: ratio(ring, ground)
+      };
+    };
+
+    // Reaching a control from the keyboard makes its focus visible; a script
+    // focus after a pointer would not. Tab enters a radio group on its checked
+    // radio, or on the first one when none is checked.
+    const focusByKeyboard = async (control) => {
+      await control.focus();
+      await page.keyboard.press("Shift+Tab");
+      await page.keyboard.press("Tab");
+      await expect(control).toBeFocused();
+    };
+
+    const cases = [
+      { path: "/components/forms/radio_group", selector: "#radio-group-single-plan-pro" },
+      // The same group with nothing chosen, so the focused radio is unchecked.
+      { path: "/components/forms/radio_group", selector: "#radio-group-single-plan-free", clear: true },
+      { path: "/components/forms/input", selector: '[data-exo="checkbox"][name="terms"]' }
+    ];
+
+    for (const { path, selector, clear } of cases) {
+      await gotoStory(page, path);
+      const control = story(page).locator(selector);
+      const backgrounds = new Set();
+
+      if (clear) {
+        await control.evaluate((node) => {
+          for (const radio of document.getElementsByName(node.name)) radio.checked = false;
+        });
+      }
+
+      for (const focused of [false, true]) {
+        if (focused) await focusByKeyboard(control);
+        else await control.evaluate((node) => node.blur());
+
+        for (const theme of ["light", "dark"]) {
+          const result = await story(page).evaluate(measure, { selector, theme });
+          const label = `${selector}${focused ? ", focused" : ""}, ${theme} (${result.outline})`;
+          backgrounds.add(result.background);
+
+          expect(result.focusVisible, `${label}: focus visible`).toBe(focused);
+
+          if (focused) {
+            expect(result.solid, `${label}: a solid ring of 2px`).toBe(true);
+            expect(result.isRing, `${label}: the ring is --exo-ring itself, ${result.ring}`).toBe(true);
+            expect(result.ratio, `${label}: the ring against the page`).toBeGreaterThanOrEqual(3);
+          } else {
+            expect(result.outline, `${label}: no ring without focus`).toMatch(/^none /);
+          }
+        }
+      }
+
+      expect(backgrounds.size, `${selector} themes: ${[...backgrounds].join(", ")}`).toBe(2);
+    }
+
+    // The thumb is a pseudo-element, which getComputedStyle does not read, so
+    // the slider is measured in pixels: focus adds a ring of --exo-ring around
+    // the thumb. ExoUI's thumb is --exo-primary, the same blue as its ring, so
+    // the ring is the pixels that are --exo-ring with focus and not without.
+    const { PNG } = require("pngjs");
+    await gotoStory(page, "/components/forms/slider");
+    const selector = '[data-exo="slider"][name="brightness"]';
+    const slider = story(page).locator(selector);
+
+    for (const theme of ["light", "dark"]) {
+      const shots = {};
+      let ringColour;
+
+      for (const focused of [false, true]) {
+        if (focused) await focusByKeyboard(slider);
+        else await slider.evaluate((node) => node.blur());
+
+        const { ring, ringRatio, focusVisible } = await story(page).evaluate(measure, { selector, theme });
+        expect(focusVisible, `slider${focused ? ", focused" : ""}, ${theme}: focus visible`).toBe(focused);
+        expect(ringRatio, `slider, ${theme}: --exo-ring against the page`).toBeGreaterThanOrEqual(3);
+        ringColour = ring;
+
+        // The 20px thumb overflows the 8px track, and an element screenshot
+        // would cut it off with the track's box.
+        const box = await slider.boundingBox();
+        const clip = { x: box.x - 8, y: box.y - 16, width: box.width + 16, height: box.height + 32 };
+        shots[focused ? "focused" : "rest"] = PNG.sync.read(await page.screenshot({ clip, animations: "disabled" })).data;
+      }
+
+      const isRing = (data, i) => [0, 1, 2].every((c) => Math.abs(data[i + c] - ringColour[c]) <= 2);
+      let added = 0;
+
+      for (let i = 0; i < shots.focused.length; i += 4) {
+        if (isRing(shots.focused, i) && !isRing(shots.rest, i)) added += 1;
+      }
+
+      // A 2px ring around a 20px thumb is about 130 pixels; the input box
+      // clips part of it, so a third of that is the floor.
+      expect(added, `slider, ${theme}: focus adds a ring of --exo-ring around the thumb`).toBeGreaterThanOrEqual(40);
+    }
+  });
 });

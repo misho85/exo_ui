@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- `radio_group/1`, `checkbox/1` (and `input type="checkbox"`) and `slider/1`:
+  keyboard focus is a solid ring of `--exo-ring`. A radio's and a checkbox's
+  indicator takes a 2px outline 2px off it, as a toggle, a button or a tab
+  does; a slider's thumb a 2px ring around its border. All three were marked
+  only by a 2px shadow of `--exo-ring` at 25%, which is 1.43:1 and 1.36:1
+  against the card under trg24's light and dark tokens, where WCAG 1.4.11 asks
+  3:1 of a focus indicator, so the option the keyboard reached looked like
+  every other one. Firefox's slider thumb had no focus sign at all. A focused
+  checked radio no longer repeats its fill in the focus rule, since the ring
+  is not a shadow any more. With ExoUI's tokens the ring is 5.02:1 on the
+  light page and 5.15:1 on its card, 3.82:1 and 3.63:1 on the dark ones.
+
 - `select/1`: `labelledby` takes the `id` of a label the caller draws
   outside the component, for a label `label` cannot carry as a string (a
   field name followed by a surcharge or a state mark). The trigger is then

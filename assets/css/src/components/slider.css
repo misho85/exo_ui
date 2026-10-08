@@ -62,8 +62,16 @@
   cursor: pointer;
 }
 
+/* Keyboard focus is a 2px ring of --exo-ring around the thumb's border, which
+   is the page colour and keeps the ring off the --exo-primary thumb. It was
+   the same ring at 25%, about 1.4:1 against the page, as on the radio and the
+   checkbox (TRG-461); Firefox's thumb had no focus sign at all. */
 :where([data-exo="slider"]):focus-visible::-webkit-slider-thumb {
-  box-shadow: 0 0 0 2px color-mix(in oklch, var(--exo-ring) 25%, transparent);
+  box-shadow: 0 0 0 2px var(--exo-ring);
+}
+
+:where([data-exo="slider"]):focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 2px var(--exo-ring);
 }
 
 :where([data-exo="slider"][data-invalid])::-webkit-slider-thumb {
