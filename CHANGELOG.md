@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- `select/1`: `labelledby` takes the `id` of a label the caller draws
+  outside the component, for a label `label` cannot carry as a string (a
+  field name followed by a surcharge or a state mark). The trigger is then
+  named by that label and the selected value, and the listbox by the label,
+  the same pair `label` gives. Before this such a caller had two bad
+  choices: a trigger with no name at all (a screen reader heard only
+  "button"), or `aria_label` repeating text already on screen as a hidden
+  duplicate. `label` still wins over `labelledby`, and `labelledby` over
+  `aria_label`.
+
 - `select/1` and `combobox/1`: the option the keyboard reached carries the
   same 2px ring in `--exo-ring` inside it as a menu item. Its only sign was
   the hover fill, with `outline: none`, and `--exo-secondary` on the list's

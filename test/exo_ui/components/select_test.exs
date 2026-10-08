@@ -249,6 +249,54 @@ defmodule ExoUI.Components.SelectTest do
     assert html =~ ~s(aria-labelledby="lang2-label lang2-value")
   end
 
+  # Pozivalac koji crta svoj natpis (uz naziv ide doplata ili oznaka stanja,
+  # sto `label` kao niska ne nosi) imenuje okidac i listu tim natpisom.
+  test "labelledby imenuje okidac i listu natpisom koji crta pozivalac" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <label id="velicina-label">Veličina</label>
+      <.select id="velicina" name="size" value="m" labelledby="velicina-label">
+        <:option value="s">Mala</:option>
+        <:option value="m">Srednja</:option>
+      </.select>
+      """)
+
+    assert html =~ ~s(aria-labelledby="velicina-label velicina-value")
+
+    assert html =~
+             ~s(id="velicina-listbox" data-exo="select-menu" role="listbox" aria-labelledby="velicina-label")
+
+    # Komponenta ne crta svoj natpis, ni vidljiv ni skriven: ime je tudji.
+    refute html =~ ~s(id="velicina-label" hidden)
+    assert length(String.split(html, ~s(id="velicina-label"))) == 2
+  end
+
+  test "labelledby ima prednost nad aria_label, a label nad oba" do
+    assigns = %{}
+
+    external =
+      rendered_to_string(~H"""
+      <.select id="a" name="a" value="s" labelledby="spoljni" aria_label="Skriven">
+        <:option value="s">Mala</:option>
+      </.select>
+      """)
+
+    assert external =~ ~s(aria-labelledby="spoljni a-value")
+    refute external =~ "Skriven"
+
+    own =
+      rendered_to_string(~H"""
+      <.select id="b" name="b" value="s" label="Svoj" labelledby="spoljni">
+        <:option value="s">Mala</:option>
+      </.select>
+      """)
+
+    assert own =~ ~s(aria-labelledby="b-label b-value")
+    refute own =~ "spoljni"
+  end
+
   test "renders label and aria-labelledby" do
     assigns = %{}
 
