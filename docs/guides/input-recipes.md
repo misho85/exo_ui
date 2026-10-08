@@ -13,9 +13,10 @@ hand-authored wrapper markup:
   name="profile[budget]"
   label="Monthly budget"
   value={@draft.budget}
-  prefix="$"
-  suffix="USD"
-/>
+>
+  <:prefix>$</:prefix>
+  <:suffix>USD</:suffix>
+</ExoUI.Components.Form.input>
 
 <ExoUI.Components.Form.input
   id="profile-search"
