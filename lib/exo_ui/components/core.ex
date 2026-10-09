@@ -107,26 +107,8 @@ defmodule ExoUI.Components.Core do
   end
 
   @doc """
-  Renders a Lucide icon by name.
-
-  ## `size`, not a class
-
-  Until 2026-08-21 the only way to size an icon was `class="size-4"` — and the
-  attr's own DEFAULT was that class. Two things were wrong with it.
-
-  First, it made the library speak Tailwind. `icon/1` is the only primitive
-  whose size did not go through `size=` + `data-size` like `button/1`,
-  `badge/1`, `avatar/1` and `spinner/1`, so it was also the only one an
-  application had to size by hand at every call site — 156 of them in trg24.
-
-  Second, a class is a different kind of thing from an attribute when the
-  cascade changes. `:where()` rules carry zero specificity, so the moment an
-  application puts `exo.css` into a Tailwind layer, every stray utility class
-  on a primitive wakes up at once. That is not hypothetical: it happened, and
-  it shrank every control on 41 screens (trg24 §7.13).
-
-  `class` still works and still wins — for the rare icon that needs a size
-  outside the scale.
+  Renders a Lucide icon by name. Use `size` for the shared size scale or
+  `class` for custom sizing. Unknown names render a visible fallback.
   """
   attr :name, :string, required: true
   attr :size, :string, values: ~w(xs sm md lg xl), default: "sm"
@@ -147,9 +129,7 @@ defmodule ExoUI.Components.Core do
   defp render_lucide_icon(icon_fn, assigns) do
     lucide_assigns =
       assigns
-      # `:size` MORA ovdje: on je nas attr, ne HTML atribut. Bez njega je
-      # curio u ispis kao `<svg size="sm">` — nepostojeci SVG atribut, na
-      # svakoj ikoni.
+      # Component attributes must not leak into the SVG attributes.
       |> Map.drop([:name, :size, :rest, :icon_rest])
       |> Map.merge(assigns.icon_rest)
 
@@ -298,7 +278,7 @@ defmodule ExoUI.Components.Core do
   def avatar(assigns) do
     initials =
       assigns.name
-      |> String.split(~r/\s+/)
+      |> String.split(~r/\s+/, trim: true)
       |> Enum.take(2)
       |> Enum.map(&String.first/1)
       |> Enum.join()
@@ -538,37 +518,37 @@ defmodule ExoUI.Components.Core do
   def bottom_nav(assigns) do
     ~H"""
     <nav data-exo="bottom-nav" class={@class} {@rest}>
-      <button
-        :for={item <- @item}
-        :if={item[:click]}
-        type="button"
-        data-exo="bottom-nav-item"
-        data-active={item[:active] && ""}
-        phx-click={item.click}
-        phx-value-item={item[:click_value] || item.label}
-        phx-target={@target}
-        aria-current={item[:active] && "page"}
-      >
-        <span :if={item[:icon]} data-exo="bottom-nav-icon" aria-hidden="true">
-          <.icon name={item.icon} size="md" />
-        </span>
-        <span data-exo="bottom-nav-label">{item.label}</span>
-      </button>
-      <.link
-        :for={item <- @item}
-        :if={!item[:click]}
-        data-exo="bottom-nav-item"
-        data-active={item[:active] && ""}
-        href={item[:href]}
-        navigate={item[:navigate]}
-        patch={item[:patch]}
-        aria-current={item[:active] && "page"}
-      >
-        <span :if={item[:icon]} data-exo="bottom-nav-icon" aria-hidden="true">
-          <.icon name={item.icon} size="md" />
-        </span>
-        <span data-exo="bottom-nav-label">{item.label}</span>
-      </.link>
+      <%= for item <- @item do %>
+        <button
+          :if={item[:click]}
+          type="button"
+          data-exo="bottom-nav-item"
+          data-active={item[:active] && ""}
+          phx-click={item.click}
+          phx-value-item={item[:click_value] || item.label}
+          phx-target={@target}
+          aria-current={item[:active] && "page"}
+        >
+          <span :if={item[:icon]} data-exo="bottom-nav-icon" aria-hidden="true">
+            <.icon name={item.icon} size="md" />
+          </span>
+          <span data-exo="bottom-nav-label">{item.label}</span>
+        </button>
+        <.link
+          :if={!item[:click]}
+          data-exo="bottom-nav-item"
+          data-active={item[:active] && ""}
+          href={item[:href]}
+          navigate={item[:navigate]}
+          patch={item[:patch]}
+          aria-current={item[:active] && "page"}
+        >
+          <span :if={item[:icon]} data-exo="bottom-nav-icon" aria-hidden="true">
+            <.icon name={item.icon} size="md" />
+          </span>
+          <span data-exo="bottom-nav-label">{item.label}</span>
+        </.link>
+      <% end %>
     </nav>
     """
   end

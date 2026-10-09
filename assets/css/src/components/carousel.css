@@ -43,8 +43,13 @@
   box-shadow: var(--exo-shadow-control);
 }
 
-:where([data-exo="carousel-prev"]) { left: -1rem; }
-:where([data-exo="carousel-next"]) { right: -1rem; }
+:where([data-exo="carousel-prev"]) { inset-inline-start: -1rem; }
+:where([data-exo="carousel-next"]) { inset-inline-end: -1rem; }
+
+:where([data-exo="carousel-prev"]:dir(rtl) [data-exo="icon"]),
+:where([data-exo="carousel-next"]:dir(rtl) [data-exo="icon"]) {
+  transform: scaleX(-1);
+}
 
 :where([data-exo="carousel-prev"]:hover),
 :where([data-exo="carousel-next"]:hover) {
