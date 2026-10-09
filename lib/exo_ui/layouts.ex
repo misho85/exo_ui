@@ -14,6 +14,14 @@ defmodule ExoUI.Layouts do
   attr :class, :any, default: nil
   attr :content_class, :any, default: nil
 
+  attr :toggle_label, :string,
+    default: "Toggle sidebar",
+    doc: "accessible name of the topbar button that opens and closes the sidebar"
+
+  attr :close_label, :string,
+    default: "Close sidebar",
+    doc: "accessible name of the overlay that closes the sidebar on a narrow screen"
+
   slot :brand, doc: "branding area at top of sidebar (logo, tenant name)"
   slot :nav, required: true, doc: "navigation menu items"
   slot :topbar_start, doc: "left side of topbar (breadcrumbs, search)"
@@ -47,7 +55,7 @@ defmodule ExoUI.Layouts do
           <button
             type="button"
             data-exo="sidebar-hamburger"
-            aria-label="Toggle sidebar"
+            aria-label={@toggle_label}
             aria-controls={"#{@id}-panel"}
             aria-expanded="true"
           >
@@ -78,7 +86,7 @@ defmodule ExoUI.Layouts do
         <button
           type="button"
           data-exo="sidebar-overlay"
-          aria-label="Close sidebar"
+          aria-label={@close_label}
         />
         <aside data-exo="sidebar-aside">
           <div :if={@brand != []} data-exo="sidebar-brand">
@@ -102,7 +110,12 @@ defmodule ExoUI.Layouts do
   attr :href, :string, required: true
   attr :icon, :string, default: nil
   attr :label, :string, required: true
-  attr :active, :boolean, default: false
+
+  attr :active, :boolean,
+    default: false,
+    doc:
+      ~s(the current page: `data-active` on the item for the style, `aria-current="page"` on its link for a screen reader)
+
   attr :badge, :integer, default: nil
   attr :class, :any, default: nil
   attr :rest, :global
@@ -110,7 +123,7 @@ defmodule ExoUI.Layouts do
   def sidebar_item(assigns) do
     ~H"""
     <li data-exo="sidebar-item" data-active={@active && ""} class={@class} {@rest}>
-      <.link navigate={@href}>
+      <.link navigate={@href} aria-current={@active && "page"}>
         <span :if={@icon} data-exo="sidebar-icon" aria-hidden="true">
           <.icon name={@icon} class="size-4" />
         </span>

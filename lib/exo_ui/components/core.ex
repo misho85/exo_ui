@@ -191,6 +191,12 @@ defmodule ExoUI.Components.Core do
   @doc "Renders light/dark/system theme toggle buttons."
   attr :id, :string, default: "theme-toggle"
   attr :aria_label, :string, default: "Theme"
+  attr :light_label, :string, default: "Light theme", doc: "accessible name of the light button"
+  attr :dark_label, :string, default: "Dark theme", doc: "accessible name of the dark button"
+
+  attr :system_label, :string,
+    default: "System theme",
+    doc: "accessible name of the button that follows the system setting"
 
   def theme_toggle(assigns) do
     ~H"""
@@ -205,7 +211,7 @@ defmodule ExoUI.Components.Core do
         type="button"
         data-exo="theme-btn"
         data-theme-value="light"
-        aria-label="Light theme"
+        aria-label={@light_label}
         aria-pressed="false"
       >
         <.icon name="sun" size="sm" />
@@ -214,7 +220,7 @@ defmodule ExoUI.Components.Core do
         type="button"
         data-exo="theme-btn"
         data-theme-value="dark"
-        aria-label="Dark theme"
+        aria-label={@dark_label}
         aria-pressed="false"
       >
         <.icon name="moon" size="sm" />
@@ -223,7 +229,7 @@ defmodule ExoUI.Components.Core do
         type="button"
         data-exo="theme-btn"
         data-theme-value="system"
-        aria-label="System theme"
+        aria-label={@system_label}
         aria-pressed="false"
       >
         <.icon name="monitor" size="sm" />
