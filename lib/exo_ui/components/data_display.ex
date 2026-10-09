@@ -579,6 +579,17 @@ defmodule ExoUI.Components.DataDisplay do
   attr :prev_label, :string, default: "Previous page"
   attr :next_label, :string, default: "Next page"
   attr :page_label, :string, default: "Page %{page}"
+
+  attr :current_page_label, :string,
+    default: nil,
+    doc:
+      ~s(accessible name of the current page's number, `%{page}` replaced; defaults to `page_label` followed by ", current page")
+
+  attr :status_label, :string,
+    default: "Page %{page} of %{total}",
+    doc:
+      "visually hidden status announced when the page changes, `%{page}` and `%{total}` replaced"
+
   attr :aria_label, :string, default: "Pagination"
   attr :class, :any, default: nil
   attr :rest, :global
@@ -604,7 +615,7 @@ defmodule ExoUI.Components.DataDisplay do
       {@rest}
     >
       <span data-exo="pagination-status" aria-live="polite" aria-atomic="true">
-        Page {@page} of {@total_pages}
+        {pagination_status(@status_label, @page, @total_pages)}
       </span>
       <.link
         :if={@page > 1 && !@on_click}
@@ -647,7 +658,7 @@ defmodule ExoUI.Components.DataDisplay do
               data-exo="pagination-btn"
               data-active={num == @page && ""}
               patch={@patch_fn.(num)}
-              aria-label={pagination_page_label(@page_label, num, num == @page)}
+              aria-label={pagination_page_label(@page_label, @current_page_label, num, num == @page)}
               aria-current={num == @page && "page"}
             >
               {num}
@@ -660,7 +671,7 @@ defmodule ExoUI.Components.DataDisplay do
               phx-click={@on_click}
               phx-value-page={num}
               phx-target={@target}
-              aria-label={pagination_page_label(@page_label, num, num == @page)}
+              aria-label={pagination_page_label(@page_label, @current_page_label, num, num == @page)}
               aria-current={num == @page && "page"}
             >
               {num}
@@ -720,12 +731,21 @@ defmodule ExoUI.Components.DataDisplay do
     [1, :ellipsis] ++ Enum.to_list((page - 1)..(page + 1)) ++ [:ellipsis, total_pages]
   end
 
-  defp pagination_page_label(template, page, true) do
-    "#{pagination_page_label(template, page, false)}, current page"
+  defp pagination_page_label(template, nil, page, true) do
+    "#{pagination_page_label(template, nil, page, false)}, current page"
   end
 
-  defp pagination_page_label(template, page, false) do
+  defp pagination_page_label(_template, current_template, page, true),
+    do: String.replace(current_template, "%{page}", to_string(page))
+
+  defp pagination_page_label(template, _current_template, page, false) do
     String.replace(template, "%{page}", to_string(page))
+  end
+
+  defp pagination_status(template, page, total_pages) do
+    template
+    |> String.replace("%{page}", to_string(page))
+    |> String.replace("%{total}", to_string(total_pages))
   end
 
   @doc "Renders a multi-step progress indicator."

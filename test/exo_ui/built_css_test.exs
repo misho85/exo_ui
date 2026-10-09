@@ -17,4 +17,15 @@ defmodule ExoUI.BuiltCssTest do
              "bundle ne sadrzi `#{marker}` — pregradi ga sa `bun run build:all`"
     end
   end
+
+  test "table wrapper contains its absolutely positioned descendants" do
+    css = File.read!(@built)
+
+    # Skriveno zaglavlje kolone akcija je `position: absolute`; bez `relative`
+    # na omotaču izlazi iz njegovog skrola i širi celu stranu na telefonu.
+    [_, rule] = Regex.run(~r/\[data-exo="?table-wrapper"?\]\)\{([^}]*)\}/, css)
+
+    assert rule =~ "position:relative"
+    assert rule =~ "overflow-x:auto"
+  end
 end

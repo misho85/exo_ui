@@ -58,6 +58,37 @@ defmodule ExoUI.Components.PaginationTest do
     assert html =~ ~s(aria-label="Go to page 2, current page")
   end
 
+  test "status and current page take the caller's labels" do
+    assigns = %{patch_fn: &"/items?page=#{&1}"}
+
+    html =
+      rendered_to_string(~H"""
+      <.pagination
+        page={2}
+        total_pages={3}
+        patch_fn={@patch_fn}
+        aria_label="Strane"
+        prev_label="Prethodna strana"
+        next_label="Sledeća strana"
+        page_label="Strana %{page}"
+        current_page_label="Strana %{page}, trenutna"
+        status_label="Strana %{page} od %{total}"
+      />
+      """)
+
+    {:ok, tree} = Floki.parse_fragment(html)
+
+    assert Floki.find(tree, ~s([data-exo="pagination-status"])) |> Floki.text() |> String.trim() ==
+             "Strana 2 od 3"
+
+    assert Floki.attribute(tree, ~s([aria-current="page"]), "aria-label") ==
+             ["Strana 2, trenutna"]
+
+    assert html =~ ~s(aria-label="Strana 1")
+    refute html =~ "Page"
+    refute html =~ "current page"
+  end
+
   test "supports event-driven pagination with target" do
     assigns = %{}
 

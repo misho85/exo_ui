@@ -1,4 +1,9 @@
+/* `position: relative` makes the wrapper the containing block of an absolutely
+   positioned descendant, such as the visually hidden actions header. Without it
+   that header escapes the wrapper's scroll and widens the page itself, so a
+   phone scrolls the whole page sideways into empty space (SPO-555). */
 :where([data-exo="table-wrapper"]) {
+  position: relative;
   overflow-x: auto;
 }
 
