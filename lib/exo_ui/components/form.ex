@@ -439,10 +439,18 @@ defmodule ExoUI.Components.Form do
 
   This is deliberate, and it buys three things a hidden input cannot:
 
-    * **`phx-change` works.** LiveView looks the binding up on the element that
-      fired the event, or on its `<form>` — never on an ancestor `<div>`. Any
-      `phx-*` attribute passed to this component is therefore forwarded to the
-      native `<select>`, not to the field wrapper.
+    * **`phx-change` works, from inside a form.** LiveView looks the binding
+      up on the element that fired the event, or on its `<form>` — never on an
+      ancestor `<div>`. Any `phx-*` attribute passed to this component is
+      therefore forwarded to the native `<select>`, not to the field wrapper.
+      The select still has to be in a `<form>`, or name one with `form`:
+      LiveView's client refuses a change from a control that has no form
+      (`pushInput` throws "form events require the input to be inside a
+      form") and sends the server nothing, while the trigger already shows the
+      new value. `Phoenix.LiveViewTest.render_change/2` on the element sends
+      the event anyway, so only a test through `form/3` sees the difference. A
+      select that stands alone (a filter in a toolbar) gets a form of its own:
+      `<form phx-change="filter"><.select name="status" ... /></form>`.
     * **`Phoenix.LiveViewTest` can drive it.** `form/3` refuses to change
       `<input type="hidden">` values, so with a hidden input every test that
       submitted a select value raised `ArgumentError`, forcing tests to bypass
