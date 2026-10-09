@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- `select/1` docs: `phx-change` works only from inside a form. The select
+  still has to be in a `<form>`, or name one with `form`: LiveView's client
+  refuses a change from a control that has no form ("form events require the
+  input to be inside a form") and sends the server nothing, while the trigger
+  already shows the new value, and `Phoenix.LiveViewTest.render_change/2` on
+  the element sends the event anyway. The docs said "`phx-change` works"
+  without that condition, and trg24 had three selects that relied on it,
+  dead in the browser behind green tests (TRG-580, TRG-589).
+
 - `radio_group/1`, `checkbox/1` (and `input type="checkbox"`) and `slider/1`:
   keyboard focus is a solid ring of `--exo-ring`. A radio's and a checkbox's
   indicator takes a 2px outline 2px off it, as a toggle, a button or a tab
