@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- `badge/1` does not wrap: `white-space: nowrap`. In a narrow table column a
+  two-word label ("Na čekanju", "Propuštena objava") broke onto two lines inside
+  its pill — on spojka's admin collaborations, next to the override form
+  (SPO-1051, SPO-1066).
+
 - `table/1`: the wrapper is `position: relative`, so it is the containing
   block of an absolutely positioned descendant such as the visually hidden
   actions header. That header escaped the wrapper's horizontal scroll and
