@@ -28,4 +28,14 @@ defmodule ExoUI.BuiltCssTest do
     assert rule =~ "position:relative"
     assert rule =~ "overflow-x:auto"
   end
+
+  test "a badge never wraps its label" do
+    css = File.read!(@built)
+
+    # Dvije riječi u uskoj koloni tabele („Na čekanju") lomile su se u dva reda
+    # unutar pilule (SPO-1051).
+    [_, rule] = Regex.run(~r/\[data-exo="?badge"?\]\)\{([^}]*)\}/, css)
+
+    assert rule =~ "white-space:nowrap"
+  end
 end

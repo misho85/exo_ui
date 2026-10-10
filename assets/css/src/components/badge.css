@@ -8,6 +8,9 @@
   font-size: var(--exo-text-xs);
   font-weight: 600;
   line-height: 1;
+  /* A badge is one token: in a narrow table column a two-word label
+     ("Na čekanju") broke onto two lines inside its pill (SPO-1051). */
+  white-space: nowrap;
 }
 
 :where([data-exo="badge"][data-size="sm"]) {
