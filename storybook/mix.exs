@@ -9,7 +9,17 @@ defmodule ExoUI.Storybook.MixProject do
       start_permanent: Mix.env() == :prod,
       listeners: [Phoenix.CodeReloader],
       deps: deps(),
-      aliases: aliases()
+      aliases: aliases(),
+      # `mix hex.audit` runs in CI. Every entry here is acknowledged by id,
+      # with the reason, and drops out once it no longer matches the lock.
+      hex: [
+        # Bandit's HTTP/2 send deadlines restart on every WINDOW_UPDATE
+        # (published 2026-10-14, every bandit >= 1.4.0, no fixed release).
+        # The storybook never speaks HTTP/2: config/runtime.exs turns it off
+        # and ExUnit holds that (http2_disabled_test.exs). Drop this entry
+        # with the bandit release that fixes it.
+        ignore_advisories: ["EEF-CVE-2026-105659"]
+      ]
     ]
   end
 
