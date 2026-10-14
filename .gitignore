@@ -7,6 +7,9 @@ erl_crash.dump
 npm-debug.log
 /storybook/_build/
 /storybook/deps/
+# `mix esbuild storybook` output: the Dockerfile, CI and Playwright build it
+# fresh, so a tracked copy only goes stale (KRF-404)
+/storybook/priv/static/assets/
 .elixir_ls/
 .vscode/
 .idea/
