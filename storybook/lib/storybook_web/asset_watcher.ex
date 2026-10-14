@@ -58,7 +58,7 @@ defmodule ExoUI.Storybook.Web.AssetWatcher do
     cd = config[:cd] || File.cwd!()
 
     for arg <- (config[:args] || []) ++ args,
-        [_, path] <- [Regex.run(~r/^--(?:output|outdir|outfile)=(.+)$/, arg)] do
+        [_, path] <- [Regex.run(~r/^--(?:output|outdir|outfile)=(.+)\z/, arg)] do
       path |> Path.expand(cd) |> Path.relative_to_cwd()
     end
     |> case do
