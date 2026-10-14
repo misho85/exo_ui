@@ -40,6 +40,12 @@ async function chooseSelect(root, selectId, value) {
   const popover = root.locator(`#${selectId}`);
   const option = popover.locator(`[data-exo="select-option"][data-value="${value}"]`);
 
+  // phoenix_storybook >= 1.4 scrolls the story inside its own panel, not the
+  // window. A trigger Playwright scrolls into view lands on the panel's edge,
+  // and the option click then scrolls the panel under the open listbox, which
+  // follows its anchor and hides once the trigger leaves the panel (KRF-290).
+  // A person sees the field before opening it, so the test does too.
+  await trigger.evaluate((node) => node.scrollIntoView({ block: "center" }));
   await trigger.click();
   await expectPopoverState(popover, true);
   await option.click();

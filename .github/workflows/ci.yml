@@ -29,6 +29,7 @@ jobs:
       - name: Install Elixir dependencies
         run: |
           mix deps.get
+          mix hex.audit
           cd storybook
           mix deps.get
           mix hex.audit

@@ -13,12 +13,12 @@ defmodule ExoUI.Storybook.MixProject do
       # `mix hex.audit` runs in CI. Every entry here is acknowledged by id,
       # with the reason, and drops out once it no longer matches the lock.
       hex: [
-        # earmark is retired and carries a stored-XSS advisory (unescaped HTML
-        # attribute values). phoenix_storybook 1.1 uses it only to render the
-        # markdown in this repo's own stories, never visitor input. It goes
-        # away with phoenix_storybook >= 1.2, which renders with mdex.
-        ignore_advisories: ["EEF-CVE-2026-48591"],
-        ignore_retirements: [earmark: "1.4.49"]
+        # Bandit's HTTP/2 send deadlines restart on every WINDOW_UPDATE
+        # (published 2026-10-14, every bandit >= 1.4.0, no fixed release).
+        # The storybook never speaks HTTP/2: config/runtime.exs turns it off
+        # and ExUnit holds that (http2_disabled_test.exs). Drop this entry
+        # with the bandit release that fixes it.
+        ignore_advisories: ["EEF-CVE-2026-105659"]
       ]
     ]
   end
@@ -35,9 +35,9 @@ defmodule ExoUI.Storybook.MixProject do
       {:exo_ui, path: ".."},
       {:phoenix, "~> 1.8.5"},
       {:phoenix_html, "~> 4.3"},
-      {:phoenix_live_view, "~> 1.1.27"},
+      {:phoenix_live_view, "~> 1.2"},
       {:phoenix_live_reload, "~> 1.6"},
-      {:phoenix_storybook, "~> 1.1.0"},
+      {:phoenix_storybook, "~> 1.5"},
       {:esbuild, "~> 0.10", runtime: false},
       {:jason, "~> 1.4"},
       {:bandit, "~> 1.10"}
