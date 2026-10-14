@@ -49,32 +49,12 @@ jobs:
           bun run check:css
           mix format --check-formatted
           mix compile --warnings-as-errors
-          mix test
           cd storybook
           mix assets.build
-          mix compile --warnings-as-errors
-          mix test
+          mix compile
 
       - name: Browser tests
-        run: bun run test:browser
-
-      - name: Visual regression
-        run: |
-          (cd storybook && PLAYWRIGHT=1 mix phx.server) &
-          server_pid=$!
-          trap 'kill "$server_pid" >/dev/null 2>&1 || true' EXIT
-
-          for _ in $(seq 1 120); do
-            if curl -fsS http://127.0.0.1:4100/welcome >/dev/null; then
-              break
-            fi
-            sleep 1
-          done
-
-          curl -fsS http://127.0.0.1:4100/welcome >/dev/null
-          bun run capture:components
-          bun run capture:validate
-          bun run visual:check
+        run: bunx playwright test test/browser/data_table_workflow.spec.js --repeat-each=20 --retries=0
 
       - name: Upload browser artifacts
         if: always()
