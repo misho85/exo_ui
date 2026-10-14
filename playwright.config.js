@@ -22,7 +22,9 @@ module.exports = defineConfig({
     video: "retain-on-failure"
   },
   webServer: {
-    command: "cd storybook && PLAYWRIGHT=1 mix phx.server",
+    // PLAYWRIGHT=1 starts no esbuild watcher, and the bundle is not in git (KRF-404):
+    // build it first so the suite never runs against a missing or stale storybook.js.
+    command: "cd storybook && mix assets.build && PLAYWRIGHT=1 mix phx.server",
     url: "http://127.0.0.1:4100/welcome",
     reuseExistingServer: !process.env.CI,
     timeout: SERVER_TIMEOUT

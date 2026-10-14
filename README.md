@@ -263,10 +263,13 @@ mix setup
 mix phx.server
 ```
 
-For browser-test debugging, you can run Storybook without watcher processes:
+For browser-test debugging, you can run Storybook without watcher processes.
+The JS bundle (`storybook/priv/static/assets/`) is build output and not in
+git, so build it first:
 
 ```sh
 cd storybook
+mix assets.build
 PLAYWRIGHT=1 mix phx.server
 ```
 
