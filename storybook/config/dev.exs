@@ -8,11 +8,16 @@ config :exo_ui_storybook, ExoUI.Storybook.Web.Endpoint,
   code_reloader: true,
   debug_errors: true,
   secret_key_base: String.duplicate("exo_storybook_dev_secret_key_", 3),
+  # Watchers go through `ExoUI.Storybook.Web.AssetWatcher`, not `{Esbuild, :install_and_run, …}`
+  # directly: a binary that dies there leaves the built assets stale without a single log line
+  # (KRF-460). `ExoUI.Storybook.Web.AssetWatcherTest` holds every entry to it.
   watchers:
     if(playwright?,
       do: [],
       else: [
-        esbuild: {Esbuild, :install_and_run, [:storybook, ~w(--sourcemap=inline --watch)]}
+        esbuild:
+          {ExoUI.Storybook.Web.AssetWatcher, :watch,
+           [Esbuild, :storybook, ~w(--sourcemap=inline --watch)]}
       ]
     )
 
