@@ -52,7 +52,11 @@ defmodule ExoUI.Storybook.Web.Http2DisabledTest do
     reply = :gen_tcp.recv(socket, 0, 5_000)
     :gen_tcp.close(socket)
 
-    refute match?({:ok, <<_len::24, 4, _rest::binary>>}, reply),
-           "Bandit answered the h2c preface with a SETTINGS frame: #{inspect(reply)}"
+    # With HTTP/2 off Bandit closes the connection right after the preface. A
+    # deadline that runs out is no proof of that, so only the close passes
+    # (KRF-609); gen_tcp reports the reset Linux sends for our unread SETTINGS
+    # as `:closed` too.
+    assert reply == {:error, :closed},
+           "Bandit did not close the connection on an h2c preface: #{inspect(reply)}"
   end
 end
