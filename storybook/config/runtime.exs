@@ -27,8 +27,9 @@ if config_env() == :prod do
   config :exo_ui_storybook, ExoUI.Storybook.Web.Endpoint,
     url: [host: host, port: 443, scheme: "https"],
     # HTTP/2 off: Traefik talks HTTP/1.1 to the container, so h2 here only
-    # served whoever reaches the port directly on `dokploy-network`, and Bandit's
-    # h2 stack carries EEF-CVE-2026-105659 with no fixed release (KRF-290).
+    # served whoever reaches the port directly on `dokploy-network`. Switched off
+    # while Bandit's h2 stack carried EEF-CVE-2026-105659 (KRF-290); bandit
+    # 1.13.0 fixes it (KRF-649), and h2 stays off because nothing needs it.
     http: [ip: {0, 0, 0, 0, 0, 0, 0, 0}, port: port, http_2_options: [enabled: false]],
     secret_key_base: secret_key_base
 end
