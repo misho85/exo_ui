@@ -85,3 +85,67 @@ jobs:
             output/playwright
             playwright-report
             test-results
+
+  # ---- Release: the artifact production runs (KRF-611, fleet pattern KRF-221) ----
+  # `test` builds under MIX_ENV=test and dev, so a prod-only compile error, the
+  # esbuild step of the image and a `config/runtime.exs` that raises first ran in
+  # the Dokploy build and in the new container on the box, AFTER the merge.
+  #
+  # This job is the builder stage of the root `Dockerfile`, command for command,
+  # on the SAME image (`storybook/test/storybook_web/release_distribution_test.exs`
+  # fails when they drift: mix commands, apt packages, image, MIX_ENV), plus what
+  # the Dockerfile cannot do: boot the built release through `runtime.exs`, with
+  # negatives (`scripts/release-config-check.sh`), and check that epmd and
+  # distribution listen on loopback only (`scripts/release-dist-check.sh`).
+  #
+  # It is not a deploy step: the way to production stays merge -> Dokploy
+  # auto-deploy (owner's decision, re24 RE-51). It runs after `test`, the last of
+  # the judging jobs, so every cheaper failure arrives first. Nothing restores a
+  # `_build` here; `--overwrite` only keeps `mix release` from prompting if a
+  # cache is ever added.
+  release:
+    name: Release
+    needs: test
+    runs-on: ubuntu-latest
+    container:
+      image: hexpm/elixir:1.19.5-erlang-28.4.1-ubuntu-noble-20260217
+    env:
+      MIX_ENV: prod
+
+    steps:
+      # The builder stage's packages, before checkout so it clones with git.
+      - name: Install build packages
+        run: apt-get update && apt-get install -y --no-install-recommends build-essential git ca-certificates
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Hex and Rebar
+        run: mix local.hex --force && mix local.rebar --force
+
+      - name: Fetch dependencies
+        working-directory: storybook
+        run: mix deps.get --only prod
+
+      - name: Compile dependencies
+        working-directory: storybook
+        run: mix deps.compile
+
+      - name: Build assets
+        working-directory: storybook
+        run: mix esbuild.install --if-missing && mkdir -p priv/static/assets && mix esbuild storybook
+
+      - name: Compile
+        working-directory: storybook
+        run: mix compile
+
+      - name: Build release
+        working-directory: storybook
+        run: mix release --overwrite
+
+      - name: Boot runtime.exs
+        run: ./scripts/release-config-check.sh
+
+      # epmd, the node and the `rpc` client listen on loopback only (KRF-493).
+      - name: Distribution on loopback
+        run: ./scripts/release-dist-check.sh
