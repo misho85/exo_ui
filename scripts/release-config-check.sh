@@ -36,7 +36,11 @@
 #                    refused boot must NAME that key: a failure for an unrelated
 #                    reason would otherwise pass as the refusal. Without `PORT`
 #                    the boot must come up on the default port 4000.
-#   bad-PORT         a non-integer `PORT` must be refused, on its own message.
+#   empty-<KEY>      production with one key set to "", for every key: `KEY=` or
+#                    `${KEY:-}` in a compose file arrives that way, and an empty
+#                    value is a missing one (KRF-616). A required key must be
+#                    refused NAMING it; an empty `PORT` boots on 4000.
+#   bad-PORT         a non-integer `PORT` must be refused, naming `PORT`.
 #
 # Exit: 0 every boot as expected · 1 any boot not, or no release.
 set -eu
@@ -137,8 +141,16 @@ for key in $keys; do
 done
 echo "ok    required for boot:$required"
 
+# KRF-616: before it, `PHX_HOST=""` and `SECRET_KEY_BASE=""` booted.
+for key in $required; do
+  expect_refused "empty-$key" "$key is missing or empty" "$(without "$key")
+$key="
+done
+
 expect_ok without-PORT "exo-ui.krafter.dev 4000 h2=false" "$(without PORT)"
-expect_refused bad-PORT "not a textual representation of an integer" \
+expect_ok empty-PORT "exo-ui.krafter.dev 4000 h2=false" "$(without PORT)
+PORT="
+expect_refused bad-PORT "PORT is not an integer" \
   "$(without PORT)
 PORT=http"
 
