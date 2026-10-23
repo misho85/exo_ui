@@ -298,9 +298,18 @@ defmodule ExoUI.Components.Core do
   slot :badges, doc: "status badges right of the title, outside the heading"
   slot :leading, doc: "sits LEFT of the title — an avatar, a status dot"
   slot :actions, doc: "content that is not a button, before the buttons"
-  slot :primary, doc: "the one main action: button attributes and `icon`"
-  slot :secondary, doc: "outline buttons: button attributes and `icon`"
-  slot :more, doc: "\"More actions\" items: button attributes, `icon`, `danger`"
+  # The entries carry any button attribute (`phx-click`, `phx-value-*`,
+  # `data-*`, `navigate`, `form`), so their attributes are not declared and not
+  # validated; `validate_attrs: false` keeps the caller's compile quiet.
+  slot :primary,
+    validate_attrs: false,
+    doc: "the one main action: button attributes and `icon`"
+
+  slot :secondary, validate_attrs: false, doc: "outline buttons: button attributes and `icon`"
+
+  slot :more,
+    validate_attrs: false,
+    doc: "\"More actions\" items: button attributes, `icon`, `danger`"
 
   def header(assigns) do
     check_header_entries!(assigns)
