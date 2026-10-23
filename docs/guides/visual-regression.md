@@ -55,6 +55,13 @@ Only update the baseline after reviewing the capture and confirming the visual c
 3. Review `output/playwright/exo-ui-components/<capture-id>/viewer.html`. The
    `dataExoCount` of each route in its `manifest.json` must match a local capture of
    the same commit — equal counts mean the same content, rendered by another platform.
+   When the change is the Storybook shell itself (a phoenix_storybook upgrade), compare
+   against `main`'s last CI capture instead (`gh run download <main-run-id> -n
+   browser-artifacts`): equal counts on every route mean the components did not move,
+   and no local capture is needed. Compare with that capture, not with the committed
+   baseline: a component change that stayed under the 0.5% gate lands on `main`
+   without a new baseline, so the baseline's counts can be behind (KRF-290 found two
+   such routes).
 4. Write and commit the baseline:
 
    ```sh

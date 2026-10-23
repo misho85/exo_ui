@@ -56,3 +56,23 @@ test.describe("context menu", () => {
     await expectFocused(trigger);
   });
 });
+
+const { mountHook, fixture } = require('./helpers/hooks');
+
+test('destroying an opening context menu cancels deferred positioning and focus', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.clock.install();
+  await fixture(page, `<div id="menu">
+    <div data-exo="context-menu-trigger">Open</div>
+    <div data-exo="context-menu-content"><button data-exo="context-menu-item">Action</button></div>
+  </div>`);
+  await mountHook(page, 'ExoContextMenu', 'context_menu.js', '#menu');
+  await page.evaluate(() => {
+    const hook = window.testHooks['#menu'];
+    hook._openAt(10, 10);
+    hook.destroyed();
+  });
+  await page.clock.runFor(50);
+  expect(errors).toEqual([]);
+});

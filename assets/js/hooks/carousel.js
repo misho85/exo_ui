@@ -1,80 +1,83 @@
-/**
- * ExoCarousel hook — scrollable carousel with prev/next buttons.
- */
+/** Scrollable carousel with lifecycle-safe controls and logical navigation. */
 const ExoCarousel = {
-  mounted() {
+  mounted() { this._bind() },
+  updated() { this._bind() },
+  destroyed() { this._unbind() },
+
+  _bind() {
+    this._unbind()
     this.track = this.el.querySelector('[data-exo="carousel-track"]')
     this.viewport = this.el.querySelector('[data-exo="carousel-viewport"]')
     this.prev = this.el.querySelector('[data-exo="carousel-prev"]')
     this.next = this.el.querySelector('[data-exo="carousel-next"]')
     if (!this.track || !this.viewport) return
 
-    const slides = () => Array.from(this.track.querySelectorAll('[data-exo="carousel-slide"]'))
-    const loop = this.el.hasAttribute("data-loop")
-    const atStart = () => this.viewport.scrollLeft <= 5
-    const atEnd = () => this.viewport.scrollLeft >= this.viewport.scrollWidth - this.viewport.offsetWidth - 5
-
-    const setButtonState = (button, disabled) => {
-      if (!button) return
-      button.disabled = disabled
-      button.toggleAttribute("data-disabled", disabled)
-      button.setAttribute("aria-disabled", disabled ? "true" : "false")
+    this._onPrev = () => this._scroll(-1)
+    this._onNext = () => this._scroll(1)
+    this._onScroll = () => this._updateControls()
+    this._onKey = (event) => {
+      // Arrow keys inside a slide belong to its inputs and nested widgets.
+      if (![this.el, this.viewport, this.prev, this.next].includes(event.target)) return
+      if (event.altKey || event.ctrlKey || event.metaKey) return
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
+      event.preventDefault()
+      const direction = event.key === 'ArrowRight' ? 1 : -1
+      this._scroll(direction * this._direction())
     }
 
-    const updateControls = () => {
-      if (loop) {
-        setButtonState(this.prev, false)
-        setButtonState(this.next, false)
-        return
-      }
-
-      setButtonState(this.prev, atStart())
-      setButtonState(this.next, atEnd())
-    }
-
-    const scrollTo = (direction) => {
-      const s = slides()
-      if (s.length === 0) return
-      const slideWidth = s[0].offsetWidth
-      const gap = parseFloat(getComputedStyle(this.track).gap) || 0
-      const scrollAmount = slideWidth + gap
-
-      if (direction === "next") {
-        if (loop && atEnd()) {
-          this.viewport.scrollTo({ left: 0, behavior: "smooth" })
-        } else {
-          this.viewport.scrollBy({ left: scrollAmount, behavior: "smooth" })
-        }
-      } else {
-        if (loop && atStart()) {
-          this.viewport.scrollTo({ left: this.viewport.scrollWidth, behavior: "smooth" })
-        } else {
-          this.viewport.scrollBy({ left: -scrollAmount, behavior: "smooth" })
-        }
-      }
-
-      window.setTimeout(updateControls, 350)
-    }
-
-    if (this.prev) this.prev.addEventListener("click", this._onPrev = () => scrollTo("prev"))
-    if (this.next) this.next.addEventListener("click", this._onNext = () => scrollTo("next"))
-    this.viewport.addEventListener("scroll", this._onScroll = () => updateControls())
-    window.addEventListener("resize", this._onResize = () => updateControls())
-
-    this.el.addEventListener("keydown", this._onKey = (e) => {
-      if (e.key === "ArrowLeft") { e.preventDefault(); scrollTo("prev") }
-      if (e.key === "ArrowRight") { e.preventDefault(); scrollTo("next") }
-    })
-
-    updateControls()
+    this.prev?.addEventListener('click', this._onPrev)
+    this.next?.addEventListener('click', this._onNext)
+    this.viewport.addEventListener('scroll', this._onScroll)
+    this.el.addEventListener('keydown', this._onKey)
+    this._resizeObserver = new ResizeObserver(this._onScroll)
+    this._resizeObserver.observe(this.viewport)
+    this._resizeObserver.observe(this.track)
+    this._updateControls()
   },
 
-  destroyed() {
-    if (this.prev && this._onPrev) this.prev.removeEventListener("click", this._onPrev)
-    if (this.next && this._onNext) this.next.removeEventListener("click", this._onNext)
-    if (this.viewport && this._onScroll) this.viewport.removeEventListener("scroll", this._onScroll)
-    if (this._onResize) window.removeEventListener("resize", this._onResize)
-    if (this._onKey) this.el.removeEventListener("keydown", this._onKey)
+  _direction() {
+    return getComputedStyle(this.viewport).direction === 'rtl' ? -1 : 1
+  },
+
+  _bounds() {
+    const max = Math.max(0, this.viewport.scrollWidth - this.viewport.clientWidth)
+    const position = this.viewport.scrollLeft * this._direction()
+    return { max, start: position <= 1, end: position >= max - 1 }
+  },
+
+  _updateControls() {
+    const { max, start, end } = this._bounds()
+    const loop = this.el.hasAttribute('data-loop')
+    for (const [button, boundary] of [[this.prev, start], [this.next, end]]) {
+      if (!button) continue
+      const disabled = max <= 1 || (!loop && boundary)
+      button.disabled = disabled
+      button.toggleAttribute('data-disabled', disabled)
+      button.setAttribute('aria-disabled', String(disabled))
+    }
+  },
+
+  _scroll(direction) {
+    const slide = this.track.querySelector('[data-exo="carousel-slide"]')
+    if (!slide) return
+    const { max, start, end } = this._bounds()
+    const logicalDirection = this._direction()
+    const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'
+    if (this.el.hasAttribute('data-loop') && (direction > 0 ? end : start)) {
+      this.viewport.scrollTo({ left: direction > 0 ? 0 : max * logicalDirection, behavior })
+    } else {
+      const gap = parseFloat(getComputedStyle(this.track).columnGap) || 0
+      this.viewport.scrollBy({ left: (slide.offsetWidth + gap) * direction * logicalDirection, behavior })
+    }
+  },
+
+  _unbind() {
+    this.prev?.removeEventListener('click', this._onPrev)
+    this.next?.removeEventListener('click', this._onNext)
+    this.viewport?.removeEventListener('scroll', this._onScroll)
+    this.el.removeEventListener('keydown', this._onKey)
+    this._resizeObserver?.disconnect()
+    this._resizeObserver = null
   }
 }
 
