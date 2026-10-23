@@ -31,8 +31,6 @@
   padding: var(--exo-space-3) var(--exo-space-4);
   font-size: var(--exo-text-xs);
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   color: var(--exo-muted-foreground);
 }
 

@@ -50,8 +50,6 @@
   font-family: var(--exo-font);
   font-size: var(--exo-text-xs);
   font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   color: var(--exo-muted-foreground);
 }
 
@@ -118,8 +116,6 @@
   display: block;
   font-family: var(--exo-font);
   font-size: var(--exo-text-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   color: var(--exo-muted-foreground);
 }
 
