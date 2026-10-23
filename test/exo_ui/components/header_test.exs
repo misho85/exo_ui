@@ -195,6 +195,36 @@ defmodule ExoUI.Components.HeaderTest do
       assert next =~ ~s|title="Sljedeća (J)"|
     end
 
+    test "radnja nosi bilo koji atribut dugmeta bez upozorenja pri prevodu" do
+      # `phx-value-*`, `data-*`, `form`, `navigate` se ne mogu nabrojati, pa
+      # slotovi ne provjeravaju atribute; bez toga svaki poziv u aplikaciji
+      # pada na `--warnings-as-errors` („undefined attribute in slot").
+      source = """
+      defmodule ExoUI.HeaderSlotAttrsProbe do
+        use Phoenix.Component
+        import ExoUI.Components.Core, only: [header: 1]
+
+        def render(assigns) do
+          ~H\"\"\"
+          <.header more_label="Još radnji">
+            Narudžbina
+            <:primary phx-click="ship" phx-value-id="1" data-action="ship" icon="truck">P</:primary>
+            <:secondary navigate="/x" target="_blank" rel="noopener">S</:secondary>
+            <:more danger phx-click="cancel" data-confirm-message="Sigurno?">M</:more>
+          </.header>
+          \"\"\"
+        end
+      end
+      """
+
+      warnings =
+        ExUnit.CaptureIO.capture_io(:stderr, fn ->
+          Code.compile_string(source, "header_slot_attrs_probe.ex")
+        end)
+
+      refute warnings =~ "undefined attribute"
+    end
+
     test "bedževi stoje uz naslov, van `<h1>`" do
       assigns = %{}
 
