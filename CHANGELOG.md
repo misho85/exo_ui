@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- `stat_card/1`, `metric_card/1` and `table/1`: the card label and the table
+  header cell are in sentence case, as written, no longer `uppercase` with
+  `letter-spacing: 0.05em`. Capitals read as shouting next to the value they
+  name, and the label is the caller's text: trg24 writes „Ukupna prodaja", not
+  „UKUPNA PRODAJA". A caller that wants capitals writes them (TRG-747).
+
 - `header/1`: structured actions. `primary` (at most one entry that renders),
   `secondary` and `more` (a "More actions" menu, `more_label`) take the
   button's attributes and its label, and the header draws the buttons itself:
