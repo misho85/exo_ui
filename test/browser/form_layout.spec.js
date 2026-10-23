@@ -13,10 +13,15 @@ test.describe("form layout", () => {
     const main = layout.locator('[data-exo="form-layout-main"]');
     const aside = layout.locator('[data-exo="form-layout-aside"]');
 
-    const wideMain = await main.boundingBox();
-    const wideAside = await aside.boundingBox();
-    expect(wideAside.x).toBeGreaterThan(wideMain.x + wideMain.width - 1);
-    expect(Math.abs(wideAside.y - wideMain.y)).toBeLessThan(2);
+    // The story canvas widens after the first paint, so the columns are
+    // polled until the container query has applied.
+    await expect
+      .poll(async () => {
+        const m = await main.boundingBox();
+        const a = await aside.boundingBox();
+        return a.x >= m.x + m.width - 1 && Math.abs(a.y - m.y) < 2;
+      })
+      .toBe(true);
 
     await layout.evaluate((node) => {
       node.style.width = "360px";
@@ -56,7 +61,8 @@ test.describe("form layout", () => {
       const parent = node.parentElement;
       parent.style.display = "flex";
       parent.style.flexWrap = "wrap";
-      return [node.getBoundingClientRect().width, parent.getBoundingClientRect().width];
+      parent.style.padding = "0";
+      return [node.getBoundingClientRect().width, parent.clientWidth];
     });
     expect(Math.abs(row[0] - row[1])).toBeLessThan(2);
 
