@@ -81,3 +81,29 @@
   min-width: 0;
   flex-wrap: wrap;
 }
+
+/* Naslov i bedzevi stanja (TRG-742) stoje u jednom redu, a bedzevi su van
+   `<h1>`: citac ekrana naslov cita kao ime strane, ne „#1001 Na cekanju
+   Placeno". Red se prelama kad bedzevi ne stanu uz dug naslov. */
+:where([data-exo="header-title-row"]) {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--exo-space-2);
+  min-width: 0;
+}
+
+:where([data-exo="header-badges"]) {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--exo-space-2);
+}
+
+/* Strelice prethodnog i sljedeceg zapisa su par, pa stoje tijesno jedna uz
+   drugu, odvojene od dugmadi radnji vecim razmakom reda. */
+:where([data-exo="header-pager"]) {
+  display: flex;
+  align-items: center;
+  gap: var(--exo-space-1);
+}

@@ -566,10 +566,10 @@
       "name": "layout/header",
       "route": "/components/layout/header",
       "screenshot": "screenshots/layout__header.png",
-      "dataExoCount": 16,
+      "dataExoCount": 50,
       "width": 1280,
       "height": 900,
-      "sha256": "42e143a313b442fa09c8eeff8cb0d3541d85fe8557c3bbf1d7c09e26cb20bb97"
+      "sha256": "ab9b48c6bc98f32bba05a446748cd31f57bb1d44b2233b2637512db8cf910f34"
     },
     {
       "name": "layout/hero",
