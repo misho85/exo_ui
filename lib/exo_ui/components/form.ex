@@ -1265,6 +1265,11 @@ defmodule ExoUI.Components.Form do
   attr :description, :string, default: nil
   attr :errors, :list, default: []
   attr :disabled, :boolean, default: false
+
+  attr :form, :string,
+    default: nil,
+    doc: "id of the form the radios belong to, when the group is outside it"
+
   attr :class, :any, default: nil
   attr :rest, :global
 
@@ -1316,6 +1321,7 @@ defmodule ExoUI.Components.Form do
           data-exo="radio"
           name={@name}
           value={option[:value]}
+          form={@form}
           checked={option_selected?(option[:value], @value)}
           disabled={radio_option_disabled?(@disabled, option)}
           aria-describedby={radio_description_id(@id, option)}

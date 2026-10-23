@@ -16,6 +16,11 @@
   status, SEO and customs in a side column that was three columns on a phone,
   every rare field open, and no sign of unsaved work (TRG-744).
 
+- `radio_group/1`: `form` names the form every radio belongs to, for a group
+  outside its form (a side column beside the form it saves). Set on the
+  `<fieldset>`, as a global attribute, it would not reach the radios: a
+  fieldset's `form` does not move its controls into another form (TRG-744).
+
 - `stat_card/1`, `metric_card/1` and `table/1`: the card label and the table
   header cell are in sentence case, as written, no longer `uppercase` with
   `letter-spacing: 0.05em`. Capitals read as shouting next to the value they

@@ -247,4 +247,29 @@ defmodule ExoUI.Components.RadioGroupTest do
 
     assert html =~ "disabled"
   end
+
+  # TRG-744: a group outside its form binds every radio with `form`, the
+  # fieldset alone does not take its radios into another form.
+  test "form binds every radio to the named form" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H|<.radio_group
+  name="kind"
+  form="product-form"
+  options={[{"Good", "physical"}, {"Service", "service"}]}
+/>|)
+
+    radios = html |> Floki.parse_fragment!() |> Floki.find("input[type=radio]")
+    assert Floki.attribute(radios, "form") == ["product-form", "product-form"]
+    refute html |> Floki.parse_fragment!() |> Floki.find("fieldset[form]") |> Enum.any?()
+  end
+
+  test "without form the radios name no form" do
+    assigns = %{}
+
+    html = rendered_to_string(~H|<.radio_group name="kind" options={[{"Good", "physical"}]} />|)
+
+    assert html |> Floki.parse_fragment!() |> Floki.find("input[form]") == []
+  end
 end
