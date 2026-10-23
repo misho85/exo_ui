@@ -19,12 +19,18 @@ async function presses(page) {
   return page.evaluate(() => window.__headerPresses);
 }
 
+// Storybook gives the component its own id (`header-single-record`), so the
+// record variation is found by its hook: it is the only header with arrows.
+function recordHeader(page) {
+  return story(page).locator('[data-exo="header"][phx-hook="ExoHeader"]');
+}
+
 test.describe("page header", () => {
   test("Cmd/Ctrl+Enter presses the primary action, K and J follow the arrows", async ({ page }) => {
     await gotoStory(page, "/components/layout/header");
 
-    const header = story(page).locator("#header-record");
-    await expect(header).toHaveAttribute("phx-hook", "ExoHeader");
+    const header = recordHeader(page);
+    await expect(header).toHaveCount(1);
 
     const primary = header.locator('[data-exo-header="primary"]');
     await expect(primary).toHaveAttribute("title", /^Mark as shipped \((⌘↵|Ctrl\+↵)\)$/);
@@ -43,7 +49,8 @@ test.describe("page header", () => {
   test("the letters stay quiet in a field, with Shift and while the menu is open", async ({ page }) => {
     await gotoStory(page, "/components/layout/header");
 
-    const header = story(page).locator("#header-record");
+    const header = recordHeader(page);
+    await expect(header).toHaveCount(1);
     await recordPresses(header);
 
     await page.evaluate(() => {
@@ -62,7 +69,7 @@ test.describe("page header", () => {
     expect(await presses(page)).toEqual([]);
 
     const trigger = header.locator('[data-exo-header="more"]');
-    const menu = page.locator("#header-record-more");
+    const menu = page.locator(`#${await header.getAttribute("id")}-more`);
     await trigger.click();
     await expectPopoverState(menu, true);
     await page.keyboard.press("j");

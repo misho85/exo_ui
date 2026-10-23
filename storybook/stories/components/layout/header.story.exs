@@ -32,7 +32,6 @@ defmodule Storybook.Components.Header do
       %Variation{
         id: :record,
         attributes: %{
-          id: "header-record",
           prev: "/components/layout/header?record=1001",
           next: "/components/layout/header?record=1003",
           prev_label: "Previous order",
