@@ -1,0 +1,91 @@
+/* Record form: main column and aside (TRG-744). One column below 48rem of
+   the layout's own width, the aside under the main column; two from there. */
+:where([data-exo="form-layout"]) {
+  container: exo-form-layout / inline-size;
+}
+
+:where([data-exo="form-layout-grid"]) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--exo-space-6);
+  align-items: start;
+}
+
+:where([data-exo="form-layout-main"]),
+:where([data-exo="form-layout-aside"]) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--exo-space-6);
+  min-width: 0;
+}
+
+@container exo-form-layout (min-width: 48rem) {
+  :where([data-exo="form-layout-grid"][data-aside]) {
+    grid-template-columns: minmax(0, 2fr) minmax(16rem, 1fr);
+  }
+}
+
+/* Optional field: a chip until clicked. */
+:where([data-exo="optional-field-chip"]) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--exo-space-1);
+  min-height: 1.75rem;
+  padding: 0 var(--exo-space-3);
+  border: 1px dashed var(--exo-input);
+  border-radius: 9999px;
+  background: transparent;
+  color: var(--exo-foreground);
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  cursor: pointer;
+}
+
+:where([data-exo="optional-field-chip"]):hover {
+  background: var(--exo-muted);
+}
+
+:where([data-exo="optional-field-chip"]):focus-visible {
+  outline: 2px solid var(--exo-ring);
+  outline-offset: 2px;
+}
+
+/* Unsaved-changes bar: sticky to the bottom of the scrolling area. */
+:where([data-exo="save-bar"]) {
+  position: sticky;
+  bottom: var(--exo-space-4);
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--exo-space-3);
+  margin-top: var(--exo-space-6);
+  padding: var(--exo-space-3) var(--exo-space-4);
+  background: var(--exo-card);
+  color: var(--exo-card-foreground);
+  border: 1px solid var(--exo-border);
+  border-radius: var(--exo-radius);
+  box-shadow: var(--exo-shadow-lg);
+}
+
+:where([data-exo="save-bar-message"]) {
+  margin: 0;
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  font-weight: 600;
+}
+
+:where([data-exo="save-bar-actions"]) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--exo-space-2);
+}
+
+/* Same specificity as the display rules above, so it has to come after them:
+   a `hidden` chip, field or bar is not drawn, with or without a CSS reset. */
+:where([data-exo="optional-field-chip"][hidden]),
+:where([data-exo="optional-field-content"][hidden]),
+:where([data-exo="save-bar"][hidden]) {
+  display: none;
+}

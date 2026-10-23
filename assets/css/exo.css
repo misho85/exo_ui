@@ -48,6 +48,7 @@
 @import "./src/components/spinner.css";
 @import "./src/components/kbd.css";
 @import "./src/components/fieldset.css";
+@import "./src/components/form-layout.css";
 @import "./src/components/file-input.css";
 @import "./src/components/scroll-area.css";
 @import "./src/components/steps.css";

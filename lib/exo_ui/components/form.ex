@@ -5,7 +5,9 @@ defmodule ExoUI.Components.Form do
 
   use Phoenix.Component
 
-  import ExoUI.Components.Core, only: [icon: 1]
+  import ExoUI.Components.Core, only: [button: 1, icon: 1]
+
+  alias Phoenix.LiveView.JS
 
   @doc "Renders a form wrapper with `data-exo=\"form\"`."
   attr :for, :any, required: true
@@ -1896,6 +1898,130 @@ defmodule ExoUI.Components.Form do
       </div>
       <.field_errors id={@error_id} errors={@errors} />
     </fieldset>
+    """
+  end
+
+  # The page of one record: `main` holds what the customer sees (title,
+  # description, media, price), `aside` what the merchant decides (status,
+  # organization, rare settings). Two columns once the layout itself is at
+  # least 48rem wide, one below that, with the aside under the main column.
+  # The breakpoint is a container query, so a sidebar beside the page does
+  # not leave a phone-sized form in two columns (TRG-744).
+  @doc "Renders the two-column layout of a record form: main content and an aside that stacks below it on narrow screens."
+  attr :id, :string, default: nil
+  attr :class, :any, default: nil
+  attr :rest, :global
+  slot :main, required: true
+  slot :aside
+
+  def form_layout(assigns) do
+    ~H"""
+    <div id={@id} data-exo="form-layout" class={@class} {@rest}>
+      <div data-exo="form-layout-grid" data-aside={@aside != [] && ""}>
+        <div data-exo="form-layout-main">{render_slot(@main)}</div>
+        <div :if={@aside != []} data-exo="form-layout-aside">{render_slot(@aside)}</div>
+      </div>
+    </div>
+    """
+  end
+
+  # A rarely used field stays a chip ("+ Compare-at price") until it is
+  # clicked, so the form stays short. `open` is the caller's: a field with a
+  # value or an error renders open, and a chip that was opened stays open
+  # across patches (the `hidden` attribute is set from JS, which LiveView
+  # keeps). The field is in the DOM either way, so a form submits its value
+  # whether the chip was opened or not (TRG-744).
+  @doc "Renders an optional field as a chip that opens the field on click; open when `open` is true."
+  attr :id, :string, required: true
+  attr :label, :string, required: true, doc: "chip text, usually the field's label"
+  attr :open, :boolean, default: false, doc: "true when the field has a value or an error"
+  attr :class, :any, default: nil
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def optional_field(assigns) do
+    ~H"""
+    <div id={@id} data-exo="optional-field" class={@class} {@rest}>
+      <button
+        id={"#{@id}-chip"}
+        type="button"
+        data-exo="optional-field-chip"
+        aria-controls={"#{@id}-content"}
+        aria-expanded="false"
+        hidden={@open}
+        phx-click={
+          JS.set_attribute({"hidden", ""})
+          |> JS.remove_attribute("hidden", to: "##{@id}-content")
+          |> JS.focus_first(to: "##{@id}-content")
+        }
+      >
+        <.icon name="plus" size="xs" />
+        <span>{@label}</span>
+      </button>
+      <div id={"#{@id}-content"} data-exo="optional-field-content" hidden={!@open}>
+        {render_slot(@inner_block)}
+      </div>
+    </div>
+    """
+  end
+
+  # One save for the whole page: the bar appears on the first change
+  # (`show`, the caller's dirty state), says so, and offers "Discard" and
+  # "Save". Save submits `form`, so every field bound to that form (inside it
+  # or through the `form` attribute) goes in one event. The bar is sticky to
+  # the bottom of the scrolling area, so it stays in reach on a long form
+  # (TRG-744).
+  @doc "Renders the unsaved-changes bar with Discard and Save for the form named by `form`."
+  attr :id, :string, required: true
+  attr :form, :string, required: true, doc: "id of the form Save submits"
+  attr :show, :boolean, default: false, doc: "true while the page has unsaved changes"
+  attr :message, :string, default: "Unsaved changes"
+  attr :save_label, :string, default: "Save"
+  attr :saving_label, :string, default: nil, doc: "button text while the save is in flight"
+  attr :discard_label, :string, default: "Discard"
+
+  attr :on_discard, :any,
+    default: nil,
+    doc: "event name or `Phoenix.LiveView.JS`; no button without it"
+
+  attr :class, :any, default: nil
+  attr :rest, :global
+
+  def save_bar(assigns) do
+    ~H"""
+    <div
+      id={@id}
+      data-exo="save-bar"
+      role="region"
+      aria-labelledby={"#{@id}-message"}
+      hidden={!@show}
+      class={@class}
+      {@rest}
+    >
+      <p id={"#{@id}-message"} data-exo="save-bar-message">{@message}</p>
+      <div data-exo="save-bar-actions">
+        <.button
+          :if={@on_discard}
+          id={"#{@id}-discard"}
+          type="button"
+          variant="outline"
+          size="sm"
+          phx-click={@on_discard}
+        >
+          {@discard_label}
+        </.button>
+        <.button
+          id={"#{@id}-save"}
+          type="submit"
+          form={@form}
+          variant="primary"
+          size="sm"
+          phx-disable-with={@saving_label}
+        >
+          {@save_label}
+        </.button>
+      </div>
+    </div>
     """
   end
 
