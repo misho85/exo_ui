@@ -50,6 +50,11 @@
   outline-offset: 2px;
 }
 
+/* In a row of chips (a wrapping flex row) an opened field takes the whole row. */
+:where([data-exo="optional-field"]:has(> [data-exo="optional-field-content"]:not([hidden]))) {
+  flex-basis: 100%;
+}
+
 /* Unsaved-changes bar: sticky to the bottom of the scrolling area. */
 :where([data-exo="save-bar"]) {
   position: sticky;

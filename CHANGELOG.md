@@ -8,7 +8,8 @@
   layout's own width (a container query, so a sidebar beside it counts), one
   below that with the aside under the main column. `optional_field` keeps a
   rare field as a "+ Label" chip until it is clicked, then opens the field and
-  focuses it; `open` (a value or an error) renders it open, an opened chip
+  focuses it; in a wrapping row of chips an opened field takes the whole row;
+  `open` (a value or an error) renders it open, an opened chip
   stays open across patches, and the field is in the DOM either way, so the
   form submits it. `save_bar` is the sticky "Unsaved changes · Discard · Save"
   bar, shown by the caller's `show`; Save submits the form named by `form`,

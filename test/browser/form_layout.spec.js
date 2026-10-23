@@ -51,6 +51,15 @@ test.describe("form layout", () => {
     await expectHiddenState(content, false);
     await expectFocused(content.locator('[name="compare_at_price"]'));
 
+    // In a wrapping row of chips the opened field takes the whole row.
+    const row = await closed.evaluate((node) => {
+      const parent = node.parentElement;
+      parent.style.display = "flex";
+      parent.style.flexWrap = "wrap";
+      return [node.getBoundingClientRect().width, parent.getBoundingClientRect().width];
+    });
+    expect(Math.abs(row[0] - row[1])).toBeLessThan(2);
+
     const open = canvas.locator('[data-exo="optional-field"]').filter({
       has: page.locator('[name="hs_code"]')
     });
