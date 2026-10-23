@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+- `header/1`: structured actions. `primary` (at most one entry that renders),
+  `secondary` and `more` (a "More actions" menu, `more_label`) take the
+  button's attributes and its label, and the header draws the buttons itself:
+  one solid primary, outline secondaries, menu items. A second primary, or a
+  `variant` or `danger` on `primary`/`secondary`, raises; a destructive action
+  goes into `more`, where `danger` paints the item red. `prev`/`next` (with
+  `prev_label`, `next_label`, `pager_label`) draw the previous/next record
+  arrows, `badges` puts status badges beside the title outside the `<h1>`.
+  The new hook `ExoHeader` presses the primary action on Cmd/Ctrl+Enter and
+  follows the arrows on K and J, never while a dialog or a popover is open
+  and the letters never while typing; the primary's tooltip names the
+  shortcut for the viewer's platform. A free `actions` slot let every screen
+  set its own buttons, so trg24's order page had four button styles in one
+  row and a red "Cancel order" beside the main action (TRG-742). `actions`
+  stays, for content that is not a button.
+
 - `badge/1` does not wrap: `white-space: nowrap`. In a narrow table column a
   two-word label ("Na čekanju", "Propuštena objava") broke onto two lines inside
   its pill — on spojka's admin collaborations, next to the override form

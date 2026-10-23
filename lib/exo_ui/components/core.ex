@@ -238,39 +238,235 @@ defmodule ExoUI.Components.Core do
     """
   end
 
-  @doc """
-  Renders a page header with title, optional subtitle, and action buttons.
+  # A page header: the title on the left; on the right the secondary actions,
+  # the "More actions" menu, the one primary action and the previous/next
+  # record arrows, in that order.
+  #
+  # The header draws the buttons itself. A `primary`, `secondary` or `more`
+  # entry carries the button's attributes (`phx-click`, `navigate`, `href`,
+  # `phx-value-*`, `data-*`, `icon`) and its label as the body, so every
+  # screen gets the same three looks: one solid primary, outline secondaries,
+  # and menu items. A screen that wrote its own buttons into a free slot put
+  # four styles in one row and a red "Cancel order" next to the main action
+  # (trg24, TRG-742). So:
+  #
+  #   * `primary` holds at most one entry that renders; a second one raises.
+  #   * `primary` and `secondary` take no `variant` and no `danger`, and raise
+  #     when given one. A destructive action (delete, cancel, revoke, suspend)
+  #     goes into `more`, where `danger` paints the item red.
+  #   * `prev` and `next` are the paths of the neighbouring records. Both nil
+  #     draws no arrows; one nil draws that arrow disabled.
+  #
+  # Keyboard (hook `ExoHeader`, set when the header has a primary or arrows):
+  # Cmd/Ctrl+Enter presses the primary action, `K` and `J` follow the
+  # previous and next arrows. Neither fires while a dialog or a menu is open,
+  # and the letters do not fire while typing in a field. The primary's tooltip
+  # names its shortcut for the viewer's platform; the arrows' tooltips name
+  # their letters.
+  #
+  # `actions` stays for content that is not a button (a period select); a
+  # button there skips every rule above.
+  #
+  # A page header is separated from the content below it by a rule. That is
+  # the default, not an option: without it the title floats and the page
+  # reads as one undifferentiated column. Pass `separator={false}` for the
+  # rare header that sits inside a card or panel that already provides its
+  # own edge.
+  @doc "Renders a page header with title, subtitle, badges, actions and previous/next arrows."
+  attr :id, :string,
+    default: "page-header",
+    doc: "prefix of the menu ids and the hook's element; unique per page"
 
-  A page header is separated from the content below it by a rule. That is the
-  default, not an option: without it the title floats and the page reads as one
-  undifferentiated column. Pass `separator={false}` for the rare header that
-  sits inside a card or panel that already provides its own edge.
-  """
   attr :class, :any, default: nil
 
   attr :separator, :boolean,
     default: true,
     doc: "draws the rule below the header; turn off inside a bordered container"
 
+  attr :more_label, :string,
+    default: "More actions",
+    doc: "the menu button, in the page's language"
+
+  attr :prev, :string, default: nil, doc: "path of the previous record"
+  attr :next, :string, default: nil, doc: "path of the next record"
+  attr :prev_label, :string, default: "Previous", doc: "name of the up arrow"
+  attr :next_label, :string, default: "Next", doc: "name of the down arrow"
+  attr :pager_label, :string, default: "Records", doc: "name of the arrows' group"
   attr :rest, :global
   slot :inner_block, required: true
   slot :subtitle
-  slot :actions
-  slot :leading, doc: "sits LEFT of the title — a back button, an avatar, a status dot"
+  slot :badges, doc: "status badges right of the title, outside the heading"
+  slot :leading, doc: "sits LEFT of the title — an avatar, a status dot"
+  slot :actions, doc: "content that is not a button, before the buttons"
+  # The entries carry any button attribute (`phx-click`, `phx-value-*`,
+  # `data-*`, `navigate`, `form`), so their attributes are not declared and not
+  # validated; `validate_attrs: false` keeps the caller's compile quiet.
+  slot :primary,
+    validate_attrs: false,
+    doc: "the one main action: button attributes and `icon`"
+
+  slot :secondary, validate_attrs: false, doc: "outline buttons: button attributes and `icon`"
+
+  slot :more,
+    validate_attrs: false,
+    doc: "\"More actions\" items: button attributes, `icon`, `danger`"
 
   def header(assigns) do
+    check_header_entries!(assigns)
+
+    assigns =
+      assign(assigns,
+        pager?: !is_nil(assigns.prev) or !is_nil(assigns.next),
+        keys?: assigns.primary != [] or !is_nil(assigns.prev) or !is_nil(assigns.next)
+      )
+
     ~H"""
-    <header data-exo="header" data-separator={@separator && ""} class={@class} {@rest}>
+    <header
+      id={@keys? && @id}
+      data-exo="header"
+      data-separator={@separator && ""}
+      phx-hook={@keys? && "ExoHeader"}
+      class={@class}
+      {@rest}
+    >
       <div data-exo="header-lead">
         <div :if={@leading != []} data-exo="header-leading">{render_slot(@leading)}</div>
         <div data-exo="header-text">
-          <h1 data-exo="header-title">{render_slot(@inner_block)}</h1>
+          <div data-exo="header-title-row">
+            <h1 data-exo="header-title">{render_slot(@inner_block)}</h1>
+            <div :if={@badges != []} data-exo="header-badges">{render_slot(@badges)}</div>
+          </div>
           <p :if={@subtitle != []} data-exo="header-subtitle">{render_slot(@subtitle)}</p>
         </div>
       </div>
-      <div :if={@actions != []} data-exo="header-actions">{render_slot(@actions)}</div>
+      <div
+        :if={@actions != [] or @secondary != [] or @more != [] or @primary != [] or @pager?}
+        data-exo="header-actions"
+      >
+        {render_slot(@actions)}
+        <.button
+          :for={entry <- @secondary}
+          variant="outline"
+          size="sm"
+          data-exo-header="secondary"
+          {header_button_attrs(entry)}
+        >
+          <.icon :if={entry[:icon]} name={entry.icon} size="sm" />
+          {render_slot(entry)}
+        </.button>
+        <ExoUI.Components.Overlay.popover
+          :if={@more != []}
+          id={"#{@id}-more"}
+          side="bottom"
+          align="end"
+          haspopup="menu"
+        >
+          <:trigger>
+            <.button type="button" variant="outline" size="sm" data-exo-header="more">
+              {@more_label}
+              <.icon name="chevron-down" size="sm" />
+            </.button>
+          </:trigger>
+          <div
+            id={"#{@id}-more-menu"}
+            data-exo="dropdown-menu"
+            role="menu"
+            aria-label={@more_label}
+            phx-hook="ExoDropdownMenu"
+          >
+            <%= for entry <- @more do %>
+              <.link
+                :if={entry[:navigate] || entry[:patch] || entry[:href]}
+                data-exo="dropdown-item"
+                data-variant={entry[:danger] && "danger"}
+                role="menuitem"
+                {header_button_attrs(entry)}
+              >
+                <span :if={entry[:icon]} data-exo="dropdown-item-icon">
+                  <.icon name={entry.icon} size="sm" />
+                </span>
+                <span data-exo="dropdown-item-label">{render_slot(entry)}</span>
+              </.link>
+              <button
+                :if={!(entry[:navigate] || entry[:patch] || entry[:href])}
+                type="button"
+                data-exo="dropdown-item"
+                data-variant={entry[:danger] && "danger"}
+                role="menuitem"
+                popovertarget={"#{@id}-more"}
+                popovertargetaction="hide"
+                {header_button_attrs(entry)}
+              >
+                <span :if={entry[:icon]} data-exo="dropdown-item-icon">
+                  <.icon name={entry.icon} size="sm" />
+                </span>
+                <span data-exo="dropdown-item-label">{render_slot(entry)}</span>
+              </button>
+            <% end %>
+          </div>
+        </ExoUI.Components.Overlay.popover>
+        <.button
+          :for={entry <- @primary}
+          variant="primary"
+          size="sm"
+          data-exo-header="primary"
+          aria-keyshortcuts="Meta+Enter Control+Enter"
+          {header_button_attrs(entry)}
+        >
+          <.icon :if={entry[:icon]} name={entry.icon} size="sm" />
+          {render_slot(entry)}
+        </.button>
+        <nav :if={@pager?} data-exo="header-pager" aria-label={@pager_label}>
+          <.button
+            variant="outline"
+            size="sm"
+            navigate={@prev}
+            disabled={is_nil(@prev)}
+            data-exo-header="prev"
+            aria-label={@prev_label}
+            aria-keyshortcuts="K"
+            title={"#{@prev_label} (K)"}
+          >
+            <.icon name="chevron-up" size="sm" />
+          </.button>
+          <.button
+            variant="outline"
+            size="sm"
+            navigate={@next}
+            disabled={is_nil(@next)}
+            data-exo-header="next"
+            aria-label={@next_label}
+            aria-keyshortcuts="J"
+            title={"#{@next_label} (J)"}
+          >
+            <.icon name="chevron-down" size="sm" />
+          </.button>
+        </nav>
+      </div>
     </header>
     """
+  end
+
+  @header_entry_keys [:__slot__, :inner_block, :icon, :danger]
+
+  defp header_button_attrs(entry), do: Map.drop(entry, @header_entry_keys)
+
+  defp check_header_entries!(assigns) do
+    if length(assigns.primary) > 1 do
+      raise ArgumentError,
+            "header/1 takes at most one primary action, got #{length(assigns.primary)}; " <>
+              "the others go to `secondary` or `more`"
+    end
+
+    for slot <- [:primary, :secondary], entry <- Map.fetch!(assigns, slot) do
+      if Map.has_key?(entry, :variant) or entry[:danger] do
+        raise ArgumentError,
+              "header/1 draws `#{slot}` itself and takes no `variant` or `danger`; " <>
+                "a destructive action goes to `more` with `danger`"
+      end
+    end
+
+    :ok
   end
 
   @doc "Renders an avatar with image or initials fallback."
