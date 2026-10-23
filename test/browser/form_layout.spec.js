@@ -13,8 +13,11 @@ test.describe("form layout", () => {
     const main = layout.locator('[data-exo="form-layout-main"]');
     const aside = layout.locator('[data-exo="form-layout-aside"]');
 
-    // The story canvas widens after the first paint, so the columns are
-    // polled until the container query has applied.
+    // The story sits in a narrow cell beside its code, so the test sets the
+    // layout's own width on both sides of the 48rem container query.
+    await layout.evaluate((node) => {
+      node.style.width = "900px";
+    });
     await expect
       .poll(async () => {
         const m = await main.boundingBox();
