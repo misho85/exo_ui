@@ -68,15 +68,17 @@ test.describe("page header", () => {
     await page.keyboard.press("Shift+J");
     expect(await presses(page)).toEqual([]);
 
+    // The open menu holds focus on its first item, a link: Ctrl/Cmd+Enter there
+    // is the browser's "open in a new tab", so only the letter is pressed.
     const trigger = header.locator('[data-exo-header="more"]');
     const menu = page.locator(`#${await header.getAttribute("id")}-more`);
     await trigger.click();
     await expectPopoverState(menu, true);
-    await page.keyboard.press("j");
-    await page.keyboard.press("ControlOrMeta+Enter");
-    expect(await presses(page)).toEqual([]);
 
     const cancel = menu.getByRole("menuitem", { name: "Cancel order" });
     await expect(cancel).toHaveAttribute("data-variant", "danger");
+
+    await page.keyboard.press("j");
+    expect(await presses(page)).toEqual([]);
   });
 });
