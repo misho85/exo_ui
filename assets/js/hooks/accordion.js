@@ -14,7 +14,8 @@
 const ExoAccordion = {
   mounted() {
     this._triggers = () =>
-      Array.from(this.el.querySelectorAll('[data-exo="accordion-trigger"]:not([disabled])'))
+      Array.from(this.el.querySelectorAll('[data-exo="accordion-trigger"]'))
+        .filter((trigger) => trigger.closest('[data-exo="accordion"]') === this.el)
 
     this._isSingle = () => this.el.dataset.type === "single"
     this._isCollapsible = () => this.el.hasAttribute("data-collapsible")
@@ -24,7 +25,7 @@ const ExoAccordion = {
       const trigger = this._closestTrigger(e)
       if (!trigger) return
 
-      const triggers = this._triggers()
+      const triggers = this._triggers().filter((trigger) => !trigger.disabled)
       const idx = triggers.indexOf(trigger)
       if (idx === -1) return
 
@@ -110,16 +111,13 @@ const ExoAccordion = {
 
   _closestTrigger(event) {
     const target = event.target instanceof Element ? event.target : event.target?.parentElement
-    return target?.closest?.('[data-exo="accordion-trigger"]')
+    const trigger = target?.closest?.('[data-exo="accordion-trigger"]')
+    return trigger?.closest('[data-exo="accordion"]') === this.el ? trigger : null
   },
 
   _syncAllAria() {
-    const items = this.el.querySelectorAll('[data-exo="accordion-item"]')
-    items.forEach((item) => {
-      const trigger = item.querySelector('[data-exo="accordion-trigger"]')
-      if (trigger) {
-        this._syncAria(trigger, trigger.getAttribute("aria-expanded") === "true")
-      }
+    this._triggers().forEach((trigger) => {
+      this._syncAria(trigger, trigger.getAttribute("aria-expanded") === "true")
     })
   }
 }

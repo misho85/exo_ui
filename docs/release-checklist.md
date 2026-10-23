@@ -11,9 +11,11 @@ Use this checklist before cutting a public ExoUI tag.
 
 ## Verification
 
+- [ ] `mix hex.audit` (the root lock is dev/test only, but CI fails on its advisories too)
 - [ ] `mix test`
 - [ ] `mix compile --warnings-as-errors`
 - [ ] `bun run build:all`
+- [ ] `bun run check:css`
 - [ ] `bun run test:browser`
 - [ ] `bun run capture:components`
 - [ ] `bun run capture:validate`

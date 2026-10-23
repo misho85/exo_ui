@@ -22,9 +22,21 @@ const ExoSlider = {
     this.input.addEventListener('input', this.syncValue)
     this.input.addEventListener('change', this.syncValue)
     this.syncValue()
+    this._form = this.input?.form
+    this._onReset = (event) => {
+      clearTimeout(this._resetTimer)
+      this._resetTimer = setTimeout(() => {
+        if (!event.defaultPrevented) this.syncValue()
+      }, 0)
+    }
+    this._form?.addEventListener('reset', this._onReset)
   },
 
   unbindSlider() {
+    clearTimeout(this._resetTimer)
+    this._form?.removeEventListener('reset', this._onReset)
+    this._form = null
+
     if (!this.input) return
 
     this.input.removeEventListener('input', this.syncValue)

@@ -85,5 +85,33 @@ defmodule ExoUI.Components.IconTest do
     refute html =~ "☀"
     refute html =~ "☾"
     refute html =~ "⚙"
+    assert html =~ ~s(aria-label="Light theme")
+    assert html =~ ~s(aria-label="Dark theme")
+    assert html =~ ~s(aria-label="System theme")
+  end
+
+  test "theme_toggle buttons take the caller's labels" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.theme_toggle
+        aria_label="Tema"
+        light_label="Svetla tema"
+        dark_label="Tamna tema"
+        system_label="Tema sistema"
+      />
+      """)
+
+    {:ok, tree} = Floki.parse_fragment(html)
+
+    assert Floki.attribute(tree, ~s([data-exo="theme-toggle"]), "aria-label") == ["Tema"]
+
+    assert Floki.attribute(tree, ~s([data-exo="theme-btn"]), "aria-label") ==
+             ["Svetla tema", "Tamna tema", "Tema sistema"]
+
+    refute html =~ "Light theme"
+    refute html =~ "Dark theme"
+    refute html =~ "System theme"
   end
 end

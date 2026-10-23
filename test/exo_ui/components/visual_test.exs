@@ -80,4 +80,11 @@ defmodule ExoUI.Components.VisualTest do
     assert html =~ "Done"
     assert html =~ "Operation completed."
   end
+
+  test "avatar initials ignore surrounding whitespace" do
+    assigns = %{}
+    html = rendered_to_string(~H|<.avatar name="  Alice   Smith  " />|)
+    tree = Floki.parse_fragment!(html)
+    assert Floki.find(tree, "[data-exo='avatar-initials']") |> Floki.text() == "AS"
+  end
 end

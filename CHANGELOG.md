@@ -18,6 +18,34 @@
   row and a red "Cancel order" beside the main action (TRG-742). `actions`
   stays, for content that is not a button.
 
+- `badge/1` does not wrap: `white-space: nowrap`. In a narrow table column a
+  two-word label ("Na čekanju", "Propuštena objava") broke onto two lines inside
+  its pill — on spojka's admin collaborations, next to the override form
+  (SPO-1051, SPO-1066).
+
+- `table/1`: the wrapper is `position: relative`, so it is the containing
+  block of an absolutely positioned descendant such as the visually hidden
+  actions header. That header escaped the wrapper's horizontal scroll and
+  widened the page itself: on a 390px phone, an admin list with an actions
+  column scrolled the whole page sideways into empty space (698px on spojka's
+  waitlist, 829px on its venues), while the table already scrolled in its own
+  wrapper (SPO-555).
+
+- `sidebar_item/1`: an `active` item's link carries `aria-current="page"`.
+  The current page was marked only by `data-active` and its fill, so a screen
+  reader heard every item of the menu the same (SPO-555).
+
+- `sidebar_layout/1` takes `toggle_label` and `close_label`, and
+  `theme_toggle/1` takes `light_label`, `dark_label` and `system_label`, for
+  the accessible names that were fixed in English ("Toggle sidebar", "Close
+  sidebar", "Light theme", …). Defaults are unchanged (SPO-555).
+
+- `pagination/1` takes `status_label` (`%{page}` and `%{total}` replaced) and
+  `current_page_label` (`%{page}` replaced) for the two texts that were fixed
+  in English: the visually hidden "Page 2 of 5" and ", current page" after the
+  current page's label. Without `current_page_label` the suffix stays, so a
+  caller that set only `page_label` hears the same as before (SPO-1043).
+
 - `select/1` docs: `phx-change` works only from inside a form. The select
   still has to be in a `<form>`, or name one with `form`: LiveView's client
   refuses a change from a control that has no form ("form events require the
@@ -131,6 +159,22 @@
   with no way to replace it. A function rather than a `%{value}` template,
   so the caller can pick the plural form for the number. The default is
   unchanged.
+
+- Fix nested accordion/collapsible state isolation, hidden component visibility,
+  mixed link/action navigation order, and missing breadcrumb labels.
+- Improve combobox input keyboard selection, initial labels, focus restoration,
+  and boolean option values across form choice controls.
+- Make carousel controls follow LiveView updates, container resizing, RTL, and
+  reduced-motion preferences without intercepting text input keys.
+- Preserve toast pause state across updates and overlapping hover/focus; clean up
+  removed notifications, deferred menu/tooltip work, and event listeners.
+- Synchronize theme controls and native form resets for sliders, file summaries,
+  and ratings; avoid duplicate rating change notifications.
+- Correct outdated Storybook examples and browser checks. Replace timestamp-based
+  CSS freshness checks with deterministic source/bundle comparison (`check:css`).
+- Fail captures on browser errors and remove redundant raw video files after
+  saving the named recordings. Preserve the current Linux CI visual references
+  when integrating the latest Storybook updates.
 
 - `ExoDropdownMenu`: `menuitemradio` and `menuitemcheckbox` are items of the
   menu. The hook took only `role="menuitem"`, so a choice or a toggle inside a

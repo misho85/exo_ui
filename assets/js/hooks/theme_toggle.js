@@ -14,12 +14,21 @@ const ExoThemeToggle = {
       const value = btn.getAttribute('data-theme-value')
       this._apply(value)
       this._writeTheme(value)
+      document.dispatchEvent(new CustomEvent('exo:theme-change', { detail: value }))
     }
     this.el.addEventListener('click', this._onClick)
+    this._onThemeChange = (event) => this._apply(event.detail)
+    this._onStorage = (event) => {
+      if (event.key === 'exo-theme' || event.key === null) this._apply(this._current())
+    }
+    document.addEventListener('exo:theme-change', this._onThemeChange)
+    window.addEventListener('storage', this._onStorage)
   },
 
   _unbind() {
     if (this._onClick) this.el.removeEventListener('click', this._onClick)
+    if (this._onThemeChange) document.removeEventListener('exo:theme-change', this._onThemeChange)
+    if (this._onStorage) window.removeEventListener('storage', this._onStorage)
     if (this.el) this.el.removeAttribute('data-ready')
     this._onClick = null
   },
@@ -33,6 +42,7 @@ const ExoThemeToggle = {
   },
 
   _apply(theme) {
+    if (!['light', 'dark', 'system'].includes(theme)) theme = 'system'
     const root = document.documentElement
     // Update active state on buttons
     this.el.querySelectorAll('[data-theme-value]').forEach(btn => {

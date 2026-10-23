@@ -59,3 +59,9 @@
 @import "./src/components/carousel.css";
 @import "./src/components/command-palette.css";
 @import "./src/components/menubar.css";
+
+/* Keep native hidden state effective after component display declarations.
+   Inline Phoenix JS.show commands can still reveal a hidden component. */
+:where([data-exo][hidden]:not([hidden="until-found"])) {
+  display: none;
+}

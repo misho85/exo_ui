@@ -58,7 +58,8 @@ const ExoContextMenu = {
       this._positionWithinViewport(x, y)
       this._bindCloseListeners()
 
-      requestAnimationFrame(() => {
+      cancelAnimationFrame(this._focusFrame)
+      this._focusFrame = requestAnimationFrame(() => {
         this._items()[0]?.focus()
       })
     }
@@ -67,7 +68,8 @@ const ExoContextMenu = {
       this.menu.style.left = x + "px"
       this.menu.style.top = y + "px"
 
-      requestAnimationFrame(() => {
+      cancelAnimationFrame(this._positionFrame)
+      this._positionFrame = requestAnimationFrame(() => {
         if (!this.menu.hasAttribute("data-open")) return
         const rect = this.menu.getBoundingClientRect()
         const gap = 4
@@ -91,6 +93,8 @@ const ExoContextMenu = {
     }
 
     this._hide = () => {
+      cancelAnimationFrame(this._focusFrame)
+      cancelAnimationFrame(this._positionFrame)
       this.menu.removeAttribute("data-open")
       this.trigger.setAttribute("aria-expanded", "false")
       document.removeEventListener("pointerdown", this._close, true)
@@ -144,6 +148,8 @@ const ExoContextMenu = {
   },
 
   _unbind() {
+    cancelAnimationFrame(this._focusFrame)
+    cancelAnimationFrame(this._positionFrame)
     if (this.trigger && this._onContext) this.trigger.removeEventListener("contextmenu", this._onContext)
     if (this.trigger && this._onTriggerKeydown) this.trigger.removeEventListener("keydown", this._onTriggerKeydown)
     if (this.menu && this._onItemClick) this.menu.removeEventListener("click", this._onItemClick)
