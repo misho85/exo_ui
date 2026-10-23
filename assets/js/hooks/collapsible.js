@@ -12,7 +12,7 @@ const ExoCollapsible = {
 
     this.el.addEventListener("click", this._onClick = (e) => {
       const trigger = this._closestTrigger(e)
-      if (!trigger) return
+      if (!trigger || trigger.disabled) return
 
       const checkbox = this._checkbox()
       if (!checkbox) return
@@ -55,7 +55,8 @@ const ExoCollapsible = {
 
   _closestTrigger(event) {
     const target = event.target instanceof Element ? event.target : event.target?.parentElement
-    return target?.closest?.('[data-exo="collapsible-trigger"]')
+    const trigger = target?.closest?.('[data-exo="collapsible-trigger"]')
+    return trigger?.closest('[data-exo="collapsible"]') === this.el ? trigger : null
   }
 }
 

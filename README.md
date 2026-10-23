@@ -263,10 +263,13 @@ mix setup
 mix phx.server
 ```
 
-For browser-test debugging, you can run Storybook without watcher processes:
+For browser-test debugging, you can run Storybook without watcher processes.
+The JS bundle (`storybook/priv/static/assets/`) is build output and not in
+git, so build it first:
 
 ```sh
 cd storybook
+mix assets.build
 PLAYWRIGHT=1 mix phx.server
 ```
 
@@ -300,6 +303,7 @@ when contributing to ExoUI:
 ```sh
 bun install
 bun run build:all    # builds exo.css and exo.tokens.css
+bun run check:css    # verifies committed CSS matches the sources
 bun run watch        # rebuilds on change
 ```
 

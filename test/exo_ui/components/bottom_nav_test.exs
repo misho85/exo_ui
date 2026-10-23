@@ -133,4 +133,21 @@ defmodule ExoUI.Components.BottomNavTest do
     |> parse_component()
     |> assert_class("my-nav")
   end
+
+  test "preserves slot order when navigation mixes links and actions" do
+    assigns = %{}
+
+    {_html, tree} =
+      parse_component(~H"""
+      <.bottom_nav>
+        <:item label="Home" href="/" />
+        <:item label="Create" click="create" />
+        <:item label="Settings" navigate="/settings" />
+        <:item label="Help" click="help" />
+      </.bottom_nav>
+      """)
+
+    assert tree |> Floki.find("[data-exo='bottom-nav-label']") |> Enum.map(&Floki.text/1) ==
+             ["Home", "Create", "Settings", "Help"]
+  end
 end

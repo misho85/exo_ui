@@ -269,6 +269,31 @@ defmodule ExoUI.LayoutsTest do
     assert html =~ ~s(aria-label="Close sidebar")
   end
 
+  test "renders sidebar toggle and overlay with caller labels" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.sidebar_layout toggle_label="Otvori ili zatvori meni" close_label="Zatvori meni">
+        <:nav>Nav</:nav>
+        Body
+      </.sidebar_layout>
+      """)
+
+    {:ok, tree} = Floki.parse_fragment(html)
+
+    assert Floki.attribute(tree, ~s([data-exo="sidebar-hamburger"]), "aria-label") == [
+             "Otvori ili zatvori meni"
+           ]
+
+    assert Floki.attribute(tree, ~s([data-exo="sidebar-overlay"]), "aria-label") == [
+             "Zatvori meni"
+           ]
+
+    refute html =~ "Toggle sidebar"
+    refute html =~ "Close sidebar"
+  end
+
   # ── sidebar_item/1 ────────────────────────────────────────────────
 
   test "renders sidebar item with required attrs" do
@@ -299,11 +324,20 @@ defmodule ExoUI.LayoutsTest do
     assert html =~ ~s(data-exo="sidebar-item")
   end
 
+  test "active sidebar item tells a screen reader its link is the current page" do
+    assigns = %{}
+    html = rendered_to_string(~H|<.sidebar_item href="/page" label="Page" active={true} />|)
+    {:ok, tree} = Floki.parse_fragment(html)
+
+    assert Floki.attribute(tree, ~s([data-exo="sidebar-item"] a), "aria-current") == ["page"]
+  end
+
   test "renders sidebar item without active state by default" do
     assigns = %{}
     html = rendered_to_string(~H|<.sidebar_item href="/page" label="Page" />|)
 
     refute html =~ ~s(data-active)
+    refute html =~ "aria-current"
   end
 
   test "renders sidebar item with badge" do

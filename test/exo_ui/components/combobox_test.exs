@@ -567,4 +567,45 @@ defmodule ExoUI.Components.ComboboxTest do
     assert html =~ ~s(class="field-shell")
     assert html =~ ~s(data-track="combobox")
   end
+
+  test "input trigger renders its selected label and an associated field label" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.combobox
+        id="owner"
+        name="owner"
+        label="Owner"
+        trigger="input"
+        options={[{"Ana", "ana"}, {"Milan", "milan"}]}
+        value="milan"
+      />
+      """)
+
+    tree = Floki.parse_fragment!(html)
+    assert Floki.attribute(tree, "#owner-input", "value") == ["Milan"]
+    assert Floki.attribute(tree, "label", "for") == ["owner-input"]
+    assert Floki.attribute(tree, "#owner-input", "aria-autocomplete") == ["list"]
+  end
+
+  test "choice option maps preserve a false value" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <.combobox
+        id="enabled"
+        name="enabled"
+        value={false}
+        options={[%{label: "No", value: false}, %{label: "Yes", value: true}]}
+      />
+      """)
+
+    tree = Floki.parse_fragment!(html)
+    assert Floki.attribute(tree, "[data-selected]", "data-value") == ["false"]
+
+    assert Floki.find(tree, "[data-exo='combobox-value']") |> Floki.text() |> String.trim() ==
+             "No"
+  end
 end

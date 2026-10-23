@@ -21,9 +21,21 @@ const ExoFileInput = {
 
     this.input.addEventListener('change', this.syncSelected)
     this.syncSelected()
+    this._form = this.input?.form
+    this._onReset = (event) => {
+      clearTimeout(this._resetTimer)
+      this._resetTimer = setTimeout(() => {
+        if (!event.defaultPrevented) this.syncSelected()
+      }, 0)
+    }
+    this._form?.addEventListener('reset', this._onReset)
   },
 
   unbindFileInput() {
+    clearTimeout(this._resetTimer)
+    this._form?.removeEventListener('reset', this._onReset)
+    this._form = null
+
     if (!this.input) return
 
     this.input.removeEventListener('change', this.syncSelected)

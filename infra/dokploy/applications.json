@@ -1,0 +1,31 @@
+{
+  "applications": [
+    {
+      "name": "exo-ui-storybook",
+      "appName": "app-quantify-virtual-application-o7gkl9",
+      "sourceType": "github",
+      "owner": "misho85",
+      "repository": "exo_ui",
+      "branch": "main",
+      "buildType": "dockerfile",
+      "buildPath": "/",
+      "dockerfile": "Dockerfile",
+      "dockerContextPath": ".",
+      "dockerBuildStage": "final",
+      "autoDeploy": true,
+      "triggerType": "push",
+      "watchPaths": [
+        "lib/{**,**/.*,**/.*/**}",
+        "config/{**,**/.*,**/.*/**}",
+        "priv/{**,**/.*,**/.*/**}",
+        "assets/{**,**/.*,**/.*/**}",
+        "storybook/{**,**/.*,**/.*/**}",
+        "mix.exs",
+        "mix.lock",
+        "README.md",
+        "Dockerfile",
+        ".dockerignore"
+      ]
+    }
+  ]
+}
