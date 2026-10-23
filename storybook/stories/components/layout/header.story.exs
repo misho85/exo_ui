@@ -28,6 +28,25 @@ defmodule Storybook.Components.Header do
           ~s|<:subtitle>All active projects.</:subtitle>|,
           ~s|<:actions><ExoUI.Components.button variant="primary">New Project</ExoUI.Components.button></:actions>|
         ]
+      },
+      %Variation{
+        id: :record,
+        attributes: %{
+          id: "header-record",
+          prev: "/components/layout/header?record=1001",
+          next: "/components/layout/header?record=1003",
+          prev_label: "Previous order",
+          next_label: "Next order",
+          pager_label: "Orders"
+        },
+        slots: [
+          "#1002",
+          ~s|<:badges><ExoUI.Components.badge variant="warning">Unfulfilled</ExoUI.Components.badge></:badges>|,
+          ~s|<:secondary icon="printer" href="#invoice">Invoice</:secondary>|,
+          ~s|<:more icon="pencil" href="#edit">Edit</:more>|,
+          ~s|<:more danger icon="x">Cancel order</:more>|,
+          ~s|<:primary icon="truck">Mark as shipped</:primary>|
+        ]
       }
     ]
   end
