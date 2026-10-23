@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- `stat_card/1`, `metric_card/1` and `table/1`: the card label and the table
+  header cell are in sentence case, as written, no longer `uppercase` with
+  `letter-spacing: 0.05em`. Capitals read as shouting next to the value they
+  name, and the label is the caller's text: trg24 writes „Ukupna prodaja", not
+  „UKUPNA PRODAJA". A caller that wants capitals writes them (TRG-747).
+
 - `select/1` docs: `phx-change` works only from inside a form. The select
   still has to be in a `<form>`, or name one with `form`: LiveView's client
   refuses a change from a control that has no form ("form events require the
