@@ -2,6 +2,32 @@
 
 ## Unreleased
 
+- `form_layout/1`, `optional_field/1` and `save_bar/1`: the page of one
+  record. `form_layout` has a `main` slot for what the customer sees and an
+  `aside` for what the merchant decides; two columns from 48rem of the
+  layout's own width (a container query, so a sidebar beside it counts), one
+  below that with the aside under the main column. `optional_field` keeps a
+  rare field as a "+ Label" chip until it is clicked, then opens the field and
+  focuses it; in a wrapping row of chips an opened field takes the whole row;
+  `open` (a value or an error) renders it open, an opened chip
+  stays open across patches, and the field is in the DOM either way, so the
+  form submits it. `save_bar` is the sticky "Unsaved changes · Discard · Save"
+  bar, shown by the caller's `show`; Save submits the form named by `form`,
+  so every field bound to it goes in one event. trg24's product form had its
+  status, SEO and customs in a side column that was three columns on a phone,
+  every rare field open, and no sign of unsaved work (TRG-744).
+
+- `radio_group/1`: `form` names the form every radio belongs to, for a group
+  outside its form (a side column beside the form it saves). Set on the
+  `<fieldset>`, as a global attribute, it would not reach the radios: a
+  fieldset's `form` does not move its controls into another form (TRG-744).
+
+- `stat_card/1`, `metric_card/1` and `table/1`: the card label and the table
+  header cell are in sentence case, as written, no longer `uppercase` with
+  `letter-spacing: 0.05em`. Capitals read as shouting next to the value they
+  name, and the label is the caller's text: trg24 writes „Ukupna prodaja", not
+  „UKUPNA PRODAJA". A caller that wants capitals writes them (TRG-747).
+
 - `header/1`: structured actions. `primary` (at most one entry that renders),
   `secondary` and `more` (a "More actions" menu, `more_label`) take the
   button's attributes and its label, and the header draws the buttons itself:

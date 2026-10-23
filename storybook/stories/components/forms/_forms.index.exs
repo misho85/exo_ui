@@ -17,4 +17,7 @@ defmodule Storybook.Components.Forms do
   def entry("radio_group"), do: [name: "Radio Group", index: 9]
   def entry("rating"), do: [name: "Rating", index: 10]
   def entry("slider"), do: [name: "Slider", index: 11]
+  def entry("form_layout"), do: [name: "Form Layout", index: 12]
+  def entry("optional_field"), do: [name: "Optional Field", index: 13]
+  def entry("save_bar"), do: [name: "Save Bar", index: 14]
 end

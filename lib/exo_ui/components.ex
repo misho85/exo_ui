@@ -46,6 +46,9 @@ defmodule ExoUI.Components do
   defdelegate date_picker(assigns), to: ExoUI.Components.Form
   defdelegate file_input(assigns), to: ExoUI.Components.Form
   defdelegate fieldset(assigns), to: ExoUI.Components.Form
+  defdelegate form_layout(assigns), to: ExoUI.Components.Form
+  defdelegate optional_field(assigns), to: ExoUI.Components.Form
+  defdelegate save_bar(assigns), to: ExoUI.Components.Form
   defdelegate rating(assigns), to: ExoUI.Components.Form
   defdelegate translate_error(msg_opts), to: ExoUI.Components.Form
 
