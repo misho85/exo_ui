@@ -5,7 +5,7 @@ defmodule Storybook.Components.FormLayout do
 
   def template do
     """
-    <div style="padding: 1rem;" psb-code-hidden>
+    <div style="padding: 1rem; width: 100%; box-sizing: border-box;" psb-code-hidden>
       <.psb-variation/>
     </div>
     """
