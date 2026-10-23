@@ -38,7 +38,7 @@ test.describe("page header", () => {
     await expect(header.locator('[data-exo-header="next"]')).toHaveAttribute("title", "Next order (J)");
 
     await recordPresses(header);
-    await page.locator("body").click({ position: { x: 1, y: 1 } });
+    await page.evaluate(() => document.activeElement?.blur());
 
     await page.keyboard.press("ControlOrMeta+Enter");
     await page.keyboard.press("j");
