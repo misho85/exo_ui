@@ -55,7 +55,11 @@ const BORDER_VALUES = ["0.5px", "1px", "1.5px", "2px"]
 const EFFECTS = [
   ["--exo-depth", "Depth effect", "3D depth on fields & selectors"],
   ["--exo-noise", "Noise effect", "Noise pattern on fields & selectors"],
+  ["--exo-field-focus-gap", "Focus ring gap", "daisyUI's gap between a focused field and its ring"],
 ]
+// ExoUI's own, not daisyUI's: missing in daisyUI themes and older links.
+const EXO_DEFAULTS = { "--exo-field-focus-gap": "0" }
+const withDefaults = (theme) => ({ ...EXO_DEFAULTS, ...theme })
 const SHAPE_KEYS = [
   ...RADII.map(([key]) => key),
   ...SIZES.map(([key]) => key),
@@ -151,6 +155,7 @@ function contrast(a, b) {
 
 const builtinThemes = () =>
   DAISY_THEMES.map((theme) => ({
+    ...EXO_DEFAULTS,
     ...theme,
     id: `daisy:${theme.name}`,
     type: "builtin",
@@ -172,6 +177,7 @@ const SHAPE_VALUES = {
   "--exo-border-width": BORDER_VALUES,
   "--exo-depth": ["0", "1"],
   "--exo-noise": ["0", "1"],
+  "--exo-field-focus-gap": ["0", "1"],
 }
 const isSafeColor = (value) =>
   typeof value === "string" && !/[;{}"'<>\\]/.test(value) && CSS.supports("color", value)
@@ -196,7 +202,7 @@ const current = () => state.themes.find((theme) => theme.id === state.currentId)
 
 function readStorage() {
   try {
-    const stored = JSON.parse(localStorage.getItem(STORAGE_THEMES) ?? "null")
+    const stored = JSON.parse(localStorage.getItem(STORAGE_THEMES) ?? "null")?.map?.(withDefaults)
     if (Array.isArray(stored) && stored.every(isValidTheme)) return stored
   } catch {}
   return null
@@ -233,7 +239,7 @@ function decodeTheme(text) {
 function themeFromHash() {
   if (!location.hash.startsWith("#theme=")) return null
   try {
-    const theme = decodeTheme(location.hash.slice(7))
+    const theme = withDefaults(decodeTheme(location.hash.slice(7)))
     return isValidTheme(theme) ? theme : null
   } catch {
     return null
@@ -323,6 +329,7 @@ function randomTheme() {
     "--exo-border-width": pick(["1px", "1px", "1px", "1px", "1px", "1px", "1px", "1px", "1.5px", "2px"]),
     "--exo-depth": pick(["0", "1"]),
     "--exo-noise": pick(["0", "1"]),
+    "--exo-field-focus-gap": "0",
   }
   const dark = Math.random() > 0.5
   theme["color-scheme"] = dark ? "dark" : "light"
@@ -396,7 +403,7 @@ function daisyCSS(theme) {
     `  default: ${theme.default ? "true" : "false"};`,
     `  prefersdark: ${theme.prefersdark ? "true" : "false"};`,
     `  color-scheme: "${theme["color-scheme"]}";`,
-    ...THEME_KEYS.map((key) => `  ${toDaisyKey(key)}: ${theme[key]};`),
+    ...THEME_KEYS.filter((key) => !(key in EXO_DEFAULTS)).map((key) => `  ${toDaisyKey(key)}: ${theme[key]};`),
   ]
   return `@plugin "daisyui/theme" {\n${lines.join("\n")}\n}\n`
 }

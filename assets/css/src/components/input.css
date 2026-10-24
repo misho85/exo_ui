@@ -190,7 +190,9 @@
   --input-color: var(--exo-base-content);
   box-shadow: 0 1px color-mix(in oklab, var(--input-color) calc(var(--exo-depth) * 10%), #0000);
   outline: 2px solid var(--input-color);
-  outline-offset: 2px;
+  /* `--exo-field-focus-gap` 0 (default): the ring lies over the field's own
+     border, one 2px edge. 1: daisyUI's ring 2px off the border. */
+  outline-offset: calc(var(--exo-field-focus-gap, 0) * 2px - (1 - var(--exo-field-focus-gap, 0)) * var(--exo-border-width));
 }
 
 :where(textarea[data-exo="input"]:focus) {
