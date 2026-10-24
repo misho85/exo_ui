@@ -33,6 +33,7 @@
 @import "./src/components/theme-toggle.css";
 @import "./src/components/swap.css";
 @import "./src/components/table.css";
+@import "./src/components/resource-list.css";
 @import "./src/components/date-picker.css";
 @import "./src/components/charts.css";
 @import "./src/components/select.css";

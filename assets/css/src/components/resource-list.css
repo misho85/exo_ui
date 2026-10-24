@@ -1,0 +1,221 @@
+/*
+ * Resource list (`resource_list/1`): the toolbar above an admin list and the
+ * bulk bar that replaces its header. daisyUI has no such component, so it is
+ * made of daisyUI's own pieces (tabs, btn, input, select, checkbox, table) and
+ * only lays them out; sizes come from the same field scale they use.
+ */
+
+:where([data-exo="resource-list"]) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--exo-space-3);
+}
+
+:where([data-exo="resource-list-stats"]) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: var(--exo-space-3);
+  margin: 0;
+}
+
+:where([data-exo="resource-list-stat"]) {
+  padding: var(--exo-space-2) var(--exo-space-3);
+  border: var(--exo-border-width, 1px) solid var(--exo-base-300);
+  border-radius: var(--exo-radius-box);
+  background: var(--exo-base-100);
+}
+
+:where([data-exo="resource-list-stat"]) > :where(dt) {
+  font-size: var(--exo-text-xs);
+  color: var(--exo-muted-foreground);
+}
+
+:where([data-exo="resource-list-stat"]) > :where(dd) {
+  margin: 0;
+  font-size: var(--exo-text-lg);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--exo-base-content);
+}
+
+:where([data-exo="resource-list-views"]) {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--exo-space-2);
+}
+
+:where([data-exo="resource-list-views-nav"]) {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+:where([data-exo="resource-list-views-nav"]) :where([data-exo="tabs"]) {
+  flex-wrap: nowrap;
+}
+
+:where([data-exo="resource-list-views-nav"]) :where([data-exo="tab"]) {
+  white-space: nowrap;
+}
+
+:where([data-exo="resource-list-count"]) {
+  padding-inline: 0.375rem;
+  border-radius: var(--exo-radius-selector);
+  background: var(--exo-base-200);
+  font-size: var(--exo-text-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--exo-muted-foreground);
+}
+
+:where([data-exo="resource-list-save"]),
+:where([data-exo="resource-list-toolbar"]),
+:where([data-exo="resource-list-filters"]),
+:where([data-exo="resource-list-bulk"]),
+:where([data-exo="resource-list-selection-bar"]) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--exo-space-2);
+}
+
+:where([data-exo="resource-list-filters"]) {
+  flex: 1;
+  min-width: 0;
+}
+
+:where([data-exo="resource-list-search"]) {
+  flex: 1;
+  min-width: 14rem;
+}
+
+/* With chips the field takes the whole row and the chips go under it: in the
+   rest of a row it was narrower than the sentence a merchant types. */
+:where([data-exo="resource-list-filters"][data-chips]) > :where([data-exo="resource-list-search"]) {
+  flex-basis: 100%;
+}
+
+:where([data-exo="resource-list-chip"]) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--exo-space-1);
+  padding-block: 0.125rem;
+  padding-inline: var(--exo-space-3) var(--exo-space-1);
+  border: var(--exo-border-width, 1px) solid var(--exo-base-300);
+  border-radius: var(--exo-radius-selector);
+  background: var(--exo-base-200);
+  font-size: var(--exo-text-sm);
+}
+
+:where([data-exo="resource-list-chip-label"]) {
+  color: var(--exo-muted-foreground);
+  white-space: nowrap;
+}
+
+:where([data-exo="resource-list-chip"]) :where(input[inputmode="decimal"]) {
+  width: 6rem;
+}
+
+/* A sortable header is a link that keeps the header's look: the same small
+   muted text, an arrow that says which way, and the content colour once it is
+   the sort in force. */
+:where([data-exo="resource-list-sort"]) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--exo-space-1);
+  color: inherit;
+  font: inherit;
+  text-decoration: none;
+  border-radius: var(--exo-radius-sm);
+}
+
+:where([data-exo="resource-list-sort"]):hover,
+:where([data-exo="resource-list-sort"][data-active]) {
+  color: var(--exo-base-content);
+}
+
+:where([data-exo="resource-list-sort"]):focus-visible {
+  outline: 2px solid var(--exo-ring);
+  outline-offset: 2px;
+}
+
+:where([data-exo="resource-list-sort"]) > :where([data-exo="icon"]) {
+  opacity: 0.6;
+}
+
+:where([data-exo="resource-list-sort"][data-active]) > :where([data-exo="icon"]) {
+  opacity: 1;
+}
+
+:where([data-exo="resource-list"][data-selectable]) :where(td:first-child, th:first-child) {
+  width: 2rem;
+  padding-inline-end: 0;
+}
+
+:where([data-exo="resource-list-bulk"]) {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--exo-base-content);
+  font-size: var(--exo-text-sm);
+}
+
+:where([data-exo="resource-list-bulk-panel"]) {
+  margin-top: var(--exo-space-2);
+  font-size: var(--exo-text-sm);
+  font-weight: 400;
+  text-align: start;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--exo-base-content);
+}
+
+:where([data-exo="resource-list-bulk-count"]) {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+:where([data-exo="resource-list-selection-bar"]) {
+  min-height: 2.75rem;
+  padding: var(--exo-space-2) var(--exo-space-3);
+  border: var(--exo-border-width, 1px) solid var(--exo-base-300);
+  border-radius: var(--exo-radius-box);
+  background: var(--exo-base-100);
+}
+
+:where([data-exo="resource-list-select-all-label"]) {
+  font-size: var(--exo-text-sm);
+  color: var(--exo-muted-foreground);
+}
+
+:where([data-exo="resource-list-columns"]) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--exo-space-1);
+  min-width: 12rem;
+  margin: 0;
+  padding: var(--exo-space-2);
+  border: 0;
+}
+
+:where([data-exo="resource-list-columns"]) > :where(legend) {
+  margin-bottom: var(--exo-space-1);
+  font-size: var(--exo-text-xs);
+  font-weight: 500;
+  color: var(--exo-muted-foreground);
+}
+
+:where([data-exo="resource-list-footer"]) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--exo-space-2);
+}
+
+/* A row that carries a row link opens on a click anywhere (`ExoRowLink`), so
+   the pointer says so — only over a row that has the link, since a click on a
+   row without one does nothing. */
+:where([data-exo="resource-list-table"], [data-exo="resource-list-grid"])
+  :where(tr, article, li):has(a[data-row-link]) {
+  cursor: pointer;
+}

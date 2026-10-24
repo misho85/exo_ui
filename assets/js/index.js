@@ -22,6 +22,7 @@ import { ExoSlider } from './hooks/slider.js'
 import { ExoFileInput } from './hooks/file_input.js'
 import { ExoToast } from './hooks/toast.js'
 import { ExoHeader } from './hooks/header.js'
+import { ExoRowLink, ExoBulkSelect, ExoListColumns, ExoListSearch } from './hooks/resource_list.js'
 
 const hooks = {
   ExoAccordion,
@@ -47,7 +48,11 @@ const hooks = {
   ExoSlider,
   ExoFileInput,
   ExoToast,
-  ExoHeader
+  ExoHeader,
+  ExoRowLink,
+  ExoBulkSelect,
+  ExoListColumns,
+  ExoListSearch
 }
 
 export { hooks }

@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-24T11:07:45.811Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-10-24T11-00-34-554Z",
-  "count": 118,
+  "updatedAt": "2026-10-24T15:39:09.800Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-10-24T15-11-18-365Z",
+  "count": 119,
   "entries": [
     {
       "name": "actions/button",
@@ -11,7 +11,7 @@
       "dataExoCount": 11,
       "width": 1280,
       "height": 900,
-      "sha256": "b78356407971d533c76d8e873038723e993606fff1a82d2d023a70711cdd8a5a"
+      "sha256": "8d5a64d49af5022bcce407e01671be15973d349c8eea5a38c7b67e1d218b693b"
     },
     {
       "name": "actions/swap",
@@ -146,7 +146,7 @@
       "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "76f0cc9e9a28119cd5553503b66eb3766c52d89936b2510d9053754cd9e9165a"
+      "sha256": "9e6ef3dc3d57948e4ba9c5cdc0d21f2067d1b44bf476a45dcdb88d1a3725f812"
     },
     {
       "name": "charts/overview",
@@ -218,7 +218,7 @@
       "dataExoCount": 16,
       "width": 1280,
       "height": 900,
-      "sha256": "5ff9053211ba44c8dae6f8b694bc42b0b56e3de637d56805b73bc135ef2621b2"
+      "sha256": "a5712cf50742fb63a96b19c51471a00540731d042c56e0f7ad3d9909c5efb9c0"
     },
     {
       "name": "data_display/chat_bubble",
@@ -227,7 +227,7 @@
       "dataExoCount": 18,
       "width": 1280,
       "height": 900,
-      "sha256": "f29a0abc468080cd98dfdd4186b22b8be918460115297064c3d0a8f827e6dc47"
+      "sha256": "d55a28dab2219fbd16e72a0fb08cab359d734a520314926bf4516c6fcd52eda1"
     },
     {
       "name": "data_display/content_card",
@@ -236,7 +236,7 @@
       "dataExoCount": 12,
       "width": 1280,
       "height": 900,
-      "sha256": "207f02979a6a7714e053b8fc293b805c404f9cb9465cbecb5b7d9873e5097d4d"
+      "sha256": "2d16b9a4d1ae7e1bb4e2bdcfdde5a5c01ff9620e0ae4b0b1aef580062a6fa5b2"
     },
     {
       "name": "data_display/editable_record_workflow",
@@ -245,7 +245,7 @@
       "dataExoCount": 273,
       "width": 1280,
       "height": 900,
-      "sha256": "69599c80b9aa927be1f43d65245665beebdf3182c4b6e544658b2caac6e8e270"
+      "sha256": "749c77ac358682633b23caa6f434fb31f40991631a1b5aa8afb3430e3a2b5524"
     },
     {
       "name": "data_display/kbd",
@@ -254,7 +254,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "d97c1a279f993f6344e1f30cf23840ff9a60f7608d4c9858e3aa48337b561675"
+      "sha256": "9fdaffa7bd72defb3d775aeef29bb9c8d81563599ad6406b80b67e2fcfb0c5c4"
     },
     {
       "name": "data_display/list",
@@ -263,7 +263,7 @@
       "dataExoCount": 16,
       "width": 1280,
       "height": 900,
-      "sha256": "45f21ad4f0d931777ea42c96180378c3e2a9bb98a2b2a23492fa6ae19ca6086c"
+      "sha256": "6b4af4c621a97e2cccc5204c924e87209ecf0d52e6712e07dfc8e63842d9bc0b"
     },
     {
       "name": "data_display/metric_card",
@@ -272,7 +272,16 @@
       "dataExoCount": 11,
       "width": 1280,
       "height": 900,
-      "sha256": "1578ca2991307d4afbc6974fd9bd6611074827c5e90bf2256fdd91fbddc726dc"
+      "sha256": "956be6c49a52d96e6b4bb1ad327a6e20f1509983aec0890066eefea8d1ffd060"
+    },
+    {
+      "name": "data_display/resource_list",
+      "route": "/components/data_display/resource_list",
+      "screenshot": "screenshots/data_display__resource_list.png",
+      "dataExoCount": 294,
+      "width": 1280,
+      "height": 900,
+      "sha256": "471d26f146ece9fa435cd24f749b4fddd2e629fa052eb3a121c704cf9891ed38"
     },
     {
       "name": "data_display/stat_card",
@@ -281,7 +290,7 @@
       "dataExoCount": 25,
       "width": 1280,
       "height": 900,
-      "sha256": "d825a7bf189248a99b7d65fba826cd5e0894b5a5e3514cfed17f049a1e4336f1"
+      "sha256": "b6adbd6173924b66e605c2b9b67a696f53bf66b39a55af3af213539d41efebee"
     },
     {
       "name": "data_display/table",
@@ -290,7 +299,7 @@
       "dataExoCount": 75,
       "width": 1280,
       "height": 900,
-      "sha256": "80c6dc4c8904ef650b13fe9c20be615d3f5f292cb2d965270530c60807fe2efa"
+      "sha256": "1ce1c51ffcda66b69528b862718ce63fc201d09b7b047ba3e4daad4c30f7b875"
     },
     {
       "name": "data_display/timeline",
@@ -299,7 +308,7 @@
       "dataExoCount": 44,
       "width": 1280,
       "height": 900,
-      "sha256": "93fefedf0ced4cc2a8d401550a7440071e806c1ad2fc46492eda93052e792b52"
+      "sha256": "9a3c1562bdaee3ee95f22d95f604f688469709361386deeb9cc8908ac6e143e0"
     },
     {
       "name": "feedback/alert",
@@ -389,7 +398,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "bd20ebe60a5b7e7866ebb5b54d7bea68bfaf844fe0a628a7da6a5d0b12098008"
+      "sha256": "ec9dc4535bea61351e7800f3bae1d51fe0feb9a2d075e6dddc2014cc249f7b66"
     },
     {
       "name": "feedback/toast_container",
@@ -398,7 +407,7 @@
       "dataExoCount": 38,
       "width": 1280,
       "height": 900,
-      "sha256": "b06459a9e8c1ecf345720e338f96e0519a96053ec5879e8dd760022850f4d9b3"
+      "sha256": "39e5789d111e6d37e02a1b9d4383ca986ca63bf54d79b7f9b22c54eec03ae769"
     },
     {
       "name": "forms/combobox",
@@ -560,7 +569,7 @@
       "dataExoCount": 58,
       "width": 1280,
       "height": 900,
-      "sha256": "795242788cd1519423814a237e21502b39c18ffd2603f62a20924642f76ff30f"
+      "sha256": "f65050d68d65e9b305841adef335193e45cd661505eb31a39751dd4456ab8e44"
     },
     {
       "name": "layout/carousel",
@@ -677,7 +686,7 @@
       "dataExoCount": 65,
       "width": 1280,
       "height": 900,
-      "sha256": "7bae4005118682a9569d3927c3bb095fefeac865e9168970b22b5bd770d43d17"
+      "sha256": "58978baeadb134596bba5adf8d644ff8109b616458dc28ec3d7c5cfcb2e5c432"
     },
     {
       "name": "menus/dropdown_menu",
@@ -875,7 +884,7 @@
       "dataExoCount": 105,
       "width": 1280,
       "height": 900,
-      "sha256": "f70fded7fc68ab5bc6f3baf1a873529de7440b06bd64863e5e5f90a297abc60e"
+      "sha256": "cde0e8c8ad6f2331c982e7103ca87cf198fdea474a18d1c093cea8dc7c0c2a31"
     },
     {
       "name": "recipes/bulk_edit_workflow",
@@ -1064,7 +1073,7 @@
       "dataExoCount": 87,
       "width": 1280,
       "height": 900,
-      "sha256": "e13ff408abefc900282b7349464753b314b9b0302cbd721ae1b7ead4c0859165"
+      "sha256": "3c43cac86dc3bfe749def13acb4a6c94708c5ee9f84c988d8e1d0f8fe0611fde"
     }
   ]
 }

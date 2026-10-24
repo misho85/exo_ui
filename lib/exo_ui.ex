@@ -83,6 +83,7 @@ defmodule ExoUI do
       import ExoUI.Components.Overlay
       unquote(feedback_import)
       unquote(data_display_import)
+      import ExoUI.Components.ResourceList
       import ExoUI.Charts
       import ExoUI.Layouts
       import ExoUI.Utils, only: [classes: 1, maybe_add_class: 2]
