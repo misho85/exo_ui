@@ -9,6 +9,13 @@ defmodule ExoUI.Components.Form do
 
   alias Phoenix.LiveView.JS
 
+  # daisyUI's colours and styles for a text field, select, combobox and file
+  # input (`input-primary`, `select-ghost`, …). `danger` is `error`, the name
+  # ExoUI used before the daisyUI theme.
+  @field_variants [nil | ~w(neutral primary secondary accent info success warning error danger)]
+  @field_appearances [nil | ~w(ghost)]
+  @field_sizes ~w(xs sm md lg xl)
+
   @doc "Renders a form wrapper with `data-exo=\"form\"`."
   attr :for, :any, required: true
   attr :as, :any, default: nil
@@ -63,12 +70,23 @@ defmodule ExoUI.Components.Form do
   attr :trailing_icon, :string, default: nil, doc: "Lucide icon displayed after a text-like input"
   attr :class, :any, default: nil
 
+  attr :variant, :string,
+    values: @field_variants,
+    default: nil,
+    doc: "Border and focus colour, daisyUI's `input-*`. Emitted as `data-variant`."
+
+  attr :appearance, :string,
+    values: @field_appearances,
+    default: nil,
+    doc: "`ghost`: no fill, border or shadow until focused (daisyUI's `input-ghost`)."
+
   attr :size, :string,
-    values: ~w(sm md lg),
+    values: @field_sizes,
     default: "md",
     doc: """
-    Visual density — height, padding and font-size, same scale as `button/1`
-    and `badge/1`. Emitted as `data-size`, styled by zero-specificity CSS.
+    Visual density — height and font-size, daisyUI's `input-xs` … `input-xl`,
+    same scale as `button/1` and `badge/1`. Emitted as `data-size`, styled by
+    zero-specificity CSS.
 
     Declaring this attr means `size=` no longer falls through to `@rest`, so
     it shadows the native HTML `size=` (character width on text and select).
@@ -131,6 +149,8 @@ defmodule ExoUI.Components.Form do
         label={@label}
         errors={@errors}
         describedby={@describedby}
+        variant={@variant}
+        size={@size}
         rest={@rest}
       />
       <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
@@ -145,6 +165,8 @@ defmodule ExoUI.Components.Form do
       label={@label}
       errors={@errors}
       describedby={@describedby}
+      variant={@variant}
+      size={@size}
       rest={@rest}
     />
     """
@@ -162,6 +184,8 @@ defmodule ExoUI.Components.Form do
         id={@id}
         data-exo="input"
         data-size={@size}
+        data-variant={@variant}
+        data-appearance={@appearance}
         data-invalid={@errors != [] && ""}
         aria-invalid={if @errors != [], do: "true"}
         aria-describedby={@describedby}
@@ -188,6 +212,8 @@ defmodule ExoUI.Components.Form do
         id={@id}
         data-exo="select"
         data-size={@size}
+        data-variant={@variant}
+        data-appearance={@appearance}
         data-invalid={@errors != [] && ""}
         aria-invalid={if @errors != [], do: "true"}
         aria-describedby={@describedby}
@@ -226,6 +252,8 @@ defmodule ExoUI.Components.Form do
       disabled={@select_disabled}
       required={@rest[:required] == true}
       size={@size}
+      variant={@variant}
+      appearance={@appearance}
       class={@class}
       {@select_rest}
     />
@@ -248,6 +276,8 @@ defmodule ExoUI.Components.Form do
         :if={@adorned}
         data-exo="input-frame"
         data-size={@size}
+        data-variant={@variant}
+        data-appearance={@appearance}
         data-invalid={@errors != [] && ""}
         data-disabled={@rest[:disabled] && ""}
       >
@@ -280,6 +310,8 @@ defmodule ExoUI.Components.Form do
         id={@id}
         data-exo="input"
         data-size={@size}
+        data-variant={@variant}
+        data-appearance={@appearance}
         data-invalid={@errors != [] && ""}
         aria-invalid={if @errors != [], do: "true"}
         aria-describedby={@describedby}
@@ -302,6 +334,8 @@ defmodule ExoUI.Components.Form do
   attr :label, :string, default: nil
   attr :errors, :list, default: []
   attr :describedby, :string, default: nil
+  attr :variant, :string, default: nil
+  attr :size, :string, default: nil
   attr :rest, :map, default: %{}
 
   defp checkbox_control(assigns) do
@@ -312,6 +346,8 @@ defmodule ExoUI.Components.Form do
         id={@id}
         type="checkbox"
         data-exo="checkbox"
+        data-variant={@variant}
+        data-size={@size}
         data-checked={@checked && ""}
         data-invalid={@errors != [] && ""}
         aria-invalid={if @errors != [], do: "true"}
@@ -358,6 +394,17 @@ defmodule ExoUI.Components.Form do
   attr :description, :string, default: nil
   attr :errors, :list, default: []
   attr :class, :any, default: nil
+
+  attr :variant, :string,
+    values: @field_variants,
+    default: nil,
+    doc: "The colour when on, daisyUI's `toggle-*`. Emitted as `data-variant`."
+
+  attr :size, :string,
+    values: [nil | @field_sizes],
+    default: nil,
+    doc: "daisyUI's `toggle-xs` … `toggle-xl`; no size is md. Emitted as `data-size`."
+
   attr :rest, :global, include: ~w(disabled)
 
   def toggle(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
@@ -383,7 +430,7 @@ defmodule ExoUI.Components.Form do
 
     ~H"""
     <div :if={@wrap} data-exo="field">
-      <label data-exo="toggle" data-checked={@checked && ""}>
+      <label data-exo="toggle" data-variant={@variant} data-size={@size} data-checked={@checked && ""}>
         <input :if={@name} type="hidden" name={@name} value="false" disabled={@rest[:disabled]} />
         <input
           type="checkbox"
@@ -406,7 +453,13 @@ defmodule ExoUI.Components.Form do
       <p :if={@description} id={@description_id} data-exo="field-description">{@description}</p>
       <.field_errors id={@error_id} errors={@errors} />
     </div>
-    <label :if={!@wrap} data-exo="toggle" data-checked={@checked && ""}>
+    <label
+      :if={!@wrap}
+      data-exo="toggle"
+      data-variant={@variant}
+      data-size={@size}
+      data-checked={@checked && ""}
+    >
       <input :if={@name} type="hidden" name={@name} value="false" disabled={@rest[:disabled]} />
       <input
         type="checkbox"
@@ -524,9 +577,19 @@ defmodule ExoUI.Components.Form do
   attr :class, :any, default: nil
 
   attr :size, :string,
-    values: ~w(sm md lg),
+    values: @field_sizes,
     default: "md",
     doc: "visual density of the trigger — same scale as `input/1` and `button/1`"
+
+  attr :variant, :string,
+    values: @field_variants,
+    default: nil,
+    doc: "border and focus colour of the trigger, daisyUI's `select-*`"
+
+  attr :appearance, :string,
+    values: @field_appearances,
+    default: nil,
+    doc: "`ghost`: no fill, border or shadow until focused (daisyUI's `select-ghost`)"
 
   attr :rest, :global,
     include: ~w(form),
@@ -577,6 +640,8 @@ defmodule ExoUI.Components.Form do
           data-exo="popover-trigger"
           data-exo-select="trigger"
           data-size={@size}
+          data-variant={@variant}
+          data-appearance={@appearance}
           data-invalid={@errors != [] && ""}
           aria-invalid={if @errors != [], do: "true"}
           aria-describedby={@describedby}
@@ -671,6 +736,22 @@ defmodule ExoUI.Components.Form do
   attr :disabled, :boolean, default: false
   attr :side, :string, values: ~w(top bottom left right), default: "bottom"
   attr :align, :string, values: ~w(start center end), default: "start"
+
+  attr :size, :string,
+    values: @field_sizes,
+    default: "md",
+    doc: "visual density of the field — same scale as `input/1` and `select/1`"
+
+  attr :variant, :string,
+    values: @field_variants,
+    default: nil,
+    doc: "border and focus colour of the field, as `input/1`"
+
+  attr :appearance, :string,
+    values: @field_appearances,
+    default: nil,
+    doc: "`ghost`: no fill, border or shadow until focused, as `input/1`"
+
   attr :class, :any, default: nil
   attr :rest, :global
 
@@ -720,6 +801,9 @@ defmodule ExoUI.Components.Form do
           type="text"
           data-exo="popover-trigger"
           data-exo-combobox="input-trigger"
+          data-size={@size}
+          data-variant={@variant}
+          data-appearance={@appearance}
           data-invalid={@errors != [] && ""}
           aria-invalid={if @errors != [], do: "true"}
           aria-describedby={@describedby}
@@ -796,6 +880,9 @@ defmodule ExoUI.Components.Form do
             popovertarget={@id}
             data-exo="popover-trigger"
             data-exo-combobox="trigger"
+            data-size={@size}
+            data-variant={@variant}
+            data-appearance={@appearance}
             data-invalid={@errors != [] && ""}
             aria-invalid={if @errors != [], do: "true"}
             aria-describedby={@describedby}
@@ -1274,6 +1361,17 @@ defmodule ExoUI.Components.Form do
     doc: "id of the form the radios belong to, when the group is outside it"
 
   attr :class, :any, default: nil
+
+  attr :variant, :string,
+    values: @field_variants,
+    default: nil,
+    doc: "The colour when on, daisyUI's `radio-*`. Emitted as `data-variant`."
+
+  attr :size, :string,
+    values: [nil | @field_sizes],
+    default: nil,
+    doc: "daisyUI's `radio-xs` … `radio-xl`; no size is md. Emitted as `data-size`."
+
   attr :rest, :global
 
   slot :item do
@@ -1303,6 +1401,8 @@ defmodule ExoUI.Components.Form do
     <fieldset
       id={@id}
       data-exo="radio-group"
+      data-variant={@variant}
+      data-size={@size}
       class={@class}
       disabled={@disabled}
       aria-invalid={if @errors != [], do: "true"}
@@ -1360,6 +1460,17 @@ defmodule ExoUI.Components.Form do
   attr :description, :string, default: nil
   attr :errors, :list, default: []
   attr :class, :any, default: nil
+
+  attr :variant, :string,
+    values: @field_variants,
+    default: nil,
+    doc: "The colour when on, daisyUI's `range-*`. Emitted as `data-variant`."
+
+  attr :size, :string,
+    values: [nil | @field_sizes],
+    default: nil,
+    doc: "daisyUI's `range-xs` … `range-xl`; no size is md. Emitted as `data-size`."
+
   attr :rest, :global, include: ~w(disabled)
 
   def slider(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
@@ -1412,6 +1523,8 @@ defmodule ExoUI.Components.Form do
         type="range"
         data-exo="slider"
         data-exo-slider="input"
+        data-variant={@variant}
+        data-size={@size}
         data-invalid={@errors != [] && ""}
         aria-invalid={if @errors != [], do: "true"}
         aria-describedby={@describedby}
@@ -1708,7 +1821,7 @@ defmodule ExoUI.Components.Form do
 
   attr :readonly, :boolean, default: false
   attr :disabled, :boolean, default: false
-  attr :size, :string, values: ~w(sm md lg), default: "md"
+  attr :size, :string, values: @field_sizes, default: "md"
   attr :label, :string, default: nil
   attr :description, :string, default: nil
   attr :errors, :list, default: []
@@ -2045,6 +2158,22 @@ defmodule ExoUI.Components.Form do
   attr :multiple, :boolean, default: false
   attr :show_selected, :boolean, default: false
   attr :empty_label, :string, default: "No file selected"
+
+  attr :size, :string,
+    values: @field_sizes,
+    default: "md",
+    doc: "height and font-size, daisyUI's `file-input-xs` … `file-input-xl`"
+
+  attr :variant, :string,
+    values: @field_variants,
+    default: nil,
+    doc: "colour of the border and the button, daisyUI's `file-input-*`"
+
+  attr :appearance, :string,
+    values: @field_appearances,
+    default: nil,
+    doc: "`ghost`: no fill, border or shadow (daisyUI's `file-input-ghost`)"
+
   attr :class, :any, default: nil
   attr :rest, :global, include: ~w(disabled required)
 
@@ -2079,6 +2208,9 @@ defmodule ExoUI.Components.Form do
         multiple={@multiple}
         data-exo="file-input"
         data-exo-file-input="input"
+        data-size={@size}
+        data-variant={@variant}
+        data-appearance={@appearance}
         data-invalid={@errors != [] && ""}
         aria-invalid={if @errors != [], do: "true"}
         aria-describedby={@describedby}

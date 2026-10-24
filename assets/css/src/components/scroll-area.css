@@ -1,3 +1,8 @@
+/*
+ * Scroll area. daisyUI has no counterpart; the scrollbar takes daisyUI's
+ * colour for every scrollbar, the text colour at 35%.
+ */
+
 :where([data-exo="scroll-area"]) {
   position: relative;
   overflow: hidden;
@@ -10,7 +15,7 @@
 }
 
 :where([data-exo="scroll-area-viewport"]):focus-visible {
-  outline: 2px solid var(--exo-ring);
+  outline: 2px solid var(--exo-base-content);
   outline-offset: 2px;
 }
 
@@ -28,10 +33,10 @@
   overflow: auto;
 }
 
-/* Thin scrollbar styling */
+/* Thin scrollbar in daisyUI's scrollbar colour (base/scrollbar.css). */
 :where([data-exo="scroll-area-viewport"]) {
   scrollbar-width: thin;
-  scrollbar-color: var(--exo-border) transparent;
+  scrollbar-color: color-mix(in oklch, currentColor 35%, transparent) #0000;
 }
 
 :where([data-exo="scroll-area-viewport"])::-webkit-scrollbar {
@@ -44,10 +49,10 @@
 }
 
 :where([data-exo="scroll-area-viewport"])::-webkit-scrollbar-thumb {
-  background: var(--exo-border);
+  background: color-mix(in oklch, currentColor 35%, transparent);
   border-radius: 3px;
 }
 
 :where([data-exo="scroll-area-viewport"])::-webkit-scrollbar-thumb:hover {
-  background: var(--exo-muted-foreground);
+  background: color-mix(in oklch, currentColor 50%, transparent);
 }

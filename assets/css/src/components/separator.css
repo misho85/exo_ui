@@ -1,14 +1,116 @@
+/*
+ * daisyUI 5 `.divider` (components/divider.css, v5.7.50), value for value: a
+ * 1rem strip with a 2px line drawn by `::before` and `::after`, 1rem of
+ * margin across it, in the content colour at 10%.
+ *
+ *   data-orientation  horizontal (a horizontal line between stacked content,
+ *                     daisyUI's default and `divider-vertical`) | vertical (a
+ *                     vertical line between side-by-side content, daisyUI's
+ *                     `divider-horizontal`). daisyUI names the direction the
+ *                     content flows; ExoUI names the line.
+ *   data-variant      neutral | primary | secondary | accent | info |
+ *                     success | warning | error; `danger` is `error`
+ */
+
+/* --- base (l1.l2.l3) --- */
+
 :where([data-exo="separator"]) {
-  background: var(--exo-border);
-  flex-shrink: 0;
+  display: flex;
+  height: 1rem;
+  flex-direction: row;
+  align-items: center;
+  align-self: stretch;
+  white-space: nowrap;
+  margin: var(--divider-m, 1rem 0);
+  --divider-color: color-mix(in oklab, var(--exo-base-content) 10%, transparent);
+}
+
+:where([data-exo="separator"])::before,
+:where([data-exo="separator"])::after {
+  content: "";
+  height: 0.125rem;
+  width: 100%;
+  flex-grow: 1;
+  background-color: var(--divider-color);
+}
+
+@media print, (forced-colors: active) {
+  :where([data-exo="separator"])::before,
+  :where([data-exo="separator"])::after {
+    border: 0.5px solid;
+  }
+}
+
+:where([data-exo="separator"]:not(:empty)) {
+  gap: 1rem;
+}
+
+/* --- orientation (l1.l2) --- */
+
+:where([data-exo="separator"][data-orientation="vertical"]) {
+  --divider-m: 0 1rem;
+  height: auto;
+  width: 1rem;
+  flex-direction: column;
+}
+
+:where([data-exo="separator"][data-orientation="vertical"])::before,
+:where([data-exo="separator"][data-orientation="vertical"])::after {
+  height: 100%;
+  width: 0.125rem;
 }
 
 :where([data-exo="separator"][data-orientation="horizontal"]) {
-  height: 1px;
+  --divider-m: 1rem 0;
+  height: 1rem;
+  width: auto;
+  flex-direction: row;
+}
+
+:where([data-exo="separator"][data-orientation="horizontal"])::before,
+:where([data-exo="separator"][data-orientation="horizontal"])::after {
+  height: 0.125rem;
   width: 100%;
 }
 
-:where([data-exo="separator"][data-orientation="vertical"]) {
-  width: 1px;
-  height: 100%;
+/* --- colours (l1.l2) --- */
+
+:where([data-exo="separator"][data-variant="neutral"])::before,
+:where([data-exo="separator"][data-variant="neutral"])::after {
+  background-color: var(--exo-neutral);
+}
+
+:where([data-exo="separator"][data-variant="primary"])::before,
+:where([data-exo="separator"][data-variant="primary"])::after {
+  background-color: var(--exo-primary);
+}
+
+:where([data-exo="separator"][data-variant="secondary"])::before,
+:where([data-exo="separator"][data-variant="secondary"])::after {
+  background-color: var(--exo-secondary);
+}
+
+:where([data-exo="separator"][data-variant="accent"])::before,
+:where([data-exo="separator"][data-variant="accent"])::after {
+  background-color: var(--exo-accent);
+}
+
+:where([data-exo="separator"][data-variant="success"])::before,
+:where([data-exo="separator"][data-variant="success"])::after {
+  background-color: var(--exo-success);
+}
+
+:where([data-exo="separator"][data-variant="warning"])::before,
+:where([data-exo="separator"][data-variant="warning"])::after {
+  background-color: var(--exo-warning);
+}
+
+:where([data-exo="separator"][data-variant="info"])::before,
+:where([data-exo="separator"][data-variant="info"])::after {
+  background-color: var(--exo-info);
+}
+
+:where([data-exo="separator"][data-variant="error"], [data-exo="separator"][data-variant="danger"])::before,
+:where([data-exo="separator"][data-variant="error"], [data-exo="separator"][data-variant="danger"])::after {
+  background-color: var(--exo-error);
 }

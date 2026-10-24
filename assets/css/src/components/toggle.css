@@ -1,3 +1,26 @@
+/*
+ * daisyUI 5 `.toggle` (components/toggle.css, v5.7.50), value for value.
+ *
+ * The native checkbox is hidden; daisyUI's track is the track span and its
+ * `::before` thumb is the thumb span. The thumb moves the daisyUI way: the
+ * track is a three-column grid whose first and last columns trade width. The
+ * state comes from the input (`:has(:checked)`), as daisyUI's
+ * `.toggle:has(> input:checked)`, so a toggle flipped in the browser shows
+ * its new state before the server renders `data-checked`.
+ * Same order as button.css: base, checked, disabled, colours, sizes.
+ *
+ *   data-variant  (on the label) base | neutral | primary | secondary |
+ *                 accent | info | success | warning | error; `danger` is
+ *                 `error`; none is `primary`
+ *   data-size     (on the label) xs | sm | md | lg | xl
+ *
+ * Before the port the off track carried ExoUI's WCAG 1.4.11 fix: an outlined
+ * track and a thumb in --exo-muted-foreground, where a --exo-muted track had
+ * been about 1.1:1. daisyUI's off state already meets 3:1: border and thumb
+ * are the content colour at 50%, about 3.4:1 on base-100 in the light theme
+ * and 4.5:1 in the dark one. test/browser/form_controls.spec.js measures it.
+ */
+
 :where([data-exo="toggle"]) {
   display: inline-flex;
   align-items: center;
@@ -11,58 +34,187 @@
   height: 0;
 }
 
-/*
- * The off state is an outlined track with a filled thumb, the on state a filled
- * track with a light thumb. Before, the off track was --exo-muted with a
- * --exo-background thumb: about 1.1:1 against the card in both themes, so the
- * switch and its position were close to invisible (WCAG 1.4.11 asks for 3:1).
- * The outline and the off thumb take --exo-muted-foreground, which is a text
- * colour and therefore well above 3:1 on every surface. The border is part of
- * the 1.5rem box, so the thumb keeps its 2px inset and the size is unchanged.
- * test/browser/form_controls.spec.js measures it.
- */
-:where([data-exo="toggle-track"]) {
-  position: relative;
-  box-sizing: border-box;
-  width: 2.5rem;
-  height: 1.5rem;
-  background: var(--exo-muted);
-  border: 1px solid var(--exo-muted-foreground);
-  border-radius: 9999px;
-  transition: background var(--exo-duration) var(--exo-easing),
-              border-color var(--exo-duration) var(--exo-easing);
-}
+/* --- base (l1.l2.l3) --- */
 
-:where([data-exo="toggle"][data-checked] [data-exo="toggle-track"],
-[data-exo="toggle"]:has(input[type="checkbox"]:checked) [data-exo="toggle-track"]) {
-  background: var(--exo-primary);
-  border-color: var(--exo-primary);
+:where([data-exo="toggle-track"]) {
+  --input-color: color-mix(in oklab, var(--exo-base-content) 50%, #0000);
+  --toggle-p: calc(var(--size) * 0.125);
+  --size: calc(var(--exo-size-selector, 0.25rem) * 6);
+  --radius-selector-max: calc(
+    var(--exo-radius-selector) + var(--exo-radius-selector) + var(--exo-radius-selector)
+  );
+  box-sizing: border-box;
+  position: relative;
+  display: inline-grid;
+  flex-shrink: 0;
+  place-content: center;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  grid-template-columns: 0fr 1fr 1fr;
+  border: var(--exo-border-width) solid currentColor;
+  color: var(--input-color);
+  border-radius: calc(
+    var(--exo-radius-selector) + min(var(--toggle-p), var(--radius-selector-max)) +
+      min(var(--exo-border-width), var(--radius-selector-max))
+  );
+  padding: var(--toggle-p);
+  box-shadow: 0 1px color-mix(in oklab, currentColor calc(var(--exo-depth) * 10%), #0000) inset;
+  transition:
+    color 0.3s,
+    grid-template-columns 0.2s;
+  width: calc((var(--size) * 2) - (var(--exo-border-width) + var(--toggle-p)) * 2);
+  height: var(--size);
 }
 
 :where([data-exo="toggle-thumb"]) {
-  position: absolute;
-  top: 1px;
-  left: 1px;
-  width: calc(1.5rem - 4px);
-  height: calc(1.5rem - 4px);
-  background: var(--exo-muted-foreground);
-  border-radius: 9999px;
-  transition: transform var(--exo-duration) var(--exo-easing),
-              background var(--exo-duration) var(--exo-easing);
+  box-sizing: border-box;
+  position: relative;
+  inset-inline-start: 0;
+  grid-column-start: 2;
+  grid-row-start: 1;
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--exo-radius-selector);
+  background-color: currentColor;
+  translate: 0;
+  transition:
+    background-color 0.1s,
+    translate 0.2s,
+    inset-inline-start 0.2s;
+  box-shadow:
+    0 -1px oklch(0% 0 0 / calc(var(--exo-depth) * 0.1)) inset,
+    0 8px 0 -4px oklch(100% 0 0 / calc(var(--exo-depth) * 0.1)) inset,
+    0 1px color-mix(in oklab, currentColor calc(var(--exo-depth) * 10%), #0000);
+  background-size: auto, calc(var(--exo-noise, 0) * 100%);
+  background-image: none, var(--exo-fx-noise);
 }
 
-:where([data-exo="toggle"][data-checked] [data-exo="toggle-thumb"],
-[data-exo="toggle"]:has(input[type="checkbox"]:checked) [data-exo="toggle-thumb"]) {
-  background: var(--exo-background);
-  transform: translateX(1rem);
+@media (forced-colors: active) {
+  :where([data-exo="toggle-thumb"]) {
+    outline-style: solid;
+    outline-width: 1px;
+    outline-offset: -1px;
+  }
 }
 
+@media print {
+  :where([data-exo="toggle-thumb"]) {
+    outline: 0.25rem solid;
+    outline-offset: -1rem;
+  }
+}
+
+/* daisyUI's ring is the toggle's own colour; ExoUI's is --exo-ring, which a
+   theme keeps at 3:1 on the page whatever the brand colour is (TRG-461). */
 :where([data-exo="toggle"] input[type="checkbox"]:focus-visible + [data-exo="toggle-track"]) {
   outline: 2px solid var(--exo-ring);
   outline-offset: 2px;
 }
 
-:where([data-exo="toggle"]:has(input:disabled)) {
-  opacity: 0.5;
+/* --- checked (l1.l2.l3) --- */
+
+:where([data-exo="toggle"]:has(input[type="checkbox"]:checked) [data-exo="toggle-track"]) {
+  grid-template-columns: 1fr 1fr 0fr;
+  background-color: var(--exo-base-100);
+  --input-color: var(--exo-base-content);
+}
+
+:where([data-exo="toggle"]:has(input[type="checkbox"]:checked) [data-exo="toggle-thumb"]) {
+  background-color: currentColor;
+}
+
+@starting-style {
+  :where([data-exo="toggle"]:has(input[type="checkbox"]:checked) [data-exo="toggle-thumb"]) {
+    opacity: 0;
+  }
+}
+
+:where([data-exo="toggle"]:has(input[type="checkbox"]:indeterminate) [data-exo="toggle-track"]) {
+  grid-template-columns: 0.5fr 1fr 0.5fr;
+}
+
+:where([data-exo="toggle"]:has(input[type="checkbox"]:disabled)) {
   cursor: not-allowed;
+}
+
+:where([data-exo="toggle"]:has(input[type="checkbox"]:disabled) [data-exo="toggle-track"]) {
+  cursor: not-allowed;
+  opacity: 0.3;
+}
+
+:where([data-exo="toggle"]:has(input[type="checkbox"]:disabled) [data-exo="toggle-thumb"]) {
+  background-color: transparent;
+  border: var(--exo-border-width) solid currentColor;
+}
+
+/* The label next to the track dims with it, as before the port. */
+:where([data-exo="toggle"]:has(input[type="checkbox"]:disabled) > span:not([data-exo="toggle-track"])) {
+  opacity: 0.5;
+}
+
+/* --- colours, checked only (l1.l2) --- */
+
+:where(
+  [data-exo="toggle"]:not([data-variant]):has(input[type="checkbox"]:checked) [data-exo="toggle-track"],
+  [data-exo="toggle"][data-variant="primary"]:has(input[type="checkbox"]:checked) [data-exo="toggle-track"]
+) {
+  --input-color: var(--exo-primary);
+}
+
+:where([data-exo="toggle"][data-variant="secondary"]:has(input[type="checkbox"]:checked) [data-exo="toggle-track"]) {
+  --input-color: var(--exo-secondary);
+}
+
+:where([data-exo="toggle"][data-variant="accent"]:has(input[type="checkbox"]:checked) [data-exo="toggle-track"]) {
+  --input-color: var(--exo-accent);
+}
+
+:where([data-exo="toggle"][data-variant="neutral"]:has(input[type="checkbox"]:checked) [data-exo="toggle-track"]) {
+  --input-color: var(--exo-neutral);
+}
+
+:where([data-exo="toggle"][data-variant="success"]:has(input[type="checkbox"]:checked) [data-exo="toggle-track"]) {
+  --input-color: var(--exo-success);
+}
+
+:where([data-exo="toggle"][data-variant="warning"]:has(input[type="checkbox"]:checked) [data-exo="toggle-track"]) {
+  --input-color: var(--exo-warning);
+}
+
+:where([data-exo="toggle"][data-variant="info"]:has(input[type="checkbox"]:checked) [data-exo="toggle-track"]) {
+  --input-color: var(--exo-info);
+}
+
+:where(
+  [data-exo="toggle"][data-variant="error"]:has(input[type="checkbox"]:checked) [data-exo="toggle-track"],
+  [data-exo="toggle"][data-variant="danger"]:has(input[type="checkbox"]:checked) [data-exo="toggle-track"]
+) {
+  --input-color: var(--exo-error);
+}
+
+/* `base` is daisyUI's plain toggle: the content colour when on. */
+
+/* --- sizes (l1.l2) --- */
+
+:where([data-exo="toggle"][data-size="xs"] [data-exo="toggle-track"]) {
+  --size: calc(var(--exo-size-selector, 0.25rem) * 4);
+}
+
+:where([data-exo="toggle"][data-size="sm"] [data-exo="toggle-track"]) {
+  --size: calc(var(--exo-size-selector, 0.25rem) * 5);
+}
+
+:where([data-exo="toggle"][data-size="md"] [data-exo="toggle-track"]) {
+  --size: calc(var(--exo-size-selector, 0.25rem) * 6);
+}
+
+:where([data-exo="toggle"][data-size="lg"] [data-exo="toggle-track"]) {
+  --size: calc(var(--exo-size-selector, 0.25rem) * 7);
+}
+
+:where([data-exo="toggle"][data-size="xl"] [data-exo="toggle-track"]) {
+  --size: calc(var(--exo-size-selector, 0.25rem) * 8);
 }

@@ -1,54 +1,169 @@
+/*
+ * daisyUI 5 `.chat` / `.chat-bubble` (components/chat.css, v5.7.50): the
+ * bubble is `rounded-field` on `base-300`, 1rem by 0.5rem of padding, square
+ * at the corner on the sender's side, with the tail drawn by the `--mask-chat`
+ * shape in the bubble's own colour. The header and footer are 0.6875rem; the
+ * footer is `opacity-50` as in daisyUI's examples.
+ *
+ *   data-side     start | end
+ *   data-variant  neutral | primary | secondary | accent | info | success |
+ *                 warning | error (`chat-bubble-*`); `danger` is `error`.
+ *                 None is `base-300` at the start and `primary` at the end,
+ *                 ExoUI's own message in the brand colour as before the port.
+ *
+ * ExoUI groups the header, the bubble and the footer in one message element,
+ * so the root is a row of the avatar (`chat-image`) and that message, not
+ * daisyUI's three-row grid.
+ */
+
+/* --- base (l1.l2.l3) --- */
+
 :where([data-exo="chat-bubble"]) {
+  --mask-chat: url("data:image/svg+xml,%3csvg width='13' height='13' xmlns='http://www.w3.org/2000/svg'%3e%3cpath fill='black' d='M0 11.5004C0 13.0004 2 13.0004 2 13.0004H12H13V0.00036329L12.5 0C12.5 0 11.977 2.09572 11.8581 2.50033C11.6075 3.35237 10.9149 4.22374 9 5.50036C6 7.50036 0 10.0004 0 11.5004Z'/%3e%3c/svg%3e");
+  --chat-bg: var(--exo-base-300);
+  --chat-fg: var(--exo-base-content);
   display: flex;
   align-items: flex-end;
-  gap: var(--exo-space-2);
+  column-gap: 0.75rem;
   max-width: 100%;
+  padding-block: 0.25rem;
   font-family: var(--exo-font);
+}
+
+:where([data-exo="chat-bubble-avatar"]) {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-self: flex-end;
+}
+
+:where([data-exo="chat-bubble-message"]) {
+  display: grid;
+  grid-auto-rows: min-content;
+  justify-items: start;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+:where([data-exo="chat-bubble-header"], [data-exo="chat-bubble-footer"]) {
+  display: flex;
+  gap: 0.25rem;
+  font-size: 0.6875rem;
+}
+
+:where([data-exo="chat-bubble-footer"]) {
+  opacity: 0.5;
+}
+
+:where([data-exo="chat-bubble-content"]) {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  width: fit-content;
+  min-width: 2.5rem;
+  min-height: 2rem;
+  max-width: 90%;
+  padding: 0.5rem 1rem;
+  border-radius: var(--exo-radius-field);
+  background-color: var(--chat-bg);
+  color: var(--chat-fg);
+}
+
+:where([data-exo="chat-bubble-content"])::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 0.75rem;
+  height: 0.75rem;
+  background-color: inherit;
+  mask-repeat: no-repeat;
+  mask-image: var(--mask-chat);
+  mask-position: 0px -1px;
+  mask-size: 0.8125rem;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-image: var(--mask-chat);
+  -webkit-mask-position: 0px -1px;
+  -webkit-mask-size: 0.8125rem;
+}
+
+/* --- colours (l1.l2) --- */
+
+:where([data-exo="chat-bubble"][data-side="end"]:not([data-variant])) {
+  --chat-bg: var(--exo-primary);
+  --chat-fg: var(--exo-primary-content);
+}
+
+:where([data-exo="chat-bubble"][data-variant="neutral"]) {
+  --chat-bg: var(--exo-neutral);
+  --chat-fg: var(--exo-neutral-content);
+}
+
+:where([data-exo="chat-bubble"][data-variant="primary"]) {
+  --chat-bg: var(--exo-primary);
+  --chat-fg: var(--exo-primary-content);
+}
+
+:where([data-exo="chat-bubble"][data-variant="secondary"]) {
+  --chat-bg: var(--exo-secondary);
+  --chat-fg: var(--exo-secondary-content);
+}
+
+:where([data-exo="chat-bubble"][data-variant="accent"]) {
+  --chat-bg: var(--exo-accent);
+  --chat-fg: var(--exo-accent-content);
+}
+
+:where([data-exo="chat-bubble"][data-variant="info"]) {
+  --chat-bg: var(--exo-info);
+  --chat-fg: var(--exo-info-content);
+}
+
+:where([data-exo="chat-bubble"][data-variant="success"]) {
+  --chat-bg: var(--exo-success);
+  --chat-fg: var(--exo-success-content);
+}
+
+:where([data-exo="chat-bubble"][data-variant="warning"]) {
+  --chat-bg: var(--exo-warning);
+  --chat-fg: var(--exo-warning-content);
+}
+
+:where([data-exo="chat-bubble"][data-variant="error"], [data-exo="chat-bubble"][data-variant="danger"]) {
+  --chat-bg: var(--exo-error);
+  --chat-fg: var(--exo-error-content);
+}
+
+/* --- sides (l1.l2) --- */
+
+:where([data-exo="chat-bubble"]:not([data-side="end"]) [data-exo="chat-bubble-content"]) {
+  border-end-start-radius: 0;
+}
+
+:where([data-exo="chat-bubble"]:not([data-side="end"]) [data-exo="chat-bubble-content"])::before {
+  transform: rotateY(0deg);
+  inset-inline-start: -0.75rem;
+}
+
+:where([dir="rtl"] [data-exo="chat-bubble"]:not([data-side="end"]) [data-exo="chat-bubble-content"])::before {
+  transform: rotateY(180deg);
 }
 
 :where([data-exo="chat-bubble"][data-side="end"]) {
   flex-direction: row-reverse;
 }
 
-:where([data-exo="chat-bubble-avatar"]) {
-  display: inline-flex;
-  flex-shrink: 0;
-}
-
-:where([data-exo="chat-bubble-message"]) {
-  display: grid;
-  gap: var(--exo-space-1);
-  max-width: min(32rem, 78%);
-}
-
 :where([data-exo="chat-bubble"][data-side="end"] [data-exo="chat-bubble-message"]) {
   justify-items: end;
 }
 
-:where([data-exo="chat-bubble-header"]) {
-  color: var(--exo-muted-foreground);
-  font-size: var(--exo-text-xs);
-  font-weight: 600;
-}
-
-:where([data-exo="chat-bubble-content"]) {
-  padding: var(--exo-space-3) var(--exo-space-4);
-  background: var(--exo-muted);
-  color: var(--exo-foreground);
-  border-radius: var(--exo-radius);
-  border-end-start-radius: 0.25rem;
-  font-size: var(--exo-text-sm);
-  line-height: 1.5;
-}
-
 :where([data-exo="chat-bubble"][data-side="end"] [data-exo="chat-bubble-content"]) {
-  background: var(--exo-primary);
-  color: var(--exo-primary-foreground);
-  border-end-start-radius: var(--exo-radius);
-  border-end-end-radius: 0.25rem;
+  border-end-end-radius: 0;
 }
 
-:where([data-exo="chat-bubble-footer"]) {
-  color: var(--exo-muted-foreground);
-  font-size: var(--exo-text-xs);
+:where([data-exo="chat-bubble"][data-side="end"] [data-exo="chat-bubble-content"])::before {
+  transform: rotateY(180deg);
+  inset-inline-start: 100%;
+}
+
+:where([dir="rtl"] [data-exo="chat-bubble"][data-side="end"] [data-exo="chat-bubble-content"])::before {
+  transform: rotateY(0deg);
 }

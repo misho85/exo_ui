@@ -1,3 +1,13 @@
+/*
+ * The popover panel is daisyUI 5's dropdown content (components/dropdown.css,
+ * v5.7.50) with the box its docs give it, `bg-base-100 rounded-box shadow-sm`:
+ * it grows from 95% and fades in over 0.2s. The dropdown menu inside it adds
+ * the menu's `p-2` (dropdown.css).
+ *
+ * daisyUI places the content flush against the trigger; the 0.25rem gap here
+ * stays, because the flip fallback (`position-try-fallbacks`) measures it.
+ */
+
 /* --- Trigger --- */
 
 :where([data-exo="popover-trigger"]) {
@@ -28,13 +38,15 @@
 /* --- Themeable styles (zero specificity for overridability) --- */
 
 :where([data-exo="popover-content"]) {
-  border: 1px solid var(--exo-border);
-  border-radius: var(--exo-radius);
-  background: var(--exo-card);
-  color: var(--exo-card-foreground);
-  box-shadow: var(--exo-shadow-md);
+  border: 0;
+  border-radius: var(--exo-radius-box);
+  background-color: var(--exo-base-100);
+  color: var(--exo-base-content);
+  box-shadow: var(--exo-shadow-sm);
   font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
+  font-size: 0.875rem;
+  z-index: 999;
+  scale: 95%;
 }
 
 /* --- Position-area mapping (needs real specificity to work in top layer) --- */
@@ -59,22 +71,34 @@
 :where([data-exo="popover-content"][data-side="left"])                        { transform-origin: center right; }
 :where([data-exo="popover-content"][data-side="right"])                       { transform-origin: center left; }
 
-/* --- Animations --- */
+/* --- Animations (daisyUI's `dropdown` keyframes and transition) --- */
 
 [data-exo="popover-content"]:popover-open {
   opacity: 1;
   visibility: visible;
-  transform: scale(1);
-  transition: opacity var(--exo-duration) var(--exo-easing),
-              transform var(--exo-duration) var(--exo-easing),
-              overlay var(--exo-duration) var(--exo-easing) allow-discrete,
-              display var(--exo-duration) var(--exo-easing) allow-discrete;
+  scale: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-exo="popover-content"]:popover-open {
+    animation: exo-popover-in 0.2s;
+    transition-property: opacity, scale, overlay, display;
+    transition-behavior: allow-discrete;
+    transition-duration: 0.2s;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
 }
 
 @starting-style {
   [data-exo="popover-content"]:popover-open {
     opacity: 0;
-    transform: scale(0.96);
+    scale: 95%;
+  }
+}
+
+@keyframes exo-popover-in {
+  0% {
+    opacity: 0;
   }
 }
 

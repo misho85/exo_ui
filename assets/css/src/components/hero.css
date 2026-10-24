@@ -1,52 +1,54 @@
+/*
+ * daisyUI 5 `.hero` / `.hero-content` (components/hero.css, v5.7.50) as
+ * daisyUI's example dresses it: `hero bg-base-200` with a centred
+ * `hero-content text-center`, a `text-5xl font-bold` title, a `py-6`
+ * paragraph and the actions under it.
+ *
+ * daisyUI stacks every child of the hero in one cell, for an overlay over a
+ * background image. ExoUI's hero has no overlay; what a caller passes after
+ * the content is a second row, so it is not drawn over the title.
+ */
+
 :where([data-exo="hero"]) {
   display: grid;
-  gap: var(--exo-space-6);
-  padding: clamp(var(--exo-space-6), 7vw, 5rem);
-  background:
-    linear-gradient(135deg, color-mix(in oklch, var(--exo-primary) 12%, transparent), transparent 52%),
-    var(--exo-card);
-  color: var(--exo-card-foreground);
-  border: 1px solid var(--exo-border);
-  border-radius: var(--exo-radius);
+  width: 100%;
+  place-items: center;
+  background-color: var(--exo-base-200);
+  background-size: cover;
+  background-position: center;
+  color: var(--exo-base-content);
   font-family: var(--exo-font);
-  overflow: hidden;
 }
 
 :where([data-exo="hero-content"]) {
-  display: grid;
-  gap: var(--exo-space-4);
-  max-width: 48rem;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  max-width: 80rem;
+  padding: 1rem;
+  text-align: center;
 }
 
 :where([data-exo="hero-title"]) {
   margin: 0;
-  color: var(--exo-foreground);
-  font-size: clamp(2rem, 6vw, 4rem);
-  font-weight: 800;
-  line-height: 1.05;
+  font-size: 3rem;
+  line-height: 1;
+  font-weight: 700;
 }
 
 :where([data-exo="hero-subtitle"]) {
   margin: 0;
-  max-width: 42rem;
-  color: var(--exo-muted-foreground);
-  font-size: var(--exo-text-lg);
-  line-height: 1.65;
+  max-width: 28rem;
+  padding-block: 1.5rem;
 }
 
 :where([data-exo="hero-actions"]) {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--exo-space-3);
+  justify-content: center;
   align-items: center;
-}
-
-@media (max-width: 640px) {
-  :where([data-exo="hero"]) {
-    padding: var(--exo-space-6) var(--exo-space-4);
-  }
-
-  :where([data-exo="hero-title"]) {
-    font-size: 2rem;
-  }
+  gap: 0.5rem;
 }

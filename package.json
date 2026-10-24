@@ -12,7 +12,8 @@
   "scripts": {
     "build": "lightningcss --bundle --minify assets/css/exo.css -o priv/static/exo.css",
     "build:tokens": "lightningcss --bundle --minify assets/css/src/tokens.css -o priv/static/exo.tokens.css",
-    "build:all": "bun run build && bun run build:tokens",
+    "build:themes": "lightningcss --bundle --minify assets/css/src/themes/daisy.css -o priv/static/exo.themes.css",
+    "build:all": "bun run build && bun run build:tokens && bun run build:themes",
     "watch": "nodemon --watch assets/css -e css --exec 'bun run build:all'",
     "test:browser": "playwright test",
     "test:browser:install": "playwright install chromium",

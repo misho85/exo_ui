@@ -1,97 +1,103 @@
+/*
+ * daisyUI 5 calendar (components/calendar.css, v5.7.50), the
+ * `.react-day-picker` values, which fit ExoUI's markup closest: a base-100
+ * box with a base-200 border, 2.25rem day and arrow buttons with the field
+ * radius, base-200 under the pointer, today in `primary`, the selected day in
+ * the content colour (selected wins over today, as in daisyUI's `.cally`).
+ *
+ * The layout is ExoUI's: the box takes the width of its column and the days
+ * sit in a seven-column grid, each day button centred in its column. The
+ * dot under an available day and the focus ring are ExoUI's.
+ */
+
 :where([data-exo="date-picker"]) {
   user-select: none;
 }
 
-:where([data-exo="date-picker"][data-invalid] [data-exo="date-picker-container"]) {
-  border-color: var(--exo-danger);
-  box-shadow: 0 0 0 1px color-mix(in oklch, var(--exo-danger) 35%, transparent);
-}
-
+/* The label is a field label (input.css). */
 :where([data-exo="date-picker-label"]) {
   display: block;
+  padding-block: 0.5rem 0.25rem;
   font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  font-weight: 500;
-  color: var(--exo-foreground);
-  margin-bottom: var(--exo-space-1);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--exo-base-content);
 }
 
 :where([data-exo="date-picker-container"]) {
-  background: var(--exo-card);
-  border: 1px solid var(--exo-border);
-  border-radius: var(--exo-radius);
-  box-shadow: var(--exo-shadow-sm);
-  overflow: hidden;
+  position: relative;
+  overflow: clip;
+  padding: 0.5rem;
+  font-family: var(--exo-font);
+  font-size: 0.75rem;
+  color: var(--exo-base-content);
+  background-color: var(--exo-base-100);
+  border: var(--exo-border-width) solid var(--exo-base-200);
+  border-radius: var(--exo-radius-box);
 }
 
+:where([data-exo="date-picker"][data-invalid] [data-exo="date-picker-container"]) {
+  border-color: var(--exo-error);
+}
+
+/* `.rdp-month_caption` with `.rdp-nav` on its sides. */
 :where([data-exo="date-picker-header"]) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--exo-space-3) var(--exo-space-4);
-  border-bottom: 1px solid var(--exo-border);
+  height: 2.75rem;
 }
 
 :where([data-exo="date-picker-nav"]) {
-  display: flex;
+  position: relative;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border: none;
-  background: transparent;
-  border-radius: 9999px;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin: 0;
+  padding: 0;
+  appearance: none;
+  font: inherit;
+  color: inherit;
   cursor: pointer;
-  font-size: var(--exo-text-lg);
-  color: var(--exo-foreground);
-  transition: background var(--exo-duration) var(--exo-easing);
+  background: transparent;
+  border: none;
+  border-radius: var(--exo-radius-field);
 }
 
-:where([data-exo="date-picker-nav"]):hover {
-  background: var(--exo-muted);
+:where([data-exo="date-picker-nav"]:hover:not(:disabled, [data-disabled])) {
+  background-color: var(--exo-base-200);
 }
 
-:where([data-exo="date-picker-nav"]):focus-visible,
-:where([data-exo="date-picker-day"]):focus-visible {
-  outline: 2px solid var(--exo-ring);
-  outline-offset: 2px;
-}
-
-:where([data-exo="date-picker-nav"][data-disabled]) {
-  opacity: 0.3;
-  pointer-events: none;
+:where([data-exo="date-picker-nav"]:disabled, [data-exo="date-picker-nav"][data-disabled]) {
+  cursor: revert;
+  opacity: 0.5;
 }
 
 :where([data-exo="date-picker-month"]) {
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  font-weight: 600;
-  color: var(--exo-foreground);
+  font-size: 0.75rem;
+  font-weight: inherit;
+  white-space: nowrap;
 }
 
 :where([data-exo="date-picker-weekdays"]) {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  padding: var(--exo-space-2) var(--exo-space-3) var(--exo-space-1);
 }
 
 :where([data-exo="date-picker-weekday"]) {
+  padding: 0.5rem 0;
   text-align: center;
-  font-family: var(--exo-font);
-  font-size: 0.6875rem;
+  font-size: smaller;
   font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--exo-muted-foreground);
-}
-
-:where([data-exo="date-picker-grid"]) {
-  padding: 0 var(--exo-space-3) var(--exo-space-3);
+  opacity: 0.6;
 }
 
 :where([data-exo="date-picker-week"]) {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  justify-items: center;
 }
 
 :where([data-exo="date-picker-day"]) {
@@ -99,38 +105,39 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 2.25rem;
+  max-width: 100%;
   height: 2.25rem;
-  width: 100%;
-  border: none;
-  background: transparent;
-  border-radius: var(--exo-radius);
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  color: var(--exo-foreground);
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
   cursor: pointer;
-  transition: background var(--exo-duration) var(--exo-easing);
+  background: transparent;
+  border: 2px solid #0000;
+  border-radius: var(--exo-radius-field);
 }
 
-:where([data-exo="date-picker-day"]):hover:not([data-disabled]) {
-  background: var(--exo-muted);
+/* Today and the selected day keep their fill under the pointer. */
+:where([data-exo="date-picker-day"]:hover:not(:disabled, [data-disabled], [data-today], [data-selected])) {
+  background-color: var(--exo-base-200);
+}
+
+:where([data-exo="date-picker-day"][data-today]) {
+  color: var(--exo-primary-content);
+  background-color: var(--exo-primary);
 }
 
 :where([data-exo="date-picker-day"][data-selected]) {
-  background: var(--exo-primary);
-  color: var(--exo-primary-foreground);
-  font-weight: 600;
-}
-
-:where([data-exo="date-picker-day"][data-today]:not([data-selected])) {
-  background: color-mix(in oklch, var(--exo-primary) 10%, transparent);
-  color: var(--exo-primary);
-  font-weight: 600;
+  color: var(--exo-base-100);
+  background-color: var(--exo-base-content);
+  border: none;
 }
 
 :where([data-exo="date-picker-day"][data-available]:not([data-selected]))::after {
   content: "";
   position: absolute;
-  bottom: 0.25rem;
+  bottom: 0.1875rem;
   width: 0.25rem;
   height: 0.25rem;
   border-radius: 9999px;
@@ -138,15 +145,19 @@
 }
 
 :where([data-exo="date-picker-day"][data-unavailable]) {
-  color: var(--exo-muted-foreground);
+  color: color-mix(in oklab, var(--exo-base-content) 60%, transparent);
 }
 
 :where([data-exo="date-picker-day"][data-outside]) {
-  color: var(--exo-muted-foreground);
-  opacity: 0.3;
+  opacity: 0.75;
 }
 
-:where([data-exo="date-picker-day"][data-disabled]) {
-  cursor: default;
-  opacity: 0.2;
+:where([data-exo="date-picker-day"]:disabled, [data-exo="date-picker-day"][data-disabled]) {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+:where([data-exo="date-picker-nav"]:focus-visible, [data-exo="date-picker-day"]:focus-visible) {
+  outline: 2px solid var(--exo-base-content);
+  outline-offset: 2px;
 }

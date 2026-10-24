@@ -104,13 +104,14 @@ test.describe("core action components", () => {
     await expect(input).toHaveAccessibleName("Toggle");
     await expect(input).not.toBeChecked();
 
-    const before = await thumb.evaluate((node) => getComputedStyle(node).transform);
+    // daisyUI moves the thumb across the track's grid, not with a transform,
+    // so the visual state is where the thumb sits.
+    const thumbX = () => thumb.evaluate((node) => node.getBoundingClientRect().x);
+    const before = await thumbX();
     await toggle.click();
 
     await expect(input).toBeChecked();
-    await expect
-      .poll(async () => thumb.evaluate((node) => getComputedStyle(node).transform))
-      .not.toBe(before);
+    await expect.poll(thumbX).toBeGreaterThan(before);
   });
 });
 

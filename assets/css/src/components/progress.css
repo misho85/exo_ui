@@ -1,7 +1,20 @@
+/*
+ * daisyUI 5 `.progress` (components/progress.css, v5.7.50), value for value.
+ *
+ * daisyUI styles a native <progress>; ExoUI's bar is a track and a fill, so
+ * the track takes `.progress` and the fill takes `::-webkit-progress-value`.
+ * The colour is `currentColor`: the track is it at 20%, the fill at 100%.
+ *
+ *   data-variant  base | neutral | primary | secondary | accent | info |
+ *                 success | warning | error; `danger` is `error`; none is
+ *                 `primary` (ExoUI's default before the daisyUI theme), `base`
+ *                 is daisyUI's plain `.progress` in the content colour
+ */
+
 :where([data-exo="progress-field"]) {
   display: flex;
   flex-direction: column;
-  gap: var(--exo-space-1);
+  gap: 0.25rem;
 }
 
 :where([data-exo="progress-header"]) {
@@ -12,22 +25,77 @@
 
 :where([data-exo="progress-value"]) {
   font-family: var(--exo-font);
-  font-size: var(--exo-text-xs);
+  font-size: 0.75rem;
+  line-height: 1rem;
   font-weight: 500;
   color: var(--exo-muted-foreground);
 }
 
+/* --- base (l1.l2.l3) --- */
+
 :where([data-exo="progress"]) {
+  position: relative;
   width: 100%;
   height: 0.5rem;
-  border-radius: 9999px;
-  background: color-mix(in oklch, var(--exo-primary) 20%, transparent);
   overflow: hidden;
+  border-radius: var(--exo-radius-box);
+  color: var(--exo-base-content);
+  background-color: color-mix(in oklab, currentColor 20%, transparent);
 }
 
-:where([data-exo="progress-bar"]) {
+/* Scoped to the track: the charts' `progress-bar` is another component. */
+:where([data-exo="progress"] > [data-exo="progress-bar"]) {
   height: 100%;
-  border-radius: 9999px;
-  background: var(--exo-primary);
-  transition: width 300ms var(--exo-easing);
+  border-radius: var(--exo-radius-box);
+  background-color: currentColor;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :where([data-exo="progress"] > [data-exo="progress-bar"]) {
+    transition: inline-size 0.3s ease;
+  }
+}
+
+@media (forced-colors: active) {
+  :where([data-exo="progress"]) {
+    border: 1px solid;
+  }
+
+  :where([data-exo="progress"] > [data-exo="progress-bar"]) {
+    background-color: CanvasText;
+  }
+}
+
+/* --- colours (l1.l2) --- */
+
+:where([data-exo="progress"]:not([data-variant]), [data-exo="progress"][data-variant="primary"]) {
+  color: var(--exo-primary);
+}
+
+:where([data-exo="progress"][data-variant="secondary"]) {
+  color: var(--exo-secondary);
+}
+
+:where([data-exo="progress"][data-variant="accent"]) {
+  color: var(--exo-accent);
+}
+
+:where([data-exo="progress"][data-variant="neutral"]) {
+  color: var(--exo-neutral);
+}
+
+:where([data-exo="progress"][data-variant="info"]) {
+  color: var(--exo-info);
+}
+
+:where([data-exo="progress"][data-variant="success"]) {
+  color: var(--exo-success);
+}
+
+:where([data-exo="progress"][data-variant="warning"]) {
+  color: var(--exo-warning);
+}
+
+:where([data-exo="progress"][data-variant="error"], [data-exo="progress"][data-variant="danger"]) {
+  color: var(--exo-error);
 }

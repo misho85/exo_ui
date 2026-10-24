@@ -1,18 +1,37 @@
+/*
+ * daisyUI 5 `.swap` (components/swap.css, v5.7.50), value for value. On is
+ * the checked state carrier or `data-active` (daisyUI's `swap-active`).
+ *
+ *   data-appearance  rotate | flip; none is daisyUI's fade
+ *
+ * daisyUI puts the base in l1.l2 and `swap-active`, `swap-rotate` and
+ * `swap-flip` above it in l1, so they come after the base here.
+ */
+
+/* --- base (l1.l2) --- */
+
 :where([data-exo="swap"]) {
-  display: inline-grid;
-  place-items: center;
   position: relative;
+  display: inline-grid;
+  place-content: center;
+  vertical-align: middle;
   cursor: pointer;
   user-select: none;
-  border-radius: var(--exo-radius);
+  -webkit-user-select: none;
+  border-radius: var(--exo-radius-field);
 }
 
+/* The label is the focusable switch (role="switch"), not the checkbox inside
+ * it as in daisyUI, so it carries the focus ring. */
 :where([data-exo="swap"]:focus-visible) {
-  outline: 2px solid var(--exo-ring);
+  outline: 2px solid var(--exo-base-content);
   outline-offset: 2px;
 }
 
+/* The checkbox only carries the state; the hook toggles it. */
 :where([data-exo="swap-state"]) {
+  appearance: none;
+  border: none;
   position: absolute;
   width: 1px;
   height: 1px;
@@ -20,38 +39,85 @@
   pointer-events: none;
 }
 
-:where([data-exo="swap-on"],
-[data-exo="swap-off"]) {
-  grid-area: 1 / 1;
+:where([data-exo="swap-on"], [data-exo="swap-off"]) {
+  grid-column-start: 1;
+  grid-row-start: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition:
-    opacity var(--exo-duration) var(--exo-easing),
-    transform var(--exo-duration) var(--exo-easing);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :where([data-exo="swap-on"], [data-exo="swap-off"]) {
+    transition-property: transform, rotate, opacity;
+    transition-duration: 0.2s;
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
 }
 
 :where([data-exo="swap-on"]) {
   opacity: 0;
-  transform: scale(0.92) rotate(-8deg);
-  pointer-events: none;
 }
 
-:where([data-exo="swap-off"]) {
-  opacity: 1;
-  transform: scale(1) rotate(0);
-}
-
-:where([data-exo="swap"][data-active] [data-exo="swap-on"],
-[data-exo="swap"]:has([data-exo="swap-state"]:checked) [data-exo="swap-on"]) {
-  opacity: 1;
-  transform: scale(1) rotate(0);
-  pointer-events: auto;
-}
-
-:where([data-exo="swap"][data-active] [data-exo="swap-off"],
-[data-exo="swap"]:has([data-exo="swap-state"]:checked) [data-exo="swap-off"]) {
+:where([data-exo="swap-state"]:checked ~ [data-exo="swap-off"]) {
   opacity: 0;
-  transform: scale(0.92) rotate(8deg);
-  pointer-events: none;
+}
+
+:where([data-exo="swap-state"]:checked ~ [data-exo="swap-on"]) {
+  opacity: 1;
+  backface-visibility: visible;
+}
+
+/* --- active, rotate, flip (l1) --- */
+
+:where([data-exo="swap"][data-active] [data-exo="swap-off"]) {
+  opacity: 0;
+}
+
+:where([data-exo="swap"][data-active] [data-exo="swap-on"]) {
+  opacity: 1;
+}
+
+:where([data-exo="swap"][data-appearance="rotate"] [data-exo="swap-on"]) {
+  rotate: 45deg;
+}
+
+:where(
+    [data-exo="swap"][data-appearance="rotate"] [data-exo="swap-state"]:checked ~ [data-exo="swap-on"],
+    [data-exo="swap"][data-appearance="rotate"][data-active] [data-exo="swap-on"]
+  ) {
+  rotate: 0deg;
+}
+
+:where(
+    [data-exo="swap"][data-appearance="rotate"] [data-exo="swap-state"]:checked ~ [data-exo="swap-off"],
+    [data-exo="swap"][data-appearance="rotate"][data-active] [data-exo="swap-off"]
+  ) {
+  rotate: -45deg;
+}
+
+:where([data-exo="swap"][data-appearance="flip"]) {
+  transform-style: preserve-3d;
+  perspective: 20rem;
+}
+
+:where([data-exo="swap"][data-appearance="flip"] [data-exo="swap-on"]) {
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+}
+
+:where(
+    [data-exo="swap"][data-appearance="flip"] [data-exo="swap-state"]:checked ~ [data-exo="swap-on"],
+    [data-exo="swap"][data-appearance="flip"][data-active] [data-exo="swap-on"]
+  ) {
+  transform: rotateY(0deg);
+}
+
+:where(
+    [data-exo="swap"][data-appearance="flip"] [data-exo="swap-state"]:checked ~ [data-exo="swap-off"],
+    [data-exo="swap"][data-appearance="flip"][data-active] [data-exo="swap-off"]
+  ) {
+  transform: rotateY(-180deg);
+  backface-visibility: hidden;
+  opacity: 1;
 }

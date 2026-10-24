@@ -1,3 +1,21 @@
+/*
+ * daisyUI 5 `.range` (components/range.css, v5.7.50), value for value.
+ *
+ * The thumb paints the fill: its last box-shadow reaches back across the
+ * track and the input's `overflow: hidden` clips it. Same order as
+ * button.css: base, colours, sizes, disabled.
+ *
+ *   data-variant  (on the input) base | neutral | primary | secondary |
+ *                 accent | info | success | warning | error; `danger` is
+ *                 `error`; none is `primary` (ExoUI's thumb before the
+ *                 daisyUI theme); `base` is daisyUI's plain range in the
+ *                 text colour
+ *   data-size     (on the input) xs | sm | md | lg | xl
+ *
+ * The width stays 100% of the field, where daisyUI caps it at 20rem: the
+ * header above it, with the value at its end, spans the field.
+ */
+
 :where([data-exo="slider-field"]) {
   display: flex;
   flex-direction: column;
@@ -18,71 +36,195 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* --- base (l1.l2.l3) --- */
+
 :where([data-exo="slider"]) {
-  -webkit-appearance: none;
   appearance: none;
-  width: 100%;
-  height: 0.5rem;
-  border-radius: 9999px;
-  background: var(--exo-muted);
-  outline: none;
+  -webkit-appearance: none;
+  --range-thumb: var(--exo-base-100);
+  --range-thumb-size: calc(var(--exo-size-selector, 0.25rem) * 6);
+  --range-progress: currentColor;
+  --range-fill: 1;
+  --range-p: 0.25rem;
+  --range-bg: color-mix(in oklab, currentColor 10%, #0000);
+  --range-fill-x: calc(
+    (var(--range-dir, 1) * -100cqw) - (var(--range-dir, 1) * var(--range-thumb-size) / 2)
+  );
+  --range-fill-y: 0;
+  --range-fill-spread: calc(100cqw * var(--range-fill));
+  /* The fill's cqw need a query container on the input itself, or they
+     resolve against the viewport. */
+  container-type: inline-size;
   cursor: pointer;
+  overflow: hidden;
+  background-color: transparent;
+  vertical-align: middle;
+  width: 100%;
+  --radius-selector-max: calc(
+    var(--exo-radius-selector) + var(--exo-radius-selector) + var(--exo-radius-selector)
+  );
+  border-radius: calc(var(--exo-radius-selector) + min(var(--range-p), var(--radius-selector-max)));
+  border: none;
+  margin: 0;
+  height: var(--range-thumb-size);
 }
 
-/* oklab, not oklch: --exo-muted's hue would pull the danger hue towards its
-   own, even at chroma 0 (see alert.css). */
-:where([data-exo="slider"][data-invalid]) {
-  background: color-mix(in oklab, var(--exo-danger) 24%, var(--exo-muted));
+:where([dir="rtl"] [data-exo="slider"]) {
+  --range-dir: -1;
+}
+
+:where([data-exo="slider"]):focus {
+  outline: none;
+}
+
+/* daisyUI's ring is the range's own colour; ExoUI's is --exo-ring, which a
+   theme keeps at 3:1 on the page whatever the brand colour is. It was a ring
+   of --exo-ring at 25% around the thumb, about 1.4:1, and Firefox's thumb had
+   no focus sign at all (TRG-461). */
+:where([data-exo="slider"]):focus-visible {
+  outline: 2px solid var(--exo-ring);
+  outline-offset: 2px;
+}
+
+:where([data-exo="slider"])::-webkit-slider-runnable-track {
+  width: 100%;
+  background-color: var(--range-bg);
+  border-radius: var(--exo-radius-selector);
+  height: calc(var(--range-thumb-size) * 0.5);
+}
+
+:where([data-exo="slider"])::-moz-range-track {
+  width: 100%;
+  background-color: var(--range-bg);
+  border-radius: var(--exo-radius-selector);
+  height: calc(var(--range-thumb-size) * 0.5);
+}
+
+@media (forced-colors: active) {
+  :where([data-exo="slider"])::-webkit-slider-runnable-track {
+    border: 1px solid;
+  }
+
+  :where([data-exo="slider"])::-moz-range-track {
+    border: 1px solid;
+  }
 }
 
 :where([data-exo="slider"])::-webkit-slider-thumb {
-  -webkit-appearance: none;
+  position: relative;
+  box-sizing: border-box;
+  border-radius: calc(var(--exo-radius-selector) + min(var(--range-p), var(--radius-selector-max)));
+  background-color: var(--range-thumb);
+  height: var(--range-thumb-size);
+  width: var(--range-thumb-size);
+  border: var(--range-p) solid;
   appearance: none;
-  width: 1.25rem;
-  height: 1.25rem;
-  border-radius: 50%;
-  background: var(--exo-primary);
-  border: 2px solid var(--exo-background);
-  box-shadow: var(--exo-shadow-sm);
-  cursor: pointer;
-  transition: transform var(--exo-duration) var(--exo-easing);
-}
-
-:where([data-exo="slider"])::-webkit-slider-thumb:hover {
-  transform: scale(1.15);
+  -webkit-appearance: none;
+  inset-block-start: 50%;
+  color: var(--range-progress);
+  transform: translateY(-50%);
+  box-shadow:
+    0 -1px oklch(0% 0 0 / calc(var(--exo-depth) * 0.1)) inset,
+    0 8px 0 -4px oklch(100% 0 0 / calc(var(--exo-depth) * 0.1)) inset,
+    0 1px color-mix(in oklab, currentColor calc(var(--exo-depth) * 10%), #0000),
+    0 0 0 2rem var(--range-thumb) inset,
+    var(--range-fill-x) var(--range-fill-y) 0 var(--range-fill-spread);
 }
 
 :where([data-exo="slider"])::-moz-range-thumb {
-  width: 1.25rem;
-  height: 1.25rem;
-  border-radius: 50%;
-  background: var(--exo-primary);
-  border: 2px solid var(--exo-background);
-  box-shadow: var(--exo-shadow-sm);
-  cursor: pointer;
+  position: relative;
+  box-sizing: border-box;
+  border-radius: calc(var(--exo-radius-selector) + min(var(--range-p), var(--radius-selector-max)));
+  background-color: currentColor;
+  height: var(--range-thumb-size);
+  width: var(--range-thumb-size);
+  border: var(--range-p) solid;
+  color: var(--range-progress);
+  box-shadow:
+    0 -1px oklch(0% 0 0 / calc(var(--exo-depth) * 0.1)) inset,
+    0 8px 0 -4px oklch(100% 0 0 / calc(var(--exo-depth) * 0.1)) inset,
+    0 1px color-mix(in oklab, currentColor calc(var(--exo-depth) * 10%), #0000),
+    0 0 0 2rem var(--range-thumb) inset,
+    var(--range-fill-x) var(--range-fill-y) 0 var(--range-fill-spread);
 }
 
-/* Keyboard focus is a 2px ring of --exo-ring around the thumb's border, which
-   is the page colour and keeps the ring off the --exo-primary thumb. It was
-   the same ring at 25%, about 1.4:1 against the page, as on the radio and the
-   checkbox (TRG-461); Firefox's thumb had no focus sign at all. */
-:where([data-exo="slider"]):focus-visible::-webkit-slider-thumb {
-  box-shadow: 0 0 0 2px var(--exo-ring);
+/* --- colours (l1.l2) --- */
+
+:where([data-exo="slider"]:not([data-variant]), [data-exo="slider"][data-variant="primary"]) {
+  color: var(--exo-primary);
+  --range-thumb: var(--exo-primary-content);
 }
 
-:where([data-exo="slider"]):focus-visible::-moz-range-thumb {
-  box-shadow: 0 0 0 2px var(--exo-ring);
+:where([data-exo="slider"][data-variant="base"]) {
+  color: var(--exo-base-content);
 }
 
-:where([data-exo="slider"][data-invalid])::-webkit-slider-thumb {
-  background: var(--exo-danger);
+:where([data-exo="slider"][data-variant="secondary"]) {
+  color: var(--exo-secondary);
+  --range-thumb: var(--exo-secondary-content);
 }
 
-:where([data-exo="slider"][data-invalid])::-moz-range-thumb {
-  background: var(--exo-danger);
+:where([data-exo="slider"][data-variant="accent"]) {
+  color: var(--exo-accent);
+  --range-thumb: var(--exo-accent-content);
 }
+
+:where([data-exo="slider"][data-variant="neutral"]) {
+  color: var(--exo-neutral);
+  --range-thumb: var(--exo-neutral-content);
+}
+
+:where([data-exo="slider"][data-variant="success"]) {
+  color: var(--exo-success);
+  --range-thumb: var(--exo-success-content);
+}
+
+:where([data-exo="slider"][data-variant="warning"]) {
+  color: var(--exo-warning);
+  --range-thumb: var(--exo-warning-content);
+}
+
+:where([data-exo="slider"][data-variant="info"]) {
+  color: var(--exo-info);
+  --range-thumb: var(--exo-info-content);
+}
+
+:where([data-exo="slider"][data-variant="error"], [data-exo="slider"][data-variant="danger"]) {
+  color: var(--exo-error);
+  --range-thumb: var(--exo-error-content);
+}
+
+/* An invalid slider is daisyUI's `.validator` state: the error colour. */
+:where([data-exo="slider"][data-invalid]) {
+  color: var(--exo-error);
+  --range-thumb: var(--exo-error-content);
+}
+
+/* --- sizes (l1.l2) --- */
+
+:where([data-exo="slider"][data-size="xs"]) {
+  --range-thumb-size: calc(var(--exo-size-selector, 0.25rem) * 4);
+}
+
+:where([data-exo="slider"][data-size="sm"]) {
+  --range-thumb-size: calc(var(--exo-size-selector, 0.25rem) * 5);
+}
+
+:where([data-exo="slider"][data-size="md"]) {
+  --range-thumb-size: calc(var(--exo-size-selector, 0.25rem) * 6);
+}
+
+:where([data-exo="slider"][data-size="lg"]) {
+  --range-thumb-size: calc(var(--exo-size-selector, 0.25rem) * 7);
+}
+
+:where([data-exo="slider"][data-size="xl"]) {
+  --range-thumb-size: calc(var(--exo-size-selector, 0.25rem) * 8);
+}
+
+/* --- disabled (l1.l2.l3) --- */
 
 :where([data-exo="slider"]):disabled {
-  opacity: 0.5;
   cursor: not-allowed;
+  opacity: 0.3;
 }

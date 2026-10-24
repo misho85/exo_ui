@@ -1,3 +1,16 @@
+/*
+ * daisyUI 5 `.table` (components/table.css, v5.7.50), value for value.
+ *
+ *   data-size      xs | sm | md | lg | xl (none is md)
+ *   data-zebra     every even body row on `base-200` (`table-zebra`)
+ *   data-pin-rows  the header row sticks to the top of the wrapper when the
+ *                  wrapper scrolls (`table-pin-rows`)
+ *
+ * The cells sit in a `border-separate` table with no spacing, so the row rules
+ * are the cells' bottom borders: the content colour at 5% under the header
+ * and under every body row but the last.
+ */
+
 /* `position: relative` makes the wrapper the containing block of an absolutely
    positioned descendant, such as the visually hidden actions header. Without it
    that header escapes the wrapper's scroll and widens the page itself, so a
@@ -7,33 +20,48 @@
   overflow-x: auto;
 }
 
+/* --- base (l1.l2.l3) --- */
+
 :where([data-exo="table"]) {
+  --table-px: 1rem;
+  --table-py: 0.75rem;
+  position: relative;
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: var(--exo-radius-box);
+  text-align: start;
   font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
+  font-size: 0.875rem;
+}
+
+:where([data-exo="table"]) :where(th, td) {
+  padding: var(--table-py) var(--table-px);
+  vertical-align: middle;
+}
+
+:where([data-exo="table"]) :where(thead) {
+  white-space: nowrap;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: color-mix(in oklab, var(--exo-base-content) 60%, transparent);
+}
+
+:where([data-exo="table"]) :where(thead tr :is(td, th), tbody tr:not(:last-child) :is(td, th)) {
+  border-bottom: var(--exo-border-width) solid
+    color-mix(in oklch, var(--exo-base-content) 5%, transparent);
 }
 
 :where([data-exo="table-caption"]) {
   caption-side: top;
-  padding: var(--exo-space-2) var(--exo-space-4);
-  text-align: left;
-  color: var(--exo-muted-foreground);
-  font-size: var(--exo-text-sm);
-}
-
-:where([data-exo="table-head-row"]) {
-  border-bottom: 1px solid var(--exo-border);
+  padding: 0.5rem var(--table-px);
+  text-align: start;
+  font-size: 0.875rem;
+  color: color-mix(in oklab, var(--exo-base-content) 60%, transparent);
 }
 
 :where([data-exo="table-head-cell"]) {
-  text-align: left;
-  padding: var(--exo-space-2) var(--exo-space-3);
-  background: var(--exo-muted);
-  white-space: nowrap;
-  font-size: var(--exo-text-xs);
-  font-weight: 600;
-  color: var(--exo-muted-foreground);
+  text-align: start;
 }
 
 :where([data-exo="table-head-cell"][data-align="center"]),
@@ -43,75 +71,65 @@
 
 :where([data-exo="table-head-cell"][data-align="end"]),
 :where([data-exo="table-cell"][data-align="end"]) {
-  text-align: right;
+  text-align: end;
 }
 
+/* Every row is daisyUI's `row-hover`: ExoUI tables are index tables whose rows
+   open, select or act. */
 :where([data-exo="table-row"]) {
-  border-bottom: 1px solid var(--exo-border);
-  transition: background var(--exo-duration) var(--exo-easing);
+  transition: background-color 0.2s ease-out;
 }
 
-:where([data-exo="table-row"]:last-child) {
-  border-bottom: none;
-}
-
-:where([data-exo="table-row"]):hover {
-  background: var(--exo-muted);
+@media (hover: hover) {
+  :where([data-exo="table-row"]):hover {
+    background-color: var(--exo-base-200);
+  }
 }
 
 :where([data-exo="table-row"][data-clickable]) {
   cursor: pointer;
 }
 
-:where([data-exo="table-row"]:focus-within) {
-  background: color-mix(in oklch, var(--exo-ring) 8%, transparent);
-}
-
 :where([data-exo="table-row"][data-clickable]):focus-visible {
-  outline: 2px solid var(--exo-ring);
+  outline: 2px solid var(--exo-base-content);
   outline-offset: -2px;
 }
 
-/* 8px + 20px line + 8px + 1px rule: a row of about 40px (v2, TRG-806), the
-   density of a Polaris index table, instead of 48-56px. */
 :where([data-exo="table-cell"]) {
-  padding: var(--exo-space-2) var(--exo-space-3);
-  line-height: 1.25rem;
-  color: var(--exo-foreground);
+  color: var(--exo-base-content);
 }
 
 :where([data-exo="table-empty-cell"]) {
-  padding: var(--exo-space-8) var(--exo-space-4);
+  padding: 2rem 1rem;
   text-align: center;
-  color: var(--exo-muted-foreground);
+  color: color-mix(in oklab, var(--exo-base-content) 60%, transparent);
 }
 
 :where([data-exo="table-loading-cell"]) {
-  padding: var(--exo-space-6) var(--exo-space-4);
+  padding: 1.5rem 1rem;
   text-align: center;
-  color: var(--exo-muted-foreground);
+  color: color-mix(in oklab, var(--exo-base-content) 60%, transparent);
 }
 
 :where([data-exo="table-empty"], [data-exo="table-loading"]) {
   display: flex;
   justify-content: center;
-  font-size: var(--exo-text-sm);
+  font-size: 0.875rem;
 }
 
 :where([data-exo="table-loading"]) {
   align-items: center;
-  gap: var(--exo-space-2);
+  gap: 0.5rem;
 }
 
 :where([data-exo="table-action-cell"]) {
-  padding: var(--exo-space-2) var(--exo-space-3);
   width: 0;
   white-space: nowrap;
 }
 
 :where([data-exo="table-actions"]) {
   display: flex;
-  gap: var(--exo-space-2);
+  gap: 0.5rem;
 }
 
 :where([data-exo="sr-only"]) {
@@ -132,4 +150,83 @@
    them again without a re-render of the head. */
 :where([data-exo="table"]:has([data-exo="table-empty-row"])) thead {
   display: none;
+}
+
+/* --- pinned header (l1.l2.l3) --- */
+
+:where([data-exo="table"][data-pin-rows]) :where(thead) {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+:where([data-exo="table"][data-pin-rows]) :where(thead tr) {
+  background-color: var(--exo-base-100);
+}
+
+/* --- zebra (l1.l2) --- */
+
+:where([data-exo="table"][data-zebra]) :where(tbody tr:nth-child(even)) {
+  background-color: var(--exo-base-200);
+}
+
+@media (hover: hover) {
+  :where([data-exo="table"][data-zebra]) :where([data-exo="table-row"]):hover {
+    background-color: var(--exo-base-300);
+  }
+}
+
+/* --- sizes (l1.l2) --- */
+
+:where([data-exo="table"][data-size="xs"]) {
+  --table-px: 0.5rem;
+  --table-py: 0.25rem;
+}
+
+:where([data-exo="table"][data-size="xs"]) :where(tbody tr) {
+  font-size: 0.6875rem;
+}
+
+:where([data-exo="table"][data-size="sm"]) {
+  --table-px: 0.75rem;
+  --table-py: 0.5rem;
+}
+
+:where([data-exo="table"][data-size="sm"]) :where(tbody tr) {
+  font-size: 0.75rem;
+}
+
+:where([data-exo="table"][data-size="md"]) {
+  --table-px: 1rem;
+  --table-py: 0.75rem;
+}
+
+:where([data-exo="table"][data-size="md"]) :where(tbody tr) {
+  font-size: 0.875rem;
+}
+
+:where([data-exo="table"][data-size="lg"]) {
+  --table-px: 1.25rem;
+  --table-py: 1rem;
+}
+
+:where([data-exo="table"][data-size="lg"]) :where(tbody tr) {
+  font-size: 1.125rem;
+}
+
+:where([data-exo="table"][data-size="xl"]) {
+  --table-px: 1.5rem;
+  --table-py: 1.25rem;
+}
+
+:where([data-exo="table"][data-size="xl"]) :where(tbody tr) {
+  font-size: 1.375rem;
+}
+
+/* --- focus (l1) --- */
+
+/* A row with focus inside it says so, beyond daisyUI: a keyboard user picking
+   a row action must see which row it acts on. Last, so a zebra row shows it. */
+:where([data-exo="table-row"]:focus-within) {
+  background-color: color-mix(in oklab, var(--exo-base-content) 8%, transparent);
 }

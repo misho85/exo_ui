@@ -1,70 +1,216 @@
-/* Flash */
-:where([data-exo="flash-group"]) {
+/*
+ * Flash messages and toasts are daisyUI 5's `.alert` inside a `.toast`
+ * (components/alert.css and components/toast.css, v5.7.50), value for value.
+ *
+ *   flash-group      `.toast .toast-top .toast-end`
+ *   toast-container  `.toast`; data-placement picks the edge:
+ *                    top-left | top-center | top-right | middle-left |
+ *                    middle-center | middle-right | bottom-left |
+ *                    bottom-center | bottom-right
+ *   flash, toast     `.alert`; data-kind info | success | warning | error
+ *
+ * Both containers keep `z-index: 50`, which daisyUI leaves to the page:
+ * ExoUI's notifications must sit above its own sticky headers and drawers.
+ */
+
+/* --- toast (l1.l2.l3) --- */
+
+:where([data-exo="flash-group"], [data-exo="toast-container"]) {
   position: fixed;
-  top: var(--exo-space-4);
-  right: var(--exo-space-4);
+  inset-inline-start: auto;
+  inset-inline-end: 1rem;
+  top: auto;
+  bottom: 1rem;
   z-index: 50;
   display: flex;
   flex-direction: column;
-  gap: var(--exo-space-2);
-  max-width: 24rem;
-  width: 100%;
+  gap: 0.5rem;
+  background-color: transparent;
+  translate: var(--toast-x, 0) var(--toast-y, 0);
+  width: max-content;
+  max-width: calc(100vw - 2rem);
 }
 
-:where([data-exo="flash"]) {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--exo-space-3);
-  padding: var(--exo-space-3) var(--exo-space-4);
-  border-radius: var(--exo-radius);
+@media (prefers-reduced-motion: no-preference) {
+  :where([data-exo="flash-group"], [data-exo="toast-container"]) > * {
+    animation: exo-toast 0.25s ease-out;
+  }
+}
+
+@keyframes exo-toast {
+  0% {
+    scale: 0.9;
+    opacity: 0;
+  }
+
+  100% {
+    scale: 1;
+    opacity: 1;
+  }
+}
+
+/* --- placement (l1.l2) --- */
+
+:where([data-exo="flash-group"]) {
+  top: 1rem;
+  bottom: auto;
+}
+
+:where([data-exo="toast-container"][data-placement^="top-"]) {
+  top: 1rem;
+  bottom: auto;
+  --toast-y: 0;
+}
+
+:where([data-exo="toast-container"][data-placement^="middle-"]) {
+  top: 50%;
+  bottom: auto;
+  --toast-y: -50%;
+}
+
+:where([data-exo="toast-container"][data-placement^="bottom-"]) {
+  top: auto;
+  bottom: 1rem;
+  --toast-y: 0;
+}
+
+/* `left` and `right` are the old names of daisyUI's `start` and `end`. */
+:where([data-exo="toast-container"][data-placement$="-left"]) {
+  inset-inline-start: 1rem;
+  inset-inline-end: auto;
+  --toast-x: 0;
+}
+
+:where([data-exo="toast-container"][data-placement$="-center"]) {
+  inset-inline-start: 50%;
+  inset-inline-end: 50%;
+  --toast-x: -50%;
+}
+
+:where([data-exo="toast-container"][data-placement$="-center"]:dir(rtl)) {
+  --toast-x: 50%;
+}
+
+:where([data-exo="toast-container"][data-placement$="-right"]) {
+  inset-inline-start: auto;
+  inset-inline-end: 1rem;
+  --toast-x: 0;
+}
+
+/* --- alert (l1.l2.l3) --- */
+
+:where([data-exo="flash"], [data-exo="toast"]) {
+  --alert-border-color: var(--exo-base-200);
+  display: grid;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--exo-radius-box);
+  border-width: var(--exo-border-width);
+  border-style: solid;
+  border-color: var(--alert-border-color, var(--exo-base-200));
+  color: var(--exo-base-content);
+  background-color: var(--alert-color, var(--exo-base-200));
+  justify-content: start;
+  justify-items: start;
+  grid-auto-flow: column;
+  grid-template-columns: auto;
+  text-align: start;
   font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  box-shadow: var(--exo-shadow-lg);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  background-size: auto, calc(var(--exo-noise) * 33%);
+  background-image: none, var(--exo-fx-noise);
+  box-shadow:
+    0 3px 0 -2px oklch(100% 0 0 / calc(var(--exo-depth) * 0.08)) inset,
+    0 1px
+      color-mix(
+        in oklab,
+        color-mix(in oklab, #000 20%, var(--alert-color, var(--exo-base-200)))
+          calc(var(--exo-depth) * 20%),
+        #0000
+      ),
+    0 4px 3px -2px oklch(0% 0 0 / calc(var(--exo-depth) * 0.08));
 }
 
-:where([data-exo="flash"][data-kind="info"]) {
-  background: var(--exo-card);
-  color: var(--exo-card-foreground);
-  border: 1px solid var(--exo-border);
+:where([data-exo="flash"]:has(> :nth-child(2)), [data-exo="toast"]:has(> :nth-child(2))) {
+  grid-template-columns: auto minmax(auto, 1fr);
 }
 
-:where([data-exo="flash"][data-kind="error"]) {
-  background: var(--exo-danger);
-  color: var(--exo-danger-foreground);
+/* Without the optional icon the text is the first child: it takes the
+   remaining width, so the close button stays at the end. */
+:where(
+  [data-exo="flash"]:has(> [data-exo="flash-content"]:first-child):has(> :nth-child(2)),
+  [data-exo="toast"]:has(> [data-exo="toast-content"]:first-child):has(> :nth-child(2))
+) {
+  grid-template-columns: minmax(auto, 1fr);
 }
 
-:where([data-exo="flash"][data-kind="success"]) {
-  background: var(--exo-success);
-  color: var(--exo-success-foreground);
+/* --- kinds (l1.l2) --- */
+
+:where([data-exo="flash"][data-kind="info"], [data-exo="toast"][data-kind="info"]) {
+  color: var(--exo-info-content);
+  --alert-border-color: var(--exo-info);
+  --alert-color: var(--exo-info);
 }
 
-:where([data-exo="flash"][data-kind="warning"]) {
-  background: var(--exo-warning);
-  color: var(--exo-warning-foreground);
+:where([data-exo="flash"][data-kind="success"], [data-exo="toast"][data-kind="success"]) {
+  color: var(--exo-success-content);
+  --alert-border-color: var(--exo-success);
+  --alert-color: var(--exo-success);
 }
 
-:where([data-exo="flash-title"]) {
+:where([data-exo="flash"][data-kind="warning"], [data-exo="toast"][data-kind="warning"]) {
+  color: var(--exo-warning-content);
+  --alert-border-color: var(--exo-warning);
+  --alert-color: var(--exo-warning);
+}
+
+:where([data-exo="flash"][data-kind="error"], [data-exo="toast"][data-kind="error"]) {
+  color: var(--exo-error-content);
+  --alert-border-color: var(--exo-error);
+  --alert-color: var(--exo-error);
+}
+
+/* --- parts --- */
+
+:where([data-exo="flash-title"], [data-exo="toast-title"]) {
   font-weight: 600;
   margin: 0;
 }
 
-:where([data-exo="flash-message"]) {
+:where([data-exo="flash-message"], [data-exo="toast-message"]) {
   margin: 0;
-  opacity: 0.9;
 }
 
-:where([data-exo="flash-close"]) {
+:where([data-exo="flash-content"], [data-exo="toast-content"]) {
+  min-width: 0;
+}
+
+/* The icon carries the kind when colour cannot: for a colour-blind reader,
+   and in a theme where success and warning sit close together. Its size is
+   set by the component (`size="md"`), not by a host utility class. */
+:where([data-exo="flash-icon"]) {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+:where([data-exo="flash-close"], [data-exo="toast-close"]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   border: none;
   cursor: pointer;
   color: inherit;
   opacity: 0.6;
-  font-size: var(--exo-text-base);
+  font-size: 1rem;
   padding: 0;
   flex-shrink: 0;
 }
-:where([data-exo="flash-close"]):hover {
+
+:where([data-exo="flash-close"], [data-exo="toast-close"]):hover {
   opacity: 1;
 }
 
@@ -72,107 +218,5 @@
 :where([data-exo="toast-close"]):focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 2px;
-  border-radius: var(--exo-radius-sm);
+  border-radius: var(--exo-radius-selector);
 }
-
-/* Toast container */
-:where([data-exo="toast-container"]) {
-  position: fixed;
-  bottom: var(--exo-space-4);
-  right: var(--exo-space-4);
-  z-index: 50;
-  display: flex;
-  flex-direction: column;
-  gap: var(--exo-space-2);
-  max-width: 24rem;
-  width: 100%;
-}
-
-:where([data-exo="toast-container"][data-placement="top-right"]) {
-  top: var(--exo-space-4);
-  right: var(--exo-space-4);
-  bottom: auto;
-  left: auto;
-}
-
-:where([data-exo="toast-container"][data-placement="top-left"]) {
-  top: var(--exo-space-4);
-  right: auto;
-  bottom: auto;
-  left: var(--exo-space-4);
-}
-
-:where([data-exo="toast-container"][data-placement="bottom-left"]) {
-  right: auto;
-  left: var(--exo-space-4);
-}
-
-:where([data-exo="toast-container"][data-placement="bottom-right"]) {
-  right: var(--exo-space-4);
-  left: auto;
-}
-
-:where([data-exo="toast"]) {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--exo-space-3);
-  padding: var(--exo-space-3) var(--exo-space-4);
-  border-radius: var(--exo-radius);
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  box-shadow: var(--exo-shadow-lg);
-  background: var(--exo-card);
-  color: var(--exo-card-foreground);
-  border: 1px solid var(--exo-border);
-}
-
-:where([data-exo="toast"][data-kind="success"]) {
-  border-left: 3px solid var(--exo-success);
-}
-
-:where([data-exo="toast"][data-kind="error"]) {
-  border-left: 3px solid var(--exo-danger);
-}
-
-:where([data-exo="toast"][data-kind="info"]) {
-  border-left: 3px solid var(--exo-info);
-}
-
-:where([data-exo="toast-title"]) {
-  font-weight: 600;
-  margin: 0;
-}
-
-:where([data-exo="toast-message"]) {
-  margin: 0;
-  opacity: 0.9;
-}
-
-:where([data-exo="toast-close"]) {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: var(--exo-muted-foreground);
-  font-size: var(--exo-text-base);
-  padding: 0;
-  flex-shrink: 0;
-}
-:where([data-exo="toast-close"]):hover {
-  color: var(--exo-foreground);
-}
-
-/* Ikona nosi VRSTU poruke kad boja ne moze — daltonisti, i u temi u kojoj su
-   „uspjeh" i „upozorenje" blizu. Zato je podrazumijevana, a ne opcija.
-   Velicina je zadana ovdje, ne klasom na komponenti: klasa bi zavisila od toga
-   da li domacin uopste ima Tailwind. */
-:where([data-exo="flash-icon"]) {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  /* poravnato sa prvim redom teksta, ne sa sredinom kutije */
-  margin-top: 0.125rem;
-}
-
-/* Velicinu zada komponenta (`size="md"`) — v. isto obrazlozenje uz
-   `empty-state-icon`: `data-size` ne smije da laze. */

@@ -1,67 +1,157 @@
+/*
+ * daisyUI 5 `.card` (components/card.css, v5.7.50) for `content_card`, and
+ * `.stat` (components/stat.css) for `stat_card` and `metric_card`.
+ *
+ * A daisyUI card has no surface of its own; its documentation dresses it as
+ * `card bg-base-100 shadow-sm`, and that is the card without an appearance
+ * here. `border` and `dash` are `card-border` and `card-dash`, which the
+ * documentation shows without the shadow.
+ *
+ *   data-appearance  border | dash
+ *   data-size        xs | sm | md | lg | xl (none is md)
+ *
+ * The header (`card-header`) holds daisyUI's `card-title` and the action; the
+ * body is `card-body`, so the header takes the body's padding and the gap
+ * daisyUI's body puts between the title and the content (0.5rem).
+ */
+
+/* --- base (l1.l2.l3) --- */
+
 :where([data-exo="card"]) {
-  background: var(--exo-card);
-  color: var(--exo-card-foreground);
-  border: 1px solid var(--exo-border);
-  border-radius: var(--exo-radius);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--exo-radius-box);
+  background-color: var(--exo-base-100);
+  color: var(--exo-base-content);
+  /* Tailwind `shadow-sm` */
   box-shadow: var(--exo-shadow-sm);
+  outline: 2px solid #0000;
+  outline-offset: 2px;
+  transition: outline 0.2s ease-in-out;
+}
+
+:where([data-exo="card"]):focus-visible {
+  outline-color: currentColor;
 }
 
 :where([data-exo="card-header"]) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--exo-space-2);
-  /* No rule under the title (v2, TRG-806). A bar with a border on every card
-     gave every card the same weight, so a page of cards read as a grid of
-     equal boxes. The title is part of the card's content, as in Polaris:
-     bold, small, and the body continues right under it. */
-  padding: var(--exo-space-4) var(--exo-space-4) 0;
+  gap: 0.5rem;
+  padding: var(--card-p, 1.5rem) var(--card-p, 1.5rem) 0;
+  font-size: var(--card-fs, 0.875rem);
 }
 
 :where([data-exo="card-title"]) {
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   margin: 0;
+  font-family: var(--exo-font);
+  font-size: var(--cardtitle-fs, 1.125rem);
+  font-weight: 600;
+}
+
+:where([data-exo="card-action"]) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.5rem;
 }
 
 :where([data-exo="card-body"]) {
-  padding: var(--exo-space-4);
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: var(--card-p, 1.5rem);
+  font-size: var(--card-fs, 0.875rem);
 }
 
+/* The header and the body are daisyUI's one `card-body`: the gap between the
+   title and the content, not a second padding. */
 :where([data-exo="card-header"] + [data-exo="card-body"]) {
-  padding-top: var(--exo-space-3);
+  padding-top: 0.5rem;
 }
 
-/* Collapsible card (TRG-807): the header is the row, the body opens under it. */
+/* --- appearance (l1.l2) --- */
+
+:where([data-exo="card"][data-appearance="border"]) {
+  border: var(--exo-border-width) solid var(--exo-base-200);
+  box-shadow: none;
+}
+
+:where([data-exo="card"][data-appearance="dash"]) {
+  border: var(--exo-border-width) dashed var(--exo-base-200);
+  box-shadow: none;
+}
+
+/* --- sizes (l1.l2) --- */
+
+:where([data-exo="card"][data-size="xs"]) {
+  --card-p: 0.5rem;
+  --card-fs: 0.6875rem;
+  --cardtitle-fs: 0.875rem;
+}
+
+:where([data-exo="card"][data-size="sm"]) {
+  --card-p: 1rem;
+  --card-fs: 0.75rem;
+  --cardtitle-fs: 1rem;
+}
+
+:where([data-exo="card"][data-size="md"]) {
+  --card-p: 1.5rem;
+  --card-fs: 0.875rem;
+  --cardtitle-fs: 1.125rem;
+}
+
+:where([data-exo="card"][data-size="lg"]) {
+  --card-p: 2rem;
+  --card-fs: 1rem;
+  --cardtitle-fs: 1.25rem;
+}
+
+:where([data-exo="card"][data-size="xl"]) {
+  --card-p: 2.5rem;
+  --card-fs: 1.125rem;
+  --cardtitle-fs: 1.375rem;
+}
+
+/*
+ * Collapsible card (TRG-807): the header is the row, the body opens under it.
+ * daisyUI has no collapsible card; the row takes `collapse-title`'s hover-less
+ * look and the card's own padding, the chevron turns like `collapse-arrow`.
+ */
 :where(details[data-exo="card"]) > :where(summary[data-exo="card-header"]) {
   list-style: none;
   cursor: pointer;
-  padding: var(--exo-space-4);
-  border-radius: var(--exo-radius);
-  transition: background var(--exo-duration) var(--exo-easing);
+  padding: var(--card-p, 1.5rem);
+  border-radius: var(--exo-radius-box);
+  transition: background-color 0.2s ease-out;
 }
 
 :where(details[data-exo="card"]) > :where(summary[data-exo="card-header"])::-webkit-details-marker {
   display: none;
 }
 
-:where(details[data-exo="card"]) > :where(summary[data-exo="card-header"]):hover {
-  background: var(--exo-muted);
+@media (hover: hover) {
+  :where(details[data-exo="card"]:not([open])) > :where(summary[data-exo="card-header"]):hover {
+    background-color: var(--exo-base-200);
+  }
 }
 
 :where(details[data-exo="card"]) > :where(summary[data-exo="card-header"]):focus-visible {
-  outline: 2px solid var(--exo-ring);
+  outline: 2px solid var(--exo-base-content);
   outline-offset: -2px;
 }
 
 :where(details[data-exo="card"][open]) > :where(summary[data-exo="card-header"]) {
   padding-bottom: 0;
-  border-radius: var(--exo-radius) var(--exo-radius) 0 0;
-}
-
-:where(details[data-exo="card"][open]) > :where(summary[data-exo="card-header"]):hover {
-  background: transparent;
+  border-end-start-radius: 0;
+  border-end-end-radius: 0;
 }
 
 :where([data-exo="card-heading"]) {
@@ -73,8 +163,8 @@
 
 :where([data-exo="card-summary"]) {
   font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  color: var(--exo-muted-foreground);
+  font-size: var(--card-fs, 0.875rem);
+  color: color-mix(in oklab, var(--exo-base-content) 60%, transparent);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -87,59 +177,74 @@
 :where([data-exo="card-chevron"]) {
   display: flex;
   flex-shrink: 0;
-  color: var(--exo-muted-foreground);
-  transition: transform var(--exo-duration) var(--exo-easing);
+  color: color-mix(in oklab, var(--exo-base-content) 60%, transparent);
+  transition: transform 0.2s ease-out;
 }
 
 :where(details[data-exo="card"][open]) :where([data-exo="card-chevron"]) {
   transform: rotate(180deg);
 }
 
-/* Stat card */
-:where([data-exo="stat-card"]) {
-  background: var(--exo-card);
-  color: var(--exo-card-foreground);
-  border: 1px solid var(--exo-border);
-  border-radius: var(--exo-radius);
+/*
+ * Stat card and metric card: daisyUI's `stats shadow` holding one `stat`.
+ * The title and the description are `base-content/60` at 0.75rem, the value
+ * 2rem at weight 800; the figure (the icon) is `stat-figure text-primary`.
+ */
+
+:where([data-exo="stat-card"], [data-exo="metric-card"]) {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1.5rem;
+  border-radius: var(--exo-radius-box);
+  background-color: var(--exo-base-100);
+  color: var(--exo-base-content);
+  /* Tailwind `shadow` */
   box-shadow: var(--exo-shadow-sm);
-  padding: var(--exo-space-4);
+  font-family: var(--exo-font);
 }
 
-:where([data-exo="stat-card-top"]) {
+:where([data-exo="stat-card-top"], [data-exo="metric-card-top"]) {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
+  column-gap: 1rem;
 }
 
 :where([data-exo="stat-card-info"]) {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
-:where([data-exo="stat-card-label"]) {
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-xs);
-  font-weight: 500;
-  color: var(--exo-muted-foreground);
+:where(
+  [data-exo="stat-card-label"],
+  [data-exo="metric-card-label"],
+  [data-exo="stat-card-subtitle"],
+  [data-exo="metric-card-subtitle"]
+) {
+  display: block;
+  white-space: nowrap;
+  font-size: 0.75rem;
+  color: color-mix(in oklab, var(--exo-base-content) 60%, transparent);
 }
 
-:where([data-exo="stat-card-value"]) {
-  font-family: var(--exo-font);
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-top: var(--exo-space-1);
+:where([data-exo="stat-card-value"], [data-exo="metric-card-value"]) {
+  display: block;
+  white-space: nowrap;
+  font-size: 2rem;
+  font-weight: 800;
 }
 
 :where([data-exo="stat-card-icon"]) {
-  padding: var(--exo-space-2);
-  border-radius: var(--exo-radius);
-  background: color-mix(in oklch, var(--exo-primary) 10%, transparent);
+  display: flex;
+  flex-shrink: 0;
   color: var(--exo-primary);
 }
 
 :where([data-exo="stat-card-chart"]) {
   display: flex;
-  margin-top: var(--exo-space-3);
+  margin-top: 0.5rem;
 }
 
 /* The sparkline takes the width of the card and keeps its shape (a caller
@@ -149,18 +254,18 @@
   height: auto;
 }
 
+/* `stat-desc`: the trend and the subtitle on one line. */
 :where([data-exo="stat-card-bottom"]) {
   display: flex;
   align-items: center;
-  gap: var(--exo-space-2);
-  margin-top: var(--exo-space-3);
-  padding-top: var(--exo-space-3);
-  border-top: 1px solid var(--exo-border);
+  gap: 0.5rem;
+  white-space: nowrap;
+  font-size: 0.75rem;
+  color: color-mix(in oklab, var(--exo-base-content) 60%, transparent);
 }
 
 :where([data-exo="stat-card-trend"]) {
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-xs);
+  font-size: 0.75rem;
   font-weight: 500;
 }
 
@@ -169,50 +274,5 @@
 }
 
 :where([data-exo="stat-card-trend"][data-direction="down"]) {
-  color: var(--exo-danger);
-}
-
-:where([data-exo="stat-card-subtitle"]) {
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-xs);
-  color: var(--exo-muted-foreground);
-}
-
-/* Metric card */
-:where([data-exo="metric-card"]) {
-  background: var(--exo-card);
-  color: var(--exo-card-foreground);
-  border: 1px solid var(--exo-border);
-  border-radius: var(--exo-radius);
-  box-shadow: var(--exo-shadow-sm);
-  padding: var(--exo-space-4);
-}
-
-:where([data-exo="metric-card-top"]) {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-:where([data-exo="metric-card-label"]) {
-  display: block;
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-xs);
-  color: var(--exo-muted-foreground);
-}
-
-:where([data-exo="metric-card-value"]) {
-  display: block;
-  font-family: var(--exo-font);
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-top: var(--exo-space-1);
-}
-
-:where([data-exo="metric-card-subtitle"]) {
-  display: block;
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-xs);
-  color: var(--exo-muted-foreground);
-  margin-top: var(--exo-space-1);
+  color: var(--exo-error);
 }

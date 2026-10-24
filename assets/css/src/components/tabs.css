@@ -1,54 +1,347 @@
+/*
+ * daisyUI 5 `.tabs` / `.tab` (components/tab.css, v5.7.50), value for value.
+ *
+ *   data-appearance  border | lift | box; none is `border`, the underline
+ *                    ExoUI tabs always had
+ *   data-size        xs | sm | md | lg | xl (none is md)
+ *
+ * A tab is active when it carries `data-active` or `aria-selected="true"`.
+ * daisyUI's `tab-content` sits inside `.tabs`; ExoUI's panels follow the tab
+ * list as siblings, so the lifted style joins the panel through `~`.
+ */
+
+/* --- base (l1.l2.l3) --- */
+
 :where([data-exo="tabs"]) {
+  --tabs-height: auto;
+  --tabs-direction: row;
+  --tab-height: calc(var(--exo-size-field, 0.25rem) * 10);
   display: flex;
-  gap: 0;
-  border-bottom: 1px solid var(--exo-border);
+  flex-wrap: wrap;
+  height: var(--tabs-height);
+  flex-direction: var(--tabs-direction);
 }
 
-:where([data-exo="tab"]) {
+:where([data-exo="tabs"]) > :where([data-exo="tab"]) {
+  --tab-p: 0.75rem;
+  --tab-bg: var(--exo-base-100);
+  --tab-border-color: var(--exo-base-300);
+  --tab-radius-ss: 0;
+  --tab-radius-se: 0;
+  --tab-radius-es: 0;
+  --tab-radius-ee: 0;
+  --tab-order: 0;
+  --tab-radius-min: calc(0.75rem - var(--exo-border-width));
+  --tab-radius-limit: min(var(--exo-radius-field), var(--tab-radius-min));
+  --tab-radius-grad:
+    #0000 calc(69% - var(--exo-border-width)),
+    var(--tab-border-color) calc(69% - var(--exo-border-width) + 0.25px),
+    var(--tab-border-color) 69%, var(--tab-bg) calc(69% + 0.25px);
+  position: relative;
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--exo-space-2);
-  padding: var(--exo-space-2) var(--exo-space-4);
+  justify-content: center;
+  /* daisyUI's documentation spaces an icon from the label with `me-2`. */
+  gap: 0.5rem;
+  box-sizing: border-box;
+  order: var(--tab-order);
+  height: var(--tab-height);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--tab-p);
+  border-width: 0;
+  border-style: solid;
+  border-color: #0000;
+  background-color: transparent;
+  color: inherit;
   font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  font-weight: 500;
-  color: var(--exo-muted-foreground);
+  font-size: 0.875rem;
+  text-align: center;
   text-decoration: none;
-  border: none;
-  background: transparent;
   cursor: pointer;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
-  transition: color var(--exo-duration) var(--exo-easing),
-              border-color var(--exo-duration) var(--exo-easing);
+  appearance: none;
+  -webkit-appearance: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-:where([data-exo="tab"]):hover:not([data-disabled]) {
-  color: var(--exo-foreground);
+:where(
+  [data-exo="tabs"]
+    > [data-exo="tab"]:not(
+      :hover,
+      [data-active],
+      [aria-selected="true"],
+      [aria-current="true"],
+      [aria-current="page"]
+    )
+) {
+  color: color-mix(in oklab, var(--exo-base-content) 50%, transparent);
 }
 
-:where([data-exo="tab"]):focus-visible {
-  outline: 2px solid var(--exo-ring);
+@media (hover: hover) {
+  :where([data-exo="tabs"]) > :where([data-exo="tab"]):hover {
+    color: var(--exo-base-content);
+  }
+}
+
+:where([data-exo="tabs"]) > :where([data-exo="tab"]):focus {
+  outline: 2px solid transparent;
   outline-offset: 2px;
-  border-radius: var(--exo-radius-sm);
 }
 
-:where([data-exo="tab"][data-active]) {
-  color: var(--exo-foreground);
-  border-bottom-color: var(--exo-primary);
+:where([data-exo="tabs"]) > :where([data-exo="tab"]):focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -5px;
 }
 
-:where([data-exo="tab"][data-disabled]) {
-  cursor: not-allowed;
-  opacity: 0.45;
+:where([data-exo="tabs"]) > :where([data-exo="tab"][data-disabled], [data-exo="tab"][disabled]) {
+  pointer-events: none;
+  opacity: 0.4;
 }
 
 :where([data-exo="tab-panel"]) {
-  padding-block: var(--exo-space-4);
+  padding-block: 1rem;
 }
 
 :where([data-exo="tab-panel"]):focus-visible {
-  outline: 2px solid var(--exo-ring);
+  outline: 2px solid var(--exo-base-content);
   outline-offset: 2px;
-  border-radius: var(--exo-radius-sm);
+  border-radius: var(--exo-radius-box);
+}
+
+/* --- border: the underline (l1.l2) --- */
+
+:where([data-exo="tabs"]:not([data-appearance]), [data-exo="tabs"][data-appearance="border"])
+  > :where([data-exo="tab"]) {
+  border-radius: var(--exo-radius-field);
+}
+
+:where([data-exo="tabs"]:not([data-appearance]), [data-exo="tabs"][data-appearance="border"])
+  > :where([data-exo="tab"])::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: var(--tab-p);
+  box-sizing: border-box;
+  width: calc(100% - var(--tab-p) * 2);
+  height: 3px;
+  border-radius: var(--exo-radius-field);
+  background-color: transparent;
+  transition: background-color 0.2s ease;
+}
+
+:where([data-exo="tabs"]:not([data-appearance]), [data-exo="tabs"][data-appearance="border"])
+  > :where(:is(
+    [data-exo="tab"][data-active],
+    [data-exo="tab"][aria-selected="true"],
+    [data-exo="tab"][aria-current="true"],
+    [data-exo="tab"][aria-current="page"]
+  ):not([data-disabled], [disabled]))::before {
+  background-color: currentColor;
+  border-top: 3px solid currentColor;
+}
+
+/* --- lift (l1.l2) --- */
+
+:where([data-exo="tabs"][data-appearance="lift"]) {
+  --tabs-height: auto;
+  --tabs-direction: row;
+}
+
+:where([data-exo="tabs"][data-appearance="lift"]) > :where([data-exo="tab"]) {
+  --tab-border: 0 0 var(--exo-border-width) 0;
+  --tab-radius-ss: var(--tab-radius-limit);
+  --tab-radius-se: var(--tab-radius-limit);
+  --tab-radius-es: 0;
+  --tab-radius-ee: 0;
+  --tab-paddings: var(--exo-border-width) var(--tab-p) 0 var(--tab-p);
+  --tab-border-colors: #0000 #0000 var(--tab-border-color) #0000;
+  --tab-corner-width: calc(100% + var(--tab-radius-limit) * 2);
+  --tab-corner-height: var(--tab-radius-limit);
+  --tab-corner-position: top left, top right;
+  border-width: var(--tab-border);
+  border-start-start-radius: var(--tab-radius-ss);
+  border-start-end-radius: var(--tab-radius-se);
+  border-end-start-radius: var(--tab-radius-es);
+  border-end-end-radius: var(--tab-radius-ee);
+  padding: var(--tab-paddings);
+  border-color: var(--tab-border-colors);
+}
+
+:where([data-exo="tabs"][data-appearance="lift"])
+  > :where(:is(
+    [data-exo="tab"][data-active],
+    [data-exo="tab"][aria-selected="true"],
+    [data-exo="tab"][aria-current="true"],
+    [data-exo="tab"][aria-current="page"]
+  ):not([data-disabled], [disabled])) {
+  --tab-border: var(--exo-border-width) var(--exo-border-width) 0 var(--exo-border-width);
+  --tab-border-colors: var(--tab-border-color) var(--tab-border-color) #0000
+    var(--tab-border-color);
+  --tab-paddings: 0 calc(var(--tab-p) - var(--exo-border-width)) var(--exo-border-width)
+    calc(var(--tab-p) - var(--exo-border-width));
+  --tab-inset: auto auto 0 auto;
+  --radius-start: radial-gradient(circle at top left, var(--tab-radius-grad));
+  --radius-end: radial-gradient(circle at top right, var(--tab-radius-grad));
+  background-color: var(--tab-bg);
+}
+
+:where([data-exo="tabs"][data-appearance="lift"])
+  > :where(:is(
+    [data-exo="tab"][data-active],
+    [data-exo="tab"][aria-selected="true"],
+    [data-exo="tab"][aria-current="true"],
+    [data-exo="tab"][aria-current="page"]
+  ):not([data-disabled], [disabled]))::before {
+  z-index: 1;
+  content: "";
+  display: block;
+  position: absolute;
+  width: var(--tab-corner-width);
+  height: var(--tab-corner-height);
+  background-position: var(--tab-corner-position);
+  background-image: var(--radius-start), var(--radius-end);
+  background-size: var(--tab-radius-limit) var(--tab-radius-limit);
+  background-repeat: no-repeat;
+  inset: var(--tab-inset);
+}
+
+:where([data-exo="tabs"][data-appearance="lift"]) > :where([data-exo="tab"]:first-child)::before {
+  --radius-start: none;
+}
+
+:where([dir="rtl"] [data-exo="tabs"][data-appearance="lift"])
+  > :where([data-exo="tab"]:first-child)::before {
+  transform: rotateY(180deg);
+}
+
+:where([data-exo="tabs"][data-appearance="lift"]) > :where([data-exo="tab"]:last-child)::before {
+  --radius-end: none;
+}
+
+:where([dir="rtl"] [data-exo="tabs"][data-appearance="lift"])
+  > :where([data-exo="tab"]:last-child)::before {
+  transform: rotateY(180deg);
+}
+
+/* The panel is `tab-content` as daisyUI's documentation dresses it under lifted
+   tabs (`bg-base-100 border-base-300 p-6`), joined to the active tab: square
+   at the start corner only while the first tab is the active one. */
+:where([data-exo="tabs"][data-appearance="lift"]) ~ :where([data-exo="tab-panel"]) {
+  margin-top: calc(-1 * var(--exo-border-width));
+  padding: 1.5rem;
+  border: var(--exo-border-width) solid var(--exo-base-300);
+  border-radius: var(--exo-radius-box);
+  background-color: var(--exo-base-100);
+}
+
+:where(
+  [data-exo="tabs"][data-appearance="lift"]:has(
+    > [data-exo="tab"]:first-child:is([data-active], [aria-selected="true"])
+  )
+) ~ :where([data-exo="tab-panel"]) {
+  border-start-start-radius: 0;
+}
+
+/* --- box (l1.l2) --- */
+
+:where([data-exo="tabs"][data-appearance="box"]) {
+  --tabs-box-radius: calc(3 * var(--exo-radius-field));
+  padding: 0.25rem;
+  background-color: var(--exo-base-200);
+  border-radius: calc(
+    min(var(--tab-height) / 2, var(--exo-radius-field)) + min(0.25rem, var(--tabs-box-radius))
+  );
+  box-shadow:
+    0 -0.5px oklch(100% 0 0 / calc(var(--exo-depth) * 0.1)) inset,
+    0 0.5px oklch(0% 0 0 / calc(var(--exo-depth) * 0.05)) inset;
+}
+
+:where([data-exo="tabs"][data-appearance="box"]) > :where([data-exo="tab"]) {
+  border-radius: var(--exo-radius-field);
+  border-style: none;
+}
+
+:where([data-exo="tabs"][data-appearance="box"]) > :where([data-exo="tab"]):focus-visible {
+  z-index: 1;
+  outline-offset: 2px;
+}
+
+:where([data-exo="tabs"][data-appearance="box"])
+  > :where(:is(
+    [data-exo="tab"][data-active],
+    [data-exo="tab"][aria-selected="true"],
+    [data-exo="tab"][aria-current="true"],
+    [data-exo="tab"][aria-current="page"]
+  ):not([data-disabled], [disabled])) {
+  background-color: var(--tab-bg, var(--exo-base-100));
+  box-shadow:
+    0 1px oklch(100% 0 0 / calc(var(--exo-depth) * 0.1)) inset,
+    0 1px 1px -1px color-mix(in oklab, var(--exo-neutral) calc(var(--exo-depth) * 50%), #0000),
+    0 1px 6px -4px color-mix(in oklab, var(--exo-neutral) calc(var(--exo-depth) * 100%), #0000);
+}
+
+@media (forced-colors: active) {
+  :where([data-exo="tabs"][data-appearance="box"])
+    > :where(:is(
+      [data-exo="tab"][data-active],
+      [data-exo="tab"][aria-selected="true"],
+      [data-exo="tab"][aria-current="true"],
+      [data-exo="tab"][aria-current="page"]
+    ):not([data-disabled], [disabled])) {
+    border: 1px solid;
+  }
+}
+
+/* --- sizes (l1.l2) --- */
+
+:where([data-exo="tabs"][data-size="xs"]) {
+  --tab-height: calc(var(--exo-size-field, 0.25rem) * 6);
+}
+
+:where([data-exo="tabs"][data-size="xs"]) > :where([data-exo="tab"]) {
+  font-size: 0.75rem;
+  --tab-p: 0.375rem;
+  --tab-radius-min: calc(0.5rem - var(--exo-border-width));
+}
+
+:where([data-exo="tabs"][data-size="sm"]) {
+  --tab-height: calc(var(--exo-size-field, 0.25rem) * 8);
+}
+
+:where([data-exo="tabs"][data-size="sm"]) > :where([data-exo="tab"]) {
+  font-size: 0.875rem;
+  --tab-p: 0.5rem;
+  --tab-radius-min: calc(0.5rem - var(--exo-border-width));
+}
+
+:where([data-exo="tabs"][data-size="md"]) {
+  --tab-height: calc(var(--exo-size-field, 0.25rem) * 10);
+}
+
+:where([data-exo="tabs"][data-size="md"]) > :where([data-exo="tab"]) {
+  font-size: 0.875rem;
+  --tab-p: 0.75rem;
+  --tab-radius-min: calc(0.75rem - var(--exo-border-width));
+}
+
+:where([data-exo="tabs"][data-size="lg"]) {
+  --tab-height: calc(var(--exo-size-field, 0.25rem) * 12);
+}
+
+:where([data-exo="tabs"][data-size="lg"]) > :where([data-exo="tab"]) {
+  font-size: 1.125rem;
+  --tab-p: 1rem;
+  --tab-radius-min: calc(1.5rem - var(--exo-border-width));
+}
+
+:where([data-exo="tabs"][data-size="xl"]) {
+  --tab-height: calc(var(--exo-size-field, 0.25rem) * 14);
+}
+
+:where([data-exo="tabs"][data-size="xl"]) > :where([data-exo="tab"]) {
+  font-size: 1.125rem;
+  --tab-p: 1.25rem;
+  --tab-radius-min: calc(2rem - var(--exo-border-width));
 }

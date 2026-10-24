@@ -1,3 +1,11 @@
+/*
+ * Wizard sidebar. daisyUI has no wizard; its step circles and connectors take
+ * daisyUI 5 `.steps-vertical` values (components/steps.css, v5.7.50): a 2rem
+ * circle on `base-300` with the content colour, a 0.5rem connector, and the
+ * coloured step for what is reached — `step-success` for a completed step,
+ * `step-primary` for the current one. The rest is the daisyUI tokens.
+ */
+
 :where([data-exo="wizard"] ol) {
   list-style: none;
   padding: 0;
@@ -14,83 +22,88 @@
 :where([data-exo="wizard-btn"]) {
   display: flex;
   align-items: center;
-  gap: var(--exo-space-3);
-  padding: var(--exo-space-2) var(--exo-space-3);
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
   font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
+  font-size: 0.875rem;
+  color: var(--exo-base-content);
   background: transparent;
   border: none;
-  border-radius: var(--exo-radius);
-  text-align: left;
+  border-radius: var(--exo-radius-field);
+  text-align: start;
   cursor: default;
-  transition: background var(--exo-duration) var(--exo-easing);
+  transition: background-color 0.2s ease-out;
 }
 
 :where(button[data-exo="wizard-btn"]:not(:disabled)) {
   cursor: pointer;
 }
 
-:where(button[data-exo="wizard-btn"]:not(:disabled)):hover {
-  background: var(--exo-muted);
+@media (hover: hover) {
+  :where(button[data-exo="wizard-btn"]:not(:disabled)):hover {
+    background-color: var(--exo-base-200);
+  }
 }
 
 :where(button[data-exo="wizard-btn"]):focus-visible {
-  outline: 2px solid var(--exo-ring);
+  outline: 2px solid var(--exo-base-content);
   outline-offset: 2px;
 }
 
 :where([data-exo="wizard-btn"][data-disabled]) {
   cursor: not-allowed;
-  opacity: 0.55;
 }
 
+/* `step-icon` */
 :where([data-exo="wizard-indicator"]) {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  --step-bg: var(--exo-base-300);
+  --step-fg: var(--exo-base-content);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  box-sizing: border-box;
   width: 2rem;
   height: 2rem;
   border-radius: 9999px;
-  font-size: var(--exo-text-xs);
-  font-weight: 600;
-  flex-shrink: 0;
-  border: 2px solid var(--exo-border);
-  color: var(--exo-muted-foreground);
-  background: transparent;
+  border: 1px solid var(--step-bg);
+  color: var(--step-fg);
+  background-color: var(--step-bg);
 }
 
 :where([data-exo="wizard-btn"][data-status="current"] [data-exo="wizard-indicator"]) {
-  border-color: var(--exo-primary);
-  color: var(--exo-primary);
-  background: color-mix(in oklch, var(--exo-primary) 10%, transparent);
+  --step-bg: var(--exo-primary);
+  --step-fg: var(--exo-primary-content);
 }
 
 :where([data-exo="wizard-btn"][data-status="completed"] [data-exo="wizard-indicator"]) {
-  border-color: var(--exo-success);
-  color: var(--exo-success-foreground);
-  background: var(--exo-success);
+  --step-bg: var(--exo-success);
+  --step-fg: var(--exo-success-content);
 }
 
 :where([data-exo="wizard-label"]) {
-  color: var(--exo-muted-foreground);
+  color: color-mix(in oklab, var(--exo-base-content) 60%, transparent);
 }
 
 :where([data-exo="wizard-btn"][data-status="current"] [data-exo="wizard-label"]) {
-  color: var(--exo-foreground);
+  color: var(--exo-base-content);
   font-weight: 600;
 }
 
 :where([data-exo="wizard-btn"][data-status="completed"] [data-exo="wizard-label"]) {
-  color: var(--exo-foreground);
+  color: var(--exo-base-content);
 }
 
+/* The vertical connector, under the centre of the circle. */
 :where([data-exo="wizard-connector"]) {
-  width: 2px;
+  box-sizing: border-box;
+  width: 0.5rem;
   height: 1.5rem;
-  margin-left: calc(var(--exo-space-3) + 1rem - 1px);
-  background: var(--exo-border);
+  margin-inline-start: calc(0.75rem + 1rem - 0.25rem);
+  border: 1px solid var(--exo-base-300);
+  background-color: var(--exo-base-300);
 }
 
 :where([data-exo="wizard-connector"][data-status="completed"]) {
-  background: var(--exo-success);
+  border-color: var(--exo-success);
+  background-color: var(--exo-success);
 }

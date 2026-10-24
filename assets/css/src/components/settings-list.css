@@ -1,43 +1,69 @@
-/* Rows of one card (TRG-807): the overview of a settings page. The list is the
-   card, so a page of places reads as one block with dividers, not a grid of
-   equal boxes. */
+/*
+ * Rows of one card (TRG-807): the overview of a settings page. The list is the
+ * card, so a page of places reads as one block with dividers, not a grid of
+ * equal boxes.
+ *
+ * daisyUI 5 `.list` in a card (components/list.css and card.css, v5.7.50): the
+ * surface is `bg-base-100 rounded-box shadow-sm`, a row is `list-row` (1rem
+ * padding, 1rem gap, 0.875rem text) and the divider is the content colour at
+ * 5%, inset by the box radius.
+ */
+
 :where([data-exo="settings-list"]) {
+  display: flex;
+  flex-direction: column;
   list-style: none;
   margin: 0;
   padding: 0;
-  background: var(--exo-card);
-  color: var(--exo-card-foreground);
-  border: 1px solid var(--exo-border);
-  border-radius: var(--exo-radius);
+  font-family: var(--exo-font);
+  font-size: 0.875rem;
+  background-color: var(--exo-base-100);
+  color: var(--exo-base-content);
+  border-radius: var(--exo-radius-box);
+  /* Tailwind `shadow-sm`, as the card */
   box-shadow: var(--exo-shadow-sm);
   overflow: hidden;
 }
 
-:where([data-exo="settings-item"] + [data-exo="settings-item"]) {
-  border-top: 1px solid var(--exo-border);
+:where([data-exo="settings-item"]) {
+  position: relative;
+}
+
+:where([data-exo="settings-item"]:not(:last-child))::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  inset-inline: var(--exo-radius-box);
+  border-bottom: var(--exo-border-width) solid
+    color-mix(in oklab, var(--exo-base-content) 5%, transparent);
 }
 
 :where([data-exo="settings-row"]) {
   display: flex;
   align-items: center;
-  gap: var(--exo-space-3);
-  padding: var(--exo-space-3) var(--exo-space-4);
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: var(--exo-radius-box);
+  word-break: break-word;
   color: inherit;
   text-decoration: none;
-  font-family: var(--exo-font);
 }
 
+/* daisyUI's list rows do not react to the pointer; a row here is a link, so it
+   takes the table's `row-hover` colour. */
 :where(a[data-exo="settings-row"]) {
-  transition: background var(--exo-duration) var(--exo-easing);
+  transition: background-color 0.2s ease-out;
 }
 
-:where(a[data-exo="settings-row"]):hover {
-  background: var(--exo-muted);
+@media (hover: hover) {
+  :where(a[data-exo="settings-row"]):hover {
+    background-color: var(--exo-base-200);
+  }
 }
 
 /* The focus ring sits inside the row: the list clips its corners. */
 :where(a[data-exo="settings-row"]):focus-visible {
-  outline: 2px solid var(--exo-ring);
+  outline: 2px solid var(--exo-base-content);
   outline-offset: -2px;
 }
 
@@ -46,11 +72,11 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 2rem;
-  height: 2rem;
-  border-radius: var(--exo-radius);
-  background: var(--exo-muted);
-  color: var(--exo-muted-foreground);
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--exo-radius-box);
+  background-color: var(--exo-base-200);
+  color: color-mix(in oklab, var(--exo-base-content) 60%, transparent);
 }
 
 :where([data-exo="settings-row-text"]) {
@@ -62,27 +88,29 @@
 }
 
 :where([data-exo="settings-row-title"]) {
-  font-size: var(--exo-text-sm);
   font-weight: 600;
-  color: var(--exo-foreground);
+  color: var(--exo-base-content);
 }
 
+/* daisyUI's documentation sets a row's second line `text-xs uppercase
+   font-semibold opacity-60`; the case and weight would turn a sentence into a
+   label, so only the size and the opacity are taken. */
 :where([data-exo="settings-row-description"]) {
-  font-size: var(--exo-text-xs);
-  color: var(--exo-muted-foreground);
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: color-mix(in oklab, var(--exo-base-content) 60%, transparent);
 }
 
 :where([data-exo="settings-row-value"]) {
   display: flex;
   align-items: center;
-  gap: var(--exo-space-2);
+  gap: 0.5rem;
   flex-shrink: 0;
-  font-size: var(--exo-text-sm);
-  color: var(--exo-muted-foreground);
+  color: color-mix(in oklab, var(--exo-base-content) 60%, transparent);
 }
 
 :where([data-exo="settings-row-chevron"]) {
   display: flex;
   flex-shrink: 0;
-  color: var(--exo-muted-foreground);
+  color: color-mix(in oklab, var(--exo-base-content) 60%, transparent);
 }

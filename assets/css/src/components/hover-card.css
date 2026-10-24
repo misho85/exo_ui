@@ -1,3 +1,10 @@
+/*
+ * The hover card is daisyUI 5's `dropdown dropdown-hover` (components/
+ * dropdown.css, v5.7.50) with the content box its docs give a card in a
+ * dropdown, `bg-base-100 rounded-box shadow-sm` and the 1rem padding of
+ * `card-sm`: it grows from 95% and fades in over 0.2s.
+ */
+
 :where([data-exo="hover-card"]) {
   position: relative;
   display: inline-block;
@@ -10,22 +17,41 @@
 :where([data-exo="hover-card-content"]) {
   display: none;
   position: absolute;
-  z-index: 50;
+  z-index: 999;
   margin-top: var(--exo-space-2);
   min-width: 16rem;
-  padding: var(--exo-space-4);
-  background: var(--exo-background);
-  border: 1px solid var(--exo-border);
-  border-radius: var(--exo-radius);
-  box-shadow: var(--exo-shadow-lg);
+  padding: 1rem;
+  background-color: var(--exo-base-100);
+  border: 0;
+  border-radius: var(--exo-radius-box);
+  box-shadow: var(--exo-shadow-sm);
   font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  color: var(--exo-foreground);
-  animation: exo-hover-card-in 150ms var(--exo-easing);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--exo-base-content);
+  transform-origin: top;
 }
 
 :where([data-exo="hover-card-content"][data-open]) {
   display: block;
+  opacity: 1;
+  scale: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :where([data-exo="hover-card-content"][data-open]) {
+    animation: exo-hover-card-in 0.2s;
+    transition-property: opacity, scale;
+    transition-duration: 0.2s;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+@starting-style {
+  :where([data-exo="hover-card-content"][data-open]) {
+    opacity: 0;
+    scale: 95%;
+  }
 }
 
 :where([data-exo="hover-card-content"][data-side="bottom"]) {
@@ -83,13 +109,24 @@
   transform: none;
 }
 
+/* daisyUI's origins: `dropdown-top` grows from the bottom, `-left` from the
+   right, `-right` from the left. */
+:where([data-exo="hover-card-content"][data-side="top"]) {
+  transform-origin: bottom;
+}
+
+:where([data-exo="hover-card-content"][data-side="left"]) {
+  transform-origin: right;
+}
+
+:where([data-exo="hover-card-content"][data-side="right"]) {
+  transform-origin: left;
+}
+
+/* daisyUI's `dropdown` keyframes. They animate opacity only: the position
+   transforms above stay untouched for every side and alignment. */
 @keyframes exo-hover-card-in {
-  from {
+  0% {
     opacity: 0;
-    transform: translateX(-50%) translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
   }
 }

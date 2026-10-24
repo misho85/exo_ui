@@ -1,3 +1,11 @@
+/*
+ * Charts have no daisyUI counterpart; their colours, radii and borders are the
+ * daisyUI tokens (daisyUI 5, v5.7.50). The trend badge is a soft `badge`
+ * (components/badge.css): its colour on 8% of it over `base-100`, with
+ * `radius-selector`; the progress bar's track is daisyUI's `.progress`
+ * (components/progress.css): the content colour at 20%, `rounded-box`.
+ */
+
 :where([data-exo="trend-badge"]) {
   display: inline-flex;
   align-items: center;
@@ -6,22 +14,22 @@
   font-size: var(--exo-text-sm);
   font-weight: 600;
   padding: 0.125rem 0.5rem;
-  border-radius: 9999px;
+  border-radius: var(--exo-radius-selector);
 }
 
 :where([data-exo="trend-badge"][data-direction="up"]) {
   color: var(--exo-success);
-  background: color-mix(in oklch, var(--exo-success) 12%, transparent);
+  background: color-mix(in oklab, var(--exo-success) 8%, var(--exo-base-100));
 }
 
 :where([data-exo="trend-badge"][data-direction="down"]) {
-  color: var(--exo-danger);
-  background: color-mix(in oklch, var(--exo-danger) 12%, transparent);
+  color: var(--exo-error);
+  background: color-mix(in oklab, var(--exo-error) 8%, var(--exo-base-100));
 }
 
 :where([data-exo="trend-badge"][data-direction="flat"]) {
-  color: var(--exo-muted-foreground);
-  background: var(--exo-muted);
+  color: color-mix(in oklab, var(--exo-base-content) 60%, transparent);
+  background: var(--exo-base-200);
 }
 
 :where([data-exo="progress-bar"]) {
@@ -33,7 +41,7 @@
   justify-content: space-between;
   align-items: baseline;
   font-size: var(--exo-text-sm);
-  color: var(--exo-foreground);
+  color: var(--exo-base-content);
   margin-bottom: var(--exo-space-2);
 }
 
@@ -41,27 +49,33 @@
   font-weight: 500;
   font-variant-numeric: tabular-nums;
   font-size: var(--exo-text-xs);
-  color: var(--exo-muted-foreground);
+  color: color-mix(in oklab, var(--exo-base-content) 60%, transparent);
 }
 
 :where([data-exo="progress-bar-track"]) {
   position: relative;
   width: 100%;
   height: 0.5rem;
-  background: color-mix(in oklch, var(--exo-primary) 20%, transparent);
-  border-radius: 9999px;
+  background: color-mix(in oklab, var(--exo-base-content) 20%, transparent);
+  border-radius: var(--exo-radius-box);
   overflow: hidden;
+}
+
+@media (forced-colors: active) {
+  :where([data-exo="progress-bar-track"]) {
+    border: 1px solid;
+  }
 }
 
 :where([data-exo="progress-bar-fill"]) {
   height: 100%;
-  border-radius: 9999px;
+  border-radius: var(--exo-radius-box);
   transition: width 300ms var(--exo-easing);
 }
 
 :where([data-exo="chart-empty"]) {
   text-align: center;
-  color: var(--exo-muted-foreground);
+  color: color-mix(in oklab, var(--exo-base-content) 60%, transparent);
   padding: var(--exo-space-8) 0;
   font-family: var(--exo-font);
   font-size: var(--exo-text-sm);
@@ -84,7 +98,7 @@
 :where([data-exo="radar-chart"]),
 :where([data-exo="radial-chart"]) {
   font-family: var(--exo-font);
-  color: var(--exo-foreground);
+  color: var(--exo-base-content);
 }
 
 :where([data-exo="sparkline"]) {
@@ -95,7 +109,7 @@
 :where([data-exo="sparkline-empty"]) {
   display: inline-flex;
   align-items: center;
-  color: var(--exo-muted-foreground);
+  color: color-mix(in oklab, var(--exo-base-content) 60%, transparent);
   font-family: var(--exo-font);
   font-size: var(--exo-text-xs);
   vertical-align: middle;

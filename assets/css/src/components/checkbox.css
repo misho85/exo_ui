@@ -1,10 +1,24 @@
+/*
+ * daisyUI 5 `.checkbox` (components/checkbox.css, v5.7.50), value for value.
+ *
+ * The native input is hidden; daisyUI's box is the indicator span next to it,
+ * and its check is the indicator's `::before`, drawn and animated by daisyUI's
+ * clip-path. The Lucide check inside the span stays in the markup, unused.
+ * Same order as button.css: base, checked, colours, sizes, disabled.
+ *
+ *   data-variant  (on the input) base | neutral | primary | secondary |
+ *                 accent | info | success | warning | error; `danger` is
+ *                 `error`; none is `primary` once checked (below)
+ *   data-size     (on the input) xs | sm | md | lg | xl
+ */
+
 :where([data-exo="checkbox-item"]) {
   display: flex;
   align-items: center;
   gap: var(--exo-space-2);
   font-family: var(--exo-font);
   font-size: var(--exo-text-sm);
-  color: var(--exo-foreground);
+  color: var(--exo-base-content);
   cursor: pointer;
 }
 
@@ -15,59 +29,234 @@
   height: 0;
 }
 
+/* --- base (l1.l2.l3) --- */
+
+/*
+ * The unchecked border is the one value kept from before the port: daisyUI's
+ * is the content colour at 20%, about 1.3:1 on the page, and WCAG 1.4.11 asks
+ * 3:1 of a control's boundary. --exo-muted-foreground is a text colour, well
+ * above that on every surface. A colour variant borders in its colour, as in
+ * daisyUI. `--input-color` is reset so a parent's cannot leak in.
+ */
 :where([data-exo="checkbox-indicator"]) {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1rem;
-  height: 1rem;
-  border-radius: calc(var(--exo-radius) * 0.5);
-  /* --exo-input (the text field border) is about 1.3:1 on the page: an unchecked
-     box was barely there. WCAG 1.4.11 asks 3:1 for the control's boundary. */
-  border: 1px solid var(--exo-muted-foreground);
-  background: var(--exo-background);
+  --input-color: initial;
+  --size: calc(var(--exo-size-selector, 0.25rem) * 6);
+  box-sizing: border-box;
+  position: relative;
+  display: inline-block;
   flex-shrink: 0;
-  transition: border-color var(--exo-duration) var(--exo-easing),
-              background var(--exo-duration) var(--exo-easing);
+  vertical-align: middle;
+  cursor: pointer;
+  padding: 0.25rem;
+  width: var(--size);
+  height: var(--size);
+  border: var(--exo-border-width) solid var(--input-color, var(--exo-muted-foreground));
+  border-radius: var(--exo-radius-selector);
+  color: var(--exo-base-content);
+  box-shadow:
+    0 1px oklch(0% 0 0 / calc(var(--exo-depth) * 0.1)) inset,
+    0 0 #0000 inset,
+    0 0 #0000;
+  transition:
+    background-color 0.2s,
+    box-shadow 0.2s;
+  background-size: auto, calc(var(--exo-noise, 0) * 100%);
+  background-image: none, var(--exo-fx-noise);
 }
 
 :where([data-exo="checkbox-indicator"]) svg {
-  width: 0.75rem;
-  height: 0.75rem;
-  color: var(--exo-primary-foreground);
+  display: none;
+}
+
+:where([data-exo="checkbox-indicator"])::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  rotate: 45deg;
+  background-color: currentColor;
   opacity: 0;
-  transform: scale(0.5);
-  transition: opacity var(--exo-duration) var(--exo-easing),
-              transform var(--exo-duration) var(--exo-easing);
+  transition:
+    clip-path 0.3s,
+    opacity 0.1s,
+    rotate 0.3s,
+    translate 0.3s;
+  transition-delay: 0.1s;
+  clip-path: polygon(20% 100%, 20% 80%, 50% 80%, 50% 80%, 70% 80%, 70% 100%);
+  box-shadow: 0px 3px 0 0px oklch(100% 0 0 / calc(var(--exo-depth) * 0.1)) inset;
+  font-size: 1rem;
+  line-height: 0.75;
 }
 
-:where([data-exo="checkbox"]:checked + [data-exo="checkbox-indicator"]) {
-  border-color: var(--exo-primary);
-  background: var(--exo-primary);
-}
-
-:where([data-exo="checkbox"][data-invalid] + [data-exo="checkbox-indicator"]) {
-  border-color: var(--exo-danger);
-}
-
-:where([data-exo="checkbox"]:checked + [data-exo="checkbox-indicator"]) svg {
-  opacity: 1;
-  transform: scale(1);
-}
-
-/* Same as the radio: an outline in --exo-ring, not a 25% shadow of it, which
-   was about 1.4:1 against the page (TRG-461). */
+/* daisyUI's ring is the colour itself; ExoUI's is --exo-ring, which a theme
+   keeps at 3:1 on the page whatever the brand colour is (TRG-461). */
 :where([data-exo="checkbox"]:focus-visible + [data-exo="checkbox-indicator"]) {
   outline: 2px solid var(--exo-ring);
   outline-offset: 2px;
 }
 
+/* --- checked and indeterminate (l1.l2.l3) --- */
+
+:where([data-exo="checkbox"]:checked + [data-exo="checkbox-indicator"]) {
+  background-color: var(--input-color, #0000);
+  box-shadow:
+    0 0 #0000 inset,
+    0 8px 0 -4px oklch(100% 0 0 / calc(var(--exo-depth) * 0.1)) inset,
+    0 1px oklch(0% 0 0 / calc(var(--exo-depth) * 0.1));
+}
+
+:where([data-exo="checkbox"]:checked + [data-exo="checkbox-indicator"])::before {
+  clip-path: polygon(20% 100%, 20% 80%, 50% 80%, 50% 0%, 70% 0%, 70% 100%);
+  translate: 3.5% -7%;
+  opacity: 1;
+}
+
+@media (forced-colors: active) {
+  :where([data-exo="checkbox"]:checked + [data-exo="checkbox-indicator"])::before {
+    content: "✔︎";
+    rotate: 0deg;
+    background-color: transparent;
+    clip-path: none;
+  }
+}
+
+@media print {
+  :where([data-exo="checkbox"]:checked + [data-exo="checkbox-indicator"])::before {
+    content: "✔︎";
+    rotate: 0deg;
+    background-color: transparent;
+    clip-path: none;
+  }
+}
+
+:where([data-exo="checkbox"]:indeterminate + [data-exo="checkbox-indicator"]) {
+  background-color: var(
+    --input-color,
+    color-mix(in oklab, var(--exo-base-content) 20%, #0000)
+  );
+}
+
+:where([data-exo="checkbox"]:indeterminate + [data-exo="checkbox-indicator"])::before {
+  rotate: 0deg;
+  opacity: 1;
+  translate: 0 -40%;
+  clip-path: polygon(20% 100%, 20% 80%, 50% 80%, 50% 80%, 80% 80%, 80% 100%);
+}
+
+@media (forced-colors: active) {
+  :where([data-exo="checkbox"]:indeterminate + [data-exo="checkbox-indicator"])::before {
+    content: "−";
+    rotate: 0deg;
+    translate: 0;
+    background-color: transparent;
+    clip-path: none;
+  }
+}
+
+/* --- colours (l1.l2) --- */
+
+/* Without a variant the box borders in the neutral colour above and fills
+   with primary once checked: ExoUI's checkbox before the daisyUI theme, so an
+   unchecked box keeps its 3:1 edge under a host's brand colour. `base` is
+   daisyUI's plain checkbox: no fill, the check in the content colour. */
+:where([data-exo="checkbox"]:not([data-variant]):is(:checked, :indeterminate) + [data-exo="checkbox-indicator"]),
+:where([data-exo="checkbox"][data-variant="primary"] + [data-exo="checkbox-indicator"]) {
+  color: var(--exo-primary-content);
+  --input-color: var(--exo-primary);
+}
+
+:where([data-exo="checkbox"][data-variant="base"] + [data-exo="checkbox-indicator"]) {
+  color: var(--exo-base-content);
+}
+
+:where([data-exo="checkbox"][data-variant="secondary"] + [data-exo="checkbox-indicator"]) {
+  color: var(--exo-secondary-content);
+  --input-color: var(--exo-secondary);
+}
+
+:where([data-exo="checkbox"][data-variant="accent"] + [data-exo="checkbox-indicator"]) {
+  color: var(--exo-accent-content);
+  --input-color: var(--exo-accent);
+}
+
+:where([data-exo="checkbox"][data-variant="neutral"] + [data-exo="checkbox-indicator"]) {
+  color: var(--exo-neutral-content);
+  --input-color: var(--exo-neutral);
+}
+
+:where([data-exo="checkbox"][data-variant="info"] + [data-exo="checkbox-indicator"]) {
+  color: var(--exo-info-content);
+  --input-color: var(--exo-info);
+}
+
+:where([data-exo="checkbox"][data-variant="success"] + [data-exo="checkbox-indicator"]) {
+  color: var(--exo-success-content);
+  --input-color: var(--exo-success);
+}
+
+:where([data-exo="checkbox"][data-variant="warning"] + [data-exo="checkbox-indicator"]) {
+  color: var(--exo-warning-content);
+  --input-color: var(--exo-warning);
+}
+
+:where(
+  [data-exo="checkbox"][data-variant="error"] + [data-exo="checkbox-indicator"],
+  [data-exo="checkbox"][data-variant="danger"] + [data-exo="checkbox-indicator"]
+) {
+  color: var(--exo-error-content);
+  --input-color: var(--exo-error);
+}
+
+/* An invalid box is daisyUI's `.validator` state: the error colour as the
+   input colour. The check takes error-content so it stays readable on the
+   error fill whatever the variant. */
+:where([data-exo="checkbox"][data-invalid] + [data-exo="checkbox-indicator"]) {
+  color: var(--exo-error-content);
+  --input-color: var(--exo-error);
+}
+
+/* daisyUI's light error (L 71%) is 2.9:1 on base-100 as an empty box's edge;
+   WCAG 1.4.11 asks 3:1. Mixed with the content colour it is darker in a light
+   theme and lighter in a dark one. */
+:where([data-exo="checkbox"][data-invalid]:not(:checked) + [data-exo="checkbox-indicator"]) {
+  border-color: color-mix(in oklab, var(--exo-error) 70%, var(--exo-base-content));
+}
+
+/* --- disabled (l1.l2) --- */
+
 :where([data-exo="checkbox"]:disabled + [data-exo="checkbox-indicator"]) {
+  cursor: not-allowed;
+  opacity: 0.2;
+}
+
+:where([data-exo="checkbox"]:disabled ~ span:not([data-exo="checkbox-indicator"])) {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-:where([data-exo="checkbox"]:disabled ~ span) {
-  opacity: 0.5;
-  cursor: not-allowed;
+/* --- sizes (l1.l2) --- */
+
+:where([data-exo="checkbox"][data-size="xs"] + [data-exo="checkbox-indicator"]) {
+  padding: 0.125rem;
+  --size: calc(var(--exo-size-selector, 0.25rem) * 4);
+}
+
+:where([data-exo="checkbox"][data-size="sm"] + [data-exo="checkbox-indicator"]) {
+  padding: 0.1875rem;
+  --size: calc(var(--exo-size-selector, 0.25rem) * 5);
+}
+
+:where([data-exo="checkbox"][data-size="md"] + [data-exo="checkbox-indicator"]) {
+  padding: 0.25rem;
+  --size: calc(var(--exo-size-selector, 0.25rem) * 6);
+}
+
+:where([data-exo="checkbox"][data-size="lg"] + [data-exo="checkbox-indicator"]) {
+  padding: 0.3125rem;
+  --size: calc(var(--exo-size-selector, 0.25rem) * 7);
+}
+
+:where([data-exo="checkbox"][data-size="xl"] + [data-exo="checkbox-indicator"]) {
+  padding: 0.375rem;
+  --size: calc(var(--exo-size-selector, 0.25rem) * 8);
 }

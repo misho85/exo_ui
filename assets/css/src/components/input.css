@@ -1,200 +1,405 @@
+/*
+ * daisyUI 5 `.input` and `.textarea` (components/input.css, textarea.css),
+ * the field wrapper and its texts (components/fieldset.css, label.css,
+ * validator.css), v5.7.50, value for value.
+ *
+ *   field              `.fieldset`: label, control, helper text and error
+ *   label              `.fieldset-legend`
+ *   field-description  `.label` used as helper text
+ *   field-error        `.validator-hint` in its visible state
+ *   input              `input.input`; `textarea.textarea` for <textarea>
+ *   input-frame        `label.input`, the wrapper holding the input with an
+ *                      icon, prefix or suffix (`.label` inside `.input`)
+ *
+ *   data-variant     neutral | primary | secondary | accent | info | success |
+ *                    warning | error; `danger` is `error`
+ *   data-appearance  ghost
+ *   data-size        xs | sm | md | lg | xl
+ *   data-invalid     the `error` colour, as daisyUI's validator gives an
+ *                    `aria-invalid` field
+ *
+ * The height is `--exo-size-field` * 10 at md (40px with the default 0.25rem).
+ * ExoUI fields were 32px before the daisyUI port; a host that keeps 32px sets
+ * `--exo-size-field: 0.2rem`, which scales buttons and selects the same way.
+ *
+ * daisyUI gives `.input` `width: clamp(3rem, 20rem, 100%)`. ExoUI fields take
+ * the width of their column, as they always have, so no width is set here: a
+ * 20rem cap would shrink every form already built with them.
+ *
+ * Order of the file is daisyUI's layer order: base (l1.l2.l3), then ghost,
+ * colours, sizes and disabled (l1.l2), then the input inside a frame.
+ */
+
+/* --- field, label, helper text (l1.l2.l3) --- */
+
 :where([data-exo="field"]) {
-  display: flex;
-  flex-direction: column;
-  gap: var(--exo-space-1);
+  display: grid;
+  gap: 0.375rem;
+  padding-block: 0.25rem;
+  font-size: 0.75rem;
+  grid-template-columns: 1fr;
+  grid-auto-rows: max-content;
 }
 
 :where([data-exo="label"]) {
   font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  font-weight: 500;
-  color: var(--exo-foreground);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--exo-base-content);
 }
 
-:where([data-exo="input"]) {
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  /* `line-height` je EKSPLICITAN namjerno. Bez njega kontrola nasljedjuje
-     prored stranice domacina, pa je ista komponenta u dvije aplikacije razlicito
-     visoka — a i u istoj aplikaciji se pomjeri kad neko promijeni prored na
-     `body`. Vrijednosti prate istu ljestvicu kao velicine teksta:
-     xs->1rem, sm->1.25rem, base->1.5rem. */
-  line-height: 1.25rem;
-  /* 20px line + 2 x 5px + 2px border = 32px, the height of an md button. */
-  padding: 0.3125rem var(--exo-space-3);
-  border: 1px solid var(--exo-input);
-  border-radius: var(--exo-radius);
-  background: var(--exo-field);
-  color: var(--exo-foreground);
-  outline: none;
-  transition: border-color var(--exo-duration) var(--exo-easing),
-    box-shadow var(--exo-duration) var(--exo-easing);
-}
-
-:where([data-exo="input"]):focus {
-  border-color: var(--exo-ring);
-  box-shadow: 0 0 0 2px color-mix(in oklch, var(--exo-ring) 25%, transparent);
-}
-
-:where([data-exo="input"][data-invalid]) {
-  border-color: var(--exo-danger);
-}
-
-:where([data-exo="input"][data-invalid]):focus {
-  box-shadow: 0 0 0 2px color-mix(in oklch, var(--exo-danger) 25%, transparent);
-}
-
-:where([data-exo="input"]):disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-:where([data-exo="input"])::placeholder {
-  color: var(--exo-muted-foreground);
-}
-
-/* Gustina — ista ljestvica kao `btn` i `badge`, pa polje i dugme jedan pored
-   drugog stoje u istom redu bez rucnog stimovanja. `md` ponavlja vrijednosti
-   iz osnovnog pravila iznad namjerno: `data-size` je uvijek prisutan (attr ima
-   `default: "md"`), pa je ovdje eksplicitan da se ljestvica cita na jednom
-   mjestu. */
-:where([data-exo="input"][data-size="sm"]) {
-  line-height: 1rem;
-  padding: var(--exo-space-1) var(--exo-space-2);
-  font-size: var(--exo-text-xs);
-}
-
-:where([data-exo="input"][data-size="md"]) {
-  line-height: 1.25rem;
-  padding: 0.3125rem var(--exo-space-3);
-  font-size: var(--exo-text-sm);
-}
-
-:where([data-exo="input"][data-size="lg"]) {
-  line-height: 1.5rem;
-  padding: var(--exo-space-3) var(--exo-space-4);
-  font-size: var(--exo-text-base);
-}
-
-:where([data-exo="input-frame"]) {
+/* The label of a field is daisyUI's legend: its row sits half a step closer
+   to the control than the grid gap. */
+:where([data-exo="field"] > [data-exo="label"]) {
   display: flex;
   align-items: center;
-  gap: var(--exo-space-2);
-  border: 1px solid var(--exo-input);
-  border-radius: var(--exo-radius);
-  background: var(--exo-field);
-  color: var(--exo-foreground);
-  transition: border-color var(--exo-duration) var(--exo-easing),
-    box-shadow var(--exo-duration) var(--exo-easing);
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-block: 0.5rem;
+  margin-bottom: -0.25rem;
+  margin-inline-end: auto;
 }
 
-:where([data-exo="input-frame"]:focus-within) {
-  border-color: var(--exo-ring);
-  box-shadow: 0 0 0 2px color-mix(in oklch, var(--exo-ring) 25%, transparent);
-}
-
-:where([data-exo="input-frame"][data-invalid]) {
-  border-color: var(--exo-danger);
-}
-
-:where([data-exo="input-frame"][data-invalid]:focus-within) {
-  box-shadow: 0 0 0 2px color-mix(in oklch, var(--exo-danger) 25%, transparent);
-}
-
-:where([data-exo="input-frame"][data-disabled]) {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-:where([data-exo="input-frame"] [data-exo="input"]) {
-  min-width: 0;
-  flex: 1;
-  padding-inline: 0;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-}
-
-:where([data-exo="input-frame"] [data-exo="input"]:focus) {
-  border-color: transparent;
-  box-shadow: none;
-}
-
-:where([data-exo="input-prefix"], [data-exo="input-suffix"], [data-exo="input-icon"]) {
-  display: inline-flex;
-  align-items: center;
-  flex-shrink: 0;
-  color: var(--exo-muted-foreground);
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  line-height: 1;
-}
-
-:where(textarea[data-exo="input"]) {
-  min-height: 5rem;
-  resize: vertical;
-}
-
+/* `.label` is `white-space: nowrap`; a description is a sentence, so it
+   wraps here. */
 :where([data-exo="field-description"]) {
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-xs);
-  color: var(--exo-muted-foreground);
   margin: 0;
+  font-family: var(--exo-font);
+  font-size: 0.75rem;
+  color: color-mix(in oklab, currentColor 60%, transparent);
 }
 
 :where([data-exo="field-error"]) {
   font-family: var(--exo-font);
-  font-size: var(--exo-text-xs);
-  color: var(--exo-danger);
+  font-size: 0.75rem;
+  color: var(--exo-error);
 }
 
-/* Kad je polje u okviru (prefiks/sufiks/ikona), visinu drzi OKVIR, a polje u
-   njemu gubi svoj okomiti razmak (pravilo nize). Zato okvir nosi isti
-   `data-size`.
-
-   Razmak je NAMJERNO skinut sa osnovnog pravila okvira i zive samo ovdje. Dok
-   je stajao i gore, dva pravila iste (nulte) specificnosti su se otimala o
-   isti svojstvo i odlucivao je REDOSLIJED u fajlu — osnovno je bilo nize, pa
-   je gazilo velicine i okvir je izlazio 22px umjesto 38px. Ovako redoslijed
-   ne igra ulogu. Okvir bez `data-size` (rucno napisan, mimo komponente)
-   pokriven je pravilom `:not([data-size])` ispod. */
-:where([data-exo="input-frame"]:not([data-size])) {
-  padding: 0.3125rem var(--exo-space-3);
-}
-
-:where([data-exo="input-frame"][data-size="sm"]) {
-  line-height: 1rem;
-  padding: var(--exo-space-1) var(--exo-space-2);
-  font-size: var(--exo-text-xs);
-}
-
-:where([data-exo="input-frame"][data-size="md"]) {
-  line-height: 1.25rem;
-  padding: 0.3125rem var(--exo-space-3);
-  font-size: var(--exo-text-sm);
-}
-
-:where([data-exo="input-frame"][data-size="lg"]) {
-  line-height: 1.5rem;
-  padding: var(--exo-space-3) var(--exo-space-4);
-  font-size: var(--exo-text-base);
-}
-
-/* Polje unutar okvira ne dodaje SVOJ okomiti razmak — inace bi se sabrao sa
-   razmakom okvira i `sm` polje bi bilo vise od `md` samostalnog. */
-:where([data-exo="input-frame"] [data-exo="input"][data-size]) {
-  padding-block: 0;
-}
-
-/* Prefiks/sufiks prate velicinu okvira, ne fiksni `sm`. */
-:where([data-exo="input-frame"][data-size] [data-exo="input-prefix"]),
-:where([data-exo="input-frame"][data-size] [data-exo="input-suffix"]) {
-  font-size: inherit;
-}
-
-/* Zvjezdica uz natpis obaveznog polja. `aria-hidden` je u komponenti — ovdje
-   je samo boja i razmak. */
+/* The asterisk on a required field's label. `aria-hidden` is in the
+   component; this is colour and spacing only. */
 :where([data-exo="label-required"]) {
-  color: var(--exo-danger);
+  color: var(--exo-error);
   margin-inline-start: 0.125rem;
+}
+
+/* --- input and frame: base (l1.l2.l3) --- */
+
+:where([data-exo="input"]:not(textarea), [data-exo="input-frame"]) {
+  --size: calc(var(--exo-size-field, 0.25rem) * var(--in-size-mul, 10));
+  --input-color: color-mix(in oklab, var(--exo-base-content) 20%, #0000);
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 1;
+  appearance: none;
+  align-items: center;
+  gap: 0.5rem;
+  box-sizing: border-box;
+  padding-block: 0;
+  padding-inline: 0.75rem;
+  vertical-align: middle;
+  white-space: nowrap;
+  cursor: text;
+  height: var(--size);
+  font-family: var(--exo-font);
+  font-size: max(var(--font-size, 0rem), var(--font-size-min, 0.875rem));
+  line-height: 1.5;
+  color: inherit;
+  background-color: var(--exo-base-100);
+  touch-action: manipulation;
+  border-start-start-radius: var(--join-ss, var(--exo-radius-field));
+  border-start-end-radius: var(--join-se, var(--exo-radius-field));
+  border-end-start-radius: var(--join-es, var(--exo-radius-field));
+  border-end-end-radius: var(--join-ee, var(--exo-radius-field));
+  border: var(--exo-border-width) solid var(--input-color, #0000);
+  box-shadow:
+    0 1px color-mix(in oklab, var(--input-color) calc(var(--exo-depth) * 10%), #0000) inset,
+    0 -1px oklch(100% 0 0 / calc(var(--exo-depth) * 0.1)) inset;
+}
+
+:where(input[data-exo="input"]) {
+  text-align: start;
+}
+
+:where(input[data-exo="input"]:is([type="url"], [type="tel"], [type="email"], [type="number"])) {
+  direction: ltr;
+}
+
+:where(input[data-exo="input"])::-webkit-datetime-edit,
+:where(input[data-exo="input"])::-webkit-date-and-time-value {
+  display: grid;
+  min-height: 100%;
+  align-items: center;
+  text-align: inherit;
+}
+
+:where(input[data-exo="input"])::-webkit-inner-spin-button {
+  margin-inline-end: -10px;
+  margin-block: calc(0.25rem * var(--spin-my, -3));
+}
+
+:where(input[data-exo="input"])::-webkit-calendar-picker-indicator {
+  position: absolute;
+  inset-inline-end: 0.75em;
+  width: 1em;
+  height: 1em;
+  cursor: pointer;
+}
+
+:where(input[data-exo="input"])::-webkit-color-swatch-wrapper {
+  padding-block: 0.25rem;
+}
+
+:where([data-exo="input"])::placeholder {
+  color: var(--exo-base-content);
+  opacity: 0.5;
+}
+
+/* --- textarea: base (l1.l2.l3) --- */
+
+/* `resize` stays vertical: a textarea dragged wider than its column breaks
+   the form around it. */
+:where(textarea[data-exo="input"]) {
+  --input-color: color-mix(in oklab, var(--exo-base-content) 20%, #0000);
+  flex-shrink: 1;
+  appearance: none;
+  box-sizing: border-box;
+  min-height: 5rem;
+  padding: 0.5rem 0.75rem;
+  vertical-align: middle;
+  resize: vertical;
+  font-family: var(--exo-font);
+  font-size: max(var(--font-size, 0rem), var(--font-size-min, 0.875rem));
+  line-height: 1.5;
+  color: inherit;
+  background-color: var(--exo-base-100);
+  border-radius: var(--exo-radius-field);
+  touch-action: manipulation;
+  border: var(--exo-border-width) solid var(--input-color, #0000);
+  box-shadow:
+    0 1px color-mix(in oklab, var(--input-color) calc(var(--exo-depth) * 10%), #0000) inset,
+    0 -1px oklch(100% 0 0 / calc(var(--exo-depth) * 0.1)) inset;
+}
+
+/* --- focus (l1.l2.l3) --- */
+
+:where(
+  [data-exo="input"]:focus,
+  [data-exo="input"]:focus-within,
+  [data-exo="input-frame"]:focus-within
+) {
+  --input-color: var(--exo-base-content);
+  box-shadow: 0 1px color-mix(in oklab, var(--input-color) calc(var(--exo-depth) * 10%), #0000);
+  outline: 2px solid var(--input-color);
+  outline-offset: 2px;
+}
+
+:where(textarea[data-exo="input"]:focus) {
+  isolation: isolate;
+}
+
+/* iOS zooms the page into a field whose text is under 16px. */
+@media (pointer: coarse) {
+  @supports (-webkit-touch-callout: none) {
+    :where(
+      [data-exo="input"]:focus,
+      [data-exo="input"]:focus-within,
+      [data-exo="input-frame"]:focus-within
+    ) {
+      --font-size: 1rem;
+    }
+  }
+}
+
+/* --- prefix, suffix and icon in a frame (l1.l2.l3) --- */
+
+:where([data-exo="input-prefix"], [data-exo="input-suffix"]) {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  height: calc(100% - 0.5rem);
+  padding-inline: 0.75rem;
+  white-space: nowrap;
+  font-size: inherit;
+  color: color-mix(in oklab, currentColor 60%, transparent);
+}
+
+:where([data-exo="input-prefix"]:first-child, [data-exo="input-suffix"]:first-child) {
+  margin-inline-start: -0.75rem;
+  margin-inline-end: 0.75rem;
+  border-inline-end: var(--exo-border-width) solid color-mix(in oklab, currentColor 10%, #0000);
+}
+
+:where([data-exo="input-prefix"]:last-child, [data-exo="input-suffix"]:last-child) {
+  margin-inline-start: 0.75rem;
+  margin-inline-end: -0.75rem;
+  border-inline-start: var(--exo-border-width) solid color-mix(in oklab, currentColor 10%, #0000);
+}
+
+:where([data-exo="input-icon"]) {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+
+/* --- ghost (l1.l2) --- */
+
+:where([data-exo="input"][data-appearance="ghost"], [data-exo="input-frame"][data-appearance="ghost"]) {
+  background-color: transparent;
+  box-shadow: none;
+  border-color: #0000;
+}
+
+:where(
+  [data-exo="input"][data-appearance="ghost"]:focus,
+  [data-exo="input"][data-appearance="ghost"]:focus-within,
+  [data-exo="input-frame"][data-appearance="ghost"]:focus-within
+) {
+  color: var(--exo-base-content);
+  background-color: var(--exo-base-100);
+  border-color: #0000;
+  box-shadow: none;
+}
+
+/* --- colours (l1.l2) --- */
+
+:where([data-exo="input"][data-variant="neutral"], [data-exo="input-frame"][data-variant="neutral"]) {
+  --input-color: var(--exo-neutral);
+}
+
+:where([data-exo="input"][data-variant="primary"], [data-exo="input-frame"][data-variant="primary"]) {
+  --input-color: var(--exo-primary);
+}
+
+:where([data-exo="input"][data-variant="secondary"], [data-exo="input-frame"][data-variant="secondary"]) {
+  --input-color: var(--exo-secondary);
+}
+
+:where([data-exo="input"][data-variant="accent"], [data-exo="input-frame"][data-variant="accent"]) {
+  --input-color: var(--exo-accent);
+}
+
+:where([data-exo="input"][data-variant="info"], [data-exo="input-frame"][data-variant="info"]) {
+  --input-color: var(--exo-info);
+}
+
+:where([data-exo="input"][data-variant="success"], [data-exo="input-frame"][data-variant="success"]) {
+  --input-color: var(--exo-success);
+}
+
+:where([data-exo="input"][data-variant="warning"], [data-exo="input-frame"][data-variant="warning"]) {
+  --input-color: var(--exo-warning);
+}
+
+:where(
+  [data-exo="input"]:is([data-variant="error"], [data-variant="danger"], [data-invalid]),
+  [data-exo="input-frame"]:is([data-variant="error"], [data-variant="danger"], [data-invalid])
+) {
+  --input-color: var(--exo-error);
+}
+
+/* --- sizes (l1.l2) --- */
+
+:where([data-exo="input"][data-size="xs"], [data-exo="input-frame"][data-size="xs"]) {
+  --in-size-mul: 6;
+  --font-size-min: 0.6875rem;
+  --spin-my: -1;
+}
+
+:where([data-exo="input"][data-size="sm"], [data-exo="input-frame"][data-size="sm"]) {
+  --in-size-mul: 8;
+  --font-size-min: 0.75rem;
+  --spin-my: -2;
+}
+
+:where([data-exo="input"][data-size="md"], [data-exo="input-frame"][data-size="md"]) {
+  --in-size-mul: 10;
+  --font-size-min: 0.875rem;
+  --spin-my: -3;
+}
+
+:where([data-exo="input"][data-size="lg"], [data-exo="input-frame"][data-size="lg"]) {
+  --in-size-mul: 12;
+  --font-size-min: 1.125rem;
+  --spin-my: -3;
+}
+
+:where([data-exo="input"][data-size="xl"], [data-exo="input-frame"][data-size="xl"]) {
+  --in-size-mul: 14;
+  --font-size-min: 1.375rem;
+  --spin-my: -4;
+}
+
+/* --- disabled (l1.l2) --- */
+
+:where(
+  [data-exo="input"]:disabled,
+  [data-exo="input"][disabled],
+  [data-exo="input-frame"][data-disabled],
+  [data-exo="input-frame"]:has(> input[disabled]),
+  fieldset:disabled [data-exo="input"],
+  fieldset:disabled [data-exo="input-frame"]
+) {
+  cursor: not-allowed;
+  border-color: var(--exo-base-200);
+  background-color: var(--exo-base-200);
+  box-shadow: none;
+}
+
+:where(
+  [data-exo="input"]:disabled,
+  [data-exo="input"][disabled],
+  fieldset:disabled [data-exo="input"]
+) {
+  color: color-mix(in oklab, var(--exo-base-content) 40%, transparent);
+}
+
+:where([data-exo="input"]:disabled, [data-exo="input"][disabled])::placeholder,
+:where(fieldset:disabled [data-exo="input"])::placeholder {
+  color: var(--exo-base-content);
+  opacity: 0.2;
+}
+
+/* --- right-to-left corners of a left-to-right value --- */
+
+:where(input[data-exo="input"]:is([type="url"], [type="tel"], [type="email"], [type="number"]):dir(rtl)) {
+  border-start-start-radius: var(--join-se, var(--exo-radius-field));
+  border-start-end-radius: var(--join-ss, var(--exo-radius-field));
+  border-end-start-radius: var(--join-ee, var(--exo-radius-field));
+  border-end-end-radius: var(--join-es, var(--exo-radius-field));
+}
+
+/* --- the input inside a frame (`.input input`) ---
+ *
+ * Last in the file so it wins over every rule above that also matches it as
+ * a bare input: the frame draws the border, fill, height and focus ring.
+ */
+
+:where([data-exo="input-frame"] [data-exo="input"]) {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  appearance: none;
+  font-size: inherit;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+:where([data-exo="input-frame"] [data-exo="input"]:focus) {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+:where([data-exo="input-frame"] [data-exo="input"])::-webkit-calendar-picker-indicator {
+  inset-inline-end: -0.15em;
+}
+
+:where([data-exo="input-frame"] [data-exo="input"]:disabled) {
+  cursor: not-allowed;
+  background: transparent;
 }

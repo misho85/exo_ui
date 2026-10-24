@@ -1,8 +1,21 @@
+/*
+ * The command palette is a daisyUI 5 modal holding a menu (components/
+ * modal.css and components/menu.css, v5.7.50). The backdrop is the modal's,
+ * black at 40%; the dialog is `base-100` with `--radius-box` and the modal
+ * box's shadow, grows from 95% and fades in. The list is `.menu` with its
+ * 0.5rem padding, an item is a menu item, and the item the arrow keys reached
+ * (`data-active`) is daisyUI's `.menu-focus`.
+ *
+ * The palette opens with `display` from its script, so the entry is a
+ * keyframe animation.
+ */
+
 :where([data-exo="command-palette"]) {
   display: none;
   position: fixed;
   inset: 0;
-  z-index: 50;
+  z-index: 999;
+  overscroll-behavior: contain;
 }
 
 :where([data-exo="command-palette"].open) {
@@ -12,88 +25,97 @@
 :where([data-exo="command-palette-backdrop"]) {
   position: fixed;
   inset: 0;
-  background: var(--exo-backdrop);
-  animation: exo-cmd-fade-in 150ms var(--exo-easing);
+  background-color: var(--exo-backdrop-muted);
+  animation: exo-cmd-fade-in 0.3s ease-out;
 }
 
 :where([data-exo="command-palette-dialog"]) {
+  --menu-active-fg: var(--exo-neutral-content);
+  --menu-active-bg: var(--exo-neutral);
   position: fixed;
   top: 20%;
   left: 50%;
-  transform: translateX(-50%);
-  width: min(32rem, 90vw);
-  background: var(--exo-background);
-  border: 1px solid var(--exo-border);
-  border-radius: var(--exo-radius);
+  translate: -50% 0;
+  width: min(32rem, 91.666667%);
+  background-color: var(--exo-base-100);
+  color: var(--exo-base-content);
+  border: 0;
+  border-radius: var(--exo-radius-box);
   box-shadow: var(--exo-shadow-xl);
   overflow: hidden;
-  animation: exo-cmd-scale-in 150ms var(--exo-easing);
+  animation: exo-cmd-scale-in 0.3s ease-out;
 }
 
+/* The divider is daisyUI's border colour, the content colour at 10%. */
 :where([data-exo="command-palette-input-wrapper"]) {
   display: flex;
   align-items: center;
-  gap: var(--exo-space-2);
-  padding: var(--exo-space-3) var(--exo-space-4);
-  border-bottom: 1px solid var(--exo-border);
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-bottom: var(--exo-border-width) solid
+    color-mix(in oklab, var(--exo-base-content) 10%, transparent);
 }
 
 :where([data-exo="command-palette-search-icon"]) {
   width: 1rem;
   height: 1rem;
   flex-shrink: 0;
-  color: var(--exo-muted-foreground);
+  opacity: 0.5;
 }
 
 :where([data-exo="command-palette-input"]) {
   flex: 1;
+  min-width: 0;
   border: none;
   outline: none;
   background: transparent;
   font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  color: var(--exo-foreground);
+  font-size: 0.875rem;
+  color: var(--exo-base-content);
 }
 
+/* daisyUI's input placeholder: the content colour at 50%. */
 :where([data-exo="command-palette-input"])::placeholder {
-  color: var(--exo-muted-foreground);
+  color: color-mix(in oklab, var(--exo-base-content) 50%, transparent);
 }
+
+/* --- list and items (menu, l1.l2.l3) --- */
 
 :where([data-exo="command-palette-list"]) {
+  display: flex;
+  flex-direction: column;
   max-height: 18rem;
   overflow-y: auto;
-  padding: var(--exo-space-2);
+  overscroll-behavior: contain;
+  padding: 0.5rem;
+  font-family: var(--exo-font);
+  font-size: 0.875rem;
 }
 
 :where([data-exo="command-palette-item"]) {
   display: flex;
+  flex-shrink: 0;
   width: 100%;
   align-items: center;
   justify-content: space-between;
-  gap: var(--exo-space-3);
-  padding: var(--exo-space-2) var(--exo-space-3);
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  color: var(--exo-foreground);
-  text-align: left;
-  background: transparent;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
   border: 0;
-  border-radius: calc(var(--exo-radius) - 2px);
+  border-radius: var(--exo-radius-field);
+  background: transparent;
+  color: var(--exo-base-content);
+  font-family: inherit;
+  font-size: inherit;
+  text-align: start;
+  user-select: none;
   cursor: pointer;
+  transition-property: color, background-color, box-shadow;
+  transition-duration: 0.2s;
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
 
 :where([data-exo="command-palette-item"][hidden]) {
   display: none;
-}
-
-:where([data-exo="command-palette-item"][data-active="true"]),
-:where([data-exo="command-palette-item"]:hover) {
-  background: var(--exo-accent);
-}
-
-:where([data-exo="command-palette-item"][data-disabled]) {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 :where([data-exo="command-palette-item-label"]) {
@@ -105,15 +127,48 @@
 
 :where([data-exo="command-palette-shortcut"]) {
   flex-shrink: 0;
+  font-size: 0.75rem;
   color: var(--exo-muted-foreground);
-  font-size: var(--exo-text-xs);
 }
 
 :where([data-exo="command-palette-empty"]) {
-  padding: var(--exo-space-6) var(--exo-space-3);
-  color: var(--exo-muted-foreground);
-  font-size: var(--exo-text-sm);
+  padding: 1.5rem 0.75rem;
+  font-size: 0.875rem;
   text-align: center;
+  color: color-mix(in oklab, var(--exo-base-content) 40%, transparent);
+}
+
+/* --- active (l1.l2) --- */
+
+:where([data-exo="command-palette-item"]:active) {
+  outline: none;
+  color: var(--menu-active-fg);
+  background-color: var(--menu-active-bg);
+  background-size: auto, calc(var(--exo-noise) * 100%);
+  background-image: none, var(--exo-fx-noise);
+}
+
+/* --- hover and the keyboard's item (l1) --- */
+
+@media (hover: hover) {
+  :where([data-exo="command-palette-item"]:not(:active):hover) {
+    background-color: color-mix(in oklab, var(--exo-base-content) 10%, transparent);
+    outline: none;
+    box-shadow: var(--exo-shadow-menu);
+  }
+}
+
+:where([data-exo="command-palette-item"][data-active="true"]:not(:active)) {
+  background-color: color-mix(in oklab, var(--exo-base-content) 10%, transparent);
+  color: var(--exo-base-content);
+  outline: none;
+}
+
+/* --- disabled --- */
+
+:where([data-exo="command-palette-item"][data-disabled], [data-exo="command-palette-item"]:disabled) {
+  color: color-mix(in oklab, var(--exo-base-content) 20%, transparent);
+  cursor: not-allowed;
 }
 
 @keyframes exo-cmd-fade-in {
@@ -121,7 +176,8 @@
   to { opacity: 1; }
 }
 
+/* The modal box's entry: from 95% and transparent. */
 @keyframes exo-cmd-scale-in {
-  from { opacity: 0; transform: translateX(-50%) scale(0.95); }
-  to { opacity: 1; transform: translateX(-50%) scale(1); }
+  from { opacity: 0; scale: 95%; }
+  to { opacity: 1; scale: 1; }
 }

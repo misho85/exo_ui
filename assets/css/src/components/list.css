@@ -1,28 +1,48 @@
+/*
+ * daisyUI 5 `.list` (components/list.css, v5.7.50): each title/content pair is
+ * a `list-row` — 1rem padding, a 1rem gap, `rounded-box` — and the rows are
+ * divided by the content colour at 5%, inset by the box radius.
+ */
+
 :where([data-exo="list"]) {
+  display: flex;
+  flex-direction: column;
   list-style: none;
   padding: 0;
   margin: 0;
+  font-family: var(--exo-font);
+  font-size: 0.875rem;
 }
 
 :where([data-exo="list-item"]) {
-  padding: var(--exo-space-3) var(--exo-space-4);
-  border-bottom: 1px solid var(--exo-border);
+  --list-grid-cols: minmax(0, auto) 1fr;
+  position: relative;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: var(--list-grid-cols);
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: var(--exo-radius-box);
+  word-break: break-word;
 }
 
-:where([data-exo="list-item"]:last-child) {
-  border-bottom: none;
+:where([data-exo="list-item"]:not(:last-child))::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  inset-inline: var(--exo-radius-box);
+  border-bottom: var(--exo-border-width) solid
+    color-mix(in oklab, var(--exo-base-content) 5%, transparent);
 }
 
 :where([data-exo="list-title"]) {
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
+  grid-row-start: 1;
   font-weight: 600;
-  color: var(--exo-foreground);
+  color: var(--exo-base-content);
 }
 
 :where([data-exo="list-content"]) {
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  color: var(--exo-muted-foreground);
+  grid-row-start: 1;
   margin: 0;
+  color: color-mix(in oklab, var(--exo-base-content) 60%, transparent);
 }

@@ -1,152 +1,244 @@
+/*
+ * daisyUI 5 `.steps` / `.step` (components/steps.css, v5.7.50), value for value.
+ *
+ * A step is a grid: its circle (`step-icon`, 2rem, the step colour with the
+ * content colour on it) and the connector (`::before`, 0.5rem thick, from the
+ * previous step's centre to this one's) share the first cell, the title and
+ * description sit under it, or beside it in a vertical list.
+ *
+ * A complete and the current step are daisyUI's coloured step (`step-primary`
+ * and friends); an upcoming step keeps `base-300`. The connector into a step
+ * is coloured when the step before it is coloured too, as daisyUI's
+ * `.step-primary + .step-primary:before`.
+ *
+ *   data-variant  neutral | primary | secondary | accent | info | success |
+ *                 warning | error on the list or on one step; `danger` is
+ *                 `error`; none is `primary`
+ *
+ * daisyUI's list is an `inline-grid`; this one is a block `grid`, because it
+ * is the size container of the compact layout below, and an inline box with
+ * inline-size containment is zero wide.
+ */
+
+/* --- base (l1.l2.l3) --- */
+
 :where([data-exo="steps"]) {
-  display: flex;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  overflow: hidden;
+  overflow-x: auto;
   list-style: none;
   padding: 0;
   margin: 0;
   counter-reset: step;
-}
-
-:where([data-exo="steps"][data-orientation="vertical"]) {
-  flex-direction: column;
+  font-family: var(--exo-font);
 }
 
 :where([data-exo="step"]) {
-  display: flex;
-  align-items: center;
-  gap: var(--exo-space-2);
-  flex: 1;
-  position: relative;
+  --step-bg: var(--exo-base-300);
+  --step-fg: var(--exo-base-content);
+  --step-color: var(--exo-primary);
+  --step-color-fg: var(--exo-primary-content);
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: 40px 1fr;
+  place-items: center;
+  min-width: 4rem;
+  text-align: center;
   counter-increment: step;
 }
 
-:where([data-exo="steps"][data-orientation="vertical"] [data-exo="step"]) {
-  padding-bottom: var(--exo-space-6);
-}
-
-/* Connector line between steps */
-:where([data-exo="step"]:not(:last-child))::after {
+:where([data-exo="step"])::before {
   content: "";
-  flex: 1;
-  height: 2px;
-  background: var(--exo-border);
-  margin: 0 var(--exo-space-2);
+  grid-column-start: 1;
+  grid-row-start: 1;
+  top: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 0.5rem;
+  margin-inline-start: -100%;
+  border: 1px solid;
+  color: var(--step-bg);
+  background-color: var(--step-bg);
 }
 
-:where([data-exo="steps"][data-orientation="vertical"] [data-exo="step"]:not(:last-child))::after {
-  position: absolute;
-  left: 0.875rem;
-  top: 2rem;
-  width: 2px;
-  height: calc(100% - 2rem);
-  flex: none;
-  margin: 0;
-}
-
-:where([data-exo="step"][data-status="complete"]:not(:last-child))::after {
-  background: var(--exo-primary);
+:where([data-exo="step"]:first-child)::before {
+  content: none;
 }
 
 :where([data-exo="step-indicator"]) {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.75rem;
-  height: 1.75rem;
-  border-radius: 50%;
-  font-size: 0.75rem;
-  font-weight: 600;
-  flex-shrink: 0;
-  border: 2px solid var(--exo-border);
-  color: var(--exo-muted-foreground);
-  background: var(--exo-background);
+  position: relative;
+  z-index: 1;
+  grid-column-start: 1;
+  grid-row-start: 1;
+  display: grid;
+  place-items: center;
+  place-self: center;
+  box-sizing: border-box;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  border: 1px solid var(--step-bg);
+  color: var(--step-fg);
+  background-color: var(--step-bg);
 }
 
-:where([data-exo="step"][data-status="complete"] [data-exo="step-indicator"]) {
-  background: var(--exo-primary);
-  border-color: var(--exo-primary);
-  color: var(--exo-primary-foreground);
-}
-
-/* The current step is filled like a complete one and keeps its number, so
-   the number sits on --exo-primary in --exo-primary-foreground, the pair a
-   theme keeps readable. It used to be --exo-primary text on the page
-   background, which a theme with one brand colour for light and dark (a
-   storefront) cannot keep at 4.5:1 on both: black was 1.12:1 in dark. */
-:where([data-exo="step"][data-status="current"] [data-exo="step-indicator"]) {
-  background: var(--exo-primary);
-  border-color: var(--exo-primary);
-  color: var(--exo-primary-foreground);
-}
-
-:where([data-exo="step-title"]) {
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  font-weight: 500;
-  color: var(--exo-foreground);
-}
-
+/* Placed by the grid on its own, into the row under the circle. An explicit
+   row would also place the compact title below: an absolute box inside a grid
+   container takes its containing block from its grid lines, and the list has
+   no second row, so the title fell 68px under the list. */
 :where([data-exo="step-body"]) {
   display: grid;
   gap: 0.125rem;
 }
 
-:where([data-exo="step-description"]) {
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-xs);
-  color: var(--exo-muted-foreground);
+:where([data-exo="step-title"]) {
+  font-weight: 400;
 }
 
-:where([data-exo="step"][data-status="upcoming"] [data-exo="step-title"]) {
-  color: var(--exo-muted-foreground);
-}
-
+/* Beyond daisyUI: the fill says "reached", the number and the heavier title
+   say "here" (TRG-449). */
 :where([data-exo="step"][data-status="current"] [data-exo="step-title"]) {
   font-weight: 600;
 }
 
+:where([data-exo="step-description"]) {
+  font-size: 0.75rem;
+  color: color-mix(in oklab, var(--exo-base-content) 60%, transparent);
+}
+
+/* --- colours (l1.l2) --- */
+
+:where([data-exo="steps"][data-variant="neutral"], [data-exo="step"][data-variant="neutral"]) {
+  --step-color: var(--exo-neutral);
+  --step-color-fg: var(--exo-neutral-content);
+}
+
+:where([data-exo="steps"][data-variant="primary"], [data-exo="step"][data-variant="primary"]) {
+  --step-color: var(--exo-primary);
+  --step-color-fg: var(--exo-primary-content);
+}
+
+:where([data-exo="steps"][data-variant="secondary"], [data-exo="step"][data-variant="secondary"]) {
+  --step-color: var(--exo-secondary);
+  --step-color-fg: var(--exo-secondary-content);
+}
+
+:where([data-exo="steps"][data-variant="accent"], [data-exo="step"][data-variant="accent"]) {
+  --step-color: var(--exo-accent);
+  --step-color-fg: var(--exo-accent-content);
+}
+
+:where([data-exo="steps"][data-variant="info"], [data-exo="step"][data-variant="info"]) {
+  --step-color: var(--exo-info);
+  --step-color-fg: var(--exo-info-content);
+}
+
+:where([data-exo="steps"][data-variant="success"], [data-exo="step"][data-variant="success"]) {
+  --step-color: var(--exo-success);
+  --step-color-fg: var(--exo-success-content);
+}
+
+:where([data-exo="steps"][data-variant="warning"], [data-exo="step"][data-variant="warning"]) {
+  --step-color: var(--exo-warning);
+  --step-color-fg: var(--exo-warning-content);
+}
+
+:where(
+  [data-exo="steps"][data-variant="error"],
+  [data-exo="steps"][data-variant="danger"],
+  [data-exo="step"][data-variant="error"],
+  [data-exo="step"][data-variant="danger"]
+) {
+  --step-color: var(--exo-error);
+  --step-color-fg: var(--exo-error-content);
+}
+
+/* A step's own variant beats the list's: the list sets the two colours on its
+   steps, a step sets them on itself. */
+:where([data-exo="steps"][data-variant]) > :where([data-exo="step"]:not([data-variant])) {
+  --step-color: inherit;
+  --step-color-fg: inherit;
+}
+
+/* The current step's number sits on the step colour in its `-content` colour,
+   the pair a theme keeps readable. It used to be primary text on the page
+   background, which a theme with one brand colour for light and dark (a
+   storefront) cannot keep at 4.5:1 on both: black was 1.12:1 in dark. */
+:where([data-exo="step"]:is([data-status="complete"], [data-status="current"]))
+  > :where([data-exo="step-indicator"]) {
+  --step-bg: var(--step-color);
+  --step-fg: var(--step-color-fg);
+}
+
+:where(
+  [data-exo="step"]:is([data-status="complete"], [data-status="current"])
+    + [data-exo="step"]:is([data-status="complete"], [data-status="current"])
+)::before {
+  --step-bg: var(--step-color);
+}
+
+/* --- vertical (l1.l2) --- */
+
+:where([data-exo="steps"][data-orientation="vertical"]) {
+  grid-auto-rows: 1fr;
+  grid-auto-flow: row;
+}
+
+:where([data-exo="steps"][data-orientation="vertical"]) > :where([data-exo="step"]) {
+  grid-template-columns: 40px 1fr;
+  grid-template-rows: auto;
+  gap: 0.5rem;
+  min-height: 4rem;
+  justify-items: start;
+}
+
+:where([data-exo="steps"][data-orientation="vertical"]) > :where([data-exo="step"])::before {
+  width: 0.5rem;
+  height: 100%;
+  translate: -50% -50%;
+  margin-inline-start: 50%;
+}
+
+:where([dir="rtl"] [data-exo="steps"][data-orientation="vertical"])
+  > :where([data-exo="step"])::before {
+  translate: 50% -50%;
+}
+
+:where([data-exo="steps"][data-orientation="vertical"]) :where([data-exo="step-body"]) {
+  grid-column-start: 2;
+  grid-row-start: 1;
+}
+
 /* Horizontal steps in a narrow container (TRG-451).
 
-   A step does not shrink below its circle, its title and its connector, so
-   five steps were 555px wide and pushed a 360px phone page sideways, with the
-   last two steps off screen. Below about 8.5rem a step, the list becomes
-   compact: the circles and connectors span the width, the first circle at the
-   start and the last at the end, and only one title is shown, on a line under
+   Below about 8.5rem a step, the list becomes compact: the circles and the
+   connectors keep their columns, and only one title is shown, on a line under
    them: the current step's, or in a list without one (an order's status) the
-   last complete step's. Every other title and description stays in the list
+   last complete step's. Five titles squeezed into 4rem columns wrapped into
+   towers of single words. Every other title and description stays in the list
    as visually hidden text, so a screen reader still reads each step with its
    status, as it does at any width.
 
    The list is the size container, so the switch follows the space the list
-   has, not the viewport: the same steps compact sooner in a card. It takes the
-   width of its container; in a shrink-to-fit context (a flex row, an `auto`
-   grid column) give it a width, or it is zero wide.
+   has, not the viewport: the same steps compact sooner in a card.
 
    The width a step needs is the same for any number of steps, but a container
    query cannot divide by the number, so `steps/1` writes it as `data-count`
-   and there is one query per count. Each query only switches two custom
-   properties on the steps; the rules below read them:
-   - `--exo-steps-compact` is empty in a compact list and unset otherwise, so
-     `prop: var(--exo-steps-compact) value` is `value` when compact and falls
-     back to the property's initial (or inherited) value when not;
-   - `--exo-steps-wide` is the reverse, for the two values a full list sets.
-   Every property switched this way has its initial value in the full list. */
+   and there is one query per count. Each query only switches a custom
+   property on the steps; the rules below read it: `--exo-steps-compact` is
+   empty in a compact list and unset otherwise, so
+   `prop: var(--exo-steps-compact) value` is `value` when compact and falls
+   back to the property's initial (or inherited) value when not. Every
+   property switched this way has its initial value in the full list. */
 :where([data-exo="steps"]:not([data-orientation="vertical"])) {
   container: exo-steps / inline-size;
   position: relative;
 }
 
 :where([data-exo="steps"]:not([data-orientation="vertical"]) > [data-exo="step"]) {
-  --exo-steps-wide: ;
-  position: static;
-  padding-bottom: var(--exo-steps-compact) calc(var(--exo-space-2) + 1.25rem);
-}
-
-:where([data-exo="steps"]:not([data-orientation="vertical"]) > [data-exo="step"]:last-child) {
-  flex-grow: var(--exo-steps-wide) 1;
-}
-
-:where([data-exo="steps"]:not([data-orientation="vertical"]) > [data-exo="step"]:not(:last-child))::after {
-  margin-inline-start: var(--exo-steps-wide) var(--exo-space-2);
+  padding-bottom: var(--exo-steps-compact) 1.75rem;
 }
 
 :where(
@@ -169,7 +261,7 @@
     > [data-exo="step"][data-status="complete"]:not(:has(~ [data-status="complete"]))
     > [data-exo="step-body"]
 ) {
-  top: var(--exo-steps-compact) calc(1.75rem + var(--exo-space-2));
+  top: var(--exo-steps-compact) calc(40px + 0.5rem);
   inset-inline: var(--exo-steps-compact) 0;
   width: var(--exo-steps-compact) auto;
   height: var(--exo-steps-compact) auto;
@@ -186,48 +278,41 @@
 @container exo-steps (width < 17rem) {
   :where([data-exo="steps"][data-count="2"] > [data-exo="step"]) {
     --exo-steps-compact: ;
-    --exo-steps-wide: initial;
   }
 }
 
 @container exo-steps (width < 25.5rem) {
   :where([data-exo="steps"][data-count="3"] > [data-exo="step"]) {
     --exo-steps-compact: ;
-    --exo-steps-wide: initial;
   }
 }
 
 @container exo-steps (width < 34rem) {
   :where([data-exo="steps"][data-count="4"] > [data-exo="step"]) {
     --exo-steps-compact: ;
-    --exo-steps-wide: initial;
   }
 }
 
 @container exo-steps (width < 42.5rem) {
   :where([data-exo="steps"][data-count="5"] > [data-exo="step"]) {
     --exo-steps-compact: ;
-    --exo-steps-wide: initial;
   }
 }
 
 @container exo-steps (width < 51rem) {
   :where([data-exo="steps"][data-count="6"] > [data-exo="step"]) {
     --exo-steps-compact: ;
-    --exo-steps-wide: initial;
   }
 }
 
 @container exo-steps (width < 59.5rem) {
   :where([data-exo="steps"][data-count="7"] > [data-exo="step"]) {
     --exo-steps-compact: ;
-    --exo-steps-wide: initial;
   }
 }
 
 @container exo-steps (width < 68rem) {
   :where([data-exo="steps"][data-count="8"] > [data-exo="step"]) {
     --exo-steps-compact: ;
-    --exo-steps-wide: initial;
   }
 }

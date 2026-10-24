@@ -1,57 +1,49 @@
+/*
+ * The dropdown menu is daisyUI 5's `dropdown-content menu` (components/
+ * dropdown.css and components/menu.css, v5.7.50): the panel is the popover
+ * (popover.css), the list is `.menu` with `p-2`, an item is a menu item, a
+ * label is `.menu-title`, a separator is the menu's empty `li`.
+ *
+ * Order follows daisyUI's layers: base (l1.l2.l3), then the active item
+ * (l1.l2), then hover and focus, then disabled.
+ *
+ *   dropdown-item data-variant  danger | error: a destructive item, which
+ *                               daisyUI's menu has no colour for
+ */
+
+/* --- menu (l1.l2.l3) --- */
+
 :where([data-exo="dropdown-menu"]) {
+  --menu-active-fg: var(--exo-neutral-content);
+  --menu-active-bg: var(--exo-neutral);
   display: flex;
   flex-direction: column;
-  gap: var(--exo-space-1);
+  flex-wrap: nowrap;
   min-width: 10rem;
-  padding: var(--exo-space-1);
+  padding: 0.5rem;
+  font-family: var(--exo-font);
+  font-size: 0.875rem;
 }
 
 :where([data-exo="dropdown-item"]) {
   display: flex;
   align-items: center;
-  gap: var(--exo-space-2);
-  padding: var(--exo-space-2) var(--exo-space-3);
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  color: var(--exo-foreground);
-  border-radius: calc(var(--exo-radius) - 2px);
-  cursor: pointer;
-  text-decoration: none;
-  border: none;
-  background: none;
+  gap: 0.5rem;
   width: 100%;
-  text-align: left;
-  transition: background var(--exo-duration) var(--exo-easing);
-}
-
-:where([data-exo="dropdown-item"]):hover,
-:where([data-exo="dropdown-item"]):focus {
-  background: var(--exo-muted);
-  outline: none;
-}
-
-/* Keyboard focus is a ring, not only the hover fill: --exo-muted on the
-   menu's --exo-card was 1.12:1 in a light theme and 1.08:1 in a dark one, so
-   the item the arrow keys reached looked like every other item (TRG-491). The
-   ring sits inside the item, because the menu's padding and the gap between
-   items are narrower than a ring drawn outside it. */
-:where([data-exo="dropdown-item"]):focus-visible {
-  outline: 2px solid var(--exo-ring);
-  outline-offset: -2px;
-}
-
-:where([data-exo="dropdown-item"][data-variant="danger"]) {
-  color: var(--exo-danger);
-}
-
-:where([data-exo="dropdown-item"][data-variant="danger"]):hover,
-:where([data-exo="dropdown-item"][data-variant="danger"]):focus {
-  background: color-mix(in oklch, var(--exo-danger) 10%, transparent);
-}
-
-:where([data-exo="dropdown-item"][data-disabled]) {
-  opacity: 0.5;
-  pointer-events: none;
+  padding: 0.375rem 0.75rem;
+  border: none;
+  border-radius: var(--exo-radius-field);
+  background: none;
+  color: var(--exo-base-content);
+  font-family: inherit;
+  font-size: inherit;
+  text-align: start;
+  text-decoration: none;
+  user-select: none;
+  cursor: pointer;
+  transition-property: color, background-color, box-shadow;
+  transition-duration: 0.2s;
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
 
 :where([data-exo="dropdown-item-icon"]) {
@@ -64,27 +56,137 @@
 }
 
 :where([data-exo="dropdown-item-shortcut"]) {
+  margin-inline-start: auto;
   font-family: var(--exo-font);
-  font-size: var(--exo-text-xs);
-  color: var(--exo-muted-foreground);
-  margin-left: auto;
-}
-
-:where([data-exo="dropdown-separator"]) {
-  height: 1px;
-  background: var(--exo-border);
-  margin: var(--exo-space-1) 0;
-}
-
-:where([data-exo="dropdown-label"]) {
-  padding: var(--exo-space-1) var(--exo-space-3);
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-xs);
-  font-weight: 600;
+  font-size: 0.75rem;
   color: var(--exo-muted-foreground);
 }
 
 :where([data-exo="dropdown-item-chevron"]) {
-  margin-left: auto;
+  display: flex;
+  margin-inline-start: auto;
   opacity: 0.5;
+}
+
+/* daisyUI `.menu-title`. */
+:where([data-exo="dropdown-label"]) {
+  padding: 0.5rem 0.75rem;
+  font-family: var(--exo-font);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: color-mix(in oklab, var(--exo-base-content) 40%, transparent);
+}
+
+/* daisyUI's empty `li`. */
+:where([data-exo="dropdown-separator"]) {
+  flex-shrink: 0;
+  height: 1px;
+  margin: 0.5rem 1rem;
+  background-color: var(--exo-base-content);
+  opacity: 0.1;
+}
+
+/*
+ * A destructive item. daisyUI's error colour is too light for text on the
+ * page (2.9:1 on white), so the text is it mixed half-and-half with the
+ * content colour, in oklab to keep the hue, as the alert does.
+ */
+:where([data-exo="dropdown-item"][data-variant="danger"], [data-exo="dropdown-item"][data-variant="error"]) {
+  color: color-mix(in oklab, var(--exo-error) 50%, var(--exo-base-content));
+}
+
+/* --- active (l1.l2) --- */
+
+:where(
+  [data-exo="dropdown-item"]:active,
+  [data-exo="dropdown-item"][aria-current]:not([aria-current="false"], [aria-current=""])
+) {
+  outline: none;
+  color: var(--menu-active-fg);
+  background-color: var(--menu-active-bg);
+  background-size: auto, calc(var(--exo-noise) * 100%);
+  background-image: none, var(--exo-fx-noise);
+}
+
+:where(
+  [data-exo="dropdown-item"][aria-current]:not([aria-current="false"], [aria-current=""]):not(:active)
+) {
+  box-shadow: 0 2px calc(var(--exo-depth) * 3px) -2px var(--menu-active-bg);
+}
+
+/* --- hover and focus (l1) --- */
+
+@media (hover: hover) {
+  :where([data-exo="dropdown-item"]:not(:active, [aria-current]:not([aria-current="false"], [aria-current=""])):hover) {
+    background-color: color-mix(in oklab, var(--exo-base-content) 10%, transparent);
+    outline: none;
+    box-shadow: var(--exo-shadow-menu);
+  }
+}
+
+/* The menu hook moves focus with the arrow keys, which is daisyUI's
+   `.menu-focus`. */
+:where([data-exo="dropdown-item"]:not(:active, [aria-current]:not([aria-current="false"], [aria-current=""])):focus) {
+  background-color: color-mix(in oklab, var(--exo-base-content) 10%, transparent);
+  outline: none;
+}
+
+:where([data-exo="dropdown-item"][data-variant="danger"]:not(:active):is(:hover, :focus)),
+:where([data-exo="dropdown-item"][data-variant="error"]:not(:active):is(:hover, :focus)) {
+  background-color: color-mix(in oklab, var(--exo-error) 10%, transparent);
+}
+
+/* Keyboard focus is a ring, not only the fill: daisyUI's 10% fill on
+   `base-100` is about 1.2:1, so the item the arrow keys reached looked like
+   every other item (TRG-491). The ring sits inside the item, because the
+   menu's padding is narrower than a ring drawn outside it. */
+:where([data-exo="dropdown-item"]):focus-visible {
+  outline: 2px solid var(--exo-base-content);
+  outline-offset: -2px;
+}
+
+/* --- disabled (l1.l2.l3, after the states it cancels) --- */
+
+:where([data-exo="dropdown-item"][data-disabled], [data-exo="dropdown-item"]:disabled) {
+  color: color-mix(in oklab, var(--exo-base-content) 20%, transparent);
+  pointer-events: none;
+}
+
+/* --- the deprecated `dropdown/1`: daisyUI `.dropdown` with `.dropdown-content` --- */
+
+:where([data-exo="dropdown"]) {
+  position: relative;
+  display: inline-block;
+}
+
+:where([data-exo="dropdown"] > [data-exo="dropdown-menu"]) {
+  position: absolute;
+  top: 100%;
+  z-index: 999;
+  background-color: var(--exo-base-100);
+  color: var(--exo-base-content);
+  border-radius: var(--exo-radius-box);
+  box-shadow: var(--exo-shadow-sm);
+  transform-origin: top;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :where([data-exo="dropdown"] > [data-exo="dropdown-menu"]) {
+    animation: exo-dropdown 0.2s;
+  }
+}
+
+/* `bottom-end` is daisyUI's `dropdown-end`, `bottom-start` its default. */
+:where([data-exo="dropdown"] > [data-exo="dropdown-menu"][data-position="bottom-end"]) {
+  inset-inline-end: 0;
+}
+
+:where([data-exo="dropdown"] > [data-exo="dropdown-menu"][data-position="bottom-start"]) {
+  inset-inline-start: 0;
+}
+
+@keyframes exo-dropdown {
+  0% {
+    opacity: 0;
+  }
 }

@@ -189,17 +189,25 @@ server-filter [combobox guide](docs/guides/combobox.md), and the
 
 ## Theme And CSS Modes
 
-All colors, borders, shadows and radii are defined as CSS custom properties on
-`:root` in `exo.tokens.css`. Override them anywhere downstream to restyle
-without touching ExoUI:
+The theme is daisyUI 5's: the same tokens under `--exo-` (`--color-primary`
+is `--exo-primary`, `--border` is `--exo-border-width`), defined on `:root` in
+`exo.tokens.css`. Override them anywhere downstream to restyle without
+touching ExoUI:
 
 ```css
 :root {
   --exo-primary: oklch(62% 0.19 155);       /* brand green */
-  --exo-primary-foreground: oklch(100% 0 0);
-  --exo-radius: 0.25rem;
+  --exo-primary-content: oklch(100% 0 0);   /* text on it */
+  --exo-radius-field: 0.25rem;              /* buttons, inputs, tabs */
+  --exo-size-field: 0.2rem;                 /* 32px controls at md */
+  --exo-depth: 0;                           /* flat, no 3D shadows */
 }
 ```
+
+Make a whole theme in the storybook's theme generator
+(`/theme-generator`, after daisyUI's) and paste its CSS. All 35 daisyUI
+themes ship in `exo.themes.css`: import it after `exo.css` and set
+`data-theme="cupcake"` (or any other) on an ancestor.
 
 Dark mode is activated by setting `data-theme="dark"` (or the class
 `.exo-dark`) on any ancestor — typically `<html>`. The `<.theme_toggle />`

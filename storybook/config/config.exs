@@ -10,7 +10,7 @@ config :exo_ui_storybook, ExoUI.Storybook.Web.Endpoint,
 config :esbuild,
   version: "0.24.2",
   storybook: [
-    args: ~w(js/storybook.js --bundle --target=es2020 --outdir=../priv/static/assets),
+    args: ~w(js/storybook.js js/theme_generator.js --bundle --target=es2020 --outdir=../priv/static/assets),
     cd: Path.expand("../assets", __DIR__),
     env: %{"NODE_PATH" => Path.expand("../../deps", __DIR__)}
   ]

@@ -1,76 +1,156 @@
+/*
+ * daisyUI 5 `.alert` (components/alert.css, v5.7.50), value for value.
+ *
+ * Order follows daisyUI's layers: base (l1.l2.l3), kinds (l1.l2), then the
+ * appearances (l1), which beat the kind colours.
+ *
+ *   data-kind        info | success | warning | error (the colour)
+ *   data-appearance  soft | outline | dash; none is daisyUI's solid alert
+ */
+
+/* --- base (l1.l2.l3) --- */
+
 :where([data-exo="alert"]) {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--exo-space-3);
-  padding: var(--exo-space-3) var(--exo-space-4);
-  border-radius: var(--exo-radius);
+  --alert-border-color: var(--exo-base-200);
+  display: grid;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--exo-radius-box);
+  border-width: var(--exo-border-width);
+  border-style: solid;
+  border-color: var(--alert-border-color, var(--exo-base-200));
+  color: var(--exo-base-content);
+  background-color: var(--alert-color, var(--exo-base-200));
+  justify-content: start;
+  justify-items: start;
+  grid-auto-flow: column;
+  grid-template-columns: auto;
+  text-align: start;
   font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  border: 1px solid transparent;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  background-size: auto, calc(var(--exo-noise) * 33%);
+  background-image: none, var(--exo-fx-noise);
+  box-shadow:
+    0 3px 0 -2px oklch(100% 0 0 / calc(var(--exo-depth) * 0.08)) inset,
+    0 1px
+      color-mix(
+        in oklab,
+        color-mix(in oklab, #000 20%, var(--alert-color, var(--exo-base-200)))
+          calc(var(--exo-depth) * 20%),
+        #0000
+      ),
+    0 4px 3px -2px oklch(0% 0 0 / calc(var(--exo-depth) * 0.08));
+}
+
+:where([data-exo="alert"]:has(> :nth-child(2))) {
+  grid-template-columns: auto minmax(auto, 1fr);
+}
+
+/* daisyUI's markup always opens with an icon, so its second column is the
+   text. ExoUI's icon is optional: without it the text is the first child and
+   takes the remaining width, so the action still sits at the end. */
+:where([data-exo="alert"]:has(> [data-exo="alert-content"]:first-child):has(> :nth-child(2))) {
+  grid-template-columns: minmax(auto, 1fr);
 }
 
 :where([data-exo="alert-icon"]) {
   display: inline-flex;
   flex-shrink: 0;
-  margin-top: 0.125rem;
 }
 
 :where([data-exo="alert-content"]) {
-  flex: 1;
   min-width: 0;
 }
 
 :where([data-exo="alert-action"]) {
   display: flex;
   align-items: center;
-  flex-shrink: 0;
-  gap: var(--exo-space-2);
-  margin-left: auto;
-}
-
-/*
- * Text is the kind colour mixed half-and-half with the foreground, not the
- * kind colour itself. On its own 10% tint the pure colour fails WCAG AA for
- * body text: warning measured 1.9:1 in the light theme, error 2.9:1 in the
- * dark one. The mix follows the theme (the foreground flips), so one rule
- * covers both, and stays above 4.5:1 for every kind on card and page
- * backgrounds. test/browser/data_feedback.spec.js measures it.
- *
- * The text mix is in oklab, not oklch. oklch interpolates the hue angle, and
- * the foreground's hue pulls the text halfway to it even at chroma 0 (Chromium
- * takes the written hue): with the default oklch(15% 0 0) info text came out
- * purple (hue 305 instead of 250); with a tinted foreground such as trg24's
- * oklch(20% 0.006 106) error text was brown (66 instead of 27). oklab has no
- * angle, so the text stays a darker or lighter shade of the kind colour. The
- * tint and border mix with transparent, which keeps the kind's hue, so oklch
- * is safe there.
- */
-:where([data-exo="alert"][data-kind="info"]) {
-  background: color-mix(in oklch, var(--exo-info) 10%, transparent);
-  color: color-mix(in oklab, var(--exo-info) 50%, var(--exo-foreground));
-  border-color: color-mix(in oklch, var(--exo-info) 30%, transparent);
-}
-
-:where([data-exo="alert"][data-kind="success"]) {
-  background: color-mix(in oklch, var(--exo-success) 10%, transparent);
-  color: color-mix(in oklab, var(--exo-success) 50%, var(--exo-foreground));
-  border-color: color-mix(in oklch, var(--exo-success) 30%, transparent);
-}
-
-:where([data-exo="alert"][data-kind="warning"]) {
-  background: color-mix(in oklch, var(--exo-warning) 10%, transparent);
-  color: color-mix(in oklab, var(--exo-warning) 50%, var(--exo-foreground));
-  border-color: color-mix(in oklch, var(--exo-warning) 30%, transparent);
-}
-
-:where([data-exo="alert"][data-kind="error"]) {
-  background: color-mix(in oklch, var(--exo-danger) 10%, transparent);
-  color: color-mix(in oklab, var(--exo-danger) 50%, var(--exo-foreground));
-  border-color: color-mix(in oklch, var(--exo-danger) 30%, transparent);
+  gap: 0.5rem;
 }
 
 :where([data-exo="alert-title"]) {
   font-weight: 600;
-  margin: 0 0 var(--exo-space-1) 0;
+  margin: 0 0 0.25rem 0;
+}
+
+/* --- kinds (l1.l2) --- */
+
+:where([data-exo="alert"][data-kind="info"]) {
+  color: var(--exo-info-content);
+  --alert-border-color: var(--exo-info);
+  --alert-color: var(--exo-info);
+}
+
+:where([data-exo="alert"][data-kind="success"]) {
+  color: var(--exo-success-content);
+  --alert-border-color: var(--exo-success);
+  --alert-color: var(--exo-success);
+}
+
+:where([data-exo="alert"][data-kind="warning"]) {
+  color: var(--exo-warning-content);
+  --alert-border-color: var(--exo-warning);
+  --alert-color: var(--exo-warning);
+}
+
+:where([data-exo="alert"][data-kind="error"]) {
+  color: var(--exo-error-content);
+  --alert-border-color: var(--exo-error);
+  --alert-color: var(--exo-error);
+}
+
+/* --- appearances (l1) --- */
+
+/*
+ * daisyUI paints the text of soft, outline and dash in the kind colour itself.
+ * On an 8% tint or on the page that fails WCAG AA for body text (warning
+ * measured 1.9:1 in the light theme, error 2.9:1 in the dark one), so the
+ * text here is the kind colour mixed half-and-half with the content colour.
+ * The mix follows the theme, and stays above 4.5:1 for every kind.
+ * test/browser/data_feedback.spec.js measures it.
+ *
+ * The mix is in oklab, not oklch: oklch interpolates the hue angle, and the
+ * content colour's hue pulls the text towards it even at chroma 0 (info came
+ * out purple, a tinted content colour turned error brown, TRG-346). oklab has
+ * no angle, so the text stays a darker or lighter shade of the kind colour.
+ */
+/* The text mixes with base-content's lightness at chroma 0: daisyUI's dark
+   base-content is bluish (C 0.029), and a mix with it pulled success text
+   11 degrees towards blue (data_feedback.spec.js). */
+:where([data-exo="alert"][data-appearance="soft"]) {
+  color: color-mix(
+    in oklab,
+    var(--alert-color, var(--exo-base-content)) 50%,
+    oklch(from var(--exo-base-content) l 0 0)
+  );
+  background: color-mix(
+    in oklab,
+    var(--alert-color, var(--exo-base-content)) 8%,
+    var(--exo-base-100)
+  );
+  --alert-border-color: color-mix(
+    in oklab,
+    var(--alert-color, var(--exo-base-content)) 10%,
+    var(--exo-base-100)
+  );
+  box-shadow: none;
+  background-image: none;
+}
+
+:where([data-exo="alert"][data-appearance="outline"]),
+:where([data-exo="alert"][data-appearance="dash"]) {
+  background-color: transparent;
+  color: color-mix(
+    in oklab,
+    var(--alert-color, var(--exo-base-content)) 50%,
+    oklch(from var(--exo-base-content) l 0 0)
+  );
+  box-shadow: none;
+  background-image: none;
+}
+
+:where([data-exo="alert"][data-appearance="dash"]) {
+  border-style: dashed;
 }

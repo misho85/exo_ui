@@ -1,11 +1,44 @@
+/*
+ * daisyUI 5 `.collapse` (components/collapse.css, v5.7.50), value for value.
+ *
+ * The trigger is `.collapse-title` (1rem padding, 3rem at the end for the
+ * icon), the content is `.collapse-content` (1rem at the sides, 1rem at the
+ * bottom when open), and the rows grow from `0fr` to `1fr` over 0.2s. The
+ * checkbox that holds the state is visually hidden; daisyUI lays it over the
+ * title, ExoUI's trigger is a real button that toggles it. Closed content is
+ * `inert` from the component, which is what daisyUI's
+ * `content-visibility: hidden` does for it.
+ *
+ *   data-appearance  arrow | plus (daisyUI's `collapse-arrow`, `collapse-plus`)
+ */
+
+/* --- collapse (l1.l2.l3) --- */
+
 :where([data-exo="collapsible"]) {
   display: grid;
+  position: relative;
+  width: 100%;
+  border-radius: var(--exo-radius-box, 1rem);
   grid-template-rows: max-content 0fr;
-  transition: grid-template-rows 250ms var(--exo-easing);
+  grid-template-columns: minmax(0, 1fr);
+  isolation: isolate;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :where([data-exo="collapsible"]) {
+    transition: grid-template-rows 0.2s;
+  }
 }
 
 :where([data-exo="collapsible"]:has(> [data-exo="collapsible-state"]:checked)) {
   grid-template-rows: max-content 1fr;
+}
+
+:where([data-exo="collapsible"]:has(> [data-exo="collapsible-trigger"]:focus-visible)) {
+  outline-color: var(--exo-base-content);
+  outline-style: solid;
+  outline-width: 2px;
+  outline-offset: 2px;
 }
 
 /* --- Hidden checkbox (visually hidden, drives CSS state) --- */
@@ -22,42 +55,100 @@
   border: 0;
 }
 
-/* --- Trigger --- */
+/* --- title --- */
 
 :where([data-exo="collapsible-trigger"]) {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--exo-space-2);
-  width: fit-content;
-  padding: var(--exo-space-1) var(--exo-space-3);
+  grid-column-start: 1;
+  grid-row-start: 1;
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: 1lh;
+  padding: 1rem;
+  padding-inline-end: 3rem;
+  border: 0;
   background: transparent;
-  color: var(--exo-foreground);
-  border: 1px solid var(--exo-border);
-  border-radius: var(--exo-radius);
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
   font-weight: 600;
+  line-height: inherit;
+  text-align: start;
   cursor: pointer;
   user-select: none;
-  transition:
-    background var(--exo-duration) var(--exo-easing),
-    color var(--exo-duration) var(--exo-easing),
-    border-color var(--exo-duration) var(--exo-easing);
+  outline: none;
+  transition: background-color 0.2s ease-out;
 }
 
-:where([data-exo="collapsible-trigger"]):hover {
-  background: var(--exo-muted);
-}
-
-:where([data-exo="collapsible-trigger"]):focus-visible {
-  outline: 2px solid var(--exo-ring);
-  outline-offset: 2px;
-}
-
-/* --- Content (clipping container) --- */
+/* --- content --- */
 
 :where([data-exo="collapsible-content"]) {
-  overflow: hidden;
+  grid-column-start: 1;
+  grid-row-start: 2;
   min-height: 0;
+  overflow: clip;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :where([data-exo="collapsible-content"]) {
+    transition:
+      min-height 0.2s ease-out allow-discrete,
+      padding 0.1s ease-out 20ms,
+      background-color 0.2s ease-out;
+  }
+}
+
+:where([data-exo="collapsible"]:has(> [data-exo="collapsible-state"]:checked) > [data-exo="collapsible-content"]) {
+  padding-bottom: 1rem;
+}
+
+/* --- arrow and plus (l1.l2) --- */
+
+:where([data-exo="collapsible"][data-appearance="arrow"] > [data-exo="collapsible-trigger"])::after {
+  content: "";
+  position: absolute;
+  display: block;
+  top: 50%;
+  inset-inline-end: 1.4rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  transform: translateY(-100%) rotate(45deg);
+  transform-origin: 75% 75%;
+  box-shadow: 2px 2px;
+  pointer-events: none;
+}
+
+:where([data-exo="collapsible"][data-appearance="plus"] > [data-exo="collapsible-trigger"])::after {
+  content: "+";
+  position: absolute;
+  display: block;
+  top: 0.9rem;
+  inset-inline-end: 1.4rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :where([data-exo="collapsible"][data-appearance="arrow"] > [data-exo="collapsible-trigger"])::after {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 0.2s;
+  }
+
+  :where([data-exo="collapsible"][data-appearance="arrow"]:has(> [data-exo="collapsible-state"]:checked) > [data-exo="collapsible-trigger"])::after {
+    transform: translateY(-50%) rotate(225deg);
+  }
+
+  :where([data-exo="collapsible"][data-appearance="plus"] > [data-exo="collapsible-trigger"])::after {
+    transition-property: all;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+:where([data-exo="collapsible"][data-appearance="plus"]:has(> [data-exo="collapsible-state"]:checked) > [data-exo="collapsible-trigger"])::after {
+  content: "\2212";
 }

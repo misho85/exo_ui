@@ -3,7 +3,7 @@ const SKIP_DELAY_MS = 300
 const hasAnchorPos =
   typeof CSS !== 'undefined' && CSS.supports('position-area', 'top')
 
-const GAP = 4 // matches var(--exo-space-1)
+const GAP = 8 // matches the 0.5rem gap in tooltip.css (daisyUI)
 
 const ExoTooltip = {
   mounted() { this._bind() },

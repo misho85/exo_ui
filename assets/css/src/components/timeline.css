@@ -1,83 +1,156 @@
+/*
+ * daisyUI 5 `.timeline timeline-vertical timeline-compact timeline-snap-icon`
+ * (components/timeline.css, v5.7.50): every event is a grid whose middle
+ * column holds the marker (`timeline-middle`, 1.25rem as daisyUI's icon), the
+ * connectors are `hr`s on `base-300`, 0.25rem wide with `radius-selector` ends
+ * where they meet the marker, and the content is `timeline-end`. The marker
+ * snaps to the top of its event (0.5rem above it, the connector from the
+ * previous event).
+ *
+ * The connector into an event is the event's `::before`; the connector out of
+ * it is `timeline-connector`.
+ *
+ *   data-variant  (on an event) neutral | primary | secondary | accent | info |
+ *                 success | warning | error; `danger` is `error`
+ */
+
 :where([data-exo="timeline"]) {
+  position: relative;
   display: flex;
   flex-direction: column;
-  position: relative;
   list-style: none;
   padding: 0;
   margin: 0;
+  font-family: var(--exo-font);
 }
 
 :where([data-exo="timeline-event"]) {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0 var(--exo-space-4);
-  padding-bottom: var(--exo-space-6);
+  --timeline-color: var(--exo-base-300);
   position: relative;
+  display: grid;
+  flex-shrink: 0;
+  align-items: center;
+  justify-items: center;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: 0.5rem auto minmax(0, 1fr);
 }
 
-:where([data-exo="timeline-event"]:last-child) {
-  padding-bottom: 0;
+/* `hr:first-child`, from the previous event down to the marker. */
+:where([data-exo="timeline-event"] + [data-exo="timeline-event"])::before {
+  content: "";
+  grid-column-start: 1;
+  grid-row-start: 1;
+  align-self: stretch;
+  width: 0.25rem;
+  height: 100%;
+  background-color: var(--exo-base-300);
+  border-end-start-radius: var(--exo-radius-selector);
+  border-end-end-radius: var(--exo-radius-selector);
 }
 
 :where([data-exo="timeline-indicator"]) {
-  grid-column: 1;
-  grid-row: 1;
-  width: 0.75rem;
-  height: 0.75rem;
-  border-radius: 50%;
-  background: var(--exo-border);
-  border: 2px solid var(--exo-background);
-  outline: 2px solid var(--exo-border);
-  margin-top: 0.25rem;
+  position: relative;
   z-index: 1;
+  grid-column-start: 1;
+  grid-row-start: 2;
+  box-sizing: border-box;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 9999px;
+  background-color: var(--timeline-color);
 }
 
-:where([data-exo="timeline-event"][data-variant="primary"] [data-exo="timeline-indicator"]) {
-  background: var(--exo-primary);
-  outline-color: var(--exo-primary);
-}
-
-:where([data-exo="timeline-event"][aria-current="step"] [data-exo="timeline-indicator"]) {
-  background: var(--exo-success);
-  outline-color: var(--exo-success);
-}
-
+/* `hr:last-child`, from the marker down to the next event. */
 :where([data-exo="timeline-connector"]) {
-  grid-column: 1;
-  grid-row: 2;
-  width: 2px;
-  background: var(--exo-border);
-  justify-self: center;
-  min-height: var(--exo-space-4);
+  grid-column-start: 1;
+  grid-row-start: 3;
+  align-self: stretch;
+  width: 0.25rem;
+  min-height: 1rem;
+  background-color: var(--exo-base-300);
+  border-start-start-radius: var(--exo-radius-selector);
+  border-start-end-radius: var(--exo-radius-selector);
 }
 
 :where([data-exo="timeline-event"]:last-child [data-exo="timeline-connector"]) {
   display: none;
 }
 
+@media print, (forced-colors: active) {
+  :where([data-exo="timeline-connector"]),
+  :where([data-exo="timeline-event"] + [data-exo="timeline-event"])::before {
+    border: 0.1px solid var(--exo-base-300);
+  }
+}
+
+/* `timeline-end` of a compact vertical timeline; the space under an event is
+   daisyUI's documentation's `mb-10`. */
 :where([data-exo="timeline-body"]) {
-  grid-column: 2;
-  grid-row: 1 / span 2;
+  grid-column: 2 / 3;
+  grid-row: 1 / 4;
+  align-self: center;
+  justify-self: start;
+  margin: 0.25rem 0.25rem 2.5rem;
+}
+
+:where([data-exo="timeline-event"]:last-child [data-exo="timeline-body"]) {
+  margin-bottom: 0.25rem;
 }
 
 :where([data-exo="timeline-title"]) {
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
+  font-size: 0.875rem;
   font-weight: 500;
-  color: var(--exo-foreground);
+  color: var(--exo-base-content);
   margin: 0;
 }
 
 :where([data-exo="timeline-time"]) {
-  font-family: var(--exo-font);
   font-size: 0.75rem;
-  color: var(--exo-muted-foreground);
+  color: color-mix(in oklab, var(--exo-base-content) 60%, transparent);
 }
 
 :where([data-exo="timeline-content"]) {
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  color: var(--exo-muted-foreground);
-  margin-top: var(--exo-space-1);
+  font-size: 0.875rem;
   line-height: 1.5;
+  color: color-mix(in oklab, var(--exo-base-content) 60%, transparent);
+  margin-top: 0.25rem;
+}
+
+/* --- colours (l1.l2) --- */
+
+:where([data-exo="timeline-event"][data-variant="neutral"]) {
+  --timeline-color: var(--exo-neutral);
+}
+
+:where([data-exo="timeline-event"][data-variant="primary"]) {
+  --timeline-color: var(--exo-primary);
+}
+
+:where([data-exo="timeline-event"][data-variant="secondary"]) {
+  --timeline-color: var(--exo-secondary);
+}
+
+:where([data-exo="timeline-event"][data-variant="accent"]) {
+  --timeline-color: var(--exo-accent);
+}
+
+:where([data-exo="timeline-event"][data-variant="info"]) {
+  --timeline-color: var(--exo-info);
+}
+
+:where([data-exo="timeline-event"][data-variant="success"]) {
+  --timeline-color: var(--exo-success);
+}
+
+:where([data-exo="timeline-event"][data-variant="warning"]) {
+  --timeline-color: var(--exo-warning);
+}
+
+:where([data-exo="timeline-event"][data-variant="error"], [data-exo="timeline-event"][data-variant="danger"]) {
+  --timeline-color: var(--exo-error);
+}
+
+/* The current event is marked in the success colour, as before the port. */
+:where([data-exo="timeline-event"][aria-current="step"]) {
+  --timeline-color: var(--exo-success);
 }

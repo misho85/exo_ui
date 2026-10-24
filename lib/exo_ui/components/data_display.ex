@@ -43,6 +43,17 @@ defmodule ExoUI.Components.DataDisplay do
     plain list.
     """
 
+  attr :size, :string,
+    values: [nil | ~w(xs sm md lg xl)],
+    default: nil,
+    doc: "daisyUI `table-*` size; `nil` is `md`"
+
+  attr :zebra, :boolean, default: false, doc: "every even row on `base-200` (`table-zebra`)"
+
+  attr :pin_rows, :boolean,
+    default: false,
+    doc: "the header row sticks to the top of the scrolling wrapper (`table-pin-rows`)"
+
   attr :loading, :boolean, default: false
   attr :loading_label, :string, default: "Loading..."
   attr :actions_label, :string, default: "Actions"
@@ -101,7 +112,12 @@ defmodule ExoUI.Components.DataDisplay do
 
     ~H"""
     <div data-exo="table-wrapper" phx-hook="ExoTable" id={"#{@id}-wrapper"} class={@class} {@rest}>
-      <table data-exo="table">
+      <table
+        data-exo="table"
+        data-size={@size}
+        data-zebra={@zebra && ""}
+        data-pin-rows={@pin_rows && ""}
+      >
         <caption :if={@caption} data-exo="table-caption">{@caption}</caption>
         <thead>
           <tr :if={@head_row != []} data-exo="table-head-row">{render_slot(@head_row)}</tr>
@@ -228,6 +244,17 @@ defmodule ExoUI.Components.DataDisplay do
   """
   attr :title, :string, default: nil
   attr :class, :any, default: nil
+
+  attr :appearance, :string,
+    values: [nil | ~w(border dash)],
+    default: nil,
+    doc: "daisyUI `card-border` or `card-dash`; `nil` is a card with `shadow-sm`"
+
+  attr :size, :string,
+    values: [nil | ~w(xs sm md lg xl)],
+    default: nil,
+    doc: "daisyUI `card-*` size; `nil` is `md`"
+
   attr :collapsible, :boolean, default: false
   attr :summary, :string, default: nil, doc: "the state shown in the header of a collapsible card"
   attr :open, :boolean, default: false, doc: "a collapsible card renders open"
@@ -240,6 +267,8 @@ defmodule ExoUI.Components.DataDisplay do
     <details
       data-exo="card"
       data-collapsible
+      data-appearance={@appearance}
+      data-size={@size}
       open={@open}
       phx-mounted={JS.ignore_attributes(["open"])}
       class={@class}
@@ -261,7 +290,7 @@ defmodule ExoUI.Components.DataDisplay do
 
   def content_card(assigns) do
     ~H"""
-    <div data-exo="card" class={@class} {@rest}>
+    <div data-exo="card" data-appearance={@appearance} data-size={@size} class={@class} {@rest}>
       <div :if={@title || @action != []} data-exo="card-header">
         <h3 :if={@title} data-exo="card-title">{@title}</h3>
         <div :if={@action != []} data-exo="card-action">{render_slot(@action)}</div>
@@ -570,6 +599,17 @@ defmodule ExoUI.Components.DataDisplay do
   attr :aria_label, :string, default: "Tabs"
   attr :orientation, :string, values: ~w(horizontal vertical), default: "horizontal"
   attr :activation, :string, values: ~w(manual automatic), default: "manual"
+
+  attr :appearance, :string,
+    values: [nil | ~w(border lift box)],
+    default: nil,
+    doc: "daisyUI `tabs-border`, `tabs-lift` or `tabs-box`; `nil` is `border`"
+
+  attr :size, :string,
+    values: [nil | ~w(xs sm md lg xl)],
+    default: nil,
+    doc: "daisyUI `tabs-*` size; `nil` is `md`"
+
   attr :target, :any, default: nil, doc: "optional phx-target for click-based tabs"
   attr :class, :any, default: nil
   attr :rest, :global
@@ -601,6 +641,8 @@ defmodule ExoUI.Components.DataDisplay do
       data-exo="tabs"
       data-orientation={@orientation}
       data-activation={@activation}
+      data-appearance={@appearance}
+      data-size={@size}
       role="tablist"
       aria-label={@aria_label}
       aria-orientation={@orientation == "vertical" && "vertical"}
@@ -723,6 +765,12 @@ defmodule ExoUI.Components.DataDisplay do
       "visually hidden status announced when the page changes, `%{page}` and `%{total}` replaced"
 
   attr :aria_label, :string, default: "Pagination"
+
+  attr :size, :string,
+    values: [nil | ~w(xs sm md lg xl)],
+    default: nil,
+    doc: "the size of the buttons, as `button/1`; `nil` is `md`"
+
   attr :class, :any, default: nil
   attr :rest, :global
 
@@ -742,6 +790,7 @@ defmodule ExoUI.Components.DataDisplay do
     <nav
       :if={@total_pages > 1}
       data-exo="pagination"
+      data-size={@size}
       aria-label={@aria_label}
       class={@class}
       {@rest}
@@ -893,12 +942,21 @@ defmodule ExoUI.Components.DataDisplay do
 
   attr :class, :any, default: nil
   attr :orientation, :string, values: ~w(horizontal vertical), default: "horizontal"
+
+  attr :variant, :string,
+    values: [nil | ~w(neutral primary secondary accent info success warning error danger)],
+    default: nil,
+    doc: "colour of the reached steps (daisyUI `step-*`); `nil` is `primary`"
+
   attr :rest, :global
 
   slot :step, required: true do
     attr :title, :string, required: true
     attr :status, :string, values: ~w(complete current upcoming)
     attr :description, :string
+
+    attr :variant, :string,
+      values: ~w(neutral primary secondary accent info success warning error danger)
   end
 
   # A screen reader reads each step from its content: the title, the status
@@ -925,6 +983,7 @@ defmodule ExoUI.Components.DataDisplay do
     <ol
       data-exo="steps"
       data-orientation={@orientation}
+      data-variant={@variant}
       data-count={length(@step)}
       role="list"
       aria-label={@aria_label}
@@ -935,6 +994,7 @@ defmodule ExoUI.Components.DataDisplay do
         :for={{step, idx} <- Enum.with_index(@step)}
         data-exo="step"
         data-status={step[:status] || "upcoming"}
+        data-variant={step[:variant]}
         aria-current={step[:status] == "current" && "step"}
       >
         <div data-exo="step-indicator" aria-hidden="true">
@@ -1176,6 +1236,15 @@ defmodule ExoUI.Components.DataDisplay do
 
   @doc "Renders a chat message bubble with sender, timestamp, and avatar."
   attr :side, :string, values: ~w(start end), default: "start"
+
+  attr :variant, :string,
+    values: [nil | ~w(neutral primary secondary accent info success warning error danger)],
+    default: nil,
+    doc: """
+    Bubble colour (daisyUI `chat-bubble-*`). `nil` is `base-300` at the start
+    and `primary` at the end; `danger` is `error`.
+    """
+
   attr :class, :any, default: nil
   attr :rest, :global
   slot :avatar
@@ -1185,7 +1254,7 @@ defmodule ExoUI.Components.DataDisplay do
 
   def chat_bubble(assigns) do
     ~H"""
-    <div data-exo="chat-bubble" data-side={@side} class={@class} {@rest}>
+    <div data-exo="chat-bubble" data-side={@side} data-variant={@variant} class={@class} {@rest}>
       <div :if={@avatar != []} data-exo="chat-bubble-avatar">{render_slot(@avatar)}</div>
       <div data-exo="chat-bubble-message">
         <div :if={@header != []} data-exo="chat-bubble-header">{render_slot(@header)}</div>

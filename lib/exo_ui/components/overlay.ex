@@ -330,6 +330,12 @@ defmodule ExoUI.Components.Overlay do
   attr :align, :string, values: ~w(start center end), default: "center"
   attr :delay, :integer, default: 500
   attr :arrow, :boolean, default: true
+
+  attr :variant, :string,
+    values: [nil | ~w(neutral primary secondary accent info success warning error danger)],
+    default: nil,
+    doc: "Colour of the tooltip, daisyUI's `tooltip-*`. `nil` is `neutral`; `danger` is `error`."
+
   attr :class, :any, default: nil
   attr :rest, :global
 
@@ -353,6 +359,7 @@ defmodule ExoUI.Components.Overlay do
         data-side={@side}
         data-align={@align}
         data-arrow={@arrow && ""}
+        data-variant={@variant}
         data-delay={@delay}
         role="tooltip"
         class={@class}
@@ -368,6 +375,12 @@ defmodule ExoUI.Components.Overlay do
   @doc "Renders a collapsible section with a toggle trigger."
   attr :id, :string, required: true
   attr :open, :boolean, default: false
+
+  attr :appearance, :string,
+    values: [nil | ~w(arrow plus)],
+    default: nil,
+    doc: "Icon at the end of the trigger: daisyUI's `collapse-arrow` or `collapse-plus`."
+
   attr :class, :any, default: nil
   attr :rest, :global
   slot :trigger, required: true
@@ -375,7 +388,14 @@ defmodule ExoUI.Components.Overlay do
 
   def collapsible(assigns) do
     ~H"""
-    <div data-exo="collapsible" id={@id} class={@class} phx-hook="ExoCollapsible" {@rest}>
+    <div
+      data-exo="collapsible"
+      data-appearance={@appearance}
+      id={@id}
+      class={@class}
+      phx-hook="ExoCollapsible"
+      {@rest}
+    >
       <input
         type="checkbox"
         id={"#{@id}-state"}

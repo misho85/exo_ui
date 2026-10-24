@@ -91,8 +91,10 @@ test.describe("navigation and progress components", () => {
     const canvas = story(page);
     const currentStep = canvas.locator('[data-exo="step"][aria-current="step"]').first();
     const firstStep = canvas.locator('[data-exo="step"]').first();
-    const firstStepConnector = await firstStep.evaluate((node) => {
-      const styles = window.getComputedStyle(node, "::after");
+    // daisyUI draws the connector into a step as that step's ::before, from
+    // the previous step's centre, so the first step has none.
+    const firstStepConnector = await canvas.locator('[data-exo="step"]').nth(1).evaluate((node) => {
+      const styles = window.getComputedStyle(node, "::before");
 
       return {
         content: styles.content,
@@ -193,7 +195,7 @@ test.describe("navigation and progress components", () => {
 
             for (const [name, value] of [
               ["--exo-primary", primary],
-              ["--exo-primary-foreground", foreground]
+              ["--exo-primary-content", foreground]
             ]) {
               if (value) wrapper.style.setProperty(name, value);
               else wrapper.style.removeProperty(name);
@@ -304,8 +306,10 @@ test.describe("navigation and progress components", () => {
     expect(narrow.shown[0].left).toBe(0);
     expect(narrow.shown[0].top + 20).toBeLessThanOrEqual(narrow.height);
     expect(narrow.descriptions).toBe(0);
-    expect(narrow.firstCircleLeft).toBe(0);
-    expect(Math.abs(narrow.lastCircleRight)).toBeLessThan(1);
+    // daisyUI centres each circle in an equal column: the row spans the list
+    // and is symmetric, the first circle as far from the start as the last
+    // from the end.
+    expect(Math.abs(narrow.firstCircleLeft - narrow.lastCircleRight)).toBeLessThan(1);
     expect(narrow.verticalTitles).toBe(4);
 
     // Hidden is not gone: a screen reader still reads every step with its
@@ -327,7 +331,9 @@ test.describe("navigation and progress components", () => {
     expect(wide.scrollWidth).toBeLessThanOrEqual(wide.clientWidth);
     expect(wide.shown.map(({ title }) => title)).toEqual(["Account", "Profile", "Review"]);
     expect(wide.descriptions).toBe(3);
-    expect(wide.height).toBeLessThan(narrow.height);
+    // daisyUI stacks title and description under each circle, so the full
+    // list is the taller one; the compact list keeps a single title line.
+    expect(narrow.height).toBeLessThan(wide.height);
   });
 
   test("progress components expose bounded values and accessible names", async ({ page }) => {

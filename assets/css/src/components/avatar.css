@@ -1,23 +1,67 @@
+/*
+ * daisyUI 5 `.avatar` and `.avatar-placeholder` (components/avatar.css,
+ * v5.7.50). ExoUI's avatar is one element where daisyUI nests the round box
+ * in a wrapper, so the wrapper's rules and the box's rules sit on the same
+ * element. daisyUI leaves the size, the round corners and the placeholder's
+ * colours to utility classes; the values here are the ones its documentation
+ * uses: `rounded-full`, `bg-neutral text-neutral-content`, and the initials'
+ * text size for each width (w-8 text-xs, w-12 text-base, w-16 text-xl).
+ *
+ *   data-size  xs | sm | md | lg | xl (1.5, 2, 2.5, 3, 4rem)
+ */
+
 :where([data-exo="avatar"]) {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 9999px;
-  overflow: hidden;
-  background: var(--exo-muted);
-  color: var(--exo-muted-foreground);
-  font-family: var(--exo-font);
-  font-weight: 600;
+  vertical-align: middle;
+  align-self: center;
   flex-shrink: 0;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 9999px;
+  background-color: var(--exo-neutral);
+  color: var(--exo-neutral-content);
+  font-family: var(--exo-font);
 }
 
-:where([data-exo="avatar"][data-size="xs"]) { width: 1.5rem; height: 1.5rem; font-size: 0.5rem; }
-:where([data-exo="avatar"][data-size="sm"]) { width: 2rem; height: 2rem; font-size: 0.625rem; }
-:where([data-exo="avatar"][data-size="md"]) { width: 2.5rem; height: 2.5rem; font-size: var(--exo-text-xs); }
-:where([data-exo="avatar"][data-size="lg"]) { width: 3rem; height: 3rem; font-size: var(--exo-text-sm); }
-:where([data-exo="avatar"][data-size="xl"]) { width: 4rem; height: 4rem; font-size: var(--exo-text-base); }
+:where([data-exo="avatar"]:has([data-exo="avatar-img"])) {
+  background-color: transparent;
+}
+
+:where([data-exo="avatar"][data-size="xs"]) {
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.625rem;
+}
+
+:where([data-exo="avatar"][data-size="sm"]) {
+  width: 2rem;
+  height: 2rem;
+  font-size: 0.75rem;
+}
+
+:where([data-exo="avatar"][data-size="md"]) {
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 0.875rem;
+}
+
+:where([data-exo="avatar"][data-size="lg"]) {
+  width: 3rem;
+  height: 3rem;
+  font-size: 1rem;
+}
+
+:where([data-exo="avatar"][data-size="xl"]) {
+  width: 4rem;
+  height: 4rem;
+  font-size: 1.25rem;
+}
 
 :where([data-exo="avatar-img"]) {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;

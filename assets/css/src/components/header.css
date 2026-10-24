@@ -1,40 +1,38 @@
+/*
+ * Page header. daisyUI has no counterpart; it uses daisyUI's tokens: text in
+ * `base-content`, the optional rule in daisyUI's divider colour.
+ */
+
 :where([data-exo="header"]) {
   display: flex;
-  /* `flex-start`, ne `center`: kad zaglavlje ima podnaslov, tekst je dva reda
-     a dugmad jedan — centriranje ih tada spusta ispod naslova i red izgleda
-     razlabavljeno. Poravnanje po vrhu drzi dugme u liniji sa naslovom. */
+  /* Top, not centre: with a subtitle the text is two lines and the buttons
+     one, and centring drops the buttons below the title's line. */
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--exo-space-4);
   margin-bottom: 1.25rem;
-  /* Bez preloma red akcija nema izlaz: `header-actions` je `flex-shrink: 0`
-     (namjerno — dugmad se ne gnjece), pa kad ne stane, PRERASTE kontejner i
-     legne preko naslova. Mjereno u trg24 na /products @390px: cetiri akcije
-     (Izvezi / Generisi PDF katalog / Uvezi / Dodaj proizvod), „Izvezi"
-     odstampan preko naslova „Proizvodi", primarno dugme odsjeceno desnom
-     ivicom. Ekran sa dvije akcije je izgledao uredno samo zato sto je uzi.
-     Prelom ne mijenja siroki raspored — dok akcije staju, red je isti. */
+  /* Without wrapping the actions overflow the container and land over the
+     title (measured in trg24 on /products at 390px with four actions). While
+     the actions fit, the row is the same. */
   flex-wrap: wrap;
 }
 
-/* Crta ispod zaglavlja je od v2 (TRG-806) OPCIJA, `separator`.
- *
- * Od TRG-102 je bila podrazumijevana, jer je bez nje naslov lebdio iznad
- * kolone sadrzaja istog tona. U v2 sadrzaj stoji u karticama na sivljoj
- * pozadini strane (kao Polaris), pa naslov odvaja razmak, a crta preko cijele
- * sirine je bila jos jedna linija medju linijama kartica. */
+/* The rule under the header is an option, `separator`, since v2 (TRG-806):
+ * content stands in cards on a darker page, so spacing separates the title
+ * and a full-width line was one more line among the cards' borders. */
 :where([data-exo="header"][data-separator]) {
   padding-bottom: var(--exo-space-4);
-  border-bottom: 1px solid var(--exo-border);
+  border-bottom: var(--exo-border-width) solid
+    color-mix(in oklab, var(--exo-base-content) 10%, transparent);
 }
 
-/* Naslov + ono sto stoji lijevo od njega (dugme „nazad", avatar, tacka
-   statusa) cine jednu cjelinu, pa se pomjeraju zajedno. */
+/* The title and what stands left of it (back button, avatar, status dot) are
+   one unit and move together. */
 :where([data-exo="header-lead"]) {
   display: flex;
   align-items: center;
   gap: var(--exo-space-4);
-  /* bez ovoga dug naslov gura dugmad izvan ekrana umjesto da se prelomi */
+  /* Lets a long title wrap instead of pushing the buttons off the screen. */
   min-width: 0;
 }
 
@@ -53,13 +51,14 @@
   font-size: var(--exo-text-xl);
   font-weight: 700;
   letter-spacing: -0.015em;
-  color: var(--exo-foreground);
+  color: var(--exo-base-content);
   margin: 0;
 }
 
 :where([data-exo="header-subtitle"]) {
   font-family: var(--exo-font);
   font-size: var(--exo-text-sm);
+  /* daisyUI has no muted text colour; this is the theme's derived one. */
   color: var(--exo-muted-foreground);
   margin-top: var(--exo-space-1);
 }
@@ -68,22 +67,17 @@
   display: flex;
   align-items: center;
   gap: var(--exo-space-2);
-  /* I sam red akcija mora da se prelama, ne samo zaglavlje oko njega — i zato
-     ovdje NEMA `flex-shrink: 0`, koliko god djelovalo da stiti dugmad.
-     Izmjereno u trg24 na /products @390px: sa `flex-shrink: 0` kutija akcija
-     ostaje na max-content sirini, pa unutrasnji prelom NIKAD ne okine i
-     cetvrto dugme („Dodaj proizvod") se sjece na slovo „D". Tek kad kutija
-     smije da se suzi, prelom radi.
-     Dugmad se i dalje ne gnjece: tekst u njima je `nowrap`, pa je njihova
-     min-content sirina puna sirina natpisa — stavka koja ne stane prelazi u
-     novi red umjesto da se stisne. */
+  /* The actions row wraps too, and so has no `flex-shrink: 0`: with it the
+     box stays at max-content width, the inner wrap never fires and the last
+     button is cut (trg24 /products at 390px). Buttons still do not squeeze:
+     their text is `nowrap`, so an item that does not fit moves to a new
+     line. */
   min-width: 0;
   flex-wrap: wrap;
 }
 
-/* Naslov i bedzevi stanja (TRG-742) stoje u jednom redu, a bedzevi su van
-   `<h1>`: citac ekrana naslov cita kao ime strane, ne „#1001 Na cekanju
-   Placeno". Red se prelama kad bedzevi ne stanu uz dug naslov. */
+/* Title and status badges (TRG-742) share a row, the badges outside the
+   `<h1>` so a screen reader reads the title alone as the page's name. */
 :where([data-exo="header-title-row"]) {
   display: flex;
   align-items: center;
@@ -99,8 +93,8 @@
   gap: var(--exo-space-2);
 }
 
-/* Strelice prethodnog i sljedeceg zapisa su par, pa stoje tijesno jedna uz
-   drugu, odvojene od dugmadi radnji vecim razmakom reda. */
+/* Previous and next record arrows are a pair: tight together, apart from the
+   action buttons by the row's larger gap. */
 :where([data-exo="header-pager"]) {
   display: flex;
   align-items: center;

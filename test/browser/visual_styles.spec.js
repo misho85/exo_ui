@@ -11,7 +11,8 @@ test.describe("component visual styles", () => {
     const navbarCenter = canvas.locator('[data-exo="navbar-center"]').first();
 
     await expect(navbar).toHaveCSS("display", "flex");
-    await expect(navbar).toHaveCSS("border-top-style", "solid");
+    // daisyUI's navbar is set off by a shadow, not a border.
+    await expect(navbar).not.toHaveCSS("box-shadow", "none");
     await expect(navbar).toHaveCSS("font-family", /.+/);
     await expect(navbarCenter).toHaveCSS("display", "flex");
 
@@ -20,8 +21,9 @@ test.describe("component visual styles", () => {
     const footer = story(page).locator('[data-exo="footer"]').first();
     const footerColumns = story(page).locator('[data-exo="footer-columns"]').first();
 
-    await expect(footer).toHaveCSS("display", "flex");
-    await expect(footer).toHaveCSS("border-top-style", "solid");
+    // daisyUI's footer is a grid on base-200.
+    await expect(footer).toHaveCSS("display", "grid");
+    await expect(footer).toHaveCSS("place-items", "start");
     await expect(footerColumns).toHaveCSS("display", "grid");
 
     await gotoStory(page, "/components/layout/separator");
@@ -32,7 +34,8 @@ test.describe("component visual styles", () => {
 
     await expect(decorativeSeparator).toHaveAttribute("aria-hidden", "true");
     await expect(decorativeSeparator).not.toHaveAttribute("role", "separator");
-    await expect(decorativeSeparator).toHaveCSS("height", "1px");
+    // daisyUI's divider is a 1rem row with the line drawn in it.
+    await expect(decorativeSeparator).toHaveCSS("height", "16px");
     await expect(semanticSeparator).toHaveAttribute("role", "separator");
     await expect(semanticSeparator).toHaveAttribute("aria-orientation", "horizontal");
     await expect(semanticSeparator).toHaveAttribute("aria-label", "Panel sections");
@@ -42,7 +45,7 @@ test.describe("component visual styles", () => {
     const bottomNav = story(page).locator('[data-exo="bottom-nav"]').first();
     const bottomNavItem = bottomNav.locator('[data-exo="bottom-nav-item"]').first();
 
-    await expect(bottomNav).toHaveCSS("display", "grid");
+    await expect(bottomNav).toHaveCSS("display", "flex");
     await expect(bottomNav).toHaveCSS("border-top-style", "solid");
     await expect(bottomNavItem).toHaveCSS("text-decoration-line", "none");
 
@@ -66,7 +69,7 @@ test.describe("component visual styles", () => {
     const heroTitle = hero.locator('[data-exo="hero-title"]').first();
 
     await expect(hero).toHaveCSS("display", "grid");
-    await expect(hero).toHaveCSS("overflow", "hidden");
+    await expect(hero).toHaveCSS("place-items", "center");
     await expect(heroTitle).toHaveCSS("margin-top", "0px");
 
     await gotoStory(page, "/components/data_display/chat_bubble");
@@ -78,10 +81,8 @@ test.describe("component visual styles", () => {
     await expect(incomingChat).toHaveCSS("display", "flex");
     await expect(outgoingChat).toHaveCSS("flex-direction", "row-reverse");
 
-    const chatLineHeight = await chatContent.evaluate(
-      (node) => window.getComputedStyle(node).lineHeight
-    );
-    expect(Number.parseFloat(chatLineHeight)).toBeGreaterThan(0);
+    // daisyUI's bubble is at least 2rem high.
+    await expect(chatContent).toHaveCSS("min-height", "32px");
 
     await gotoStory(page, "/components/data_display/avatar");
 
