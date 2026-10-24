@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- `resource_list/1`: the bulk bar over the header keeps one line — it takes
+  its own width instead of the two-rem select-all cell it is anchored to, and
+  stands a space away from the checkbox (TRG-808).
+
 - `resource_list/1`: the bulk bar lies over the header row instead of
   replacing it. The column names stay in the row, hidden, so the columns keep
   their widths and nothing under the header moves when a row is picked; the

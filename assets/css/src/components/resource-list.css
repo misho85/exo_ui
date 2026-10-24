@@ -165,7 +165,15 @@
   z-index: 1;
   display: flex;
   align-items: center;
+  /* Its containing block is the select-all cell, two rem wide: without its
+     own width the bar would wrap into a column of buttons (seen on trg24). */
+  width: max-content;
+  padding-inline-start: var(--exo-space-3);
   white-space: nowrap;
+}
+
+:where([data-exo="resource-list-bulk-overlay"]) > :where([data-exo="resource-list-bulk"]) {
+  flex-wrap: nowrap;
 }
 
 :where([data-exo="resource-list"][data-bulk]) :where(thead tr:first-child > th:not([data-select])) {
