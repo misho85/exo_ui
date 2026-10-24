@@ -125,14 +125,16 @@
 }
 
 /* The menu hook moves focus with the arrow keys, which is daisyUI's
-   `.menu-focus`. */
-:where([data-exo="dropdown-item"]:not(:active, [aria-current]:not([aria-current="false"], [aria-current=""])):focus) {
+   `.menu-focus`. Only keyboard focus fills the item: the hook also focuses
+   the first item when a click opens the menu, and that item looked chosen
+   before the pointer reached it (a destructive "Delete" came up tinted red). */
+:where([data-exo="dropdown-item"]:not(:active, [aria-current]:not([aria-current="false"], [aria-current=""])):focus-visible) {
   background-color: color-mix(in oklab, var(--exo-base-content) 10%, transparent);
   outline: none;
 }
 
-:where([data-exo="dropdown-item"][data-variant="danger"]:not(:active):is(:hover, :focus)),
-:where([data-exo="dropdown-item"][data-variant="error"]:not(:active):is(:hover, :focus)) {
+:where([data-exo="dropdown-item"][data-variant="danger"]:not(:active):is(:hover, :focus-visible)),
+:where([data-exo="dropdown-item"][data-variant="error"]:not(:active):is(:hover, :focus-visible)) {
   background-color: color-mix(in oklab, var(--exo-error) 10%, transparent);
 }
 

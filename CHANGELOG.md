@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Menus (dropdown, context menu, menubar): an item fills only under the
+  pointer or with keyboard focus (`:focus-visible`). Opening a menu with a
+  click focuses its first item, and that item came up filled, as if chosen; a
+  destructive "Delete" came up tinted red.
+- ExoUI elements size their own box (`box-sizing: border-box`): daisyUI's
+  heights include the border, which Tailwind's preflight gives a host and
+  the storybook did not have, so controls were 2px taller there. The
+  storybook sandbox also takes daisyUI docs' line height (1.5).
+
 - `resource_list/1`: the bulk bar over the header keeps one line — it takes
   its own width instead of the two-rem select-all cell it is anchored to, and
   stands a space away from the checkbox (TRG-808).

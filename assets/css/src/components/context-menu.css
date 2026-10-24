@@ -102,8 +102,10 @@
   }
 }
 
-/* The menu script moves focus with the arrow keys: daisyUI's `.menu-focus`. */
-:where([data-exo="context-menu-item"]:not(:active):focus) {
+/* The menu script moves focus with the arrow keys: daisyUI's `.menu-focus`.
+   Keyboard focus only, as in the dropdown menu: opening focuses the first
+   item, which then looked chosen. */
+:where([data-exo="context-menu-item"]:not(:active):focus-visible) {
   background-color: color-mix(in oklab, var(--exo-base-content) 10%, transparent);
   outline: none;
 }
