@@ -236,7 +236,7 @@
       "dataExoCount": 12,
       "width": 1280,
       "height": 900,
-      "sha256": "720d2195f8a9f20112d331e3ccf98232da347b3f9bed1f7e4af511ff2543bece"
+      "sha256": "c6c83101ad002e9ce31f6cbed63bb270ea8696e3f31d20bfe0dc78a451aa668a"
     },
     {
       "name": "data_display/editable_record_workflow",
@@ -281,7 +281,7 @@
       "dataExoCount": 25,
       "width": 1280,
       "height": 900,
-      "sha256": "51acfd8526588cc5c70f199124d2dcfc64b5db4dbb524aacf2f1b1ab43718a78"
+      "sha256": "3000d01d47270d470185d6e960a001f6a33a1fc560ecc31e32b344d845451d5a"
     },
     {
       "name": "data_display/table",

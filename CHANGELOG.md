@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- `content_card/1` `collapsible` (TRG-807): the card is a `<details>` row —
+  title, a `summary` of the state and a chevron in the header, the body under
+  it. The fields stay in the DOM, so a form across several cards still submits
+  all of them; the browser owns `open` after mount (`JS.ignore_attributes`),
+  so a patch from typing does not close the section. `open` sets the first
+  render. A collapsible card has no `action` slot (it would toggle the row).
+- `stat_card/1` `chart` slot (TRG-807): a small chart under the value, for
+  a sparkline of the same number by day; the SVG takes the card's width.
+
 - `settings_list/1` (TRG-807): rows of one card — icon, title, a sentence,
   a summary on the right (the row's inner block) and a chevron; a row with
   `navigate`, `patch` or `href` is one link, a row with none is static. The
