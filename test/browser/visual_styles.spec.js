@@ -139,7 +139,7 @@ test.describe("component visual styles", () => {
     // must say what is drawn — the old 32px was the pre-circle `size-8` class.
     await expect(emptyStateIcon).toHaveAttribute("data-size", "lg");
     await expect(emptyStateIcon).toHaveCSS("width", "24px");
-    await expect(story(page).locator('[data-exo="empty-state-icon"]').first()).toHaveCSS("width", "48px");
+    await expect(story(page).locator('[data-exo="empty-state-icon"]').first()).toHaveCSS("width", "64px");
 
     await gotoStory(page, "/components/feedback/spinner");
 
