@@ -191,8 +191,19 @@
   color: var(--exo-base-content);
 }
 
+/* daisyUI's values assume Tailwind's preflight: a height or a size includes
+   the border. Without Tailwind (the storybook, a plain Phoenix app) every
+   control with a border was 2px taller than daisyUI's, so ExoUI elements
+   size their own box. */
+:where([data-exo], [data-exo]::before, [data-exo]::after) {
+  box-sizing: border-box;
+}
+
 .exo-sandbox {
   background-color: var(--exo-background);
   color: var(--exo-foreground);
   font-family: var(--exo-font);
+  /* The line height of daisyUI's docs (Tailwind preflight), so a story
+     reads as daisyUI does. */
+  line-height: 1.5;
 }

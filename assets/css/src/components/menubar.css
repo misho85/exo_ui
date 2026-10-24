@@ -145,12 +145,13 @@
   }
 }
 
-/* The menubar script moves focus with the arrow keys: daisyUI's `.menu-focus`. */
+/* The menubar script moves focus with the arrow keys: daisyUI's `.menu-focus`.
+   Keyboard focus only, as in the dropdown menu. */
 :where(
-  [data-exo="menubar-trigger"]:focus,
-  [data-exo="menubar-content"] [role="menuitem"]:not(:active, [aria-current]:not([aria-current="false"], [aria-current=""])):focus,
-  [data-exo="menubar-content"] button:not(:active, [aria-current]:not([aria-current="false"], [aria-current=""])):focus,
-  [data-exo="menubar-content"] a:not(:active, [aria-current]:not([aria-current="false"], [aria-current=""])):focus
+  [data-exo="menubar-trigger"]:focus-visible,
+  [data-exo="menubar-content"] [role="menuitem"]:not(:active, [aria-current]:not([aria-current="false"], [aria-current=""])):focus-visible,
+  [data-exo="menubar-content"] button:not(:active, [aria-current]:not([aria-current="false"], [aria-current=""])):focus-visible,
+  [data-exo="menubar-content"] a:not(:active, [aria-current]:not([aria-current="false"], [aria-current=""])):focus-visible
 ) {
   background-color: color-mix(in oklab, var(--exo-base-content) 10%, transparent);
   outline: none;
