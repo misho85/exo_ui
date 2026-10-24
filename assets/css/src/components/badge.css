@@ -48,18 +48,18 @@
   color: var(--exo-foreground);
 }
 :where([data-exo="badge"][data-variant="danger"]) {
-  background: var(--exo-danger-subtle, color-mix(in oklch, var(--exo-danger) 16%, var(--exo-card)));
+  background: var(--exo-danger-subtle, color-mix(in oklab, var(--exo-danger) 16%, var(--exo-card)));
   color: var(--exo-danger-subtle-foreground, color-mix(in oklab, var(--exo-danger) 50%, var(--exo-foreground)));
 }
 :where([data-exo="badge"][data-variant="warning"]) {
-  background: var(--exo-warning-subtle, color-mix(in oklch, var(--exo-warning) 22%, var(--exo-card)));
+  background: var(--exo-warning-subtle, color-mix(in oklab, var(--exo-warning) 22%, var(--exo-card)));
   color: var(--exo-warning-subtle-foreground, color-mix(in oklab, var(--exo-warning) 40%, var(--exo-foreground)));
 }
 :where([data-exo="badge"][data-variant="success"]) {
-  background: var(--exo-success-subtle, color-mix(in oklch, var(--exo-success) 16%, var(--exo-card)));
+  background: var(--exo-success-subtle, color-mix(in oklab, var(--exo-success) 16%, var(--exo-card)));
   color: var(--exo-success-subtle-foreground, color-mix(in oklab, var(--exo-success) 50%, var(--exo-foreground)));
 }
 :where([data-exo="badge"][data-variant="info"]) {
-  background: var(--exo-info-subtle, color-mix(in oklch, var(--exo-info) 16%, var(--exo-card)));
+  background: var(--exo-info-subtle, color-mix(in oklab, var(--exo-info) 16%, var(--exo-card)));
   color: var(--exo-info-subtle-foreground, color-mix(in oklab, var(--exo-info) 50%, var(--exo-foreground)));
 }
