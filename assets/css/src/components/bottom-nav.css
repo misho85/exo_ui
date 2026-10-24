@@ -1,53 +1,91 @@
+/*
+ * daisyUI 5 `.dock` (components/dock.css, v5.7.50), value for value: items
+ * share the bar, the current one (`aria-current`, daisyUI's `dock-active`)
+ * is marked by a bar in the text colour under it, hover dims to 80%.
+ *
+ * daisyUI fixes the dock to the bottom of the viewport. ExoUI's bottom nav
+ * stays where the markup puts it: the host decides whether it is fixed (a
+ * page may show several, the storybook does), so `position: fixed` and its
+ * insets are left out. The safe-area padding stays for a host that fixes it.
+ *
+ *   data-size  xs | sm | md | lg | xl; none is md
+ */
+
+/* --- base (l1.l2.l3) --- */
+
 :where([data-exo="bottom-nav"]) {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(0, 1fr);
-  align-items: stretch;
-  gap: var(--exo-space-1);
-  padding: var(--exo-space-1);
-  background: var(--exo-card);
-  color: var(--exo-card-foreground);
-  border: 1px solid var(--exo-border);
-  border-radius: var(--exo-radius);
-  box-shadow: var(--exo-shadow-sm);
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0.5rem;
+  background-color: var(--exo-base-100);
+  color: currentColor;
+  border-top: 0.5px solid color-mix(in oklab, var(--exo-base-content) 5%, #0000);
+  height: 4rem;
+  height: calc(4rem + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
   font-family: var(--exo-font);
 }
 
 :where([data-exo="bottom-nav-item"]) {
-  display: inline-flex;
+  position: relative;
+  display: flex;
+  height: 100%;
+  max-width: 8rem;
+  flex-shrink: 1;
+  flex-basis: 100%;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.125rem;
-  min-width: 0;
-  min-height: 3.25rem;
-  padding: var(--exo-space-2);
-  color: var(--exo-muted-foreground);
+  gap: 1px;
+  margin-bottom: 0.5rem;
+  padding: 0;
   border: 0;
-  border-radius: calc(var(--exo-radius) - 2px);
-  background: transparent;
-  cursor: pointer;
+  border-radius: var(--exo-radius-box);
+  background-color: transparent;
+  color: inherit;
   font: inherit;
-  font-size: var(--exo-text-xs);
-  font-weight: 600;
-  text-align: center;
   text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease-out;
+}
+
+@media (hover: hover) {
+  :where([data-exo="bottom-nav-item"]):hover {
+    opacity: 0.8;
+  }
+}
+
+:where([data-exo="bottom-nav-item"][aria-disabled="true"], [data-exo="bottom-nav-item"]:disabled),
+:where([data-exo="bottom-nav-item"][aria-disabled="true"], [data-exo="bottom-nav-item"]:disabled):hover {
+  color: color-mix(in oklab, var(--exo-base-content) 10%, transparent);
+  pointer-events: none;
+  opacity: 1;
+}
+
+:where([data-exo="bottom-nav-label"]) {
+  font-size: 0.6875rem;
+  overflow: hidden;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:where([data-exo="bottom-nav-item"])::after {
+  content: "";
+  position: absolute;
+  height: 0.25rem;
+  width: 1.5rem;
+  border-radius: 9999px;
+  background-color: transparent;
+  bottom: 0.2rem;
+  border-top: 3px solid transparent;
   transition:
-    background var(--exo-duration) var(--exo-easing),
-    color var(--exo-duration) var(--exo-easing);
-}
-
-:where([data-exo="bottom-nav-item"]):hover,
-:where([data-exo="bottom-nav-item"]):focus-visible {
-  background: var(--exo-muted);
-  color: var(--exo-foreground);
-  outline: none;
-}
-
-:where([data-exo="bottom-nav-item"][data-active]),
-:where([data-exo="bottom-nav-item"][aria-current="page"]) {
-  background: color-mix(in oklch, var(--exo-primary) 12%, transparent);
-  color: var(--exo-primary);
+    background-color 0.1s ease-out,
+    text-color 0.1s ease-out,
+    width 0.1s ease-out;
 }
 
 :where([data-exo="bottom-nav-icon"]) {
@@ -56,14 +94,71 @@
   justify-content: center;
 }
 
+/* daisyUI's documentation draws the icons at `size-[1.2em]`. */
 :where([data-exo="bottom-nav-icon"] svg) {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.2em;
+  height: 1.2em;
 }
 
-:where([data-exo="bottom-nav-label"]) {
-  overflow: hidden;
-  max-width: 100%;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+/* --- current item (l1.l2) --- */
+
+:where(
+    [data-exo="bottom-nav-item"][data-active],
+    [data-exo="bottom-nav-item"][aria-current]:not([aria-current="false"], [aria-current=""])
+  )::after {
+  width: 2.5rem;
+  background-color: currentColor;
+  color: currentColor;
+}
+
+/* --- sizes (l1.l2) --- */
+
+:where([data-exo="bottom-nav"][data-size="xs"]) {
+  height: 3rem;
+  height: calc(3rem + env(safe-area-inset-bottom));
+}
+
+:where([data-exo="bottom-nav"][data-size="sm"]) {
+  height: 3.5rem;
+  height: calc(3.5rem + env(safe-area-inset-bottom));
+}
+
+:where([data-exo="bottom-nav"][data-size="xs"], [data-exo="bottom-nav"][data-size="sm"])
+  :where(
+    [data-exo="bottom-nav-item"][data-active],
+    [data-exo="bottom-nav-item"][aria-current]:not([aria-current="false"], [aria-current=""])
+  )::after {
+  bottom: -0.1rem;
+}
+
+:where([data-exo="bottom-nav"][data-size="xs"], [data-exo="bottom-nav"][data-size="sm"])
+  :where([data-exo="bottom-nav-label"]) {
+  font-size: 0.625rem;
+}
+
+:where([data-exo="bottom-nav"][data-size="md"]) {
+  height: 4rem;
+  height: calc(4rem + env(safe-area-inset-bottom));
+}
+
+:where([data-exo="bottom-nav"][data-size="lg"]) {
+  height: 4.5rem;
+  height: calc(4.5rem + env(safe-area-inset-bottom));
+}
+
+:where([data-exo="bottom-nav"][data-size="xl"]) {
+  height: 5rem;
+  height: calc(5rem + env(safe-area-inset-bottom));
+}
+
+:where([data-exo="bottom-nav"][data-size="lg"], [data-exo="bottom-nav"][data-size="xl"])
+  :where(
+    [data-exo="bottom-nav-item"][data-active],
+    [data-exo="bottom-nav-item"][aria-current]:not([aria-current="false"], [aria-current=""])
+  )::after {
+  bottom: 0.4rem;
+}
+
+:where([data-exo="bottom-nav"][data-size="xl"]) :where([data-exo="bottom-nav-label"]) {
+  font-size: 0.75rem;
 }

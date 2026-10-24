@@ -1,8 +1,22 @@
+/*
+ * The sheet is daisyUI 5's drawer side (components/drawer.css, v5.7.50) on any
+ * of four edges: the overlay is black at 40% and fades in over 0.2s after
+ * 0.1s, the panel slides in over 0.3s ease-out. The surface is `base-100`
+ * with no border or shadow, as daisyUI's drawer has none, and the close
+ * button is daisyUI's `btn btn-sm btn-circle btn-ghost absolute end-2 top-2`.
+ *
+ * The sheet opens with `display` (Phoenix's `JS.show`), so the entry is a
+ * keyframe animation rather than daisyUI's transition.
+ *
+ *   data-side  left | right | top | bottom
+ */
+
 :where([data-exo="sheet"]) {
   display: none;
   position: fixed;
   inset: 0;
   z-index: 50;
+  overscroll-behavior: contain;
 }
 
 :where([data-exo="sheet"].open),
@@ -13,17 +27,18 @@
 :where([data-exo="sheet-backdrop"]) {
   position: fixed;
   inset: 0;
-  background: var(--exo-backdrop);
-  animation: exo-sheet-fade-in 200ms var(--exo-easing);
+  cursor: pointer;
+  background-color: oklch(0% 0 0 / 40%);
+  animation: exo-sheet-fade-in 0.2s ease-out 0.1s both;
 }
 
 :where([data-exo="sheet-content"]) {
   position: fixed;
-  background: var(--exo-background);
   display: flex;
   flex-direction: column;
-  box-shadow: var(--exo-shadow-xl);
-  animation: exo-sheet-slide-in 300ms var(--exo-easing);
+  background-color: var(--exo-base-100);
+  color: var(--exo-base-content);
+  animation: exo-sheet-slide-in-right 0.3s ease-out;
 }
 
 :where([data-exo="sheet"][data-side="right"] [data-exo="sheet-content"]) {
@@ -31,7 +46,6 @@
   right: 0;
   bottom: 0;
   width: min(24rem, 90vw);
-  border-left: 1px solid var(--exo-border);
 }
 
 :where([data-exo="sheet"][data-side="left"] [data-exo="sheet-content"]) {
@@ -39,7 +53,7 @@
   left: 0;
   bottom: 0;
   width: min(24rem, 90vw);
-  border-right: 1px solid var(--exo-border);
+  animation-name: exo-sheet-slide-in-left;
 }
 
 :where([data-exo="sheet"][data-side="top"] [data-exo="sheet-content"]) {
@@ -47,7 +61,7 @@
   left: 0;
   right: 0;
   max-height: 90vh;
-  border-bottom: 1px solid var(--exo-border);
+  animation-name: exo-sheet-slide-in-top;
 }
 
 :where([data-exo="sheet"][data-side="bottom"] [data-exo="sheet-content"]) {
@@ -55,56 +69,84 @@
   left: 0;
   right: 0;
   max-height: 90vh;
-  border-top: 1px solid var(--exo-border);
+  animation-name: exo-sheet-slide-in-bottom;
 }
 
+/* --- parts --- */
+
+/* Dividers are daisyUI's border colour, the content colour at 10%. */
 :where([data-exo="sheet-header"]) {
-  padding: var(--exo-space-6);
-  border-bottom: 1px solid var(--exo-border);
+  padding: 1.5rem;
+  padding-inline-end: 3rem;
+  border-bottom: var(--exo-border-width) solid
+    color-mix(in oklab, var(--exo-base-content) 10%, transparent);
 }
 
 :where([data-exo="sheet-title"]) {
   font-family: var(--exo-font);
   font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--exo-foreground);
+  line-height: 1.75rem;
+  font-weight: 700;
+  color: var(--exo-base-content);
   margin: 0;
 }
 
 :where([data-exo="sheet-body"]) {
   flex: 1;
   overflow-y: auto;
-  padding: var(--exo-space-6);
+  overscroll-behavior: contain;
+  padding: 1.5rem;
   font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  color: var(--exo-foreground);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--exo-base-content);
 }
 
 :where([data-exo="sheet-footer"]) {
-  padding: var(--exo-space-4) var(--exo-space-6);
-  border-top: 1px solid var(--exo-border);
   display: flex;
   justify-content: flex-end;
-  gap: var(--exo-space-2);
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  border-top: var(--exo-border-width) solid
+    color-mix(in oklab, var(--exo-base-content) 10%, transparent);
 }
 
 :where([data-exo="sheet-close"]) {
   position: absolute;
-  top: var(--exo-space-4);
-  right: var(--exo-space-4);
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--exo-muted-foreground);
-  font-size: 1.25rem;
+  top: 0.5rem;
+  inset-inline-end: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--exo-size-field) * 8);
+  height: calc(var(--exo-size-field) * 8);
+  padding: 0;
+  border: var(--exo-border-width) solid transparent;
+  border-radius: 9999px;
+  background-color: transparent;
+  color: var(--exo-base-content);
+  font-size: 0.75rem;
   line-height: 1;
-  padding: var(--exo-space-1);
-  border-radius: var(--exo-radius);
+  cursor: pointer;
+  outline-offset: 2px;
+  transition-property: color, background-color, border-color, box-shadow;
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  transition-duration: 0.2s;
 }
 
-:where([data-exo="sheet-close"]:hover) {
-  color: var(--exo-foreground);
-  background: var(--exo-muted);
+@media (hover: hover) {
+  :where([data-exo="sheet-close"]):hover {
+    background-color: color-mix(in oklab, var(--exo-base-200), #000 7%);
+    border-color: color-mix(
+      in oklab,
+      color-mix(in oklab, var(--exo-base-200), #000 7%),
+      #000 calc(var(--exo-depth) * 5%)
+    );
+  }
+}
+
+:where([data-exo="sheet-close"]):focus-visible {
+  outline: 2px solid var(--exo-base-content);
 }
 
 @keyframes exo-sheet-fade-in {
@@ -112,36 +154,24 @@
   to { opacity: 1; }
 }
 
-@keyframes exo-sheet-slide-in {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
-}
-
-:where([data-exo="sheet"][data-side="left"] [data-exo="sheet-content"]) {
-  animation-name: exo-sheet-slide-in-left;
+@keyframes exo-sheet-slide-in-right {
+  from { translate: 100% 0; }
+  to { translate: 0 0; }
 }
 
 @keyframes exo-sheet-slide-in-left {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(0); }
-}
-
-:where([data-exo="sheet"][data-side="top"] [data-exo="sheet-content"]) {
-  animation-name: exo-sheet-slide-in-top;
+  from { translate: -100% 0; }
+  to { translate: 0 0; }
 }
 
 @keyframes exo-sheet-slide-in-top {
-  from { transform: translateY(-100%); }
-  to { transform: translateY(0); }
-}
-
-:where([data-exo="sheet"][data-side="bottom"] [data-exo="sheet-content"]) {
-  animation-name: exo-sheet-slide-in-bottom;
+  from { translate: 0 -100%; }
+  to { translate: 0 0; }
 }
 
 @keyframes exo-sheet-slide-in-bottom {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
+  from { translate: 0 100%; }
+  to { translate: 0 0; }
 }
 
 body:has([data-exo="sheet"][data-state="open"]) {

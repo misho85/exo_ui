@@ -1,5 +1,8 @@
 /* Record form: main column and aside (TRG-744). One column below 48rem of
-   the layout's own width, the aside under the main column; two from there. */
+   the layout's own width, the aside under the main column; two from there.
+   daisyUI has no such layout, so the layout is ExoUI's; the chip and the bar
+   take daisyUI's tokens: the chip has an input's border colour, the bar is a
+   `.card` (box radius, base-200 border). */
 :where([data-exo="form-layout"]) {
   container: exo-form-layout / inline-size;
 }
@@ -32,21 +35,21 @@
   gap: var(--exo-space-1);
   min-height: 1.75rem;
   padding: 0 var(--exo-space-3);
-  border: 1px dashed var(--exo-input);
+  border: var(--exo-border-width) dashed color-mix(in oklab, var(--exo-base-content) 20%, #0000);
   border-radius: 9999px;
   background: transparent;
-  color: var(--exo-foreground);
+  color: var(--exo-base-content);
   font-family: var(--exo-font);
   font-size: var(--exo-text-sm);
   cursor: pointer;
 }
 
 :where([data-exo="optional-field-chip"]):hover {
-  background: var(--exo-muted);
+  background: var(--exo-base-200);
 }
 
 :where([data-exo="optional-field-chip"]):focus-visible {
-  outline: 2px solid var(--exo-ring);
+  outline: 2px solid var(--exo-base-content);
   outline-offset: 2px;
 }
 
@@ -67,10 +70,10 @@
   gap: var(--exo-space-3);
   margin-top: var(--exo-space-6);
   padding: var(--exo-space-3) var(--exo-space-4);
-  background: var(--exo-card);
-  color: var(--exo-card-foreground);
-  border: 1px solid var(--exo-border);
-  border-radius: var(--exo-radius);
+  background: var(--exo-base-100);
+  color: var(--exo-base-content);
+  border: var(--exo-border-width) solid var(--exo-base-200);
+  border-radius: var(--exo-radius-box);
   box-shadow: var(--exo-shadow-lg);
 }
 

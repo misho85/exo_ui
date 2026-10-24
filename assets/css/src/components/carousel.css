@@ -1,69 +1,150 @@
+/*
+ * daisyUI 5 `.carousel` / `.carousel-item` (components/carousel.css, v5.7.50):
+ * the viewport is the carousel — it scrolls sideways with mandatory snapping,
+ * smoothly unless motion is reduced, with no scrollbar — and every slide is a
+ * full-width `carousel-item` snapping at its start. The previous and next
+ * controls are daisyUI's example's `btn btn-circle`, 1.25rem inside the
+ * edges (`left-5 right-5 top-1/2`); their values are button.css's.
+ */
+
 :where([data-exo="carousel"]) {
   position: relative;
 }
 
 :where([data-exo="carousel"]):focus-visible {
-  outline: 2px solid var(--exo-ring);
+  outline: 2px solid var(--exo-base-content);
   outline-offset: 4px;
-  border-radius: var(--exo-radius);
+  border-radius: var(--exo-radius-box);
 }
 
 :where([data-exo="carousel-viewport"]) {
-  overflow: hidden;
-  border-radius: var(--exo-radius);
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  border-radius: var(--exo-radius-box);
+}
+
+:where([data-exo="carousel-viewport"])::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :where([data-exo="carousel-viewport"]) {
+    scroll-behavior: smooth;
+  }
 }
 
 :where([data-exo="carousel-track"]) {
   display: flex;
-  gap: var(--exo-space-4);
 }
 
+/* daisyUI's item is also `display: flex`, made for one image; a slide here
+   holds any content, so it keeps block layout. */
 :where([data-exo="carousel-slide"]) {
-  flex: 0 0 100%;
+  box-sizing: content-box;
+  flex: none;
+  width: 100%;
   min-width: 0;
+  scroll-snap-align: start;
 }
 
-:where([data-exo="carousel-prev"]),
-:where([data-exo="carousel-next"]) {
+/* --- controls: `btn btn-circle` --- */
+
+:where([data-exo="carousel-prev"], [data-exo="carousel-next"]) {
+  --size: calc(var(--exo-size-field, 0.25rem) * 10);
+  --btn-bg: var(--exo-base-200);
+  --btn-border: color-mix(in oklab, var(--exo-base-200), #000 calc(var(--exo-depth) * 5%));
+  --btn-shadow:
+    0 3px 2px -2px color-mix(in oklab, var(--btn-bg) calc(var(--exo-depth) * 30%), #0000),
+    0 4px 3px -2px color-mix(in oklab, var(--btn-bg) calc(var(--exo-depth) * 30%), #0000);
+  --btn-inset: 0 0.5px 0 0.5px oklch(100% 0 0 / calc(var(--exo-depth) * 6%));
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
-  display: flex;
+  z-index: 1;
+  translate: 0 -50%;
+  display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  border: 1px solid var(--exo-border);
-  background: var(--exo-background);
-  color: var(--exo-foreground);
-  font-size: 1.25rem;
+  box-sizing: border-box;
+  width: var(--size);
+  height: var(--size);
+  margin: 0;
+  padding: 0;
+  border-radius: 9999px;
+  border-width: var(--exo-border-width);
+  border-style: solid;
+  border-color: var(--btn-border);
+  background-color: var(--btn-bg);
+  background-image: none, var(--exo-fx-noise);
+  background-size: auto, calc(var(--exo-noise, 0) * 100%);
+  color: var(--exo-base-content);
+  font-family: var(--exo-font);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1;
   cursor: pointer;
-  z-index: 1;
-  box-shadow: var(--exo-shadow-control);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  outline-offset: 2px;
+  outline-color: var(--exo-base-content);
+  text-shadow: 0 0.5px oklch(100% 0 0 / calc(var(--exo-depth) * 0.15));
+  box-shadow:
+    var(--btn-inset) inset,
+    var(--btn-shadow);
+  transition-property: color, background-color, border-color, box-shadow, transform;
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  transition-duration: 0.2s;
 }
 
-:where([data-exo="carousel-prev"]) { inset-inline-start: -1rem; }
-:where([data-exo="carousel-next"]) { inset-inline-end: -1rem; }
+:where([data-exo="carousel-prev"]) {
+  inset-inline-start: 1.25rem;
+}
+
+:where([data-exo="carousel-next"]) {
+  inset-inline-end: 1.25rem;
+}
 
 :where([data-exo="carousel-prev"]:dir(rtl) [data-exo="icon"]),
 :where([data-exo="carousel-next"]:dir(rtl) [data-exo="icon"]) {
   transform: scaleX(-1);
 }
 
-:where([data-exo="carousel-prev"]:hover),
-:where([data-exo="carousel-next"]:hover) {
-  background: var(--exo-accent);
+@media (hover: hover) {
+  :where([data-exo="carousel-prev"], [data-exo="carousel-next"]):hover {
+    --btn-bg: color-mix(in oklab, var(--exo-base-200), #000 7%);
+    --btn-border: color-mix(in oklab, var(--btn-bg), #000 calc(var(--exo-depth) * 5%));
+  }
 }
 
-:where([data-exo="carousel-prev"]:focus-visible),
-:where([data-exo="carousel-next"]:focus-visible) {
-  outline: 2px solid var(--exo-ring);
-  outline-offset: 2px;
+:where(
+  [data-exo="carousel-prev"]:active:not(:disabled, [data-disabled]),
+  [data-exo="carousel-next"]:active:not(:disabled, [data-disabled])
+) {
+  translate: 0 calc(-50% + 0.5px);
+  --btn-bg: color-mix(in oklab, var(--exo-base-200), #000 5%);
+  --btn-border: color-mix(in oklab, var(--exo-base-200), #000 7%);
+  --btn-inset: 0 0 0 0 transparent;
+  --btn-shadow: 0 0 0 0 transparent;
 }
 
-:where([data-exo="carousel-prev"][data-disabled]),
-:where([data-exo="carousel-next"][data-disabled]) {
-  opacity: 0.45;
-  cursor: not-allowed;
+:where([data-exo="carousel-prev"], [data-exo="carousel-next"]):focus-visible {
+  outline-width: 2px;
+  outline-style: solid;
+}
+
+:where(
+  [data-exo="carousel-prev"][data-disabled],
+  [data-exo="carousel-next"][data-disabled],
+  [data-exo="carousel-prev"]:disabled,
+  [data-exo="carousel-next"]:disabled
+) {
+  pointer-events: none;
+  color: color-mix(in oklch, var(--exo-base-content) 20%, transparent);
+  --btn-border: #0000;
+  background-image: none;
+  background-color: color-mix(in oklab, var(--exo-base-content) 10%, transparent);
+  --btn-inset: 0 0 0 0 transparent;
+  --btn-shadow: 0 0 0 0 transparent;
 }

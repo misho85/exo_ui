@@ -15,6 +15,10 @@ defmodule Storybook.Welcome do
     <div style="max-width: 600px; font-family: system-ui, sans-serif;">
       <h1>ExoUI</h1>
       <p>Headless LiveView components with CSS custom property theming.</p>
+      <p>
+        The theme is daisyUI's: make your own in the
+        <a href="/theme-generator" target="_top">theme generator</a>.
+      </p>
       <h2>Quick Start</h2>
       <pre><code>{"  {:exo_ui, git: \"https://github.com/misho85/exo_ui.git\"}"}</code></pre>
       <pre><code>{"@import \"../../deps/exo_ui/priv/static/exo.css\";"}</code></pre>

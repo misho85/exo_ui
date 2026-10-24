@@ -1,144 +1,185 @@
+/*
+ * daisyUI 5 `.collapse` (components/collapse.css, v5.7.50) as daisyUI's
+ * accordion example dresses it: every item a `collapse bg-base-100 border
+ * border-base-300` with a `collapse-title font-semibold` and a
+ * `collapse-content text-sm`. `joined` is the same items in a
+ * `join join-vertical` (utilities/join.css): the borders overlap and only the
+ * outer corners are rounded, with `radius-field`.
+ *
+ *   data-variant  none is `collapse-arrow`, `plus` is `collapse-plus`
+ *   data-joined   `join join-vertical`
+ */
+
 :where([data-exo="accordion"]) {
   display: flex;
   flex-direction: column;
 }
 
-/* --- Item (grid for height animation) --- */
+/* --- item: `collapse` (l1.l2.l3) --- */
 
 :where([data-exo="accordion-item"]) {
+  position: relative;
   display: grid;
+  width: 100%;
+  box-sizing: border-box;
   grid-template-rows: max-content 0fr;
-  border-bottom: 1px solid var(--exo-border);
-  transition: grid-template-rows 250ms var(--exo-easing);
+  grid-template-columns: minmax(0, 1fr);
+  isolation: isolate;
+  border: var(--exo-border-width) solid var(--exo-base-300);
+  border-radius: var(--exo-radius-box);
+  background-color: var(--exo-base-100);
+  color: var(--exo-base-content);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :where([data-exo="accordion-item"]) {
+    transition: grid-template-rows 0.2s;
+  }
 }
 
 :where([data-exo="accordion-item"]:has(> [data-exo="accordion-trigger"][aria-expanded="true"])) {
   grid-template-rows: max-content 1fr;
 }
 
-/* --- Trigger (button) --- */
+:where([data-exo="accordion-item"]:has(> [data-exo="accordion-trigger"]:focus-visible)) {
+  outline-color: var(--exo-base-content);
+  outline-style: solid;
+  outline-width: 2px;
+  outline-offset: 2px;
+}
+
+/* --- title: `collapse-title` (l1.l2.l3) --- */
 
 :where([data-exo="accordion-trigger"]) {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--exo-space-2);
+  grid-column-start: 1;
+  grid-row-start: 1;
+  position: relative;
+  display: block;
+  box-sizing: border-box;
   width: 100%;
-  padding: var(--exo-space-4) 0;
+  min-height: 1lh;
+  margin: 0;
+  padding: 1rem;
+  padding-inline-end: 3rem;
   font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  font-weight: 500;
-  color: var(--exo-foreground);
+  font-size: inherit;
+  font-weight: 600;
+  line-height: inherit;
+  color: inherit;
+  text-align: start;
   cursor: pointer;
   user-select: none;
   background: none;
   border: none;
-  text-align: left;
+  border-radius: inherit;
+  outline: none;
+  transition: background-color 0.2s ease-out;
 }
 
-:where([data-exo="accordion-trigger"]):hover {
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  text-decoration-thickness: 1px;
-}
-
-:where([data-exo="accordion-trigger"]:focus-visible) {
-  outline: 2px solid var(--exo-ring);
-  outline-offset: 2px;
-  border-radius: var(--exo-radius);
-}
-
-/* --- Default chevron icon (Lucide chevron-down via CSS mask) --- */
-
-:where([data-exo="accordion-trigger"])::after {
-  content: "";
-  flex-shrink: 0;
-  width: 1rem;
-  height: 1rem;
-  background-color: var(--exo-muted-foreground);
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  transition: transform 250ms var(--exo-easing);
-}
-
-:where([data-exo="accordion-item"]:has(> [data-exo="accordion-trigger"][aria-expanded="true"])) > [data-exo="accordion-trigger"]::after {
-  transform: rotate(180deg);
-}
-
-/* --- Content (clipping container) --- */
+/* --- content: `collapse-content` (l1.l2.l3) --- */
 
 :where([data-exo="accordion-content"]) {
-  overflow: hidden;
+  grid-column-start: 1;
+  grid-row-start: 2;
+  overflow: clip;
   min-height: 0;
 }
 
-/* --- Content body (styling) --- */
-
 :where([data-exo="accordion-body"]) {
-  padding-bottom: var(--exo-space-4);
+  padding: 0 1rem 1rem;
   font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  color: var(--exo-muted-foreground);
-  line-height: 1.6;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
-/* ============================
-   Plus/minus variant
-   ============================ */
+/* --- icon: `collapse-arrow` (l1.l2) --- */
+
+:where([data-exo="accordion"]:not([data-variant="plus"]) > [data-exo="accordion-item"] > [data-exo="accordion-trigger"])::after {
+  content: "";
+  position: absolute;
+  display: block;
+  top: 50%;
+  inset-inline-end: 1.4rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  transform: translateY(-100%) rotate(45deg);
+  transform-origin: 75% 75%;
+  box-shadow: 2px 2px;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :where([data-exo="accordion"]:not([data-variant="plus"]) > [data-exo="accordion-item"] > [data-exo="accordion-trigger"])::after {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 0.2s;
+  }
+}
+
+/* daisyUI turns the arrow only without reduced motion; it turns here for
+   everyone, since it is the only sign that the item is open. */
+:where([data-exo="accordion"]:not([data-variant="plus"]) > [data-exo="accordion-item"] > [data-exo="accordion-trigger"][aria-expanded="true"])::after {
+  transform: translateY(-50%) rotate(225deg);
+}
+
+/* --- icon: `collapse-plus` (l1.l2) --- */
 
 :where([data-exo="accordion"][data-variant="plus"] > [data-exo="accordion-item"] > [data-exo="accordion-trigger"])::after {
-  width: 0.75rem;
-  height: 0.75rem;
-  background-color: transparent;
-  -webkit-mask-image: none;
-  mask-image: none;
-  background-image:
-    linear-gradient(var(--exo-muted-foreground) 0 0),
-    linear-gradient(var(--exo-muted-foreground) 0 0);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 0.75rem 1.5px, 1.5px 0.75rem;
-  transition: background-size 250ms var(--exo-easing);
-  transform: none;
+  content: "+";
+  position: absolute;
+  display: block;
+  top: 0.9rem;
+  inset-inline-end: 1.4rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  pointer-events: none;
 }
 
-:where([data-exo="accordion"][data-variant="plus"] > [data-exo="accordion-item"]:has(> [data-exo="accordion-trigger"][aria-expanded="true"])) > [data-exo="accordion-trigger"]::after {
-  background-size: 0.75rem 1.5px, 1.5px 0;
-  transform: none;
+@media (prefers-reduced-motion: no-preference) {
+  :where([data-exo="accordion"][data-variant="plus"] > [data-exo="accordion-item"] > [data-exo="accordion-trigger"])::after {
+    transition-property: all;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
 }
 
-/* ============================
-   Joined variant
-   ============================ */
+:where([data-exo="accordion"][data-variant="plus"] > [data-exo="accordion-item"] > [data-exo="accordion-trigger"][aria-expanded="true"])::after {
+  content: "\2212";
+}
+
+/* --- joined: `join join-vertical` --- */
 
 :where([data-exo="accordion"][data-joined]) {
-  border: 1px solid var(--exo-border);
-  border-radius: var(--exo-radius);
-  overflow: hidden;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+}
+
+:where([data-exo="accordion"][data-joined] > [data-exo="accordion-item"]) {
+  border-radius: 0;
+}
+
+:where([data-exo="accordion"][data-joined] > [data-exo="accordion-item"]:not(:first-child)) {
+  margin-block-start: calc(var(--exo-border-width, 1px) * -1);
+}
+
+:where([data-exo="accordion"][data-joined] > [data-exo="accordion-item"]:first-child) {
+  border-start-start-radius: var(--exo-radius-field);
+  border-start-end-radius: var(--exo-radius-field);
 }
 
 :where([data-exo="accordion"][data-joined] > [data-exo="accordion-item"]:last-child) {
-  border-bottom: none;
+  border-end-start-radius: var(--exo-radius-field);
+  border-end-end-radius: var(--exo-radius-field);
 }
 
-:where([data-exo="accordion"][data-joined] > [data-exo="accordion-item"] > [data-exo="accordion-trigger"]) {
-  padding-left: var(--exo-space-4);
-  padding-right: var(--exo-space-4);
-  box-sizing: border-box;
+/* A focused item rises above its neighbours, as in a `join`. */
+:where([data-exo="accordion"][data-joined] > [data-exo="accordion-item"]:focus-within) {
+  z-index: 2;
 }
 
-:where([data-exo="accordion"][data-joined] > [data-exo="accordion-item"] > [data-exo="accordion-content"] > [data-exo="accordion-body"]) {
-  padding-left: var(--exo-space-4);
-  padding-right: var(--exo-space-4);
-}
-
-/* ============================
-   Disabled state
-   ============================ */
+/* --- disabled: no daisyUI counterpart --- */
 
 :where([data-exo="accordion-item"][data-disabled]) {
   opacity: 0.5;

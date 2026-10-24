@@ -5,9 +5,19 @@ defmodule ExoUI.Components.Core do
 
   use Phoenix.Component
 
-  @doc "Renders a button or link styled as a button."
+  @doc """
+  Renders a button or link styled as a button — daisyUI's `.btn`.
+
+  `variant` is the colour: `base`, `neutral`, `primary` (also no variant),
+  `secondary`, `accent`, `info`, `success`, `warning`, `error` (`danger` is
+  the same). `outline` and `ghost` alone are those appearances in the content
+  colour. `appearance` is daisyUI's style: `soft`, `outline`, `dash`, `ghost`,
+  `link`. `shape` is `square`, `circle`, `wide` or `block`.
+  """
   attr :variant, :string, default: nil
-  attr :size, :string, values: ~w(xs sm md lg), default: "md"
+  attr :appearance, :string, values: [nil | ~w(soft outline dash ghost link)], default: nil
+  attr :size, :string, values: ~w(xs sm md lg xl), default: "md"
+  attr :shape, :string, values: [nil | ~w(square circle wide block)], default: nil
   attr :class, :any, default: nil
 
   attr :rest, :global,
@@ -30,7 +40,9 @@ defmodule ExoUI.Components.Core do
       :if={@link? && !@disabled?}
       data-exo="btn"
       data-variant={@variant}
+      data-appearance={@appearance}
       data-size={@size}
+      data-shape={@shape}
       class={@class}
       {@rest}
     >
@@ -40,7 +52,9 @@ defmodule ExoUI.Components.Core do
       :if={@link? && @disabled?}
       data-exo="btn"
       data-variant={@variant}
+      data-appearance={@appearance}
       data-size={@size}
+      data-shape={@shape}
       data-disabled=""
       role="link"
       aria-disabled="true"
@@ -53,7 +67,9 @@ defmodule ExoUI.Components.Core do
       :if={!@link?}
       data-exo="btn"
       data-variant={@variant}
+      data-appearance={@appearance}
       data-size={@size}
+      data-shape={@shape}
       data-disabled={@disabled? && ""}
       class={@class}
       {@button_rest}
@@ -66,9 +82,17 @@ defmodule ExoUI.Components.Core do
   defp button_link?(rest), do: rest[:href] || rest[:navigate] || rest[:patch]
   defp button_disabled?(value), do: value in [true, "true", "disabled", ""]
 
-  @doc "Renders an inline badge/tag."
+  @doc """
+  Renders an inline badge/tag (daisyUI's `badge`).
+
+  `variant` is the colour: `neutral`, `primary`, `secondary`, `accent`, `info`,
+  `success`, `warning`, `error` (`danger` is `error`); `nil` is daisyUI's plain
+  badge on the page colour. `appearance` is daisyUI's style: `soft`, `outline`,
+  `dash`, `ghost`.
+  """
   attr :variant, :string, default: "primary"
-  attr :size, :string, values: ~w(sm md lg), default: "md"
+  attr :appearance, :string, values: [nil | ~w(soft outline dash ghost)], default: nil
+  attr :size, :string, values: ~w(xs sm md lg xl), default: "md"
   attr :icon, :string, default: nil
   attr :class, :any, default: nil
   attr :rest, :global
@@ -76,15 +100,27 @@ defmodule ExoUI.Components.Core do
 
   def badge(assigns) do
     ~H"""
-    <span data-exo="badge" data-variant={@variant} data-size={@size} class={@class} {@rest}>
+    <span
+      data-exo="badge"
+      data-variant={@variant}
+      data-appearance={@appearance}
+      data-size={@size}
+      class={@class}
+      {@rest}
+    >
       <.icon :if={@icon} name={@icon} size="xs" />
       {render_slot(@inner_block)}
     </span>
     """
   end
 
-  @doc "Renders a horizontal or vertical separator line."
+  @doc """
+  Renders a horizontal or vertical separator line (daisyUI's `divider`).
+  `variant` colours the line: `neutral`, `primary`, `secondary`, `accent`,
+  `info`, `success`, `warning`, `error` (`danger` is `error`).
+  """
   attr :orientation, :string, values: ~w(horizontal vertical), default: "horizontal"
+  attr :variant, :string, default: nil
   attr :decorative, :boolean, default: true
   attr :label, :string, default: nil
   attr :class, :any, default: nil
@@ -95,6 +131,7 @@ defmodule ExoUI.Components.Core do
     <div
       data-exo="separator"
       data-orientation={@orientation}
+      data-variant={@variant}
       data-decorative={if @decorative, do: "true", else: "false"}
       role={if @decorative, do: nil, else: "separator"}
       aria-hidden={if @decorative, do: "true"}
@@ -575,8 +612,17 @@ defmodule ExoUI.Components.Core do
     """
   end
 
-  @doc "Renders a loading spinner."
-  attr :size, :string, values: ~w(sm md lg), default: "md"
+  @doc """
+  Renders a loading indicator (daisyUI's `loading`). `appearance` picks
+  daisyUI's animation: `spinner` (the default), `dots`, `ring`, `ball`,
+  `bars`, `infinity`. It takes the text colour of its parent.
+  """
+  attr :size, :string, values: ~w(xs sm md lg xl), default: "md"
+
+  attr :appearance, :string,
+    values: [nil | ~w(spinner dots ring ball bars infinity)],
+    default: nil
+
   attr :label, :string, default: "Loading"
   attr :class, :any, default: nil
   attr :rest, :global
@@ -586,6 +632,7 @@ defmodule ExoUI.Components.Core do
     <div
       data-exo="spinner"
       data-size={@size}
+      data-appearance={@appearance}
       role="status"
       aria-label={@label}
       class={@class}
@@ -610,15 +657,22 @@ defmodule ExoUI.Components.Core do
     """
   end
 
-  @doc "Renders a keyboard shortcut indicator."
+  @doc "Renders a keyboard shortcut indicator (daisyUI's `kbd`)."
   attr :label, :string, default: nil
+  attr :size, :string, values: [nil | ~w(xs sm md lg xl)], default: nil
   attr :class, :any, default: nil
   attr :rest, :global
   slot :inner_block, required: true
 
   def kbd(assigns) do
     ~H"""
-    <kbd data-exo="kbd" aria-label={@label} class={@class} {@rest}>{render_slot(@inner_block)}</kbd>
+    <kbd
+      data-exo="kbd"
+      data-size={@size}
+      aria-label={@label}
+      class={@class}
+      {@rest}
+    >{render_slot(@inner_block)}</kbd>
     """
   end
 
@@ -703,8 +757,12 @@ defmodule ExoUI.Components.Core do
     """
   end
 
-  @doc "Renders a mobile bottom navigation bar with icon items."
+  @doc """
+  Renders a mobile bottom navigation bar with icon items (daisyUI's `dock`).
+  It stays in the flow of the page; the host fixes it to the viewport.
+  """
   attr :target, :any, default: nil, doc: "optional phx-target for click-based items"
+  attr :size, :string, values: [nil | ~w(xs sm md lg xl)], default: nil
   attr :class, :any, default: nil
   attr :rest, :global
 
@@ -721,7 +779,7 @@ defmodule ExoUI.Components.Core do
 
   def bottom_nav(assigns) do
     ~H"""
-    <nav data-exo="bottom-nav" class={@class} {@rest}>
+    <nav data-exo="bottom-nav" data-size={@size} class={@class} {@rest}>
       <%= for item <- @item do %>
         <button
           :if={item[:click]}
@@ -786,10 +844,14 @@ defmodule ExoUI.Components.Core do
     """
   end
 
-  @doc "Renders a toggle that swaps between two elements."
+  @doc """
+  Renders a toggle that swaps between two elements (daisyUI's `swap`).
+  `appearance` is daisyUI's transition: `rotate` or `flip`; none fades.
+  """
   attr :id, :string, required: true
   attr :active, :boolean, default: false
   attr :label, :string, default: "Toggle"
+  attr :appearance, :string, values: [nil | ~w(rotate flip)], default: nil
   attr :class, :any, default: nil
   attr :rest, :global
   slot :on, required: true
@@ -799,6 +861,7 @@ defmodule ExoUI.Components.Core do
     ~H"""
     <label
       data-exo="swap"
+      data-appearance={@appearance}
       id={@id}
       class={@class}
       role="switch"

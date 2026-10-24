@@ -110,13 +110,15 @@ test.describe("data and feedback components", () => {
     // with trg24's foreground error text was brown (66 for 27) and info teal
     // (178 for 250), TRG-346. In oklab the text drifts at most about 4 degrees
     // from its kind; in oklch at least 14. null keeps the theme's foreground.
+    // Since the daisyUI theme the tinted alert is `appearance="soft"` (a solid
+    // alert's text is the kind's `-content` colour), mixed with base-content.
     const foregrounds = [
       ["light", null],
       ["dark", null],
       ["light", "oklch(20% 0.006 106)"],
       ["dark", "oklch(96% 0.004 106)"]
     ];
-    const tokens = { info: "--exo-info", success: "--exo-success", warning: "--exo-warning", error: "--exo-danger" };
+    const tokens = { info: "--exo-info", success: "--exo-success", warning: "--exo-warning", error: "--exo-error" };
 
     for (const [theme, foreground] of foregrounds) {
       const alerts = await story(page).evaluate(
@@ -147,11 +149,12 @@ test.describe("data and feedback components", () => {
           return [...root.querySelectorAll('[data-exo="alert"]')].map((alert) => {
             const wrapper = alert.parentElement;
             wrapper.setAttribute("data-theme", themeName);
+            alert.setAttribute("data-appearance", "soft");
 
             if (foreground) {
-              wrapper.style.setProperty("--exo-foreground", foreground);
+              wrapper.style.setProperty("--exo-base-content", foreground);
             } else {
-              wrapper.style.removeProperty("--exo-foreground");
+              wrapper.style.removeProperty("--exo-base-content");
             }
 
             const message = alert.querySelector('[data-exo="alert-message"]');
@@ -159,7 +162,7 @@ test.describe("data and feedback components", () => {
 
             return {
               kind: alert.dataset.kind,
-              foreground: getComputedStyle(alert).getPropertyValue("--exo-foreground").trim(),
+              foreground: getComputedStyle(alert).getPropertyValue("--exo-base-content").trim(),
               expected: hue(rgb(kind)),
               actual: hue(rgb(getComputedStyle(message).color))
             };

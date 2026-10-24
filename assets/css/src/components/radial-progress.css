@@ -1,51 +1,116 @@
+/*
+ * daisyUI 5 `.radial-progress` (components/radialprogress.css, v5.7.50).
+ *
+ * daisyUI draws the ring with a conic gradient under a radial mask; ExoUI
+ * draws it with an SVG circle. The geometry is daisyUI's: the ring fills the
+ * box (`--size`, 5rem), it is a tenth of the size thick, it has round ends and
+ * no track, and the arc and the label are `currentColor`. In the 100-unit
+ * viewBox that is r=45 with a stroke of 10.
+ *
+ *   data-variant  base | neutral | primary | secondary | accent | info |
+ *                 success | warning | error; `danger` is `error`; none is
+ *                 `primary` (ExoUI's default), `base` the content colour
+ *                 (daisyUI's plain `.radial-progress`)
+ *   data-size     sm (3rem) | md (5rem, daisyUI's) | lg (7rem): ExoUI's steps,
+ *                 daisyUI sets `--size` by hand
+ */
+
+/* --- base (l1.l2.l3) --- */
+
 :where([data-exo="radial-progress"]) {
+  --size: 5rem;
   position: relative;
   display: inline-grid;
-  place-items: center;
-  width: 5rem;
-  height: 5rem;
-  color: var(--exo-primary);
+  place-content: center;
+  flex-shrink: 0;
+  vertical-align: middle;
+  box-sizing: content-box;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 9999px;
+  background-color: transparent;
+  color: var(--exo-base-content);
   font-family: var(--exo-font);
 }
 
-:where([data-exo="radial-progress"][data-size="sm"]) {
-  width: 3rem;
-  height: 3rem;
-}
-
-:where([data-exo="radial-progress"][data-size="lg"]) {
-  width: 7rem;
-  height: 7rem;
-}
-
 :where([data-exo="radial-progress"] svg) {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
 }
 
+/* daisyUI's ring has no track. */
 :where([data-exo="radial-progress-track"]) {
-  color: var(--exo-muted-foreground);
+  display: none;
 }
 
 :where([data-exo="radial-progress-fill"]) {
-  transition: stroke-dashoffset 300ms var(--exo-easing);
+  transition: stroke-dashoffset 0.3s linear;
 }
 
 :where([data-exo="radial-progress-label"]) {
-  position: absolute;
-  inset: 0;
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--exo-foreground);
-  font-size: var(--exo-text-sm);
-  font-weight: 700;
 }
 
-:where([data-exo="radial-progress"][data-size="sm"] [data-exo="radial-progress-label"]) {
-  font-size: var(--exo-text-xs);
+@media (forced-colors: active) {
+  :where([data-exo="radial-progress"] svg, [data-exo="radial-progress-label"]) {
+    color: CanvasText;
+    forced-color-adjust: none;
+  }
 }
 
-:where([data-exo="radial-progress"][data-size="lg"] [data-exo="radial-progress-label"]) {
-  font-size: var(--exo-text-base);
+/* --- sizes --- */
+
+:where([data-exo="radial-progress"][data-size="sm"]) {
+  --size: 3rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+:where([data-exo="radial-progress"][data-size="lg"]) {
+  --size: 7rem;
+}
+
+/* --- colours --- */
+
+:where(
+  [data-exo="radial-progress"]:not([data-variant]),
+  [data-exo="radial-progress"][data-variant="primary"]
+) {
+  color: var(--exo-primary);
+}
+
+:where([data-exo="radial-progress"][data-variant="secondary"]) {
+  color: var(--exo-secondary);
+}
+
+:where([data-exo="radial-progress"][data-variant="accent"]) {
+  color: var(--exo-accent);
+}
+
+:where([data-exo="radial-progress"][data-variant="neutral"]) {
+  color: var(--exo-neutral);
+}
+
+:where([data-exo="radial-progress"][data-variant="info"]) {
+  color: var(--exo-info);
+}
+
+:where([data-exo="radial-progress"][data-variant="success"]) {
+  color: var(--exo-success);
+}
+
+:where([data-exo="radial-progress"][data-variant="warning"]) {
+  color: var(--exo-warning);
+}
+
+:where(
+  [data-exo="radial-progress"][data-variant="error"],
+  [data-exo="radial-progress"][data-variant="danger"]
+) {
+  color: var(--exo-error);
 }

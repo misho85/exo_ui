@@ -364,7 +364,7 @@ test.describe("form controls", () => {
 
       for (const [name, value] of [
         ["--exo-primary", primary],
-        ["--exo-primary-foreground", foreground]
+        ["--exo-primary-content", foreground]
       ]) {
         if (value) scope.style.setProperty(name, value);
         else scope.style.removeProperty(name);
@@ -383,18 +383,18 @@ test.describe("form controls", () => {
         const indicator = radio.nextElementSibling;
         settle(indicator);
         const style = getComputedStyle(indicator);
-        // The ring right around the dot is the inset shadow. Before TRG-452 it
-        // was the page colour around a --exo-primary dot; a focus ring that
-        // replaces it leaves no inset shadow, and then the dot has no ring.
-        const inset = style.boxShadow.match(/(?:^|,\s*)((?:rgba?|oklch|oklab|lab|lch|color)\([^)]*\))[^,]*\binset\b/);
-        const ring = inset ? inset[1] : style.backgroundColor;
+        // daisyUI's radio: the dot is the indicator's ::before and the ring
+        // around it is the indicator's own fill. Before TRG-452 the ring was the
+        // page colour around a --exo-primary dot, and the dot vanished on it.
+        const dot = getComputedStyle(indicator, "::before").backgroundColor;
+        const ring = rgb(style.backgroundColor, ground);
 
         return {
           card: getComputedStyle(scope).getPropertyValue("--exo-card").trim(),
           checked: radio.checked,
           focusVisible: radio.matches(":focus-visible"),
-          ring: style.boxShadow,
-          dot: ratio(rgb(style.backgroundColor, ground), rgb(ring, ground))
+          ring: style.backgroundColor,
+          dot: ratio(rgb(dot, ring), ring)
         };
       }
 

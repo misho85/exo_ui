@@ -1,3 +1,16 @@
+/*
+ * daisyUI 5 `.radio` (components/radio.css, v5.7.50), value for value.
+ *
+ * The native input is hidden; daisyUI's circle is the indicator span next to
+ * it and its dot is the indicator's `::before`. Same order as button.css:
+ * base, checked, colours, disabled, sizes.
+ *
+ *   data-variant  (on the group) base | neutral | primary | secondary |
+ *                 accent | info | success | warning | error; `danger` is
+ *                 `error`; none is `primary` once checked (below)
+ *   data-size     (on the group) xs | sm | md | lg | xl
+ */
+
 :where([data-exo="radio-group"]) {
   display: flex;
   flex-direction: column;
@@ -11,7 +24,7 @@
   font-family: var(--exo-font);
   font-size: var(--exo-text-sm);
   font-weight: 500;
-  color: var(--exo-foreground);
+  color: var(--exo-base-content);
   margin-bottom: var(--exo-space-1);
 }
 
@@ -21,7 +34,7 @@
   gap: var(--exo-space-2);
   font-family: var(--exo-font);
   font-size: var(--exo-text-sm);
-  color: var(--exo-foreground);
+  color: var(--exo-base-content);
   cursor: pointer;
 }
 
@@ -33,8 +46,7 @@
  * absolutely positioned, so it takes no grid cell. The indicator and the label
  * share the first row and are centred in it, as in the one-row item, rather than
  * the indicator sitting in the middle of both rows. Centring, not a margin worked
- * out from the line height: the indicator is 16px under `border-box` and 20px
- * under `content-box`, and the library does not choose the host's box model.
+ * out from the line height, so the row follows the indicator's size.
  */
 :where([data-exo="radio-item"]:has([data-exo="radio-description"])) {
   display: grid;
@@ -57,60 +69,201 @@
   height: 0;
 }
 
-:where([data-exo="radio-indicator"]) {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1rem;
-  height: 1rem;
-  border-radius: 50%;
-  /* Same reason as the checkbox: --exo-input is about 1.3:1 on the page. */
-  border: 2px solid var(--exo-muted-foreground);
-  background: var(--exo-background);
-  flex-shrink: 0;
-  transition: border-color var(--exo-duration) var(--exo-easing),
-              background var(--exo-duration) var(--exo-easing);
-}
+/* --- base (l1.l2.l3) --- */
 
 /*
- * A checked radio is filled with --exo-primary and keeps a dot of
- * --exo-primary-foreground, as a checked checkbox keeps its check: the pair a
- * theme keeps readable for its primary buttons. It was a ring and a dot of
- * --exo-primary with the page showing between them, so the mark was the brand
- * colour on the page. A theme that sets one brand colour for light and dark, as
- * a storefront does, cannot keep that visible on both: the dot was 1.11:1 for
- * #111827 in the dark theme and 2.09:1 for amber in the light one, and the
- * chosen option looked like no choice at all (TRG-452).
+ * The unchecked border is kept from before the port, as on the checkbox:
+ * daisyUI's is the text colour at 20%, about 1.3:1 on the page, and WCAG
+ * 1.4.11 asks 3:1 of a control's boundary. A colour variant borders in its
+ * colour, as in daisyUI. `--input-color` is reset so a parent's cannot leak in.
  */
-:where([data-exo="radio"]:checked + [data-exo="radio-indicator"]) {
-  border-color: var(--exo-primary);
-  background: var(--exo-primary-foreground);
-  box-shadow: inset 0 0 0 3px var(--exo-primary);
+:where([data-exo="radio-indicator"]) {
+  --input-color: initial;
+  --size: calc(var(--exo-size-selector, 0.25rem) * 6);
+  box-sizing: border-box;
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  vertical-align: middle;
+  cursor: pointer;
+  padding: 0.25rem;
+  width: var(--size);
+  height: var(--size);
+  border: var(--exo-border-width) solid var(--input-color, var(--exo-muted-foreground));
+  border-radius: 9999px;
+  box-shadow: 0 1px oklch(0% 0 0 / calc(var(--exo-depth) * 0.1)) inset;
+  color: var(--input-color, currentColor);
 }
 
-:where([data-exo="radio-group"][aria-invalid="true"] [data-exo="radio-indicator"]) {
-  border-color: var(--exo-danger);
+:where([data-exo="radio-indicator"])::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  background-size: auto, calc(var(--exo-noise, 0) * 100%);
+  background-image: none, var(--exo-fx-noise);
 }
 
 /*
- * Keyboard focus is an outline in --exo-ring, 2px wide and 2px off the
- * indicator, as on a toggle, a button or a tab. It was a 2px box-shadow of
- * --exo-ring at 25%: 1.43:1 and 1.36:1 against the card under trg24's light and
- * dark tokens, where WCAG 1.4.11 asks 3:1 of a focus indicator, so the option
- * the keyboard reached looked like every other one (TRG-461). An outline also
- * leaves box-shadow to the checked fill, which the focus rule had to repeat.
+ * Keyboard focus is an outline 2px wide in --exo-ring, where daisyUI's is the
+ * radio's own colour. It was a 2px box-shadow of --exo-ring at 25%: 1.43:1 and
+ * 1.36:1 against the card under trg24's light and dark tokens, where WCAG
+ * 1.4.11 asks 3:1 of a focus indicator (TRG-461); a brand colour as the ring
+ * would bring that back on the theme where it is close to the page.
  */
 :where([data-exo="radio"]:focus-visible + [data-exo="radio-indicator"]) {
   outline: 2px solid var(--exo-ring);
-  outline-offset: 2px;
 }
 
+/* --- checked (l1.l2.l3) --- */
+
+/*
+ * daisyUI's checked radio is a ring and a dot in the radio's colour with
+ * base-100 between them. Without a variant and for `primary`, the space
+ * between them is primary-content instead, the pair a theme keeps readable
+ * for its primary buttons. A storefront sets one brand colour for light and
+ * dark, and a dot of that colour on the page vanished in one of them: 1.11:1
+ * for #111827 in the dark theme, 2.09:1 for amber in the light one (TRG-452).
+ * Under daisyUI's own themes primary-content is close to base-100, so the look
+ * barely moves.
+ */
+:where([data-exo="radio"]:checked + [data-exo="radio-indicator"]) {
+  background-color: var(--radio-gap, var(--exo-base-100));
+  border-color: currentColor;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :where([data-exo="radio"]:checked + [data-exo="radio-indicator"]) {
+    animation: exo-radio 0.2s ease-out;
+  }
+}
+
+:where([data-exo="radio"]:checked + [data-exo="radio-indicator"])::before {
+  background-color: currentColor;
+  box-shadow:
+    0 -1px oklch(0% 0 0 / calc(var(--exo-depth) * 0.1)) inset,
+    0 8px 0 -4px oklch(100% 0 0 / calc(var(--exo-depth) * 0.1)) inset,
+    0 1px oklch(0% 0 0 / calc(var(--exo-depth) * 0.1));
+}
+
+@media (forced-colors: active) {
+  :where([data-exo="radio"]:checked + [data-exo="radio-indicator"])::before {
+    outline-style: solid;
+    outline-width: 1px;
+    outline-offset: -1px;
+  }
+}
+
+@media print {
+  :where([data-exo="radio"]:checked + [data-exo="radio-indicator"])::before {
+    outline: 0.25rem solid;
+    outline-offset: -1rem;
+  }
+}
+
+/* --- colours (l1.l2) --- */
+
+:where(
+  [data-exo="radio-group"]:not([data-variant]) [data-exo="radio"]:checked + [data-exo="radio-indicator"],
+  [data-exo="radio-group"][data-variant="primary"] [data-exo="radio-indicator"]
+) {
+  --input-color: var(--exo-primary);
+  --radio-gap: var(--exo-primary-content);
+}
+
+:where([data-exo="radio-group"][data-variant="secondary"] [data-exo="radio-indicator"]) {
+  --input-color: var(--exo-secondary);
+}
+
+:where([data-exo="radio-group"][data-variant="accent"] [data-exo="radio-indicator"]) {
+  --input-color: var(--exo-accent);
+}
+
+:where([data-exo="radio-group"][data-variant="neutral"] [data-exo="radio-indicator"]) {
+  --input-color: var(--exo-neutral);
+}
+
+:where([data-exo="radio-group"][data-variant="info"] [data-exo="radio-indicator"]) {
+  --input-color: var(--exo-info);
+}
+
+:where([data-exo="radio-group"][data-variant="success"] [data-exo="radio-indicator"]) {
+  --input-color: var(--exo-success);
+}
+
+:where([data-exo="radio-group"][data-variant="warning"] [data-exo="radio-indicator"]) {
+  --input-color: var(--exo-warning);
+}
+
+:where(
+  [data-exo="radio-group"][data-variant="error"] [data-exo="radio-indicator"],
+  [data-exo="radio-group"][data-variant="danger"] [data-exo="radio-indicator"]
+) {
+  --input-color: var(--exo-error);
+}
+
+/* `base` is daisyUI's plain radio: the text colour, no `--input-color`. */
+
+/* An invalid group is daisyUI's `.validator` state: the error colour. */
+:where([data-exo="radio-group"][aria-invalid="true"] [data-exo="radio-indicator"]) {
+  --input-color: var(--exo-error);
+  --radio-gap: initial;
+}
+
+/* The same 3:1 edge as an invalid empty checkbox (see checkbox.css). */
+:where([data-exo="radio-group"][aria-invalid="true"] [data-exo="radio"]:not(:checked) + [data-exo="radio-indicator"]) {
+  border-color: color-mix(in oklab, var(--exo-error) 70%, var(--exo-base-content));
+}
+
+/* --- disabled (l1.l2) --- */
+
 :where([data-exo="radio"]:disabled + [data-exo="radio-indicator"]) {
-  opacity: 0.5;
   cursor: not-allowed;
+  opacity: 0.2;
 }
 
 :where([data-exo="radio-item"]:has([data-exo="radio"]:disabled)) {
-  opacity: 0.5;
   cursor: not-allowed;
+}
+
+:where([data-exo="radio-item"]:has([data-exo="radio"]:disabled) > :not([data-exo="radio"], [data-exo="radio-indicator"])) {
+  opacity: 0.5;
+}
+
+/* --- sizes (l1.l2) --- */
+
+:where([data-exo="radio-group"][data-size="xs"] [data-exo="radio-indicator"]) {
+  padding: 0.125rem;
+  --size: calc(var(--exo-size-selector, 0.25rem) * 4);
+}
+
+:where([data-exo="radio-group"][data-size="sm"] [data-exo="radio-indicator"]) {
+  padding: 0.1875rem;
+  --size: calc(var(--exo-size-selector, 0.25rem) * 5);
+}
+
+:where([data-exo="radio-group"][data-size="md"] [data-exo="radio-indicator"]) {
+  padding: 0.25rem;
+  --size: calc(var(--exo-size-selector, 0.25rem) * 6);
+}
+
+:where([data-exo="radio-group"][data-size="lg"] [data-exo="radio-indicator"]) {
+  padding: 0.3125rem;
+  --size: calc(var(--exo-size-selector, 0.25rem) * 7);
+}
+
+:where([data-exo="radio-group"][data-size="xl"] [data-exo="radio-indicator"]) {
+  padding: 0.375rem;
+  --size: calc(var(--exo-size-selector, 0.25rem) * 8);
+}
+
+@keyframes exo-radio {
+  0% {
+    padding: 5px;
+  }
+
+  50% {
+    padding: 3px;
+  }
 }

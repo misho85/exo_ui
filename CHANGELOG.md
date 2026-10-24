@@ -2,6 +2,28 @@
 
 ## Unreleased
 
+- **The theme and the components are daisyUI 5's** (v5.7.50, MIT), value for
+  value. Breaking for the look of every app; the attributes are compatible.
+  - Tokens: daisyUI's set under `--exo-` — `base-100/200/300`,
+    `base-content`, `primary` … `error` each with `-content`,
+    `radius-selector/field/box`, `size-selector/field`, `border-width`,
+    `depth`, `noise`. The default themes are daisyUI's `light` and `dark`.
+    The old names (`--exo-background`, `--exo-card`, `--exo-muted`,
+    `--exo-border`, `--exo-*-foreground`, `--exo-radius` …) are derived from
+    them on every theme root, so a host that sets them still wins.
+    `--exo-accent` is now daisyUI's accent colour, not a hover surface.
+  - All 35 daisyUI themes in `priv/static/exo.themes.css` (`data-theme`),
+    written by `scripts/import_daisy_themes.js`.
+  - Components take daisyUI's colours (`variant`: neutral, primary,
+    secondary, accent, info, success, warning, error; `danger` is `error`),
+    styles (`appearance`: soft, outline, dash, ghost, link … where daisyUI
+    has them) and sizes xs–xl. No `variant` keeps meaning primary.
+  - Controls are `--exo-size-field * 10` high at md: 40px by default, was
+    32px. `--exo-size-field: 0.2rem` gives 32px back.
+  - Theme generator at `/theme-generator` in the storybook: daisyUI's,
+    for ExoUI — themes, colours with contrast, radii, sizes, border, depth,
+    noise, CSS for ExoUI or daisyUI, a link that carries the theme.
+
 - `content_card/1` `collapsible` (TRG-807): the card is a `<details>` row —
   title, a `summary` of the state and a chevron in the header, the body under
   it. The fields stay in the DOM, so a form across several cards still submits

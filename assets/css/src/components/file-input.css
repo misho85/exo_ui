@@ -1,50 +1,284 @@
+/*
+ * daisyUI 5 `.file-input` (components/fileinput.css, v5.7.50), value for
+ * value: a field like `.input` whose "choose file" button is a base-200
+ * `.btn` set into its start edge.
+ *
+ *   data-variant     neutral | primary | secondary | accent | info | success |
+ *                    warning | error; `danger` is `error`; the button takes
+ *                    the colour and the border too
+ *   data-appearance  ghost
+ *   data-size        xs | sm | md | lg | xl
+ *   data-invalid     the `error` colour of the border, as for `input`
+ *
+ * daisyUI's width is `clamp(3rem, 20rem, 100%)`; ExoUI's file input keeps the
+ * full width of its field, as before.
+ *
+ * Order: base (l1.l2.l3), then ghost, colours, sizes, disabled (l1.l2).
+ */
+
+/* --- base (l1.l2.l3) --- */
+
 :where([data-exo="file-input"]) {
-  display: block;
+  --size: calc(var(--exo-size-field, 0.25rem) * 10);
+  --input-color: color-mix(in oklab, var(--exo-base-content) 20%, #0000);
+  display: inline-flex;
+  appearance: none;
+  align-items: center;
+  box-sizing: border-box;
   width: 100%;
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  color: var(--exo-foreground);
-  padding: var(--exo-space-2);
-  border: 1px solid var(--exo-border);
-  border-radius: var(--exo-radius);
-  background: transparent;
+  height: var(--size);
+  margin: 0;
+  padding: 0;
+  padding-inline-end: 0.75rem;
+  vertical-align: middle;
+  user-select: none;
   cursor: pointer;
+  font-family: var(--exo-font);
+  font-size: 0.875rem;
+  line-height: 2;
+  color: inherit;
+  background-color: var(--exo-base-100);
+  border: var(--exo-border-width) solid #0000;
+  border-color: var(--input-color);
+  border-start-start-radius: var(--join-ss, var(--exo-radius-field));
+  border-start-end-radius: var(--join-se, var(--exo-radius-field));
+  border-end-start-radius: var(--join-es, var(--exo-radius-field));
+  border-end-end-radius: var(--join-ee, var(--exo-radius-field));
+  box-shadow:
+    0 1px color-mix(in oklab, var(--input-color) calc(var(--exo-depth) * 10%), #0000) inset,
+    0 -1px oklch(100% 0 0 / calc(var(--exo-depth) * 0.1)) inset;
 }
 
 :where([data-exo="file-input"])::file-selector-button {
-  font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  font-weight: 500;
-  color: var(--exo-foreground);
-  background: var(--exo-muted);
-  border: 1px solid var(--exo-border);
-  border-radius: var(--exo-radius);
-  padding: var(--exo-space-1) var(--exo-space-3);
-  margin-right: var(--exo-space-3);
+  --btn-bg: var(--btn-color, var(--exo-base-200));
+  --btn-fg: var(--exo-base-content);
+  --btn-border: color-mix(in oklab, var(--btn-bg), #000 5%);
+  --btn-shadow:
+    0 3px 2px -2px color-mix(in oklab, var(--btn-bg) 30%, #0000),
+    0 4px 3px -2px color-mix(in oklab, var(--btn-bg) 30%, #0000);
+  height: calc(100% + var(--exo-border-width) * 2);
+  margin-block: calc(var(--exo-border-width) * -1);
+  margin-inline-start: calc(var(--exo-border-width) * -1);
+  margin-inline-end: 1rem;
+  padding-block: 0;
+  padding-inline: 1rem;
   cursor: pointer;
+  user-select: none;
+  font-family: var(--exo-font);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--btn-fg);
+  border-width: var(--exo-border-width);
+  border-style: solid;
+  border-color: var(--btn-border);
+  border-start-start-radius: calc(var(--join-ss, var(--exo-radius-field) - var(--exo-border-width)));
+  border-end-start-radius: calc(var(--join-es, var(--exo-radius-field) - var(--exo-border-width)));
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+  background-color: var(--btn-bg);
+  background-size: calc(var(--exo-noise) * 100%);
+  background-image: var(--exo-fx-noise);
+  text-shadow: 0 0.5px oklch(1 0 0 / calc(var(--exo-depth) * 0.15));
+  box-shadow:
+    0 0.5px 0 0.5px
+      color-mix(
+        in oklab,
+        color-mix(in oklab, white 30%, var(--btn-bg)) calc(var(--exo-depth) * 20%),
+        #0000
+      )
+      inset,
+    var(--btn-shadow);
 }
 
-:where([data-exo="file-input"])::file-selector-button:hover {
-  background: var(--exo-accent);
-}
-
-:where([data-exo="file-input"][data-invalid]) {
-  border-color: var(--exo-danger);
-}
-
-:where([data-exo="file-input"][data-invalid]):focus-visible {
-  outline: 2px solid color-mix(in oklch, var(--exo-danger) 35%, transparent);
+:where([data-exo="file-input"]:focus) {
+  --input-color: var(--exo-base-content);
+  box-shadow: 0 1px color-mix(in oklab, var(--input-color) 10%, #0000);
+  outline: 2px solid var(--input-color);
   outline-offset: 2px;
+  isolation: isolate;
 }
 
 :where([data-exo="file-input-selected"]) {
   font-family: var(--exo-font);
-  font-size: var(--exo-text-xs);
-  color: var(--exo-muted-foreground);
+  font-size: 0.75rem;
+  color: color-mix(in oklab, currentColor 60%, transparent);
   overflow-wrap: anywhere;
 }
 
-:where([data-exo="file-input"]:disabled) {
-  opacity: 0.5;
+/* --- ghost (l1.l2) --- */
+
+:where([data-exo="file-input"][data-appearance="ghost"]) {
+  background-color: transparent;
+  transition: background-color 0.2s;
+  box-shadow: none;
+  border-color: #0000;
+}
+
+:where([data-exo="file-input"][data-appearance="ghost"])::file-selector-button {
+  height: 100%;
+  margin-block: 0;
+  margin-inline-start: 0;
+  margin-inline-end: 1rem;
+  padding-inline: 1rem;
+  border-start-end-radius: calc(var(--join-ss, var(--exo-radius-field) - var(--exo-border-width)));
+  border-end-end-radius: calc(var(--join-es, var(--exo-radius-field) - var(--exo-border-width)));
+}
+
+:where([data-exo="file-input"][data-appearance="ghost"]:focus) {
+  color: var(--exo-base-content);
+  background-color: var(--exo-base-100);
+  border-color: #0000;
+  box-shadow: none;
+}
+
+/* --- colours (l1.l2) --- */
+
+:where([data-exo="file-input"][data-variant="neutral"]) {
+  --btn-color: var(--exo-neutral);
+  --input-color: var(--exo-neutral);
+}
+
+:where([data-exo="file-input"][data-variant="neutral"])::file-selector-button {
+  color: var(--exo-neutral-content);
+}
+
+:where([data-exo="file-input"][data-variant="primary"]) {
+  --btn-color: var(--exo-primary);
+  --input-color: var(--exo-primary);
+}
+
+:where([data-exo="file-input"][data-variant="primary"])::file-selector-button {
+  color: var(--exo-primary-content);
+}
+
+:where([data-exo="file-input"][data-variant="secondary"]) {
+  --btn-color: var(--exo-secondary);
+  --input-color: var(--exo-secondary);
+}
+
+:where([data-exo="file-input"][data-variant="secondary"])::file-selector-button {
+  color: var(--exo-secondary-content);
+}
+
+:where([data-exo="file-input"][data-variant="accent"]) {
+  --btn-color: var(--exo-accent);
+  --input-color: var(--exo-accent);
+}
+
+:where([data-exo="file-input"][data-variant="accent"])::file-selector-button {
+  color: var(--exo-accent-content);
+}
+
+:where([data-exo="file-input"][data-variant="info"]) {
+  --btn-color: var(--exo-info);
+  --input-color: var(--exo-info);
+}
+
+:where([data-exo="file-input"][data-variant="info"])::file-selector-button {
+  color: var(--exo-info-content);
+}
+
+:where([data-exo="file-input"][data-variant="success"]) {
+  --btn-color: var(--exo-success);
+  --input-color: var(--exo-success);
+}
+
+:where([data-exo="file-input"][data-variant="success"])::file-selector-button {
+  color: var(--exo-success-content);
+}
+
+:where([data-exo="file-input"][data-variant="warning"]) {
+  --btn-color: var(--exo-warning);
+  --input-color: var(--exo-warning);
+}
+
+:where([data-exo="file-input"][data-variant="warning"])::file-selector-button {
+  color: var(--exo-warning-content);
+}
+
+:where([data-exo="file-input"]:is([data-variant="error"], [data-variant="danger"])) {
+  --btn-color: var(--exo-error);
+  --input-color: var(--exo-error);
+}
+
+:where([data-exo="file-input"]:is([data-variant="error"], [data-variant="danger"]))::file-selector-button {
+  color: var(--exo-error-content);
+}
+
+/* An invalid field gets the error border, as `input` does; its button keeps
+   the colour it was given. */
+:where([data-exo="file-input"][data-invalid]) {
+  --input-color: var(--exo-error);
+}
+
+/* --- sizes (l1.l2) --- */
+
+:where([data-exo="file-input"][data-size="xs"]) {
+  --size: calc(var(--exo-size-field, 0.25rem) * 6);
+  font-size: 0.6875rem;
+  line-height: 1rem;
+}
+
+:where([data-exo="file-input"][data-size="xs"])::file-selector-button {
+  font-size: 0.6875rem;
+}
+
+:where([data-exo="file-input"][data-size="sm"]) {
+  --size: calc(var(--exo-size-field, 0.25rem) * 8);
+  font-size: 0.75rem;
+  line-height: 1.5rem;
+}
+
+:where([data-exo="file-input"][data-size="sm"])::file-selector-button {
+  font-size: 0.75rem;
+}
+
+:where([data-exo="file-input"][data-size="md"]) {
+  --size: calc(var(--exo-size-field, 0.25rem) * 10);
+  font-size: 0.875rem;
+  line-height: 2;
+}
+
+:where([data-exo="file-input"][data-size="md"])::file-selector-button {
+  font-size: 0.875rem;
+}
+
+:where([data-exo="file-input"][data-size="lg"]) {
+  --size: calc(var(--exo-size-field, 0.25rem) * 12);
+  font-size: 1.125rem;
+  line-height: 2.5rem;
+}
+
+:where([data-exo="file-input"][data-size="lg"])::file-selector-button {
+  font-size: 1.125rem;
+}
+
+:where([data-exo="file-input"][data-size="xl"]) {
+  --size: calc(var(--exo-size-field, 0.25rem) * 14);
+  padding-inline-end: 1.5rem;
+  font-size: 1.125rem;
+  line-height: 3rem;
+}
+
+:where([data-exo="file-input"][data-size="xl"])::file-selector-button {
+  font-size: 1.375rem;
+}
+
+/* --- disabled (l1.l2) --- */
+
+:where([data-exo="file-input"]:disabled, fieldset:disabled [data-exo="file-input"]) {
   cursor: not-allowed;
+  color: color-mix(in oklch, var(--exo-base-content) 20%, transparent);
+  border-color: var(--exo-base-200);
+  background-color: var(--exo-base-200);
+  box-shadow: none;
+}
+
+:where([data-exo="file-input"]:disabled, fieldset:disabled [data-exo="file-input"])::file-selector-button {
+  --btn-border: #0000;
+  --btn-fg: color-mix(in oklch, var(--exo-base-content) 20%, transparent);
+  cursor: not-allowed;
+  border-color: var(--exo-base-200);
+  background-color: var(--exo-base-200);
+  background-image: none;
 }

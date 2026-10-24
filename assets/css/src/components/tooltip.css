@@ -1,3 +1,23 @@
+/*
+ * daisyUI 5 `.tooltip` (components/tooltip.css, v5.7.50).
+ *
+ * daisyUI's values: `neutral` behind `neutral-content`, `--radius-field`,
+ * 0.25rem by 0.5rem padding, 0.875rem text at weight 400 and line height
+ * 1.25, centred, up to 20rem wide, 0.5rem off the trigger, with daisyUI's
+ * curved tail (the same SVG mask, 0.625rem by 0.25rem) in the gap. It fades
+ * in over 0.2s while sliding 0.25rem away from the trigger.
+ *
+ * daisyUI draws the tooltip with pseudo-elements of the trigger; ExoUI's is
+ * a popover beside it, so the tail is the popover's `::after`, and the
+ * entry is `@starting-style`. The exit is instant: Safari has no `overlay`,
+ * so a popover that transitions out loses its anchor and flashes elsewhere.
+ *
+ *   data-variant  neutral (default) | primary | secondary | accent | info |
+ *                 success | warning | error; `danger` is `error`
+ *   data-side     top | bottom | left | right
+ *   data-align    start | center | end
+ */
+
 :where([data-exo="tooltip"]) {
   position: relative;
   display: inline-flex;
@@ -7,9 +27,7 @@
   display: inline-flex;
 }
 
-/* Override UA popover defaults (needs real specificity).
- * Transition on :popover-open only — exit is instant to avoid
- * Safari flash (no `overlay` support → anchor positioning breaks on close). */
+/* Override UA popover defaults (needs real specificity). */
 [data-exo="tooltip-content"] {
   position: fixed;
   position-try-fallbacks: flip-block;
@@ -21,21 +39,67 @@
   visibility: hidden;
 }
 
-/* Themeable styles (zero specificity) */
+/* --- tooltip (l1.l2.l3) --- */
+
 :where([data-exo="tooltip-content"]) {
-  padding: var(--exo-space-1) var(--exo-space-2);
+  --tt-bg: var(--exo-neutral);
+  --tt-radius: min(var(--exo-radius-field), 0.8rem);
+  --tt-overlap: clamp(1px, calc(var(--exo-radius-field) / 8), 2px);
+  --tt-tail-off: max(0.5rem, var(--tt-radius));
+  overflow: visible;
+  width: max-content;
+  max-width: 20rem;
+  padding: 0.25rem 0.5rem;
+  border: 0;
+  border-radius: var(--exo-radius-field);
+  background-color: var(--tt-bg);
+  color: var(--exo-neutral-content);
   font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  font-weight: 500;
-  line-height: 1.4;
-  white-space: nowrap;
-  color: var(--exo-tooltip-fg);
-  background: var(--exo-tooltip-bg);
-  border-radius: var(--exo-radius);
-  box-shadow: var(--exo-shadow-md);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.25;
+  text-align: center;
+  white-space: normal;
 }
 
-/* --- Transform origin (scale grows from edge nearest the trigger) --- */
+/* --- colours (l1.l2) --- */
+
+:where([data-exo="tooltip-content"][data-variant="primary"]) {
+  --tt-bg: var(--exo-primary);
+  color: var(--exo-primary-content);
+}
+
+:where([data-exo="tooltip-content"][data-variant="secondary"]) {
+  --tt-bg: var(--exo-secondary);
+  color: var(--exo-secondary-content);
+}
+
+:where([data-exo="tooltip-content"][data-variant="accent"]) {
+  --tt-bg: var(--exo-accent);
+  color: var(--exo-accent-content);
+}
+
+:where([data-exo="tooltip-content"][data-variant="info"]) {
+  --tt-bg: var(--exo-info);
+  color: var(--exo-info-content);
+}
+
+:where([data-exo="tooltip-content"][data-variant="success"]) {
+  --tt-bg: var(--exo-success);
+  color: var(--exo-success-content);
+}
+
+:where([data-exo="tooltip-content"][data-variant="warning"]) {
+  --tt-bg: var(--exo-warning);
+  color: var(--exo-warning-content);
+}
+
+:where([data-exo="tooltip-content"][data-variant="error"], [data-exo="tooltip-content"][data-variant="danger"]) {
+  --tt-bg: var(--exo-error);
+  color: var(--exo-error-content);
+}
+
+/* --- Transform origin (the edge nearest the trigger) --- */
 
 :where([data-exo="tooltip-content"][data-side="top"])    { transform-origin: bottom center; }
 :where([data-exo="tooltip-content"][data-side="bottom"]) { transform-origin: top center; }
@@ -55,70 +119,100 @@
 [data-exo="tooltip-content"]:popover-open {
   opacity: 1;
   visibility: visible;
-  transition: opacity var(--exo-duration) var(--exo-easing),
-              transform var(--exo-duration) var(--exo-easing),
-              overlay var(--exo-duration) var(--exo-easing) allow-discrete,
-              display var(--exo-duration) var(--exo-easing) allow-discrete;
+  translate: 0 0;
 }
 
-@starting-style {
+@media (prefers-reduced-motion: no-preference) {
   [data-exo="tooltip-content"]:popover-open {
-    opacity: 0;
-    transform: scale(0.96);
+    transition:
+      opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      translate 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      overlay 0.2s cubic-bezier(0.4, 0, 0.2, 1) allow-discrete,
+      display 0.2s cubic-bezier(0.4, 0, 0.2, 1) allow-discrete;
   }
 }
 
-/* --- Position-area per side + align (needs real specificity) --- */
-/* Wrapped in @supports so margins only apply when anchor positioning is active.
-   Without this, the JS fallback path gets double-gap (GAP + CSS margin). */
-
-@supports (position-area: top) {
-  [data-exo="tooltip-content"][data-side="top"][data-align="start"]  { position-area: block-start span-inline-end;   margin-bottom: var(--exo-space-1); }
-  [data-exo="tooltip-content"][data-side="top"][data-align="center"] { position-area: block-start;                   margin-bottom: var(--exo-space-1); }
-  [data-exo="tooltip-content"][data-side="top"][data-align="end"]    { position-area: block-start span-inline-start; margin-bottom: var(--exo-space-1); }
-
-  [data-exo="tooltip-content"][data-side="bottom"][data-align="start"]  { position-area: block-end span-inline-end;   margin-top: var(--exo-space-1); }
-  [data-exo="tooltip-content"][data-side="bottom"][data-align="center"] { position-area: block-end;                   margin-top: var(--exo-space-1); }
-  [data-exo="tooltip-content"][data-side="bottom"][data-align="end"]    { position-area: block-end span-inline-start; margin-top: var(--exo-space-1); }
-
-  [data-exo="tooltip-content"][data-side="left"]  { position-area: inline-start; margin-right: var(--exo-space-1); }
-  [data-exo="tooltip-content"][data-side="right"] { position-area: inline-end;   margin-left: var(--exo-space-1);  }
+/* daisyUI starts 0.25rem nearer the trigger and slides out to its place. */
+@starting-style {
+  [data-exo="tooltip-content"][data-side="top"]:popover-open { opacity: 0; translate: 0 0.25rem; }
+  [data-exo="tooltip-content"][data-side="bottom"]:popover-open { opacity: 0; translate: 0 -0.25rem; }
+  [data-exo="tooltip-content"][data-side="left"]:popover-open { opacity: 0; translate: 0.25rem 0; }
+  [data-exo="tooltip-content"][data-side="right"]:popover-open { opacity: 0; translate: -0.25rem 0; }
 }
 
-/* --- Arrow --- */
+/* --- Position-area per side + align (needs real specificity) --- */
+/* Wrapped in @supports so the gap only applies when anchor positioning is
+   active; the script's fallback adds its own. daisyUI's gap is 0.5rem. */
+
+@supports (position-area: top) {
+  [data-exo="tooltip-content"][data-side="top"][data-align="start"]  { position-area: block-start span-inline-end;   margin-bottom: 0.5rem; }
+  [data-exo="tooltip-content"][data-side="top"][data-align="center"] { position-area: block-start;                   margin-bottom: 0.5rem; }
+  [data-exo="tooltip-content"][data-side="top"][data-align="end"]    { position-area: block-start span-inline-start; margin-bottom: 0.5rem; }
+
+  [data-exo="tooltip-content"][data-side="bottom"][data-align="start"]  { position-area: block-end span-inline-end;   margin-top: 0.5rem; }
+  [data-exo="tooltip-content"][data-side="bottom"][data-align="center"] { position-area: block-end;                   margin-top: 0.5rem; }
+  [data-exo="tooltip-content"][data-side="bottom"][data-align="end"]    { position-area: block-end span-inline-start; margin-top: 0.5rem; }
+
+  [data-exo="tooltip-content"][data-side="left"]  { position-area: inline-start; margin-right: 0.5rem; }
+  [data-exo="tooltip-content"][data-side="right"] { position-area: inline-end;   margin-left: 0.5rem; }
+}
+
+/* --- Tail: daisyUI's mask, pointing at the trigger --- */
 
 :where([data-exo="tooltip-content"][data-arrow])::after {
   content: "";
   position: absolute;
-  border: 5px solid transparent;
+  display: block;
+  width: 0.625rem;
+  height: 0.25rem;
+  background-color: var(--tt-bg);
+  pointer-events: none;
+  mask-repeat: no-repeat;
+  mask-position: -1px 0;
+  mask-image: url("data:image/svg+xml,%3Csvg width='10' height='4' viewBox='0 0 8 4' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0.500009 1C3.5 1 3.00001 4 5.00001 4C7 4 6.5 1 9.5 1C10 1 10 0.499897 10 0H0C-1.99338e-08 0.5 0 1 0.500009 1Z' fill='black'/%3E%3C/svg%3E%0A");
 }
 
 :where([data-exo="tooltip-content"][data-side="top"][data-arrow])::after {
-  top: 100%;
+  top: calc(100% - var(--tt-overlap));
   left: 50%;
-  transform: translateX(-50%);
-  border-top-color: var(--exo-tooltip-bg);
+  transform: translateX(var(--tt-trans, -50%));
 }
 
 :where([data-exo="tooltip-content"][data-side="bottom"][data-arrow])::after {
-  bottom: 100%;
+  bottom: calc(100% - var(--tt-overlap));
   left: 50%;
-  transform: translateX(-50%);
-  border-bottom-color: var(--exo-tooltip-bg);
+  transform: translateX(var(--tt-trans, -50%)) rotate(180deg);
 }
 
+/* Rotated a quarter turn about its centre, the 0.625rem by 0.25rem box covers
+   0.25rem by 0.625rem; the offsets put that inside the gap. */
 :where([data-exo="tooltip-content"][data-side="left"][data-arrow])::after {
-  left: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-  border-left-color: var(--exo-tooltip-bg);
+  left: calc(100% - var(--tt-overlap) - 0.1875rem);
+  top: calc(50% - 0.125rem);
+  transform: rotate(-90deg);
 }
 
 :where([data-exo="tooltip-content"][data-side="right"][data-arrow])::after {
-  right: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-  border-right-color: var(--exo-tooltip-bg);
+  right: calc(100% - var(--tt-overlap) - 0.1875rem);
+  top: calc(50% - 0.125rem);
+  transform: rotate(90deg);
+}
+
+/* daisyUI's `tooltip-start` and `tooltip-end`: the tail sits
+   `--tt-tail-off` in from the aligned edge, not in the middle. */
+:where([data-exo="tooltip-content"][data-align="start"], [data-exo="tooltip-content"][data-align="end"]) {
+  --tt-trans: 0;
+}
+
+:where([data-exo="tooltip-content"][data-side="top"][data-align="start"][data-arrow])::after,
+:where([data-exo="tooltip-content"][data-side="bottom"][data-align="start"][data-arrow])::after {
+  left: var(--tt-tail-off);
+}
+
+:where([data-exo="tooltip-content"][data-side="top"][data-align="end"][data-arrow])::after,
+:where([data-exo="tooltip-content"][data-side="bottom"][data-align="end"][data-arrow])::after {
+  left: auto;
+  right: var(--tt-tail-off);
 }
 
 /* --- Fallback: no anchor positioning + no JS (CSS-only path) --- */
@@ -132,7 +226,7 @@
     bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
-    margin-bottom: var(--exo-space-1);
+    margin-bottom: 0.5rem;
   }
   [data-exo="tooltip-content"][data-side="top"][data-align="start"]:not([popover]) {
     left: 0;
@@ -148,7 +242,7 @@
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
-    margin-top: var(--exo-space-1);
+    margin-top: 0.5rem;
   }
   [data-exo="tooltip-content"][data-side="bottom"][data-align="start"]:not([popover]) {
     left: 0;
@@ -164,13 +258,13 @@
     right: 100%;
     top: 50%;
     transform: translateY(-50%);
-    margin-right: var(--exo-space-1);
+    margin-right: 0.5rem;
   }
 
   [data-exo="tooltip-content"][data-side="right"]:not([popover]) {
     left: 100%;
     top: 50%;
     transform: translateY(-50%);
-    margin-left: var(--exo-space-1);
+    margin-left: 0.5rem;
   }
 }

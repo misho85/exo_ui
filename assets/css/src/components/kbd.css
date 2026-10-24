@@ -1,16 +1,56 @@
+/*
+ * daisyUI 5 `.kbd` (components/kbd.css, v5.7.50), value for value.
+ *
+ *   data-size  xs | sm | md | lg | xl; none is md
+ */
+
+/* --- base (l1.l2.l3) --- */
+
 :where([data-exo="kbd"]) {
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  min-width: 1.5rem;
-  height: 1.5rem;
-  padding: 0 var(--exo-space-1);
-  font-family: var(--exo-font);
+  vertical-align: middle;
+  background-color: var(--exo-base-200);
+  color: var(--exo-base-content);
+  border-radius: var(--exo-radius-field);
+  padding-inline: 0.5em;
+  border: var(--exo-border-width) solid color-mix(in srgb, var(--exo-base-content) 20%, #0000);
+  border-bottom: calc(var(--exo-border-width) + 1px) solid
+    color-mix(in srgb, var(--exo-base-content) 20%, #0000);
+  /* Tailwind's preflight, which daisyUI sits on, sets <kbd> in the mono font. */
+  font-family: var(--exo-font-mono);
+  --size: calc(var(--exo-size-selector, 0.25rem) * 6);
+  font-size: 0.875rem;
+  height: var(--size);
+  min-width: var(--size);
+  box-shadow: none;
+}
+
+/* --- sizes (l1.l2) --- */
+
+:where([data-exo="kbd"][data-size="xs"]) {
+  --size: calc(var(--exo-size-selector, 0.25rem) * 4);
+  font-size: 0.625rem;
+}
+
+:where([data-exo="kbd"][data-size="sm"]) {
+  --size: calc(var(--exo-size-selector, 0.25rem) * 5);
   font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--exo-muted-foreground);
-  background: var(--exo-muted);
-  border: 1px solid var(--exo-border);
-  border-radius: var(--exo-radius);
-  box-shadow: 0 1px 0 var(--exo-border);
+}
+
+:where([data-exo="kbd"][data-size="md"]) {
+  --size: calc(var(--exo-size-selector, 0.25rem) * 6);
+  font-size: 0.875rem;
+}
+
+:where([data-exo="kbd"][data-size="lg"]) {
+  --size: calc(var(--exo-size-selector, 0.25rem) * 7);
+  font-size: 1rem;
+}
+
+:where([data-exo="kbd"][data-size="xl"]) {
+  --size: calc(var(--exo-size-selector, 0.25rem) * 8);
+  font-size: 1.125rem;
 }

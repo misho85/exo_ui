@@ -1,76 +1,134 @@
+/*
+ * daisyUI 5 `.indicator` (components/indicator.css, v5.7.50), value for value.
+ * The item is what daisyUI's documentation puts in it: the `badge` slot is a
+ * small error badge (`badge badge-sm badge-error`, components/badge.css),
+ * and with no badge the dot is an error `status` (components/status.css).
+ *
+ *   data-position  top-right | top-left | bottom-right | bottom-left |
+ *                  top-center | bottom-center; daisyUI's `indicator-top`,
+ *                  `-bottom`, `-start`, `-center`, `-end`, named by the
+ *                  physical side, so they do not flip under `dir="rtl"`
+ */
+
+/* --- base (l1.l2.l3) --- */
+
 :where([data-exo="indicator"]) {
   position: relative;
   display: inline-flex;
-  vertical-align: middle;
+  width: max-content;
 }
 
 :where([data-exo="indicator-badge"]),
 :where([data-exo="indicator"]:not(:has([data-exo="indicator-badge"])))::after {
-  position: absolute;
   z-index: 1;
+  position: absolute;
+  white-space: nowrap;
+  top: var(--indicator-t, 0);
+  bottom: var(--indicator-b, auto);
+  left: var(--indicator-s, auto);
+  right: var(--indicator-e, 0);
+  translate: var(--indicator-x, 50%) var(--indicator-y, -50%);
+}
+
+/* The badge: daisyUI's `badge badge-sm badge-error`. */
+:where([data-exo="indicator-badge"]) {
+  --badge-color: var(--exo-error);
+  --badge-fg: var(--exo-error-content);
+  --badge-bg: var(--badge-color);
+  --size: calc(var(--exo-size-selector, 0.25rem) * 5);
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  min-width: 1.125rem;
-  height: 1.125rem;
-  padding: 0 0.3125rem;
-  background: var(--exo-danger);
-  color: var(--exo-danger-foreground);
-  border: 2px solid var(--exo-background);
-  border-radius: 9999px;
+  gap: 0.5rem;
+  vertical-align: middle;
+  border-radius: var(--exo-radius-selector);
+  color: var(--badge-fg);
+  border: var(--exo-border-width) solid var(--badge-color);
   font-family: var(--exo-font);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  line-height: 1;
-  box-shadow: var(--exo-shadow-sm);
+  font-size: 0.75rem;
+  width: fit-content;
+  background-size: auto, calc(var(--exo-noise) * 100%);
+  background-image: none, var(--exo-fx-noise);
+  background-color: var(--badge-bg);
+  height: var(--size);
+  padding-inline: calc(var(--size) / 2 - var(--exo-border-width));
 }
 
+/* The dot: daisyUI's `status status-error`. */
 :where([data-exo="indicator"]:not(:has([data-exo="indicator-badge"])))::after {
   content: "";
-  min-width: 0;
-  width: 0.75rem;
-  height: 0.75rem;
-  padding: 0;
+  --size: calc(var(--exo-size-selector, 0.25rem) * 2);
+  display: inline-block;
+  aspect-ratio: 1 / 1;
+  vertical-align: middle;
+  width: var(--size);
+  height: var(--size);
+  border-radius: var(--exo-radius-selector);
+  background-color: var(--exo-error);
+  color: var(--exo-error);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: radial-gradient(
+    circle at 35% 30%,
+    oklch(1 0 0 / calc(var(--exo-depth) * 0.5)),
+    #0000
+  );
+  box-shadow: 0 2px 3px -1px color-mix(in oklab, currentColor calc(var(--exo-depth) * 100%), #0000);
 }
 
-:where([data-exo="indicator"][data-position="top-right"] [data-exo="indicator-badge"]),
-:where([data-exo="indicator"][data-position="top-right"]:not(:has([data-exo="indicator-badge"])))::after {
-  top: 0;
-  right: 0;
-  transform: translate(45%, -45%);
+/* --- placement (l1.l2) --- */
+
+:where([data-exo="indicator"][data-position="top-right"]) {
+  --indicator-t: 0;
+  --indicator-b: auto;
+  --indicator-y: -50%;
+  --indicator-s: auto;
+  --indicator-e: 0;
+  --indicator-x: 50%;
 }
 
-:where([data-exo="indicator"][data-position="top-left"] [data-exo="indicator-badge"]),
-:where([data-exo="indicator"][data-position="top-left"]:not(:has([data-exo="indicator-badge"])))::after {
-  top: 0;
-  left: 0;
-  transform: translate(-45%, -45%);
+:where([data-exo="indicator"][data-position="top-left"]) {
+  --indicator-t: 0;
+  --indicator-b: auto;
+  --indicator-y: -50%;
+  --indicator-s: 0;
+  --indicator-e: auto;
+  --indicator-x: -50%;
 }
 
-:where([data-exo="indicator"][data-position="bottom-right"] [data-exo="indicator-badge"]),
-:where([data-exo="indicator"][data-position="bottom-right"]:not(:has([data-exo="indicator-badge"])))::after {
-  right: 0;
-  bottom: 0;
-  transform: translate(45%, 45%);
+:where([data-exo="indicator"][data-position="bottom-right"]) {
+  --indicator-t: auto;
+  --indicator-b: 0;
+  --indicator-y: 50%;
+  --indicator-s: auto;
+  --indicator-e: 0;
+  --indicator-x: 50%;
 }
 
-:where([data-exo="indicator"][data-position="bottom-left"] [data-exo="indicator-badge"]),
-:where([data-exo="indicator"][data-position="bottom-left"]:not(:has([data-exo="indicator-badge"])))::after {
-  bottom: 0;
-  left: 0;
-  transform: translate(-45%, 45%);
+:where([data-exo="indicator"][data-position="bottom-left"]) {
+  --indicator-t: auto;
+  --indicator-b: 0;
+  --indicator-y: 50%;
+  --indicator-s: 0;
+  --indicator-e: auto;
+  --indicator-x: -50%;
 }
 
-:where([data-exo="indicator"][data-position="top-center"] [data-exo="indicator-badge"]),
-:where([data-exo="indicator"][data-position="top-center"]:not(:has([data-exo="indicator-badge"])))::after {
-  top: 0;
-  left: 50%;
-  transform: translate(-50%, -45%);
+:where([data-exo="indicator"][data-position="top-center"]) {
+  --indicator-t: 0;
+  --indicator-b: auto;
+  --indicator-y: -50%;
+  --indicator-s: 50%;
+  --indicator-e: auto;
+  --indicator-x: -50%;
 }
 
-:where([data-exo="indicator"][data-position="bottom-center"] [data-exo="indicator-badge"]),
-:where([data-exo="indicator"][data-position="bottom-center"]:not(:has([data-exo="indicator-badge"])))::after {
-  bottom: 0;
-  left: 50%;
-  transform: translate(-50%, 45%);
+:where([data-exo="indicator"][data-position="bottom-center"]) {
+  --indicator-t: auto;
+  --indicator-b: 0;
+  --indicator-y: 50%;
+  --indicator-s: 50%;
+  --indicator-e: auto;
+  --indicator-x: -50%;
 }

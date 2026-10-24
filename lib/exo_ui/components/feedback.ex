@@ -118,8 +118,10 @@ defmodule ExoUI.Components.Feedback do
   attr :duration, :integer, default: 5000
 
   attr :placement, :string,
-    values: ~w(top-right top-left bottom-right bottom-left),
-    default: "bottom-right"
+    values:
+      ~w(top-left top-center top-right middle-left middle-center middle-right bottom-left bottom-center bottom-right),
+    default: "bottom-right",
+    doc: "Edge of the viewport: daisyUI's `toast-top|middle|bottom` and `-start|center|end`."
 
   attr :rest, :global
 
@@ -182,6 +184,12 @@ defmodule ExoUI.Components.Feedback do
   @doc "Renders an alert banner with kind-based styling (info, success, warning, error)."
   attr :id, :string, default: nil
   attr :kind, :atom, required: true, values: [:info, :success, :warning, :error]
+
+  attr :appearance, :string,
+    values: [nil | ~w(soft outline dash)],
+    default: nil,
+    doc: "daisyUI's `alert-soft`, `alert-outline`, `alert-dash`; `nil` is the solid alert."
+
   attr :title, :string, default: nil
   attr :icon, :string, default: nil
   attr :role, :string, default: nil
@@ -205,6 +213,7 @@ defmodule ExoUI.Components.Feedback do
       id={@id}
       data-exo="alert"
       data-kind={@kind}
+      data-appearance={@appearance}
       role={@role}
       aria-live={@live}
       aria-atomic="true"
@@ -231,6 +240,12 @@ defmodule ExoUI.Components.Feedback do
   attr :label, :string, default: nil
   attr :aria_label, :string, default: nil
   attr :aria_value_text, :string, default: nil
+
+  attr :variant, :string,
+    values: [nil | ~w(base neutral primary secondary accent info success warning error danger)],
+    default: nil,
+    doc: "Colour of the bar. `nil` is `primary`, `base` the content colour, `danger` `error`."
+
   attr :class, :any, default: nil
   attr :rest, :global
 
@@ -256,6 +271,7 @@ defmodule ExoUI.Components.Feedback do
       </div>
       <div
         data-exo="progress"
+        data-variant={@variant}
         role="progressbar"
         aria-label={@progress_label}
         aria-valuenow={@value_now}
@@ -276,6 +292,12 @@ defmodule ExoUI.Components.Feedback do
   attr :show_value, :boolean, default: true
   attr :aria_label, :string, default: "Progress"
   attr :aria_value_text, :string, default: nil
+
+  attr :variant, :string,
+    values: [nil | ~w(base neutral primary secondary accent info success warning error danger)],
+    default: nil,
+    doc: "Colour of the ring and its label. `nil` is `primary`; `base` is the content colour."
+
   attr :class, :any, default: nil
   attr :rest, :global
   slot :inner_block
@@ -284,7 +306,8 @@ defmodule ExoUI.Components.Feedback do
     value_max = max(assigns.max, 0)
     value_now = assigns.value |> max(0) |> min(value_max)
     pct = if value_max == 0, do: 0, else: min(100, round(value_now / value_max * 100))
-    circumference = 2 * :math.pi() * 40
+    # daisyUI's ring fills the box and is a tenth of it thick: r=45, stroke 10.
+    circumference = 2 * :math.pi() * 45
     offset = circumference - pct / 100 * circumference
 
     assigns =
@@ -300,6 +323,7 @@ defmodule ExoUI.Components.Feedback do
     <div
       data-exo="radial-progress"
       data-size={@size}
+      data-variant={@variant}
       role="progressbar"
       aria-label={@aria_label}
       aria-valuenow={@value_now}
@@ -314,20 +338,20 @@ defmodule ExoUI.Components.Feedback do
           data-exo="radial-progress-track"
           cx="50"
           cy="50"
-          r="40"
+          r="45"
           fill="none"
           stroke="currentColor"
-          stroke-width="8"
+          stroke-width="10"
           opacity="0.2"
         />
         <circle
           data-exo="radial-progress-fill"
           cx="50"
           cy="50"
-          r="40"
+          r="45"
           fill="none"
           stroke="currentColor"
-          stroke-width="8"
+          stroke-width="10"
           stroke-linecap="round"
           stroke-dasharray={@circumference}
           stroke-dashoffset={@offset}

@@ -1,3 +1,8 @@
+/*
+ * Empty state. daisyUI has no counterpart; it uses daisyUI's tokens: the icon
+ * sits in a `base-200` disc, text in `base-content`.
+ */
+
 :where([data-exo="empty-state"]) {
   display: flex;
   flex-direction: column;
@@ -9,16 +14,10 @@
   text-align: center;
 }
 
-/* Ikona stoji u prigusenom krugu, ne gola.
- *
- * Razlog nije ukus nego mjera: prazno stanje je najcesce JEDINI sadrzaj na
- * ekranu, pa gola ikona ostavlja stranicu koja izgleda kao da se nije ucitala.
- * Krug daje sidro oku i cini da prazno stanje izgleda kao NAMJERA, a ne kao
- * kvar.
- *
- * Velicina ikone je zadana OVDJE, a ne klasom na komponenti: klasa bi zavisila
- * od toga da li domacin uopste ima Tailwind i da li je bas ta klasa ispala u
- * njegov izlaz. Biblioteka ne smije da racuna na tudji build. */
+/* The icon sits in a disc, not bare: an empty state is usually the only
+ * content on the screen, and a bare icon reads as a page that did not load.
+ * The size is set here, not by a class on the component, so it does not
+ * depend on the host's build. */
 :where([data-exo="empty-state-icon"]) {
   display: flex;
   align-items: center;
@@ -26,34 +25,30 @@
   width: 4rem;
   height: 4rem;
   border-radius: 9999px;
-  /* The muted surface inside a softer ring of it, so the empty state reads as
-     the start of something rather than a missing image. Not the primary
+  /* The page's second surface inside a softer ring of it. Not the primary
      colour: on a storefront that is the merchant's colour for both schemes
-     and may only be a fill under its own foreground. */
-  background: var(--exo-muted);
-  box-shadow: 0 0 0 0.5rem color-mix(in oklch, var(--exo-muted) 50%, transparent);
-  color: var(--exo-foreground);
+     and may only be a fill under its own content colour. */
+  background-color: var(--exo-base-200);
+  box-shadow: 0 0 0 0.5rem color-mix(in oklch, var(--exo-base-200) 50%, transparent);
+  color: var(--exo-base-content);
   margin-bottom: var(--exo-space-6);
 }
 
-/* Velicinu ikone zada KOMPONENTA (`size="lg"`), ne ovaj CSS.
- *
- * Dok je stajala ovdje, `data-size` na ikoni je govorio „sm" (16px) a ikona se
- * crtala 24px — atribut je lagao. To nije sitnica: provjera velicina u
- * vizuelnom prolazu cita bas taj atribut, pa bi laz u njemu ucinila provjeru
- * beskorisnom tacno tamo gdje najvise treba. */
+/* The icon's own size comes from the component (`size="lg"`), so its
+ * `data-size` tells the truth that the visual size check reads. */
 
 :where([data-exo="empty-state-title"]) {
   font-family: var(--exo-font);
   font-size: var(--exo-text-base);
   font-weight: 600;
-  color: var(--exo-foreground);
+  color: var(--exo-base-content);
   margin: 0;
 }
 
 :where([data-exo="empty-state-subtitle"]) {
   font-family: var(--exo-font);
   font-size: var(--exo-text-sm);
+  /* daisyUI has no muted text colour; this is the theme's derived one. */
   color: var(--exo-muted-foreground);
   margin-top: var(--exo-space-1);
   max-width: 28rem;

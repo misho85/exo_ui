@@ -1,7 +1,26 @@
+/*
+ * daisyUI 5 pagination: a `join` (utilities/join.css, v5.7.50) of `.btn`s
+ * (components/button.css). Every page is a `join-item btn` without a colour,
+ * the current page is `btn-active`, and the ellipsis and the unavailable
+ * previous/next are `btn-disabled`, as in daisyUI's pagination examples. The
+ * button values are button.css's, read with no `--btn-color`.
+ *
+ *   data-size  xs | sm | md | lg | xl (none is md), the button's sizes
+ *
+ * The visually hidden status is the first child of the list, so the first
+ * button of the join is the one right after it, not `:first-child`.
+ */
+
+/* --- join --- */
+
 :where([data-exo="pagination"]) {
-  display: flex;
-  align-items: center;
-  gap: var(--exo-space-1);
+  --join-ss: 0;
+  --join-se: 0;
+  --join-es: 0;
+  --join-ee: 0;
+  --join-ml: 0;
+  display: inline-flex;
+  align-items: stretch;
   font-family: var(--exo-font);
 }
 
@@ -17,50 +36,174 @@
   border: 0;
 }
 
-:where([data-exo="pagination-btn"]) {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 2rem;
-  height: 2rem;
-  padding: 0 var(--exo-space-2);
-  font-size: var(--exo-text-sm);
-  color: var(--exo-foreground);
-  text-decoration: none;
-  border: 1px solid var(--exo-border);
-  border-radius: var(--exo-radius);
-  background: transparent;
-  cursor: pointer;
-  transition: background var(--exo-duration) var(--exo-easing);
+:where([data-exo="pagination"]) > :where(:not([data-exo="pagination-status"])) {
+  --join-ml: calc(var(--exo-border-width, 1px) * -1);
 }
 
-:where([data-exo="pagination-btn"]):hover {
-  background: var(--exo-muted);
+:where([data-exo="pagination"]) > :where([data-exo="pagination-status"] + *) {
+  --join-ss: var(--exo-radius-field);
+  --join-es: var(--exo-radius-field);
+  --join-ml: 0;
+}
+
+:where([data-exo="pagination"]) > :where(:last-child) {
+  --join-se: var(--exo-radius-field);
+  --join-ee: var(--exo-radius-field);
+}
+
+/* --- btn base (l1.l2.l3) --- */
+
+:where([data-exo="pagination-btn"], [data-exo="pagination-ellipsis"]) {
+  --size: calc(var(--exo-size-field, 0.25rem) * 10);
+  --btn-p: 1rem;
+  --btn-fg: var(--exo-base-content);
+  --btn-bg: var(--exo-base-200);
+  --btn-border: color-mix(in oklab, var(--exo-base-200), #000 calc(var(--exo-depth) * 5%));
+  --btn-shadow:
+    0 3px 2px -2px color-mix(in oklab, var(--btn-bg) calc(var(--exo-depth) * 30%), #0000),
+    0 4px 3px -2px color-mix(in oklab, var(--btn-bg) calc(var(--exo-depth) * 30%), #0000);
+  --btn-inset: 0 0.5px 0 0.5px oklch(100% 0 0 / calc(var(--exo-depth) * 6%));
+  display: inline-flex;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  margin: 0;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  outline-offset: 2px;
+  font-family: var(--exo-font);
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  border-start-start-radius: var(--join-ss, var(--exo-radius-field));
+  border-start-end-radius: var(--join-se, var(--exo-radius-field));
+  border-end-start-radius: var(--join-es, var(--exo-radius-field));
+  border-end-end-radius: var(--join-ee, var(--exo-radius-field));
+  border-width: var(--exo-border-width);
+  border-style: solid;
+  touch-action: manipulation;
+  transition-property: color, background-color, border-color, box-shadow, transform;
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  transition-duration: 0.2s;
+  height: var(--size);
+  padding-inline: var(--btn-p);
+  font-size: var(--fontsize, 0.875rem);
+  background-color: var(--btn-bg);
+  color: var(--btn-fg);
+  border-color: var(--btn-border);
+  outline-color: var(--exo-base-content);
+  background-image: none, var(--exo-fx-noise);
+  background-size: auto, calc(var(--exo-noise, 0) * 100%);
+  text-shadow: 0 0.5px oklch(100% 0 0 / calc(var(--exo-depth) * 0.15));
+  box-shadow:
+    var(--btn-inset) inset,
+    var(--btn-shadow);
+}
+
+/* `join-item`: every item but the first overlaps its neighbour's border. */
+:where([data-exo="pagination-btn"]:not(:disabled, [data-disabled])) {
+  margin-inline-start: var(--join-ml, 0);
+}
+
+/* --- sizes (l1.l2) --- */
+
+:where([data-exo="pagination"][data-size="xs"])
+  > :where([data-exo="pagination-btn"], [data-exo="pagination-ellipsis"]) {
+  --fontsize: 0.6875rem;
+  --btn-p: 0.5rem;
+  --size: calc(var(--exo-size-field, 0.25rem) * 6);
+}
+
+:where([data-exo="pagination"][data-size="sm"])
+  > :where([data-exo="pagination-btn"], [data-exo="pagination-ellipsis"]) {
+  --fontsize: 0.75rem;
+  --btn-p: 0.75rem;
+  --size: calc(var(--exo-size-field, 0.25rem) * 8);
+}
+
+:where([data-exo="pagination"][data-size="md"])
+  > :where([data-exo="pagination-btn"], [data-exo="pagination-ellipsis"]) {
+  --fontsize: 0.875rem;
+  --btn-p: 1rem;
+  --size: calc(var(--exo-size-field, 0.25rem) * 10);
+}
+
+:where([data-exo="pagination"][data-size="lg"])
+  > :where([data-exo="pagination-btn"], [data-exo="pagination-ellipsis"]) {
+  --fontsize: 1.125rem;
+  --btn-p: 1.25rem;
+  --size: calc(var(--exo-size-field, 0.25rem) * 12);
+}
+
+:where([data-exo="pagination"][data-size="xl"])
+  > :where([data-exo="pagination-btn"], [data-exo="pagination-ellipsis"]) {
+  --fontsize: 1.375rem;
+  --btn-p: 1.5rem;
+  --size: calc(var(--exo-size-field, 0.25rem) * 14);
+}
+
+/* --- current page: `btn-active` (l1.l2) --- */
+
+:where([data-exo="pagination-btn"][data-active], [data-exo="pagination-btn"][aria-current="page"]) {
+  --btn-bg: color-mix(in oklab, var(--exo-base-200), #000 5%);
+  --btn-border: color-mix(in oklab, var(--exo-base-200), #000 7%);
+  --btn-inset: 0 0 0 0 transparent;
+  --btn-shadow: 0 0 0 0 transparent;
+  color: var(--btn-fg);
+  isolation: isolate;
+}
+
+/* --- hover, press and focus (l1) --- */
+
+@media (hover: hover) {
+  :where([data-exo="pagination-btn"]):hover {
+    z-index: 1;
+    --btn-bg: color-mix(in oklab, var(--exo-base-200), #000 7%);
+    --btn-border: color-mix(in oklab, var(--btn-bg), #000 calc(var(--exo-depth) * 5%));
+    --btn-inset: 0 0.5px 0 0.5px oklch(100% 0 0 / calc(var(--exo-depth) * 6%));
+    --btn-shadow:
+      0 3px 2px -2px color-mix(in oklab, var(--btn-bg) calc(var(--exo-depth) * 30%), #0000),
+      0 4px 3px -2px color-mix(in oklab, var(--btn-bg) calc(var(--exo-depth) * 30%), #0000);
+  }
+}
+
+:where([data-exo="pagination-btn"]:active:not([data-active], [aria-current="page"])) {
+  translate: 0 0.5px;
+  --btn-bg: color-mix(in oklab, var(--exo-base-200), #000 5%);
+  --btn-border: color-mix(in oklab, var(--exo-base-200), #000 7%);
+  --btn-inset: 0 0 0 0 transparent;
+  --btn-shadow: 0 0 0 0 transparent;
 }
 
 :where([data-exo="pagination-btn"]):focus-visible {
-  outline: 2px solid var(--exo-ring);
-  outline-offset: 2px;
+  z-index: 2;
+  outline-width: 2px;
+  outline-style: solid;
+  isolation: isolate;
 }
 
-:where([data-exo="pagination-btn"][data-active]) {
-  background: var(--exo-primary);
-  color: var(--exo-primary-foreground);
-  border-color: var(--exo-primary);
-}
+/* --- disabled: `btn-disabled` (daisyui, above every other layer) --- */
 
-:where([data-exo="pagination-btn"][data-disabled]) {
-  opacity: 0.4;
+:where(
+  [data-exo="pagination-btn"][data-disabled],
+  [data-exo="pagination-btn"]:disabled,
+  [data-exo="pagination-btn"][aria-disabled="true"],
+  [data-exo="pagination-ellipsis"]
+) {
   pointer-events: none;
   cursor: default;
-}
-
-:where([data-exo="pagination-ellipsis"]) {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 2rem;
-  height: 2rem;
-  font-size: var(--exo-text-sm);
-  color: var(--exo-muted-foreground);
+  color: color-mix(in oklch, var(--exo-base-content) 20%, transparent);
+  --btn-bg: #0000;
+  --btn-border: #0000;
+  background-image: none;
+  background-color: color-mix(in oklab, var(--exo-base-content) 10%, transparent);
+  --btn-inset: 0 0 0 0 transparent;
+  --btn-shadow: 0 0 0 0 transparent;
+  /* A disabled `join-item` keeps no end border and no overlap. */
+  border-inline-end-width: 0;
 }

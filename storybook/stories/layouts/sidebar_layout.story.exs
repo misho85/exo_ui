@@ -7,7 +7,7 @@ defmodule Storybook.Layouts.SidebarLayout do
 
   def template do
     """
-    <div style="height: 500px; border: 1px solid var(--exo-border); border-radius: var(--exo-radius); overflow: hidden; position: relative;" psb-code-hidden>
+    <div style="width: 100%; height: 500px; border: 1px solid var(--exo-border); border-radius: var(--exo-radius); overflow: hidden; position: relative;" psb-code-hidden>
       <.psb-variation/>
     </div>
     """

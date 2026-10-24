@@ -14,6 +14,13 @@ defmodule ExoUI.Storybook.Web.Router do
     storybook_assets()
   end
 
+  # Before the storybook: `live_storybook "/"` takes every path under `/`.
+  scope "/", ExoUI.Storybook.Web do
+    pipe_through :browser
+
+    get "/theme-generator", ThemeGenerator, :show
+  end
+
   scope "/", ExoUI.Storybook.Web do
     pipe_through :browser
 

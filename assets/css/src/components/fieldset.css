@@ -1,31 +1,48 @@
+/*
+ * daisyUI 5 `.fieldset` and `.fieldset-legend` (components/fieldset.css,
+ * v5.7.50); the description is `.label` used as helper text
+ * (components/label.css). The content keeps ExoUI's column of fields with a
+ * 1rem gap between them.
+ *
+ * A disabled fieldset is drawn by its controls, as in daisyUI: every input,
+ * select and file input inside `fieldset:disabled` takes its disabled look.
+ */
+
 :where([data-exo="fieldset"]) {
-  border: none;
-  padding: 0;
+  display: grid;
+  gap: 0.375rem;
+  min-width: 0;
   margin: 0;
+  border: none;
+  padding: 0.25rem 0;
+  font-size: 0.75rem;
+  grid-template-columns: 1fr;
+  grid-auto-rows: max-content;
 }
 
 :where([data-exo="fieldset-legend"]) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  margin-bottom: -0.25rem;
+  margin-inline-end: auto;
   font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
   font-weight: 600;
-  color: var(--exo-foreground);
-  padding-bottom: var(--exo-space-1);
+  color: var(--exo-base-content);
 }
 
+/* `.label` is `white-space: nowrap`; a description is a sentence, so it
+   wraps here. */
 :where([data-exo="fieldset-description"]) {
+  margin: 0;
   font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  color: var(--exo-muted-foreground);
-  margin: 0 0 var(--exo-space-4) 0;
+  color: color-mix(in oklab, currentColor 60%, transparent);
 }
 
 :where([data-exo="fieldset-content"]) {
   display: flex;
   flex-direction: column;
   gap: var(--exo-space-4);
-}
-
-:where([data-exo="fieldset"]:disabled) {
-  opacity: 0.5;
-  pointer-events: none;
 }

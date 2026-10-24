@@ -1,65 +1,162 @@
+/*
+ * daisyUI 5 `.badge` (components/badge.css, v5.7.50), value for value.
+ *
+ * daisyUI puts the base in l1.l2.l3 and the styles, colours and sizes in one
+ * layer below it (l1.l2), so inside that layer the order of its source wins:
+ * outline, dash, soft, colours, ghost, sizes. This file keeps that order.
+ *
+ *   data-variant     neutral | primary | secondary | accent | info | success |
+ *                    warning | error; `danger` is `error`. The Elixir default
+ *                    is `primary`; no attribute is daisyUI's plain badge.
+ *   data-appearance  soft | outline | dash | ghost
+ *   data-size        xs | sm | md | lg | xl
+ */
+
+/* --- base (l1.l2.l3) --- */
+
 :where([data-exo="badge"]) {
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
-  gap: var(--exo-space-1);
-  border-radius: var(--exo-radius);
-  padding: 0.1875rem var(--exo-space-2);
+  justify-content: center;
+  gap: 0.5rem;
+  vertical-align: middle;
+  border-radius: var(--exo-radius-selector);
+  color: var(--badge-fg);
+  border: var(--exo-border-width) solid var(--badge-color, var(--exo-base-200));
   font-family: var(--exo-font);
-  font-size: var(--exo-text-xs);
-  font-weight: 600;
-  line-height: 1;
+  font-size: 0.875rem;
+  width: fit-content;
+  background-size: auto, calc(var(--exo-noise) * 100%);
+  background-image: none, var(--exo-fx-noise);
+  background-color: var(--badge-bg);
+  --badge-bg: var(--badge-color, var(--exo-base-100));
+  --badge-fg: var(--exo-base-content);
+  --size: calc(var(--exo-size-selector, 0.25rem) * 6);
+  height: var(--size);
+  padding-inline: calc(var(--size) / 2 - var(--exo-border-width));
   /* A badge is one token: in a narrow table column a two-word label
      ("Na čekanju") broke onto two lines inside its pill (SPO-1051). */
   white-space: nowrap;
 }
 
+/* --- styles (l1.l2) --- */
+
+:where([data-exo="badge"][data-appearance="outline"]) {
+  color: var(--badge-color);
+  --badge-bg: #0000;
+  background-image: none;
+  border-color: currentColor;
+}
+
+:where([data-exo="badge"][data-appearance="dash"]) {
+  color: var(--badge-color);
+  --badge-bg: #0000;
+  background-image: none;
+  border-color: currentColor;
+  border-style: dashed;
+}
+
+/* daisyUI's soft badge. A host can name its own tones for a status colour,
+ * `--exo-<kind>-subtle` (fill) and `--exo-<kind>-subtle-foreground` (text):
+ * trg24's admin does, because a tint mixed from a warning colour dark enough
+ * to be text comes out muddy (TRG-806). Unset, the values are daisyUI's. */
+:where([data-exo="badge"][data-appearance="soft"]) {
+  color: var(--badge-soft-fg, var(--badge-color, var(--exo-base-content)));
+  background-color: var(
+    --badge-soft-bg,
+    color-mix(in oklab, var(--badge-color, var(--exo-base-content)) 8%, var(--exo-base-100))
+  );
+  border-color: color-mix(
+    in oklab,
+    var(--badge-color, var(--exo-base-content)) 10%,
+    var(--exo-base-100)
+  );
+  background-image: none;
+}
+
+/* --- colours (l1.l2) --- */
+
+:where([data-exo="badge"][data-variant="primary"]) {
+  --badge-color: var(--exo-primary);
+  --badge-fg: var(--exo-primary-content);
+}
+
+:where([data-exo="badge"][data-variant="secondary"]) {
+  --badge-color: var(--exo-secondary);
+  --badge-fg: var(--exo-secondary-content);
+}
+
+:where([data-exo="badge"][data-variant="accent"]) {
+  --badge-color: var(--exo-accent);
+  --badge-fg: var(--exo-accent-content);
+}
+
+:where([data-exo="badge"][data-variant="neutral"]) {
+  --badge-color: var(--exo-neutral);
+  --badge-fg: var(--exo-neutral-content);
+}
+
+:where([data-exo="badge"][data-variant="info"]) {
+  --badge-color: var(--exo-info);
+  --badge-fg: var(--exo-info-content);
+  --badge-soft-bg: var(--exo-info-subtle, initial);
+  --badge-soft-fg: var(--exo-info-subtle-foreground, initial);
+}
+
+:where([data-exo="badge"][data-variant="success"]) {
+  --badge-color: var(--exo-success);
+  --badge-fg: var(--exo-success-content);
+  --badge-soft-bg: var(--exo-success-subtle, initial);
+  --badge-soft-fg: var(--exo-success-subtle-foreground, initial);
+}
+
+:where([data-exo="badge"][data-variant="warning"]) {
+  --badge-color: var(--exo-warning);
+  --badge-fg: var(--exo-warning-content);
+  --badge-soft-bg: var(--exo-warning-subtle, initial);
+  --badge-soft-fg: var(--exo-warning-subtle-foreground, initial);
+}
+
+:where([data-exo="badge"][data-variant="error"], [data-exo="badge"][data-variant="danger"]) {
+  --badge-color: var(--exo-error);
+  --badge-fg: var(--exo-error-content);
+  --badge-soft-bg: var(--exo-danger-subtle, var(--exo-error-subtle, initial));
+  --badge-soft-fg: var(--exo-danger-subtle-foreground, var(--exo-error-subtle-foreground, initial));
+}
+
+/* --- ghost (l1.l2, after the colours in daisyUI's source) --- */
+
+:where([data-exo="badge"][data-appearance="ghost"]) {
+  border-color: var(--exo-base-200);
+  background-color: var(--exo-base-200);
+  color: var(--exo-base-content);
+  background-image: none;
+}
+
+/* --- sizes (l1.l2) --- */
+
+:where([data-exo="badge"][data-size="xs"]) {
+  --size: calc(var(--exo-size-selector, 0.25rem) * 4);
+  font-size: 0.625rem;
+}
+
 :where([data-exo="badge"][data-size="sm"]) {
-  padding: 0.125rem var(--exo-space-2);
-  font-size: var(--exo-text-xs);
+  --size: calc(var(--exo-size-selector, 0.25rem) * 5);
+  font-size: 0.75rem;
 }
 
 :where([data-exo="badge"][data-size="md"]) {
-  padding: 0.1875rem var(--exo-space-2);
-  font-size: var(--exo-text-xs);
+  --size: calc(var(--exo-size-selector, 0.25rem) * 6);
+  font-size: 0.875rem;
 }
 
 :where([data-exo="badge"][data-size="lg"]) {
-  padding: var(--exo-space-2) var(--exo-space-4);
-  font-size: var(--exo-text-sm);
+  --size: calc(var(--exo-size-selector, 0.25rem) * 7);
+  font-size: 1rem;
 }
 
-:where([data-exo="badge"][data-variant="primary"]) {
-  background: var(--exo-primary);
-  color: var(--exo-primary-foreground);
-}
-/* Status badges are tonal (v2, TRG-806): a light tint of the kind and text
- * that is the kind mixed with the foreground, the recipe alert.css measures for
- * WCAG AA on its own tint. A solid fill on every row of a table shouted: a
- * list of orders was a column of saturated pills. `primary` stays solid,
- * because on a storefront `--exo-primary` is one merchant colour for both
- * schemes and may only be a fill under `--exo-primary-foreground`.
- *
- * A host can name the tones: `--exo-<kind>-subtle` and
- * `--exo-<kind>-subtle-foreground`. A tint mixed from a status colour that is
- * dark enough to be text (trg24's light warning, L 52%) comes out muddy, so
- * trg24's admin sets Polaris-like tones; the mix is the fallback. */
-:where([data-exo="badge"][data-variant="secondary"]) {
-  background: var(--exo-muted);
-  color: var(--exo-foreground);
-}
-:where([data-exo="badge"][data-variant="danger"]) {
-  background: var(--exo-danger-subtle, color-mix(in oklab, var(--exo-danger) 16%, var(--exo-card)));
-  color: var(--exo-danger-subtle-foreground, color-mix(in oklab, var(--exo-danger) 50%, var(--exo-foreground)));
-}
-:where([data-exo="badge"][data-variant="warning"]) {
-  background: var(--exo-warning-subtle, color-mix(in oklab, var(--exo-warning) 22%, var(--exo-card)));
-  color: var(--exo-warning-subtle-foreground, color-mix(in oklab, var(--exo-warning) 40%, var(--exo-foreground)));
-}
-:where([data-exo="badge"][data-variant="success"]) {
-  background: var(--exo-success-subtle, color-mix(in oklab, var(--exo-success) 16%, var(--exo-card)));
-  color: var(--exo-success-subtle-foreground, color-mix(in oklab, var(--exo-success) 50%, var(--exo-foreground)));
-}
-:where([data-exo="badge"][data-variant="info"]) {
-  background: var(--exo-info-subtle, color-mix(in oklab, var(--exo-info) 16%, var(--exo-card)));
-  color: var(--exo-info-subtle-foreground, color-mix(in oklab, var(--exo-info) 50%, var(--exo-foreground)));
+:where([data-exo="badge"][data-size="xl"]) {
+  --size: calc(var(--exo-size-selector, 0.25rem) * 8);
+  font-size: 1.125rem;
 }

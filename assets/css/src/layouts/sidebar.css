@@ -1,13 +1,36 @@
-/* === Sidebar Layout === */
+/*
+ * App shell with a sidebar. The panel is daisyUI 5's drawer
+ * (components/drawer.css, v5.7.50): on a narrow screen it slides in over a
+ * black 40% overlay, translate over 0.3s ease-out; on a wide screen it stays
+ * open beside the content (`drawer-open`) and collapses to icons. The items
+ * are daisyUI's `.menu` (components/menu.css): field radius, 0.375rem by
+ * 0.75rem, `base-content` at 10% on hover, the current page in `neutral` with
+ * the depth shadow under it. The badge is daisyUI's `badge badge-sm
+ * badge-warning`, the topbar button `btn btn-sm btn-square btn-ghost`.
+ *
+ * daisyUI leaves the panel's surface to the page; it stays on `base-100`,
+ * and the shell's edges (aside, topbar, brand, footer) are drawn in daisyUI's
+ * divider colour, the content colour at 10%, so the panel does not run into
+ * the content of the same colour.
+ */
 
+/* An app shell fills its container. Without a width, a parent that centres
+   (a storybook canvas, a flex column) sized it to its content, and content
+   wider than a phone pushed the topbar and its menu button off the screen. */
 :where([data-exo="sidebar"]) {
   display: flex;
+  width: 100%;
   height: 100vh;
   overflow: hidden;
+  --menu-active-fg: var(--exo-neutral-content);
+  --menu-active-bg: var(--exo-neutral);
+  --sidebar-edge: color-mix(in oklab, var(--exo-base-content) 10%, transparent);
 }
 
+/* daisyUI's `drawer-toggle`. */
 :where([data-exo="sidebar-toggle"]) {
   position: absolute;
+  appearance: none;
   opacity: 0;
   width: 0;
   height: 0;
@@ -15,6 +38,7 @@
 }
 
 /* --- Main content area --- */
+
 :where([data-exo="sidebar-content"]) {
   flex: 1;
   min-width: 0;
@@ -24,37 +48,53 @@
 }
 
 /* --- Topbar --- */
+
 :where([data-exo="sidebar-topbar"]) {
   height: 4rem;
   display: flex;
   align-items: center;
   gap: var(--exo-space-4);
   padding: 0 var(--exo-space-4);
-  background: var(--exo-card);
-  border-bottom: 1px solid var(--exo-border);
+  background-color: var(--exo-base-100);
+  border-bottom: var(--exo-border-width) solid var(--sidebar-edge);
   flex-shrink: 0;
 }
 
+/* daisyUI's `btn btn-sm btn-square btn-ghost` (components/button.css). */
 :where([data-exo="sidebar-hamburger"]) {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  width: calc(var(--exo-size-field, 0.25rem) * 8);
+  height: calc(var(--exo-size-field, 0.25rem) * 8);
+  padding: 0;
   cursor: pointer;
-  border: none;
-  background: transparent;
-  border-radius: var(--exo-radius);
-  font-size: var(--exo-text-lg);
-  color: var(--exo-foreground);
+  border: var(--exo-border-width) solid transparent;
+  background-color: transparent;
+  border-radius: var(--exo-radius-field);
+  font-size: 0.75rem;
+  color: var(--exo-base-content);
+  outline-color: var(--exo-base-content);
+  outline-offset: 2px;
+  transition-property: color, background-color, border-color, box-shadow;
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  transition-duration: 0.2s;
 }
-:where([data-exo="sidebar-hamburger"]):hover {
-  background: var(--exo-muted);
+
+@media (hover: hover) {
+  :where([data-exo="sidebar-hamburger"]):hover {
+    background-color: color-mix(in oklab, var(--exo-base-200), #000 7%);
+    border-color: color-mix(
+      in oklab,
+      color-mix(in oklab, var(--exo-base-200), #000 7%),
+      #000 calc(var(--exo-depth) * 5%)
+    );
+  }
 }
 
 :where([data-exo="sidebar-hamburger"]):focus-visible {
-  outline: 2px solid var(--exo-ring);
-  outline-offset: 2px;
+  outline-width: 2px;
+  outline-style: solid;
 }
 
 :where([data-exo="topbar-start"]) {
@@ -69,13 +109,15 @@
 }
 
 /* --- Page content --- */
+
 :where([data-exo="sidebar-main"]) {
   flex: 1;
   overflow-y: auto;
   padding: var(--exo-space-4);
 }
 
-/* --- Sidebar panel --- */
+/* --- Sidebar panel (daisyUI's `drawer-side`) --- */
+
 :where([data-exo="sidebar-panel"]) {
   order: -1;
   flex-shrink: 0;
@@ -83,6 +125,7 @@
   overflow: visible;
 }
 
+/* daisyUI's `drawer-overlay`. */
 :where([data-exo="sidebar-overlay"]) {
   padding: 0;
   border: 0;
@@ -95,12 +138,18 @@
   left: 0;
   bottom: 0;
   width: 16rem;
-  background: var(--exo-card);
-  border-right: 1px solid var(--exo-border);
+  background-color: var(--exo-base-100);
+  color: var(--exo-base-content);
+  border-right: var(--exo-border-width) solid var(--sidebar-edge);
   display: flex;
   flex-direction: column;
   z-index: 40;
-  transform: translateX(-100%);
+  will-change: transform;
+  translate: -100%;
+}
+
+:where([dir="rtl"] [data-exo="sidebar-aside"]) {
+  translate: 100%;
 }
 
 :where([data-exo="sidebar-brand"]) {
@@ -109,50 +158,104 @@
   align-items: center;
   gap: var(--exo-space-3);
   padding: 0 var(--exo-space-4);
-  border-bottom: 1px solid var(--exo-border);
+  border-bottom: var(--exo-border-width) solid var(--sidebar-edge);
   flex-shrink: 0;
 }
 
+/* daisyUI's `.menu`: 0.5rem around the items, 0.875rem text. */
 :where([data-exo="sidebar-nav"]) {
   flex: 1;
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: var(--exo-space-2);
+  padding: 0.5rem;
+  font-size: 0.875rem;
+}
+
+:where([data-exo="sidebar-nav"] ul) {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 :where([data-exo="sidebar-footer"]) {
-  border-top: 1px solid var(--exo-border);
+  border-top: var(--exo-border-width) solid var(--sidebar-edge);
   padding: var(--exo-space-3);
   flex-shrink: 0;
 }
 
-/* --- Sidebar item --- */
+/* --- Sidebar item (daisyUI's `.menu li`) --- */
+
 :where([data-exo="sidebar-item"]) {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: stretch;
   list-style: none;
 }
 
-:where([data-exo="sidebar-item"] a) {
-  display: flex;
+:where([data-exo="sidebar-item"] > a) {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(auto, max-content) auto max-content;
+  align-content: flex-start;
   align-items: center;
-  gap: var(--exo-space-3);
-  padding: var(--exo-space-2) var(--exo-space-3);
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: var(--exo-radius-field);
   font-family: var(--exo-font);
-  font-size: var(--exo-text-sm);
-  color: var(--exo-muted-foreground);
+  font-size: 0.875rem;
+  text-align: start;
+  color: inherit;
   text-decoration: none;
-  border-radius: var(--exo-radius);
-  transition: background var(--exo-duration) var(--exo-easing),
-              color var(--exo-duration) var(--exo-easing);
+  user-select: none;
+  transition-property: color, background-color, box-shadow;
+  transition-duration: 0.2s;
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
 
-:where([data-exo="sidebar-item"] a):hover {
-  background: var(--exo-muted);
-  color: var(--exo-foreground);
+:where([data-exo="sidebar-item"]:not([data-active]) > a):where(
+    :not(:active, [aria-current]:not([aria-current="false"], [aria-current=""]))
+  ):focus-visible {
+  background-color: color-mix(in oklab, var(--exo-base-content) 10%, transparent);
+  color: var(--exo-base-content);
+  cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
 }
 
-:where([data-exo="sidebar-item"][data-active] a) {
-  background: var(--exo-primary);
-  color: var(--exo-primary-foreground);
+:where([data-exo="sidebar-item"]:not([data-active]) > a):where(
+    :not(:active, [aria-current]:not([aria-current="false"], [aria-current=""]))
+  ):hover {
+  background-color: color-mix(in oklab, var(--exo-base-content) 10%, transparent);
+  cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: var(--exo-shadow-menu);
+}
+
+/* The current page and a press: daisyUI's `menu-active`. */
+:where(
+  [data-exo="sidebar-item"][data-active] > a,
+  [data-exo="sidebar-item"] > a:active,
+  [data-exo="sidebar-item"] > a[aria-current]:not([aria-current="false"], [aria-current=""])
+) {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  color: var(--menu-active-fg);
+  background-color: var(--menu-active-bg);
+  background-size: auto, calc(var(--exo-noise) * 100%);
+  background-image: none, var(--exo-fx-noise);
+}
+
+:where(
+  [data-exo="sidebar-item"][data-active] > a,
+  [data-exo="sidebar-item"] > a[aria-current]:not([aria-current="false"], [aria-current=""])
+):not(:active) {
+  box-shadow: 0 2px calc(var(--exo-depth) * 3px) -2px var(--menu-active-bg);
 }
 
 :where([data-exo="sidebar-icon"]) {
@@ -170,22 +273,34 @@
 }
 
 :where([data-exo="sidebar-label"]) {
+  min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+/* daisyUI's `badge badge-sm badge-warning`, at the end of the item. */
 :where([data-exo="sidebar-badge"]) {
-  margin-left: auto;
-  font-size: var(--exo-text-xs);
-  font-weight: 600;
-  padding: 0 var(--exo-space-2);
-  border-radius: 9999px;
-  background: var(--exo-warning);
-  color: var(--exo-warning-foreground);
+  --size: calc(var(--exo-size-selector, 0.25rem) * 5);
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  height: var(--size);
+  padding-inline: calc(var(--size) / 2 - var(--exo-border-width));
+  border: var(--exo-border-width) solid var(--exo-warning);
+  border-radius: var(--exo-radius-selector);
+  background-color: var(--exo-warning);
+  background-size: auto, calc(var(--exo-noise) * 100%);
+  background-image: none, var(--exo-fx-noise);
+  color: var(--exo-warning-content);
+  font-size: 0.75rem;
+  white-space: nowrap;
 }
 
-/* === Mobile: sidebar shows as overlay when checkbox checked === */
+/* === Narrow screen: the panel is a drawer over the page === */
+
 @media (max-width: 767px) {
   :where([data-exo="sidebar-toggle"]:checked ~ [data-exo="sidebar-panel"]) {
     width: 0;
@@ -195,21 +310,27 @@
     display: block;
     position: fixed;
     inset: 0;
-    background: var(--exo-backdrop-muted);
+    background-color: oklch(0% 0 0 / 40%);
     z-index: 39;
     cursor: pointer;
   }
 
   :where([data-exo="sidebar-toggle"]:checked ~ [data-exo="sidebar-panel"] [data-exo="sidebar-aside"]) {
-    transform: translateX(0);
+    translate: 0%;
+    will-change: auto;
   }
 }
 
-/* === Desktop: sidebar always visible, toggle collapses width === */
+/* === Wide screen: the panel stays open (`drawer-open`), the toggle collapses it === */
+
 @media (min-width: 768px) {
   :where([data-exo="sidebar-aside"]) {
     position: relative;
-    transform: none;
+    translate: 0%;
+  }
+
+  :where([dir="rtl"] [data-exo="sidebar-aside"]) {
+    translate: 0%;
   }
 
   /* Expanded (checkbox checked) */
@@ -242,10 +363,17 @@
     justify-content: center;
     padding: 0;
   }
+}
 
-  /* Smooth transitions (only after init via data-sidebar-ready) */
-  html[data-sidebar-ready] :where([data-exo="sidebar-panel"]),
-  html[data-sidebar-ready] :where([data-exo="sidebar-aside"]) {
-    transition: width 200ms linear;
-  }
+/* daisyUI's drawer timings: the panel slides over 0.3s and resizes over 0.2s,
+ * ease-out. Only after the hook has set the first state (`data-sidebar-ready`
+ * on <html>), so a page load does not animate the panel into place. */
+html[data-sidebar-ready] :where([data-exo="sidebar-panel"]) {
+  transition: width 0.2s ease-out;
+}
+
+html[data-sidebar-ready] :where([data-exo="sidebar-aside"]) {
+  transition:
+    translate 0.3s ease-out,
+    width 0.2s ease-out;
 }

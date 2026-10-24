@@ -1,6 +1,22 @@
+/*
+ * daisyUI 5 `.rating` (components/rating.css, v5.7.50), as far as ExoUI's
+ * markup goes. daisyUI's stars are radio inputs under a star mask; ExoUI's
+ * are labels around a hidden radio and a Lucide star, so the star's fill and
+ * stroke take daisyUI's background colour. A star at rest is the content
+ * colour at 20%, a chosen one and those before it are --exo-rating-active at
+ * full strength (daisyUI leaves that colour to a `bg-*` class; ExoUI's has
+ * always been the theme's warning colour). Each star is --size square.
+ *
+ *   data-size  xs | sm | md | lg | xl
+ */
+
+/* --- base (l1.l2.l3) --- */
+
 :where([data-exo="rating"]) {
+  --size: calc(var(--exo-size-selector, 0.25rem) * 6);
+  position: relative;
   display: inline-flex;
-  gap: var(--exo-space-1);
+  vertical-align: middle;
 }
 
 :where([data-exo="rating-input"]) {
@@ -16,9 +32,22 @@
 }
 
 :where([data-exo="rating-star"]) {
+  display: inline-flex;
   cursor: pointer;
-  color: var(--exo-border);
-  transition: color 150ms var(--exo-easing);
+  color: var(--exo-base-content);
+}
+
+:where([data-exo="rating-star"] svg) {
+  width: var(--size);
+  height: var(--size);
+  fill: currentColor;
+  opacity: 0.2;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :where([data-exo="rating-star"] svg) {
+    animation: exo-rating 0.25s ease-out;
+  }
 }
 
 :where([data-exo="rating-star"][data-active]) {
@@ -26,17 +55,27 @@
 }
 
 :where([data-exo="rating-star"][data-active] svg) {
-  fill: currentColor;
-}
-
-:where([data-exo="rating-star"]:hover) {
-  color: var(--exo-rating-active);
+  opacity: 1;
 }
 
 :where([data-exo="rating-input"]:focus-visible + svg) {
+  scale: 1.1;
+  /* daisyUI marks focus by the scale alone; the ring is ExoUI's, in
+     --exo-ring at 3:1 on the page (TRG-461). */
   outline: 2px solid var(--exo-ring);
   outline-offset: 2px;
-  border-radius: var(--exo-radius-sm);
+  border-radius: var(--exo-radius-selector);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :where([data-exo="rating-input"]:focus-visible + svg) {
+    transition: scale 0.2s ease-out;
+  }
+}
+
+:where([data-exo="rating-star"]:active:has([data-exo="rating-input"]:focus) svg) {
+  animation: none;
+  scale: 1.1;
 }
 
 :where([data-exo="rating"][data-readonly] [data-exo="rating-star"]) {
@@ -50,6 +89,32 @@
   pointer-events: none;
 }
 
-:where([data-exo="rating"][data-size="sm"] [data-exo="rating-star"] svg) { width: 1rem; height: 1rem; }
-:where([data-exo="rating"][data-size="md"] [data-exo="rating-star"] svg) { width: 1.25rem; height: 1.25rem; }
-:where([data-exo="rating"][data-size="lg"] [data-exo="rating-star"] svg) { width: 1.5rem; height: 1.5rem; }
+/* --- sizes (l1.l2) --- */
+
+:where([data-exo="rating"][data-size="xs"]) {
+  --size: calc(var(--exo-size-selector, 0.25rem) * 4);
+}
+
+:where([data-exo="rating"][data-size="sm"]) {
+  --size: calc(var(--exo-size-selector, 0.25rem) * 5);
+}
+
+:where([data-exo="rating"][data-size="md"]) {
+  --size: calc(var(--exo-size-selector, 0.25rem) * 6);
+}
+
+:where([data-exo="rating"][data-size="lg"]) {
+  --size: calc(var(--exo-size-selector, 0.25rem) * 7);
+}
+
+:where([data-exo="rating"][data-size="xl"]) {
+  --size: calc(var(--exo-size-selector, 0.25rem) * 8);
+}
+
+@keyframes exo-rating {
+  0%,
+  40% {
+    scale: 1.1;
+    filter: brightness(1.05) contrast(1.05);
+  }
+}

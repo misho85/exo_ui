@@ -1,7 +1,14 @@
+/*
+ * Theme toggle. daisyUI's `theme-controller` has no look of its own; the
+ * group uses daisyUI's tokens: a field-radius frame in the divider colour,
+ * menu-style hover, and the current theme filled in `primary`.
+ */
+
 :where([data-exo="theme-toggle"]) {
   display: inline-flex;
-  border: 1px solid var(--exo-border);
-  border-radius: var(--exo-radius);
+  border: var(--exo-border-width) solid
+    color-mix(in oklab, var(--exo-base-content) 10%, transparent);
+  border-radius: var(--exo-radius-field);
   overflow: hidden;
 }
 
@@ -16,16 +23,17 @@
   cursor: pointer;
   color: var(--exo-muted-foreground);
   font-size: var(--exo-text-sm);
-  transition: background var(--exo-duration) var(--exo-easing),
-              color var(--exo-duration) var(--exo-easing);
+  transition:
+    background-color var(--exo-duration) var(--exo-easing),
+    color var(--exo-duration) var(--exo-easing);
 }
 
 :where([data-exo="theme-btn"]):hover {
-  background: var(--exo-muted);
-  color: var(--exo-foreground);
+  background-color: color-mix(in oklab, var(--exo-base-content) 10%, transparent);
+  color: var(--exo-base-content);
 }
 
 :where([data-exo="theme-btn"][data-active]) {
-  background: var(--exo-primary);
-  color: var(--exo-primary-foreground);
+  background-color: var(--exo-primary);
+  color: var(--exo-primary-content);
 }
