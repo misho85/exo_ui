@@ -28,12 +28,12 @@
   justify-content: space-between;
   gap: var(--exo-space-2);
   width: 100%;
-  height: 2.5rem;
-  padding: var(--exo-space-2) var(--exo-space-3);
+  height: 2rem;
+  padding: var(--exo-space-1) var(--exo-space-3);
   font-family: var(--exo-font);
   font-size: var(--exo-text-sm);
   color: var(--exo-foreground);
-  background: var(--exo-background);
+  background: var(--exo-field);
   border: 1px solid var(--exo-input);
   border-radius: var(--exo-radius);
   cursor: pointer;
@@ -46,19 +46,19 @@
    FIKSNA (ne izvedena iz razmaka) jer je okidac dugme sa ikonom: bez fiksne
    visine bi prazan izbor bio nizi od popunjenog. */
 :where([data-exo-select="trigger"][data-size="sm"]) {
-  height: 2rem;
+  height: 1.75rem;
   padding: var(--exo-space-1) var(--exo-space-2);
   font-size: var(--exo-text-xs);
 }
 
 :where([data-exo-select="trigger"][data-size="md"]) {
-  height: 2.5rem;
-  padding: var(--exo-space-2) var(--exo-space-3);
+  height: 2rem;
+  padding: var(--exo-space-1) var(--exo-space-3);
   font-size: var(--exo-text-sm);
 }
 
 :where([data-exo-select="trigger"][data-size="lg"]) {
-  height: 3rem;
+  height: 2.5rem;
   padding: var(--exo-space-3) var(--exo-space-4);
   font-size: var(--exo-text-base);
 }
@@ -238,7 +238,7 @@
   padding: var(--exo-space-2) var(--exo-space-3);
   border: 1px solid var(--exo-input);
   border-radius: var(--exo-radius);
-  background: var(--exo-background);
+  background: var(--exo-field);
   color: var(--exo-foreground);
   outline: none;
   transition: border-color var(--exo-duration) var(--exo-easing),

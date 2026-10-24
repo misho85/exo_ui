@@ -9,11 +9,12 @@
   align-items: center;
   gap: var(--exo-space-2);
   width: 100%;
-  padding: var(--exo-space-2) var(--exo-space-3);
+  padding: 0.3125rem var(--exo-space-3);
   font-family: var(--exo-font);
   font-size: var(--exo-text-sm);
+  line-height: 1.25rem;
   color: var(--exo-foreground);
-  background: var(--exo-background);
+  background: var(--exo-field);
   border: 1px solid var(--exo-input);
   border-radius: var(--exo-radius);
   cursor: pointer;
@@ -29,11 +30,12 @@
 
 :where([data-exo-combobox="input-trigger"]) {
   width: 100%;
-  padding: var(--exo-space-2) var(--exo-space-3);
+  padding: 0.3125rem var(--exo-space-3);
   font-family: var(--exo-font);
   font-size: var(--exo-text-sm);
+  line-height: 1.25rem;
   color: var(--exo-foreground);
-  background: var(--exo-background);
+  background: var(--exo-field);
   border: 1px solid var(--exo-input);
   border-radius: var(--exo-radius);
   outline: none;

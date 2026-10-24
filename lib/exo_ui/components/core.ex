@@ -280,8 +280,10 @@ defmodule ExoUI.Components.Core do
   attr :class, :any, default: nil
 
   attr :separator, :boolean,
-    default: true,
-    doc: "draws the rule below the header; turn off inside a bordered container"
+    default: false,
+    doc:
+      "draws a rule below the header. Off by default since v2 (TRG-806): the page title " <>
+        "stands on the page background above cards, as in Polaris, and spacing separates it"
 
   attr :more_label, :string,
     default: "More actions",

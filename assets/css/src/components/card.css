@@ -10,19 +10,27 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--exo-space-4) var(--exo-space-6);
-  border-bottom: 1px solid var(--exo-border);
+  gap: var(--exo-space-2);
+  /* No rule under the title (v2, TRG-806). A bar with a border on every card
+     gave every card the same weight, so a page of cards read as a grid of
+     equal boxes. The title is part of the card's content, as in Polaris:
+     bold, small, and the body continues right under it. */
+  padding: var(--exo-space-4) var(--exo-space-4) 0;
 }
 
 :where([data-exo="card-title"]) {
   font-family: var(--exo-font);
-  font-size: var(--exo-text-base);
+  font-size: var(--exo-text-sm);
   font-weight: 600;
   margin: 0;
 }
 
 :where([data-exo="card-body"]) {
-  padding: var(--exo-space-6);
+  padding: var(--exo-space-4);
+}
+
+:where([data-exo="card-header"] + [data-exo="card-body"]) {
+  padding-top: var(--exo-space-3);
 }
 
 /* Stat card */

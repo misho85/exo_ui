@@ -2,6 +2,27 @@
 
 ## Unreleased
 
+- v2 foundation, the density and weight of a Polaris admin (TRG-806). trg24's
+  owner compared 38 screens side by side with Shopify's admin: every card had
+  the same bordered title bar, status badges were solid pills on every table
+  row, and controls were taller than Polaris'.
+  - Text fields, select and combobox triggers are 32px at `md` (were about
+    38px and 40px), the height of an `md` button; `sm` select 28px, `lg` 40px.
+  - `--exo-field` (new token) is the fill of those controls. It defaults to
+    `--exo-background`, so nothing changes for a host that does not set it; a
+    host whose cards are lighter than the page sets it to the card colour.
+  - Card: no rule under the header, 16px padding (was 24px), the title 14px
+    semibold and the body right under it.
+  - Badge: `secondary`, `success`, `warning`, `danger` and `info` are tonal —
+    a tint of the kind and text mixed from the kind and the foreground (the
+    recipe alert.css measures for AA). `primary` stays solid, because a
+    storefront's primary is one merchant colour for both schemes. Corners are
+    `--exo-radius`, no longer a pill.
+  - `header/1`: the title is 20px bold (was 24px semibold) and `separator`
+    defaults to `false`; a caller that wants the rule passes `separator`.
+  - Table: cells 8px × 12px (were 12px × 16px), a row of about 40px; the head
+    row has the `--exo-muted` fill.
+
 - `form_layout/1`, `optional_field/1` and `save_bar/1`: the page of one
   record. `form_layout` has a `main` slot for what the customer sees and an
   `aside` for what the merchant decides; two columns from 48rem of the

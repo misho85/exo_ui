@@ -15,16 +15,16 @@ defmodule ExoUI.Components.HeaderTest do
   import Phoenix.Component
   import ExoUI.Components
 
-  test "crta ide sama od sebe" do
+  test "od v2 (TRG-806) zaglavlje nema crtu dok je ne traži" do
     assigns = %{}
     html = rendered_to_string(~H|<.header>Proizvodi</.header>|)
-    assert html =~ ~s(data-separator)
+    refute html =~ ~s(data-separator)
   end
 
-  test "`separator={false}` je za zaglavlje unutar kartice" do
+  test "`separator` crta liniju ispod zaglavlja" do
     assigns = %{}
-    html = rendered_to_string(~H|<.header separator={false}>Proizvodi</.header>|)
-    refute html =~ ~s(data-separator)
+    html = rendered_to_string(~H|<.header separator>Proizvodi</.header>|)
+    assert html =~ ~s(data-separator)
   end
 
   test "`leading` stoji lijevo od naslova, u istoj cjelini" do
