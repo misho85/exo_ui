@@ -37,24 +37,29 @@
  * WCAG AA on its own tint. A solid fill on every row of a table shouted: a
  * list of orders was a column of saturated pills. `primary` stays solid,
  * because on a storefront `--exo-primary` is one merchant colour for both
- * schemes and may only be a fill under `--exo-primary-foreground`. */
+ * schemes and may only be a fill under `--exo-primary-foreground`.
+ *
+ * A host can name the tones: `--exo-<kind>-subtle` and
+ * `--exo-<kind>-subtle-foreground`. A tint mixed from a status colour that is
+ * dark enough to be text (trg24's light warning, L 52%) comes out muddy, so
+ * trg24's admin sets Polaris-like tones; the mix is the fallback. */
 :where([data-exo="badge"][data-variant="secondary"]) {
   background: var(--exo-muted);
   color: var(--exo-foreground);
 }
 :where([data-exo="badge"][data-variant="danger"]) {
-  background: color-mix(in oklch, var(--exo-danger) 16%, var(--exo-card));
-  color: color-mix(in oklab, var(--exo-danger) 50%, var(--exo-foreground));
+  background: var(--exo-danger-subtle, color-mix(in oklch, var(--exo-danger) 16%, var(--exo-card)));
+  color: var(--exo-danger-subtle-foreground, color-mix(in oklab, var(--exo-danger) 50%, var(--exo-foreground)));
 }
 :where([data-exo="badge"][data-variant="warning"]) {
-  background: color-mix(in oklch, var(--exo-warning) 22%, var(--exo-card));
-  color: color-mix(in oklab, var(--exo-warning) 40%, var(--exo-foreground));
+  background: var(--exo-warning-subtle, color-mix(in oklch, var(--exo-warning) 22%, var(--exo-card)));
+  color: var(--exo-warning-subtle-foreground, color-mix(in oklab, var(--exo-warning) 40%, var(--exo-foreground)));
 }
 :where([data-exo="badge"][data-variant="success"]) {
-  background: color-mix(in oklch, var(--exo-success) 16%, var(--exo-card));
-  color: color-mix(in oklab, var(--exo-success) 50%, var(--exo-foreground));
+  background: var(--exo-success-subtle, color-mix(in oklch, var(--exo-success) 16%, var(--exo-card)));
+  color: var(--exo-success-subtle-foreground, color-mix(in oklab, var(--exo-success) 50%, var(--exo-foreground)));
 }
 :where([data-exo="badge"][data-variant="info"]) {
-  background: color-mix(in oklch, var(--exo-info) 16%, var(--exo-card));
-  color: color-mix(in oklab, var(--exo-info) 50%, var(--exo-foreground));
+  background: var(--exo-info-subtle, color-mix(in oklch, var(--exo-info) 16%, var(--exo-card)));
+  color: var(--exo-info-subtle-foreground, color-mix(in oklab, var(--exo-info) 50%, var(--exo-foreground)));
 }

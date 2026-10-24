@@ -235,7 +235,7 @@
   font-family: var(--exo-font);
   font-size: var(--exo-text-sm);
   line-height: 1.25rem;
-  padding: var(--exo-space-2) var(--exo-space-3);
+  padding: 0.3125rem var(--exo-space-3);
   border: 1px solid var(--exo-input);
   border-radius: var(--exo-radius);
   background: var(--exo-field);
@@ -267,7 +267,7 @@
 
 :where([data-exo="select"][data-size="md"]) {
   line-height: 1.25rem;
-  padding: var(--exo-space-2) var(--exo-space-3);
+  padding: 0.3125rem var(--exo-space-3);
   font-size: var(--exo-text-sm);
 }
 
