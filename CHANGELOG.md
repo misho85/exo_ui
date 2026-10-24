@@ -13,7 +13,9 @@
   row opens its one `a[data-row-link]`), `ExoBulkSelect`
   (`exo:bulk-select`), `ExoListColumns` (hidden columns per list in
   `localStorage`) and `ExoListSearch` (`exo:list-search`). Every word is a
-  `labels` entry over English defaults (TRG-808).
+  `labels` entry over English defaults. `:bulk_panel` draws a bulk edit
+  form right under the bar, and a bulk action that opens one carries `id`,
+  `expanded` and `controls` (`aria-expanded`, `aria-controls`) (TRG-808).
 
 - Browser spec: the current step's number in daisyUI's default dark theme
   (primary-content on primary, 4.13:1) is held at its measured ratio as a

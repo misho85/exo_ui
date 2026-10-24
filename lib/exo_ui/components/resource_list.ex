@@ -162,19 +162,29 @@ defmodule ExoUI.Components.ResourceList do
 
   slot :bulk_action do
     attr :click, :any, required: true
+    attr :id, :string
     attr :icon, :string
     attr :variant, :string
     attr :confirm, :string
     attr :disabled, :boolean
+    attr :expanded, :boolean, doc: "the action opens a panel: `aria-expanded`"
+    attr :controls, :string, doc: "`id` of the panel it opens: `aria-controls`"
   end
 
   slot :bulk_more do
     attr :click, :any, required: true
+    attr :id, :string
     attr :icon, :string
     attr :variant, :string
     attr :confirm, :string
     attr :disabled, :boolean
+    attr :expanded, :boolean, doc: "the action opens a panel: `aria-expanded`"
+    attr :controls, :string, doc: "`id` of the panel it opens: `aria-controls`"
   end
+
+  slot :bulk_panel,
+    doc:
+      "a form for the selected rows (bulk edit), drawn right under the bulk bar while rows are selected"
 
   slot :grid, doc: "replaces the table; the bulk bar stands above it"
   slot :empty
@@ -386,6 +396,10 @@ defmodule ExoUI.Components.ResourceList do
         </span>
       </div>
 
+      <div :if={@grid != [] and @bulk? and @bulk_panel != []} data-exo="resource-list-bulk-panel">
+        {render_slot(@bulk_panel)}
+      </div>
+
       <div :if={@grid != []} data-exo="resource-list-grid" phx-hook="ExoRowLink" id={"#{@id}-grid"}>
         {render_slot(@grid)}
       </div>
@@ -425,6 +439,11 @@ defmodule ExoUI.Components.ResourceList do
                 menu={@bulk_menu}
                 confirm_attr={@confirm_attr}
               />
+              <%!-- The bulk edit form stands under the bar it was opened from,
+                   above the rows it changes, not above the whole list. --%>
+              <div :if={@bulk_panel != []} data-exo="resource-list-bulk-panel">
+                {render_slot(@bulk_panel)}
+              </div>
             </th>
             <th
               :for={col <- @col}
@@ -524,10 +543,13 @@ defmodule ExoUI.Components.ResourceList do
       <span data-exo="resource-list-bulk-count">{@labels.selected.(@count)}</span>
       <.button
         :for={action <- @buttons}
+        id={action[:id]}
         appearance="outline"
         size="sm"
         phx-click={action.click}
         disabled={action[:disabled]}
+        aria-expanded={expanded(action)}
+        aria-controls={action[:controls]}
         {confirm(@confirm_attr, action[:confirm])}
       >
         <.icon :if={action[:icon]} name={action.icon} size="sm" />
@@ -548,6 +570,7 @@ defmodule ExoUI.Components.ResourceList do
         >
           <button
             :for={entry <- @menu}
+            id={entry[:id]}
             type="button"
             data-exo="dropdown-item"
             data-variant={entry[:variant]}
@@ -559,6 +582,8 @@ defmodule ExoUI.Components.ResourceList do
             phx-click={entry.click}
             disabled={entry[:disabled]}
             tabindex={if entry[:disabled], do: "-1"}
+            aria-expanded={expanded(entry)}
+            aria-controls={entry[:controls]}
             {confirm(@confirm_attr, entry[:confirm])}
           >
             <span :if={entry[:icon]} data-exo="dropdown-item-icon">
@@ -668,6 +693,11 @@ defmodule ExoUI.Components.ResourceList do
     {buttons, rest} = Enum.split(safe, primary)
     {buttons, rest ++ more ++ danger}
   end
+
+  # `aria-expanded="false"` says as much as "true": a slot without the
+  # attribute draws none at all.
+  defp expanded(%{expanded: expanded}) when is_boolean(expanded), do: to_string(expanded)
+  defp expanded(_action), do: nil
 
   defp confirm(_attr, nil), do: %{}
   defp confirm(attr, text), do: %{attr => text}

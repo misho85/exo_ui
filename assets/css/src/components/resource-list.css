@@ -159,6 +159,16 @@
   font-size: var(--exo-text-sm);
 }
 
+:where([data-exo="resource-list-bulk-panel"]) {
+  margin-top: var(--exo-space-2);
+  font-size: var(--exo-text-sm);
+  font-weight: 400;
+  text-align: start;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--exo-base-content);
+}
+
 :where([data-exo="resource-list-bulk-count"]) {
   font-weight: 500;
   font-variant-numeric: tabular-nums;

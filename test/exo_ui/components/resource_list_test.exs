@@ -43,13 +43,18 @@ defmodule ExoUI.Components.ResourceListTest do
     >
       <:col :let={person} label="Name" sort="name">{person.name}</:col>
       <:col :let={person} label="Email" key="email">{person.name}@mail</:col>
-      <:bulk_action click="archive">Archive</:bulk_action>
+      <:bulk_action click="archive" id="archive-open" expanded={false} controls="archive-panel">
+        Archive
+      </:bulk_action>
       <:bulk_action click="tag">Tag</:bulk_action>
       <:bulk_action click="export">Export</:bulk_action>
       <:bulk_action click="print">Print</:bulk_action>
       <:bulk_action click="delete" variant="danger" confirm="Delete the selected people?">
         Delete
       </:bulk_action>
+      <:bulk_panel>
+        <form id="archive-panel">reason</form>
+      </:bulk_panel>
     </.resource_list>
     """)
   end
@@ -196,6 +201,21 @@ defmodule ExoUI.Components.ResourceListTest do
              ]
 
       assert Floki.find(doc, ~s(th[aria-sort])) == []
+    end
+
+    test "an action that opens a panel says so, and the panel stands under the bar" do
+      doc = %{selection: selection([1])} |> render_list() |> parse()
+
+      assert [button] = Floki.find(doc, "#archive-open")
+      assert Floki.attribute(button, "aria-expanded") == ["false"]
+      assert Floki.attribute(button, "aria-controls") == ["archive-panel"]
+      assert Floki.find(doc, ~s(thead [data-exo="resource-list-bulk-panel"] #archive-panel)) != []
+
+      assert %{selection: selection([])}
+             |> render_list()
+             |> parse()
+             |> Floki.find("#archive-panel") ==
+               []
     end
 
     test "every row selected checks select all" do
