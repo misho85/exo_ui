@@ -3,7 +3,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--exo-space-8);
+  /* v2 (TRG-807): more room, since the empty state is usually the only
+     thing on the screen and stands where a list will be. */
+  padding: var(--exo-space-8) var(--exo-space-6) 2.5rem;
   text-align: center;
 }
 
@@ -21,12 +23,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 3rem;
-  height: 3rem;
+  width: 4rem;
+  height: 4rem;
   border-radius: 9999px;
+  /* The muted surface inside a softer ring of it, so the empty state reads as
+     the start of something rather than a missing image. Not the primary
+     colour: on a storefront that is the merchant's colour for both schemes
+     and may only be a fill under its own foreground. */
   background: var(--exo-muted);
-  color: var(--exo-muted-foreground);
-  margin-bottom: var(--exo-space-4);
+  box-shadow: 0 0 0 0.5rem color-mix(in oklch, var(--exo-muted) 50%, transparent);
+  color: var(--exo-foreground);
+  margin-bottom: var(--exo-space-6);
 }
 
 /* Velicinu ikone zada KOMPONENTA (`size="lg"`), ne ovaj CSS.
@@ -49,6 +56,7 @@
   font-size: var(--exo-text-sm);
   color: var(--exo-muted-foreground);
   margin-top: var(--exo-space-1);
+  max-width: 28rem;
 }
 
 :where([data-exo="empty-state-action"]) {

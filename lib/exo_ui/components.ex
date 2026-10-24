@@ -112,6 +112,7 @@ defmodule ExoUI.Components do
   defdelegate table(assigns), to: ExoUI.Components.DataDisplay
   defdelegate list(assigns), to: ExoUI.Components.DataDisplay
   defdelegate content_card(assigns), to: ExoUI.Components.DataDisplay
+  defdelegate settings_list(assigns), to: ExoUI.Components.DataDisplay
   defdelegate stat_card(assigns), to: ExoUI.Components.DataDisplay
   defdelegate metric_card(assigns), to: ExoUI.Components.DataDisplay
   defdelegate wizard_sidebar(assigns), to: ExoUI.Components.DataDisplay

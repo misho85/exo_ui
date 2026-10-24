@@ -1,0 +1,88 @@
+/* Rows of one card (TRG-807): the overview of a settings page. The list is the
+   card, so a page of places reads as one block with dividers, not a grid of
+   equal boxes. */
+:where([data-exo="settings-list"]) {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--exo-card);
+  color: var(--exo-card-foreground);
+  border: 1px solid var(--exo-border);
+  border-radius: var(--exo-radius);
+  box-shadow: var(--exo-shadow-sm);
+  overflow: hidden;
+}
+
+:where([data-exo="settings-item"] + [data-exo="settings-item"]) {
+  border-top: 1px solid var(--exo-border);
+}
+
+:where([data-exo="settings-row"]) {
+  display: flex;
+  align-items: center;
+  gap: var(--exo-space-3);
+  padding: var(--exo-space-3) var(--exo-space-4);
+  color: inherit;
+  text-decoration: none;
+  font-family: var(--exo-font);
+}
+
+:where(a[data-exo="settings-row"]) {
+  transition: background var(--exo-duration) var(--exo-easing);
+}
+
+:where(a[data-exo="settings-row"]):hover {
+  background: var(--exo-muted);
+}
+
+/* The focus ring sits inside the row: the list clips its corners. */
+:where(a[data-exo="settings-row"]):focus-visible {
+  outline: 2px solid var(--exo-ring);
+  outline-offset: -2px;
+}
+
+:where([data-exo="settings-row-icon"]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--exo-radius);
+  background: var(--exo-muted);
+  color: var(--exo-muted-foreground);
+}
+
+:where([data-exo="settings-row-text"]) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  flex: 1;
+  min-width: 0;
+}
+
+:where([data-exo="settings-row-title"]) {
+  font-size: var(--exo-text-sm);
+  font-weight: 600;
+  color: var(--exo-foreground);
+}
+
+:where([data-exo="settings-row-description"]) {
+  font-size: var(--exo-text-xs);
+  color: var(--exo-muted-foreground);
+}
+
+:where([data-exo="settings-row-value"]) {
+  display: flex;
+  align-items: center;
+  gap: var(--exo-space-2);
+  flex-shrink: 0;
+  font-size: var(--exo-text-sm);
+  color: var(--exo-muted-foreground);
+}
+
+:where([data-exo="settings-row-chevron"]) {
+  display: flex;
+  flex-shrink: 0;
+  color: var(--exo-muted-foreground);
+}
