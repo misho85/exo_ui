@@ -125,4 +125,7 @@ defmodule ExoUI.Components do
   defdelegate carousel(assigns), to: ExoUI.Components.DataDisplay
   defdelegate hero(assigns), to: ExoUI.Components.DataDisplay
   defdelegate chat_bubble(assigns), to: ExoUI.Components.DataDisplay
+
+  # ResourceList
+  defdelegate resource_list(assigns), to: ExoUI.Components.ResourceList
 end

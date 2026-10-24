@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+- `resource_list/1`: the index of an admin in one call — views as tabs, one
+  search field with removable filter chips and a Filter menu, a column picker,
+  an optional row of figures, a table whose sortable headers are links
+  (`aria-sort`), and a bulk bar that replaces the header while rows are
+  selected: up to `bulk_primary` actions as buttons, the rest and every
+  destructive one in a "More" menu that asks first (`confirm`, written into
+  `confirm_attr`). `:grid` puts the caller's cards in place of the table with
+  the bulk bar above them. Four hooks come with it: `ExoRowLink` (a click in a
+  row opens its one `a[data-row-link]`), `ExoBulkSelect`
+  (`exo:bulk-select`), `ExoListColumns` (hidden columns per list in
+  `localStorage`) and `ExoListSearch` (`exo:list-search`). Every word is a
+  `labels` entry over English defaults (TRG-808).
+
 - Browser spec: the current step's number in daisyUI's default dark theme
   (primary-content on primary, 4.13:1) is held at its measured ratio as a
   known gap until the owner picks daisyUI's pair or an AA one; main was red
