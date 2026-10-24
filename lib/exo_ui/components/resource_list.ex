@@ -241,7 +241,7 @@ defmodule ExoUI.Components.ResourceList do
         <.button
           :if={@view_delete}
           id={"#{@id}-delete-view"}
-          appearance="ghost"
+          variant="ghost"
           size="sm"
           phx-click={@event_prefix <> "delete_view"}
           phx-value-id={@view_delete.id}
@@ -253,7 +253,7 @@ defmodule ExoUI.Components.ResourceList do
         <.button
           :if={@save_view == :offer}
           id={"#{@id}-save-view"}
-          appearance="outline"
+          variant="outline"
           size="sm"
           phx-click={@event_prefix <> "save_start"}
         >
@@ -280,7 +280,7 @@ defmodule ExoUI.Components.ResourceList do
           autofocus
         />
         <.button type="submit" size="sm">{@l.save}</.button>
-        <.button appearance="ghost" size="sm" phx-click={@event_prefix <> "save_cancel"}>
+        <.button variant="ghost" size="sm" phx-click={@event_prefix <> "save_cancel"}>
           {@l.cancel}
         </.button>
       </form>
@@ -320,7 +320,7 @@ defmodule ExoUI.Components.ResourceList do
             </span>
             <.chip_control id={@id} chip={chip} choose={@l.choose} />
             <.button
-              appearance="ghost"
+              variant="ghost"
               size="xs"
               shape="square"
               phx-click={@event_prefix <> "remove_filter"}
@@ -338,7 +338,7 @@ defmodule ExoUI.Components.ResourceList do
             align="start"
           >
             <:trigger>
-              <.button appearance="outline" size="sm">
+              <.button variant="outline" size="sm">
                 <.icon name="list-filter" size="sm" />
                 {@l.filter}
               </.button>
@@ -354,7 +354,7 @@ defmodule ExoUI.Components.ResourceList do
           <.button
             :if={@filtered? or @chips != []}
             id={"#{@id}-clear"}
-            appearance="ghost"
+            variant="ghost"
             size="sm"
             phx-click={@event_prefix <> "clear"}
           >
@@ -544,7 +544,7 @@ defmodule ExoUI.Components.ResourceList do
       <.button
         :for={action <- @buttons}
         id={action[:id]}
-        appearance="outline"
+        variant="outline"
         size="sm"
         phx-click={action.click}
         disabled={action[:disabled]}
@@ -557,7 +557,7 @@ defmodule ExoUI.Components.ResourceList do
       </.button>
       <.popover :if={@menu != []} id={"#{@id}-bulk-more"} side="bottom" align="start" haspopup="menu">
         <:trigger>
-          <.button appearance="outline" size="sm" aria-label={@labels.more}>
+          <.button variant="outline" size="sm" aria-label={@labels.more}>
             <.icon name="ellipsis" size="sm" />
           </.button>
         </:trigger>
@@ -666,7 +666,7 @@ defmodule ExoUI.Components.ResourceList do
     >
       <.popover id={"#{@id}-popover"} side="bottom" align="end">
         <:trigger>
-          <.button appearance="outline" size="sm" shape="square" aria-label={@label}>
+          <.button variant="outline" size="sm" shape="square" aria-label={@label}>
             <.icon name="columns-3" size="sm" />
           </.button>
         </:trigger>
