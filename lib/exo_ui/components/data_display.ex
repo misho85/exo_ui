@@ -229,6 +229,88 @@ defmodule ExoUI.Components.DataDisplay do
     """
   end
 
+  @doc """
+  Renders rows in one card: the overview of a settings page, or any list of
+  places to go (TRG-807). A row is a link with an optional icon, a title, a
+  sentence under it, a summary on the right (the row's inner block: a value or
+  a badge) and a chevron. A row with none of `navigate`, `patch` or `href` is
+  static and has no chevron.
+
+  Each place used to be its own card in a grid, so a page of eight settings
+  read as eight equal boxes; in Polaris they are rows of one card, and the
+  summary says the state without opening the place.
+
+      <.settings_list aria_label="Mejlovi kupcima">
+        <:row
+          navigate={~p"/settings/emails/order_confirmation"}
+          icon="mail"
+          title="Potvrda narudžbine"
+          description="Odmah po prijemu narudžbine"
+        >
+          <.badge variant="success">Izmijenjen</.badge>
+        </:row>
+      </.settings_list>
+  """
+  attr :aria_label, :string, default: nil, doc: "name of the list for a screen reader"
+  attr :class, :any, default: nil
+  attr :rest, :global
+
+  slot :row, required: true do
+    attr :title, :string, required: true
+    attr :description, :string
+    attr :icon, :string
+    attr :navigate, :string
+    attr :patch, :string
+    attr :href, :string
+    attr :id, :string
+  end
+
+  def settings_list(assigns) do
+    ~H"""
+    <ul data-exo="settings-list" aria-label={@aria_label} class={@class} {@rest}>
+      <li :for={row <- @row} data-exo="settings-item" id={row[:id]}>
+        <.link :if={row[:navigate]} navigate={row[:navigate]} data-exo="settings-row">
+          <.settings_row_content row={row} chevron />
+        </.link>
+        <.link :if={!row[:navigate] && row[:patch]} patch={row[:patch]} data-exo="settings-row">
+          <.settings_row_content row={row} chevron />
+        </.link>
+        <.link
+          :if={!row[:navigate] && !row[:patch] && row[:href]}
+          href={row[:href]}
+          data-exo="settings-row"
+        >
+          <.settings_row_content row={row} chevron />
+        </.link>
+        <div :if={!row[:navigate] && !row[:patch] && !row[:href]} data-exo="settings-row">
+          <.settings_row_content row={row} chevron={false} />
+        </div>
+      </li>
+    </ul>
+    """
+  end
+
+  attr :row, :map, required: true
+  attr :chevron, :boolean, default: false
+
+  defp settings_row_content(assigns) do
+    ~H"""
+    <span :if={@row[:icon]} data-exo="settings-row-icon" aria-hidden="true">
+      <.icon name={@row[:icon]} size="sm" />
+    </span>
+    <span data-exo="settings-row-text">
+      <span data-exo="settings-row-title">{@row.title}</span>
+      <span :if={@row[:description]} data-exo="settings-row-description">
+        {@row[:description]}
+      </span>
+    </span>
+    <span :if={@row[:inner_block]} data-exo="settings-row-value">{render_slot(@row)}</span>
+    <span :if={@chevron} data-exo="settings-row-chevron" aria-hidden="true">
+      <.icon name="chevron-right" size="sm" />
+    </span>
+    """
+  end
+
   @doc "Renders a statistics card with value, optional icon, subtitle, and trend indicator."
   attr :title, :string, required: true
   attr :value, :any, required: true

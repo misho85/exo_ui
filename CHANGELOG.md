@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- `settings_list/1` (TRG-807): rows of one card — icon, title, a sentence,
+  a summary on the right (the row's inner block) and a chevron; a row with
+  `navigate`, `patch` or `href` is one link, a row with none is static. The
+  overview of a settings page, where each place used to be its own card in a
+  grid.
+- Empty state: more room, and the icon sits in a 4rem muted circle with a
+  softer ring, the icon in the foreground colour (not the primary, which on a
+  storefront is the merchant's colour). The subtitle wraps at 28rem.
+- Table: an empty table hides its column headers (`:has()` on the empty row),
+  so the empty state stands alone, as in Polaris (TRG-807).
+
 - v2 foundation, the density and weight of a Polaris admin (TRG-806). trg24's
   owner compared 38 screens side by side with Shopify's admin: every card had
   the same bordered title bar, status badges were solid pills on every table

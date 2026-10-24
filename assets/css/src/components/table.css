@@ -125,3 +125,11 @@
   white-space: nowrap;
   border-width: 0;
 }
+
+/* An empty list has no column headers (TRG-807): the empty state alone, as
+   in Polaris. Headers above "No orders yet" named columns of nothing. CSS
+   rather than a condition in the template, so a stream that fills later shows
+   them again without a re-render of the head. */
+:where([data-exo="table"]:has([data-exo="table-empty-row"])) thead {
+  display: none;
+}
