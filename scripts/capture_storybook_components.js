@@ -816,9 +816,21 @@ async function componentDemo(page, name) {
       await page.waitForTimeout(650);
       await focusFirst(page, '#psb-story-live [data-exo="tooltip-anchor"]');
       break;
-    default:
-      await hoverFirst(page, "#psb-story-live");
+    default: {
+      // Hover without scrolling. `hover()` scrolls a story taller than the
+      // viewport into view first, and how far depended on whether the layout
+      // had settled, so the same story came out 24px apart from run to run
+      // (bar_chart_label, optional_field). The pointer goes over the visible
+      // part of the story instead.
+      const box = await page.locator("#psb-story-live").boundingBox();
+      if (box) {
+        const viewport = page.viewportSize();
+        const x = box.x + Math.min(box.width / 2, viewport.width - box.x - 1);
+        const y = Math.max(box.y, 0) + Math.min(box.height, viewport.height - Math.max(box.y, 0)) / 2;
+        await page.mouse.move(x, y);
+      }
       await page.waitForTimeout(350);
+    }
   }
 
   await page.waitForTimeout(400);
@@ -864,6 +876,7 @@ async function captureComponent(browser, runDir, story) {
     });
     await page.locator("#psb-story-live").waitFor({ state: "visible", timeout: STORY_READY_TIMEOUT });
     await waitForLiveView(page);
+    await page.evaluate(() => document.fonts.ready);
     await componentDemo(page, name);
     dataExoCount = await page.locator("#psb-story-live [data-exo]").count();
     await page.screenshot({ path: screenshotPath, fullPage: true });
