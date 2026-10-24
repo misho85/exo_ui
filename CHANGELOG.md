@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- `resource_list/1`: the bulk bar lies over the header row instead of
+  replacing it. The column names stay in the row, hidden, so the columns keep
+  their widths and nothing under the header moves when a row is picked; the
+  `:bulk_panel` form is a second header row under it. `table/1` gets the
+  `:head_after` slot for that row (TRG-808).
+
 - `resource_list/1`: the index of an admin in one call — views as tabs, one
   search field with removable filter chips and a Filter menu, a column picker,
   an optional row of figures, a table whose sortable headers are links

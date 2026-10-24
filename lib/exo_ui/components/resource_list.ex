@@ -213,7 +213,13 @@ defmodule ExoUI.Components.ResourceList do
       |> assign(:bulk?, assigns.selected_count > 0 and (buttons != [] or menu != []))
 
     ~H"""
-    <div id={@id} data-exo="resource-list" data-list={@list} data-selectable={@selection && ""}>
+    <div
+      id={@id}
+      data-exo="resource-list"
+      data-list={@list}
+      data-selectable={@selection && ""}
+      data-bulk={@bulk? && ""}
+    >
       <dl :if={@stat != []} data-exo="resource-list-stats">
         <div :for={stat <- @stat} data-exo="resource-list-stat">
           <dt>{stat.label}</dt>
@@ -426,39 +432,36 @@ defmodule ExoUI.Components.ResourceList do
                 checked={@all_selected?}
                 label={@l.select_all}
               />
-            </th>
-            <%!-- While rows are selected the header row is the bulk bar: the
-                 actions stand right above the rows they change, and the column
-                 names are not needed while choosing. --%>
-            <th :if={@bulk?} data-exo="table-head-cell" scope="colgroup" colspan={length(@col)}>
-              <.bulk_bar
-                id={@id}
-                labels={@l}
-                count={@selected_count}
-                buttons={@bulk_buttons}
-                menu={@bulk_menu}
-                confirm_attr={@confirm_attr}
-              />
-              <%!-- The bulk edit form stands under the bar it was opened from,
-                   above the rows it changes, not above the whole list. --%>
-              <div :if={@bulk_panel != []} data-exo="resource-list-bulk-panel">
-                {render_slot(@bulk_panel)}
+              <%!-- While rows are selected the bulk bar lies over the column
+                   names: the actions stand right above the rows they change,
+                   and the names stay in the row, hidden, so the columns keep
+                   their widths instead of jumping on every selection. --%>
+              <div :if={@bulk?} data-exo="resource-list-bulk-overlay">
+                <.bulk_bar
+                  id={@id}
+                  labels={@l}
+                  count={@selected_count}
+                  buttons={@bulk_buttons}
+                  menu={@bulk_menu}
+                  confirm_attr={@confirm_attr}
+                />
               </div>
             </th>
             <th
               :for={col <- @col}
-              :if={!@bulk?}
               data-exo="table-head-cell"
               data-align={align(col[:align])}
               scope="col"
               class={col_class(col)}
-              aria-sort={aria_sort(col, @sort)}
+              aria-sort={!@bulk? && aria_sort(col, @sort)}
+              aria-hidden={@bulk? && "true"}
             >
               <.link
                 :if={col[:sort] && @sort_patch}
                 patch={@sort_patch.(col.sort, next_dir(col, @sort))}
                 data-exo="resource-list-sort"
                 data-active={sorted?(col, @sort) && ""}
+                tabindex={@bulk? && "-1"}
               >
                 {col.label}
                 <.icon name={sort_icon(col, @sort)} size="xs" />
@@ -466,6 +469,11 @@ defmodule ExoUI.Components.ResourceList do
               <span :if={!(col[:sort] && @sort_patch)}>{col.label}</span>
             </th>
           </:head_row>
+          <%!-- The bulk edit form stands under the bar it was opened from,
+               above the rows it changes, not above the whole list. --%>
+          <:head_after :if={@bulk? and @bulk_panel != []}>
+            <div data-exo="resource-list-bulk-panel">{render_slot(@bulk_panel)}</div>
+          </:head_after>
           <:col :let={row} :if={@selection} label="">
             <label data-exo="checkbox-item">
               <input
