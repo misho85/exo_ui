@@ -211,3 +211,11 @@
   justify-content: space-between;
   gap: var(--exo-space-2);
 }
+
+/* A row that carries a row link opens on a click anywhere (`ExoRowLink`), so
+   the pointer says so — only over a row that has the link, since a click on a
+   row without one does nothing. */
+:where([data-exo="resource-list-table"], [data-exo="resource-list-grid"])
+  :where(tr, article, li):has(a[data-row-link]) {
+  cursor: pointer;
+}
