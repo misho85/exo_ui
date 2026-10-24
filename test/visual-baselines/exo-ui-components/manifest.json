@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-24T10:14:26.541Z",
-  "sourceRun": "output/playwright/exo-ui-components/2026-10-24T10-03-25-874Z",
+  "updatedAt": "2026-10-24T10:41:53.636Z",
+  "sourceRun": "output/playwright/exo-ui-components/2026-10-24T10-33-43-198Z",
   "count": 118,
   "entries": [
     {
@@ -74,7 +74,7 @@
       "dataExoCount": 10,
       "width": 1280,
       "height": 900,
-      "sha256": "811df9dd75889181cd34a0f08e6faa888749b36fd259128bb1739f6784e65de4"
+      "sha256": "4c98527fbe852198f5ac140981e7f61ee39b5ca95b460a0eafc55a793f2f2888"
     },
     {
       "name": "charts/bar_charts/bar_chart_multiple",
@@ -173,7 +173,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "168cdc560f73ba7372fb77c3e42a0fa72410db623c64740db9deecaa2318977c"
+      "sha256": "cd8f66dd04c1de340898e2ab4dd739da721e4e165a594a2f91fbe488c20b8e05"
     },
     {
       "name": "charts/radar_chart",
@@ -326,7 +326,7 @@
       "dataExoCount": 16,
       "width": 1280,
       "height": 900,
-      "sha256": "29833d78a308fee176405d68fac28c1a19c3b2751438f8364dc6557b7ed2137e"
+      "sha256": "41e0a27e06f7e824034e70cd4a004a4fa5f86c641e972693f03f23d25899b6f4"
     },
     {
       "name": "feedback/flash",
@@ -389,7 +389,7 @@
       "dataExoCount": 4,
       "width": 1280,
       "height": 900,
-      "sha256": "88b5df3db348145d0286b8cdfafb65f505b950e266bbae24efe84eb8e10c6623"
+      "sha256": "7c8db4c0ae15eddfffd4a03474d49cf2ec92806f7ba701e03b8097baa153508c"
     },
     {
       "name": "feedback/toast_container",
@@ -488,7 +488,7 @@
       "dataExoCount": 14,
       "width": 1280,
       "height": 900,
-      "sha256": "8cced6c252a7d1d9be0c3d693baf2f4808664fde8e630cbc54f8ad965898f4f3"
+      "sha256": "702651c8b78b73b65ea52c6b35e5b72414023285b69b6d65d14ec19b0e7b6dcd"
     },
     {
       "name": "forms/radio_group",
@@ -542,7 +542,7 @@
       "dataExoCount": 78,
       "width": 1280,
       "height": 900,
-      "sha256": "a053dbd4820f969f77920d58a264039696834daf56bbbb8df3310db07db63846"
+      "sha256": "017de4749f9cc4d8880b853f17ac64009659bbaebb9c5a59515e89d84fba7c85"
     },
     {
       "name": "layout/app_shell_workflow",
@@ -578,7 +578,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "c03acac4ef0c78c7d838b0cb884afe22cc60a16f3283a5cd8ad9ff71775136d0"
+      "sha256": "448604c31f7faa78875a5cb9726d95b8e27b780e33e31490c8f2896898304b72"
     },
     {
       "name": "layout/footer",
@@ -704,7 +704,7 @@
       "dataExoCount": 15,
       "width": 1280,
       "height": 900,
-      "sha256": "08639b9643177d30b7876e42699b6b1737811ef489ae0ebf0aa52b90771c4a16"
+      "sha256": "cb99ebd3e8b3d75b90aa03b99ba387abcd00a87995877f64292654630ae80f23"
     },
     {
       "name": "navigation/bottom_nav",
@@ -794,7 +794,7 @@
       "dataExoCount": 3,
       "width": 1280,
       "height": 900,
-      "sha256": "f94d24c5d901d21d92b2c870cc9f9ce76f12e12093ff9f1fc57c27106299d510"
+      "sha256": "b0a67b221132b71cccedb5fe397ede375f0a373adaee8532df58e1e5c468f599"
     },
     {
       "name": "overlays/modal",
@@ -803,7 +803,7 @@
       "dataExoCount": 31,
       "width": 1280,
       "height": 900,
-      "sha256": "222949429663de92d80eaec0fbc0deaadd3a9ded85f2cb12838c7b33426a1489"
+      "sha256": "16467c18453e3f0270825ce763ba45cd48f69afc2fb19f80e21e6e1bf9286ff5"
     },
     {
       "name": "overlays/overlay_stack",
@@ -857,7 +857,7 @@
       "dataExoCount": 67,
       "width": 1280,
       "height": 900,
-      "sha256": "af98bcf77f3b8c26d0e72c140cf17db46a6012e06827c01b044eb02374e3662a"
+      "sha256": "5c6d29709c8d27a29affe78c3344a3a3865e16f6f0cc1b321400499701227af7"
     },
     {
       "name": "recipes/billing_dispute_workflow",
