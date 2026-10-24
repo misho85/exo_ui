@@ -201,6 +201,20 @@ defmodule ExoUI.Components.ResourceListTest do
              ]
 
       assert Floki.find(doc, ~s(th[aria-sort])) == []
+
+      # The column names stay in the row, hidden under the bar, so the columns
+      # keep their widths when a row is picked.
+      assert Floki.attribute(doc, ~s([data-exo="resource-list"]), "data-bulk") == [""]
+      assert Floki.attribute(doc, "thead th.exo-col-email", "aria-hidden") == ["true"]
+
+      assert Floki.find(
+               doc,
+               ~s(th[data-select] [data-exo="resource-list-bulk-overlay"] #people-bulk)
+             ) != []
+
+      assert Floki.attribute(doc, ~s(thead th [data-exo="resource-list-sort"]), "tabindex") == [
+               "-1"
+             ]
     end
 
     test "an action that opens a panel says so, and the panel stands under the bar" do
@@ -209,7 +223,11 @@ defmodule ExoUI.Components.ResourceListTest do
       assert [button] = Floki.find(doc, "#archive-open")
       assert Floki.attribute(button, "aria-expanded") == ["false"]
       assert Floki.attribute(button, "aria-controls") == ["archive-panel"]
-      assert Floki.find(doc, ~s(thead [data-exo="resource-list-bulk-panel"] #archive-panel)) != []
+
+      assert Floki.find(
+               doc,
+               ~s(thead tr[data-after] [data-exo="resource-list-bulk-panel"] #archive-panel)
+             ) != []
 
       assert %{selection: selection([])}
              |> render_list()

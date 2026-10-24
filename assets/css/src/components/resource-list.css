@@ -151,6 +151,27 @@
   padding-inline-end: 0;
 }
 
+/* The bulk bar lies over the header row, from the select-all cell to the
+   right: the column names stay in the row (hidden), so the columns keep the
+   widths they had and nothing under the header moves when a row is picked. */
+:where([data-exo="resource-list"]) :where(th[data-select]) {
+  position: relative;
+}
+
+:where([data-exo="resource-list-bulk-overlay"]) {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 100%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+:where([data-exo="resource-list"][data-bulk]) :where(thead tr:first-child > th:not([data-select])) {
+  visibility: hidden;
+}
+
 :where([data-exo="resource-list-bulk"]) {
   font-weight: 400;
   text-transform: none;
@@ -160,7 +181,6 @@
 }
 
 :where([data-exo="resource-list-bulk-panel"]) {
-  margin-top: var(--exo-space-2);
   font-size: var(--exo-text-sm);
   font-weight: 400;
   text-align: start;

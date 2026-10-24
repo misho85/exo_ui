@@ -90,6 +90,13 @@ defmodule ExoUI.Components.DataDisplay do
     Prefer `:col` labels. This is the exit, not the door.
     """
 
+  slot :head_after,
+    doc: """
+    A second header row, one cell across every column, under the header: a
+    form that belongs to the header rather than to a row, such as a bulk
+    edit opened from the bar over the header.
+    """
+
   slot :action
   slot :empty
   slot :loading_state
@@ -133,6 +140,11 @@ defmodule ExoUI.Components.DataDisplay do
             </th>
             <th :if={@action != []} data-exo="table-head-cell" scope="col">
               <span data-exo="sr-only">{@actions_label}</span>
+            </th>
+          </tr>
+          <tr :if={@head_after != []} data-exo="table-head-row" data-after>
+            <th data-exo="table-head-cell" scope="colgroup" colspan={@column_count}>
+              {render_slot(@head_after)}
             </th>
           </tr>
         </thead>
