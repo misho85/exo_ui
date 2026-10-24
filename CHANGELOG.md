@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- `--exo-field-focus-gap` (default 0): a focused input, textarea, select,
+  combobox or file input draws its 2px ring over its own border, one edge,
+  instead of daisyUI's ring 2px off the border, which read as a double border
+  while typing. 1 brings daisyUI's gap back; the theme generator has it under
+  Effects. Buttons keep daisyUI's ring.
+
 - **The theme and the components are daisyUI 5's** (v5.7.50, MIT), value for
   value. Breaking for the look of every app; the attributes are compatible.
   - Tokens: daisyUI's set under `--exo-` — `base-100/200/300`,
