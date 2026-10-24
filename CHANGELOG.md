@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Browser spec: the current step's number in daisyUI's default dark theme
+  (primary-content on primary, 4.13:1) is held at its measured ratio as a
+  known gap until the owner picks daisyUI's pair or an AA one; main was red
+  since #45. Every brand case and the light theme still need 4.5:1.
+
 - `--exo-field-focus-gap` (default 0): a focused input, textarea, select,
   combobox or file input draws its 2px ring over its own border, one edge,
   instead of daisyUI's ring 2px off the border, which read as a double border
