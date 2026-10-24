@@ -7,6 +7,8 @@ defmodule ExoUI.Components.DataDisplay do
 
   import ExoUI.Components.Core, only: [icon: 1]
 
+  alias Phoenix.LiveView.JS
+
   @doc "Renders a data table with columns, optional row click, and action slots. Supports LiveView streams."
   attr :id, :string, required: true
   attr :rows, :list, required: true
@@ -210,12 +212,52 @@ defmodule ExoUI.Components.DataDisplay do
     """
   end
 
-  @doc "Renders a content card with optional title, header action, and body."
+  @doc """
+  Renders a content card with optional title, header action, and body.
+
+  `collapsible` makes the card a row that opens in place (TRG-807): a
+  `<details>` whose header shows the title, a `summary` of the current state
+  and a chevron, with the body under it. A settings page becomes an overview
+  of its sections — "Osnovni podaci: Studio Ritam · Crna Gora · EUR" — instead
+  of every form open at once, and the fields stay in the DOM, so a form that
+  spans several cards still submits all of them. The browser owns `open`
+  after mount (`JS.ignore_attributes`), so a patch from typing in the form does
+  not close the section; `open` sets the first render only. A collapsible card
+  needs an `id`. Its header has no `action` slot: a control inside a
+  `<summary>` would toggle the section.
+  """
   attr :title, :string, default: nil
   attr :class, :any, default: nil
+  attr :collapsible, :boolean, default: false
+  attr :summary, :string, default: nil, doc: "the state shown in the header of a collapsible card"
+  attr :open, :boolean, default: false, doc: "a collapsible card renders open"
   attr :rest, :global
   slot :action
   slot :inner_block, required: true
+
+  def content_card(%{collapsible: true} = assigns) do
+    ~H"""
+    <details
+      data-exo="card"
+      data-collapsible
+      open={@open}
+      phx-mounted={JS.ignore_attributes(["open"])}
+      class={@class}
+      {@rest}
+    >
+      <summary data-exo="card-header">
+        <span data-exo="card-heading">
+          <span :if={@title} data-exo="card-title">{@title}</span>
+          <span :if={@summary} data-exo="card-summary">{@summary}</span>
+        </span>
+        <span data-exo="card-chevron" aria-hidden="true">
+          <.icon name="chevron-down" size="sm" />
+        </span>
+      </summary>
+      <div data-exo="card-body">{render_slot(@inner_block)}</div>
+    </details>
+    """
+  end
 
   def content_card(assigns) do
     ~H"""
@@ -311,7 +353,13 @@ defmodule ExoUI.Components.DataDisplay do
     """
   end
 
-  @doc "Renders a statistics card with value, optional icon, subtitle, and trend indicator."
+  @doc """
+  Renders a statistics card with value, optional icon, subtitle, and trend indicator.
+
+  The `chart` slot (TRG-807) puts a small chart under the value — a
+  `ExoUI.Charts.sparkline/1` of the same number by day — so an overview card
+  shows where the number is going, not only where it is.
+  """
   attr :title, :string, required: true
   attr :value, :any, required: true
   attr :icon, :string, default: nil
@@ -321,6 +369,7 @@ defmodule ExoUI.Components.DataDisplay do
   attr :trend_label, :string, default: nil
   attr :class, :any, default: nil
   attr :rest, :global
+  slot :chart
 
   def stat_card(assigns) do
     ~H"""
@@ -334,6 +383,7 @@ defmodule ExoUI.Components.DataDisplay do
           <.icon name={@icon} size="md" />
         </div>
       </div>
+      <div :if={@chart != []} data-exo="stat-card-chart">{render_slot(@chart)}</div>
       <div :if={@subtitle || @trend} data-exo="stat-card-bottom">
         <span
           :if={@trend}

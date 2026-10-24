@@ -33,6 +33,68 @@
   padding-top: var(--exo-space-3);
 }
 
+/* Collapsible card (TRG-807): the header is the row, the body opens under it. */
+:where(details[data-exo="card"]) > :where(summary[data-exo="card-header"]) {
+  list-style: none;
+  cursor: pointer;
+  padding: var(--exo-space-4);
+  border-radius: var(--exo-radius);
+  transition: background var(--exo-duration) var(--exo-easing);
+}
+
+:where(details[data-exo="card"]) > :where(summary[data-exo="card-header"])::-webkit-details-marker {
+  display: none;
+}
+
+:where(details[data-exo="card"]) > :where(summary[data-exo="card-header"]):hover {
+  background: var(--exo-muted);
+}
+
+:where(details[data-exo="card"]) > :where(summary[data-exo="card-header"]):focus-visible {
+  outline: 2px solid var(--exo-ring);
+  outline-offset: -2px;
+}
+
+:where(details[data-exo="card"][open]) > :where(summary[data-exo="card-header"]) {
+  padding-bottom: 0;
+  border-radius: var(--exo-radius) var(--exo-radius) 0 0;
+}
+
+:where(details[data-exo="card"][open]) > :where(summary[data-exo="card-header"]):hover {
+  background: transparent;
+}
+
+:where([data-exo="card-heading"]) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+:where([data-exo="card-summary"]) {
+  font-family: var(--exo-font);
+  font-size: var(--exo-text-sm);
+  color: var(--exo-muted-foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:where(details[data-exo="card"][open]) :where([data-exo="card-summary"]) {
+  display: none;
+}
+
+:where([data-exo="card-chevron"]) {
+  display: flex;
+  flex-shrink: 0;
+  color: var(--exo-muted-foreground);
+  transition: transform var(--exo-duration) var(--exo-easing);
+}
+
+:where(details[data-exo="card"][open]) :where([data-exo="card-chevron"]) {
+  transform: rotate(180deg);
+}
+
 /* Stat card */
 :where([data-exo="stat-card"]) {
   background: var(--exo-card);
@@ -73,6 +135,18 @@
   border-radius: var(--exo-radius);
   background: color-mix(in oklch, var(--exo-primary) 10%, transparent);
   color: var(--exo-primary);
+}
+
+:where([data-exo="stat-card-chart"]) {
+  display: flex;
+  margin-top: var(--exo-space-3);
+}
+
+/* The sparkline takes the width of the card and keeps its shape (a caller
+   passes a wide `width`/`height`, e.g. 240×36). */
+:where([data-exo="stat-card-chart"]) :where(svg) {
+  width: 100%;
+  height: auto;
 }
 
 :where([data-exo="stat-card-bottom"]) {
