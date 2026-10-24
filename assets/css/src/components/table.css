@@ -28,7 +28,9 @@
 
 :where([data-exo="table-head-cell"]) {
   text-align: left;
-  padding: var(--exo-space-3) var(--exo-space-4);
+  padding: var(--exo-space-2) var(--exo-space-3);
+  background: var(--exo-muted);
+  white-space: nowrap;
   font-size: var(--exo-text-xs);
   font-weight: 600;
   color: var(--exo-muted-foreground);
@@ -70,8 +72,11 @@
   outline-offset: -2px;
 }
 
+/* 8px + 20px line + 8px + 1px rule: a row of about 40px (v2, TRG-806), the
+   density of a Polaris index table, instead of 48-56px. */
 :where([data-exo="table-cell"]) {
-  padding: var(--exo-space-3) var(--exo-space-4);
+  padding: var(--exo-space-2) var(--exo-space-3);
+  line-height: 1.25rem;
   color: var(--exo-foreground);
 }
 
@@ -99,7 +104,7 @@
 }
 
 :where([data-exo="table-action-cell"]) {
-  padding: var(--exo-space-3) var(--exo-space-4);
+  padding: var(--exo-space-2) var(--exo-space-3);
   width: 0;
   white-space: nowrap;
 }
