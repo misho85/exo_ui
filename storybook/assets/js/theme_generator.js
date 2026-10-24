@@ -158,11 +158,33 @@ const builtinThemes = () =>
     prefersdark: false,
   }))
 
+// A theme from the link or from localStorage is someone else's input, and its
+// values go verbatim into the CSS people paste into their apps. So a name is a
+// plain identifier, a colour is one CSS colour with nothing that could close
+// the declaration or the rule, and every other value is one the editor offers.
+const SAFE_NAME = /^[a-z0-9_-]{0,40}$/
+const SHAPE_VALUES = {
+  "--exo-radius-box": RADIUS_VALUES,
+  "--exo-radius-field": RADIUS_VALUES,
+  "--exo-radius-selector": RADIUS_VALUES,
+  "--exo-size-field": SIZE_VALUES,
+  "--exo-size-selector": SIZE_VALUES,
+  "--exo-border-width": BORDER_VALUES,
+  "--exo-depth": ["0", "1"],
+  "--exo-noise": ["0", "1"],
+}
+const isSafeColor = (value) =>
+  typeof value === "string" && !/[;{}"'<>\\]/.test(value) && CSS.supports("color", value)
+
 const isValidTheme = (theme) =>
   theme &&
   typeof theme.name === "string" &&
+  SAFE_NAME.test(theme.name) &&
   ["light", "dark"].includes(theme["color-scheme"]) &&
-  THEME_KEYS.every((key) => typeof theme[key] === "string" && theme[key] !== "")
+  COLOR_KEYS.every((key) => isSafeColor(theme[key])) &&
+  SHAPE_KEYS.every((key) => SHAPE_VALUES[key].includes(theme[key])) &&
+  [undefined, true, false].includes(theme.default) &&
+  [undefined, true, false].includes(theme.prefersdark)
 
 const state = {
   themes: [],
@@ -822,7 +844,7 @@ function openPicker(key) {
   }
 
   valueInput.addEventListener("input", () => {
-    const parsed = parseColor(valueInput.value.trim())
+    const parsed = isSafeColor(valueInput.value.trim()) && parseColor(valueInput.value.trim())
     if (parsed) {
       color = parsed
       set(valueInput.value.trim())
