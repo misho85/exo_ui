@@ -6,8 +6,8 @@
  * outline, dash, soft, colours, ghost, sizes. This file keeps that order.
  *
  *   data-variant     neutral | primary | secondary | accent | info | success |
- *                    warning | error; `danger` is `error`. The Elixir default
- *                    is `primary`; no attribute is daisyUI's plain badge.
+ *                    warning | error; `danger` is `error`. No attribute (the
+ *                    Elixir default) is daisyUI's plain badge.
  *   data-appearance  soft | outline | dash | ghost
  *   data-size        xs | sm | md | lg | xl
  */

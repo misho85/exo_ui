@@ -7,7 +7,7 @@
  *
  *   data-variant  (on the group) base | neutral | primary | secondary |
  *                 accent | info | success | warning | error; `danger` is
- *                 `error`; none is `primary` once checked (below)
+ *                 `error`; none is daisyUI's plain radio
  *   data-size     (on the group) xs | sm | md | lg | xl
  */
 
@@ -164,10 +164,7 @@
 
 /* --- colours (l1.l2) --- */
 
-:where(
-  [data-exo="radio-group"]:not([data-variant]) [data-exo="radio"]:checked + [data-exo="radio-indicator"],
-  [data-exo="radio-group"][data-variant="primary"] [data-exo="radio-indicator"]
-) {
+:where([data-exo="radio-group"][data-variant="primary"] [data-exo="radio-indicator"]) {
   --input-color: var(--exo-primary);
   --radio-gap: var(--exo-primary-content);
 }

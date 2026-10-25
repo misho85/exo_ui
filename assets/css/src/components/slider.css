@@ -7,9 +7,7 @@
  *
  *   data-variant  (on the input) base | neutral | primary | secondary |
  *                 accent | info | success | warning | error; `danger` is
- *                 `error`; none is `primary` (ExoUI's thumb before the
- *                 daisyUI theme); `base` is daisyUI's plain range in the
- *                 text colour
+ *                 `error`; none is daisyUI's plain range (as `base`)
  *   data-size     (on the input) xs | sm | md | lg | xl
  *
  * The width stays 100% of the field, where daisyUI caps it at 20rem: the
@@ -150,12 +148,12 @@
 
 /* --- colours (l1.l2) --- */
 
-:where([data-exo="slider"]:not([data-variant]), [data-exo="slider"][data-variant="primary"]) {
+:where([data-exo="slider"][data-variant="primary"]) {
   color: var(--exo-primary);
   --range-thumb: var(--exo-primary-content);
 }
 
-:where([data-exo="slider"][data-variant="base"]) {
+:where([data-exo="slider"]:not([data-variant]), [data-exo="slider"][data-variant="base"]) {
   color: var(--exo-base-content);
 }
 

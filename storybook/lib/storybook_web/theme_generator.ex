@@ -90,8 +90,8 @@ defmodule ExoUI.Storybook.Web.ThemeGenerator do
           </.button>
         </div>
         <div data-tg="row">
-          <.button :for={size <- ~w(xs sm md lg xl)} size={size}>{size}</.button>
-          <.button shape="square" aria-label="Add"><.icon name="plus" /></.button>
+          <.button :for={size <- ~w(xs sm md lg xl)} size={size} variant="primary">{size}</.button>
+          <.button shape="square" variant="primary" aria-label="Add"><.icon name="plus" /></.button>
           <.button shape="circle" variant="base" aria-label="Like"><.icon name="heart" /></.button>
           <.button disabled>Disabled</.button>
         </div>

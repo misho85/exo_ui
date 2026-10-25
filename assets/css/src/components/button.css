@@ -9,7 +9,7 @@
  *
  *   data-variant     base | neutral | primary | secondary | accent | info |
  *                    success | warning | error; `danger` is `error`; none is
- *                    `primary` (ExoUI's default before the daisyUI theme);
+ *                    daisyUI's plain `.btn` (as `base`);
  *                    `outline` and `ghost` alone are those styles in the
  *                    content colour
  *   data-appearance  soft | outline | dash | ghost | link
@@ -124,7 +124,7 @@
 
 /* --- colours (l1.l2) --- */
 
-:where([data-exo="btn"]:not([data-variant]), [data-exo="btn"][data-variant="primary"]) {
+:where([data-exo="btn"][data-variant="primary"]) {
   --btn-color: var(--exo-primary);
   --btn-fg: var(--exo-primary-content);
   --btn-soft-bg: initial;

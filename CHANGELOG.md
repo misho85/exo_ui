@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- **daisyUI's defaults.** A button, badge, checkbox, radio, toggle, range,
+  progress or radial progress without `variant` is daisyUI's plain one (a
+  grey button and badge, the controls in the content colour), no longer
+  `primary`. Pass `variant="primary"` where the primary colour is meant.
+  `<.badge>`'s Elixir default `"primary"` is gone. Steps keep `primary` for
+  the steps reached.
+
 - Menus (dropdown, context menu, menubar): an item fills only under the
   pointer or with keyboard focus (`:focus-visible`). Opening a menu with a
   click focuses its first item, and that item came up filled, as if chosen; a

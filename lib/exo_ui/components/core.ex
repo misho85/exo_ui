@@ -8,9 +8,9 @@ defmodule ExoUI.Components.Core do
   @doc """
   Renders a button or link styled as a button — daisyUI's `.btn`.
 
-  `variant` is the colour: `base`, `neutral`, `primary` (also no variant),
-  `secondary`, `accent`, `info`, `success`, `warning`, `error` (`danger` is
-  the same). `outline` and `ghost` alone are those appearances in the content
+  `variant` is the colour: `base` (also no variant: daisyUI's plain `.btn`),
+  `neutral`, `primary`, `secondary`, `accent`, `info`, `success`, `warning`,
+  `error` (`danger` is the same). `outline` and `ghost` alone are those appearances in the content
   colour. `appearance` is daisyUI's style: `soft`, `outline`, `dash`, `ghost`,
   `link`. `shape` is `square`, `circle`, `wide` or `block`.
   """
@@ -90,7 +90,7 @@ defmodule ExoUI.Components.Core do
   badge on the page colour. `appearance` is daisyUI's style: `soft`, `outline`,
   `dash`, `ghost`.
   """
-  attr :variant, :string, default: "primary"
+  attr :variant, :string, default: nil
   attr :appearance, :string, values: [nil | ~w(soft outline dash ghost)], default: nil
   attr :size, :string, values: ~w(xs sm md lg xl), default: "md"
   attr :icon, :string, default: nil
