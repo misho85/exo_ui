@@ -4,11 +4,11 @@ defmodule ExoUI.Components.BadgeTest do
   import Phoenix.Component
   import ExoUI.Components
 
-  test "renders badge with default variant" do
+  test "renders daisyUI's plain badge without a variant" do
     assigns = %{}
     html = rendered_to_string(~H"<.badge>New</.badge>")
     assert html =~ ~s(data-exo="badge")
-    assert html =~ ~s(data-variant="primary")
+    refute html =~ "data-variant"
     assert html =~ ~s(data-size="md")
     assert html =~ "New"
   end

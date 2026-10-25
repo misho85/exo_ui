@@ -11,7 +11,7 @@
  *
  *   data-variant  (on the label) base | neutral | primary | secondary |
  *                 accent | info | success | warning | error; `danger` is
- *                 `error`; none is `primary`
+ *                 `error`; none is daisyUI's plain toggle
  *   data-size     (on the label) xs | sm | md | lg | xl
  *
  * Before the port the off track carried ExoUI's WCAG 1.4.11 fix: an outlined
@@ -157,10 +157,7 @@
 
 /* --- colours, checked only (l1.l2) --- */
 
-:where(
-  [data-exo="toggle"]:not([data-variant]):has(input[type="checkbox"]:checked) [data-exo="toggle-track"],
-  [data-exo="toggle"][data-variant="primary"]:has(input[type="checkbox"]:checked) [data-exo="toggle-track"]
-) {
+:where([data-exo="toggle"][data-variant="primary"]:has(input[type="checkbox"]:checked) [data-exo="toggle-track"]) {
   --input-color: var(--exo-primary);
 }
 

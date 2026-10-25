@@ -7,7 +7,7 @@
  *
  *   data-variant  base | neutral | primary | secondary | accent | info |
  *                 success | warning | error; `danger` is `error`; none is
- *                 `primary` (ExoUI's default before the daisyUI theme), `base`
+ *                 daisyUI's plain bar (as `base`), `base`
  *                 is daisyUI's plain `.progress` in the content colour
  */
 
@@ -68,7 +68,7 @@
 
 /* --- colours (l1.l2) --- */
 
-:where([data-exo="progress"]:not([data-variant]), [data-exo="progress"][data-variant="primary"]) {
+:where([data-exo="progress"][data-variant="primary"]) {
   color: var(--exo-primary);
 }
 

@@ -9,7 +9,7 @@
  *
  *   data-variant  base | neutral | primary | secondary | accent | info |
  *                 success | warning | error; `danger` is `error`; none is
- *                 `primary` (ExoUI's default), `base` the content colour
+ *                 the content colour (daisyUI's plain one), as `base`
  *                 (daisyUI's plain `.radial-progress`)
  *   data-size     sm (3rem) | md (5rem, daisyUI's) | lg (7rem): ExoUI's steps,
  *                 daisyUI sets `--size` by hand
@@ -77,10 +77,7 @@
 
 /* --- colours --- */
 
-:where(
-  [data-exo="radial-progress"]:not([data-variant]),
-  [data-exo="radial-progress"][data-variant="primary"]
-) {
+:where([data-exo="radial-progress"][data-variant="primary"]) {
   color: var(--exo-primary);
 }
 
