@@ -244,7 +244,7 @@ defmodule ExoUI.Components.Feedback do
   attr :variant, :string,
     values: [nil | ~w(base neutral primary secondary accent info success warning error danger)],
     default: nil,
-    doc: "Colour of the bar. `nil` and `base` are the content colour (daisyUI's plain bar), `danger` is `error`."
+    doc: "Colour of the bar. `nil` and `base`: the content colour; `danger` is `error`."
 
   attr :class, :any, default: nil
   attr :rest, :global
@@ -296,7 +296,7 @@ defmodule ExoUI.Components.Feedback do
   attr :variant, :string,
     values: [nil | ~w(base neutral primary secondary accent info success warning error danger)],
     default: nil,
-    doc: "Colour of the ring and its label. `nil` and `base` are the content colour, as daisyUI's plain one."
+    doc: "Colour of the ring and its label. `nil` and `base`: the content colour."
 
   attr :class, :any, default: nil
   attr :rest, :global
