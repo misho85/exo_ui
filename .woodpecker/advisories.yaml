@@ -30,11 +30,11 @@ when:
 
 steps:
   # `ci.yaml`'s image and its `mix hex.audit` (Hex's feed: advisories AND retired
-  # packages). No compile: hex.audit reads the lock and the fetched deps.
+  # packages). No compile: hex.audit reads the lock and the fetched deps. No shared
+  # `/root/.hex` volume: pull request pipelines write that one, and the verdict that
+  # watches `main` should not read a Hex home a PR could have left behind.
   - name: hex
     image: hexpm/elixir:1.19.5-erlang-28.4.1-ubuntu-noble-20260217
-    volumes:
-      - woodpecker_hex:/root/.hex
     commands:
       - apt-get update && apt-get install -y --no-install-recommends ca-certificates
       - mix local.hex --force && mix local.rebar --force
