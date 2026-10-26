@@ -8,13 +8,13 @@ defmodule ExoUI.Storybook.Web.ReleaseDistributionTest do
   the cookie stood between them and the node. The pattern is three files and one
   Dockerfile line, and this test holds each of them.
 
-  These tests read the files. The CI job `release` (KRF-611) builds the release
+  These tests read the files. The CI step `release` (KRF-611) builds the release
   and `scripts/release-dist-check.sh` boots it and judges every listener (Pogon ›
   Tehnički standardi › Isporuka › Dokploy › "Erlang distribucija i epmd samo na
   loopback-u"). On the box, `krafter-infra/scripts/audit-beam-dist.py` judges the
   running container.
 
-  That job is only worth something while it builds what Dokploy deploys, so the
+  That step is only worth something while it builds what Dokploy deploys, so the
   `describe` block below holds it to the builder stage of the `Dockerfile` (fleet
   pattern KRF-221, Pogon › … › "Paritet CI ↔ Dockerfile"): mix commands, apt
   packages, compiler image and `MIX_ENV`. Static: no Docker, no network.
@@ -24,7 +24,7 @@ defmodule ExoUI.Storybook.Web.ReleaseDistributionTest do
   @root Path.expand("../../..", __DIR__)
   @rel Path.join(@root, "storybook/rel")
   @dockerfile Path.join(@root, "Dockerfile")
-  @ci Path.join(@root, ".github/workflows/ci.yml")
+  @ci Path.join(@root, ".woodpecker/ci.yaml")
 
   defp code_lines(path) do
     path
@@ -75,7 +75,7 @@ defmodule ExoUI.Storybook.Web.ReleaseDistributionTest do
     assert built && copied < built, "`COPY storybook/rel ./rel` must come before `mix release`"
   end
 
-  describe "the CI job `release` builds what Dokploy deploys" do
+  describe "the CI step `release` builds what Dokploy deploys" do
     test "it runs every mix command of the builder stage" do
       from_dockerfile =
         stage("builder")
@@ -89,7 +89,7 @@ defmodule ExoUI.Storybook.Web.ReleaseDistributionTest do
       assert "mix release" in from_dockerfile, "the builder stage no longer runs `mix release`?"
       assert "mix local.rebar --force" in from_dockerfile, "the RUN parser lost a chained command"
 
-      ci = job_commands("release")
+      ci = step_commands("release")
 
       # The same command, or the same with added flags (`mix release --overwrite`).
       missing =
@@ -98,7 +98,7 @@ defmodule ExoUI.Storybook.Web.ReleaseDistributionTest do
         end)
 
       assert missing == [],
-             "the builder stage runs, and the CI job `release` does not (CI would build " <>
+             "the builder stage runs, and the CI step `release` does not (CI would build " <>
                "another artifact than the one Dokploy deploys):\n" <> Enum.join(missing, "\n")
     end
 
@@ -129,51 +129,41 @@ defmodule ExoUI.Storybook.Web.ReleaseDistributionTest do
       assert "build-essential" in from_dockerfile,
              "the builder stage no longer installs build-essential?"
 
-      missing = from_dockerfile -- packages.(job_commands("release"))
+      missing = from_dockerfile -- packages.(step_commands("release"))
 
       assert missing == [],
-             "the builder stage installs #{Enum.join(missing, ", ")}, the CI job `release` does not"
+             "the builder stage installs #{Enum.join(missing, ", ")}, the CI step `release` does not"
     end
 
     # A compiler-bound error must not show up for the first time on the deploy
-    # host, so `test` (setup-beam) compiles on the same Elixir and OTP as well.
+    # host, so `test` (ExUnit) and the scheduled audit run on the same image too:
+    # every Elixir image in every Woodpecker file is the builder's.
     test "every Elixir compile in CI runs on the builder stage's compiler" do
       image = builder_image()
       refute image =~ "$", "unresolved ARG in the builder image: #{image}"
 
-      assert job("release") =~ ~r/^      image: #{Regex.escape(image)}$/m,
-             "the Dockerfile builds on #{image}, the CI job `release` on another image"
+      assert step("release") =~ ~r/^    image: #{Regex.escape(image)}$/m,
+             "the Dockerfile builds on #{image}, the CI step `release` on another image"
 
-      ci = File.read!(@ci)
+      found =
+        for file <- Path.wildcard(Path.join(@root, ".woodpecker/*.{yaml,yml}")),
+            [found] <-
+              Regex.scan(~r/\bimage: (\S*elixir\S*)/, File.read!(file), capture: :all_but_first),
+            do: {Path.basename(file), found}
 
-      others =
-        ~r/hexpm\/elixir:[^\s"']+/
-        |> Regex.scan(ci)
-        |> List.flatten()
-        |> Enum.uniq()
-        |> List.delete(image)
+      assert {"ci.yaml", image} in found, "the CI step `test` does not run on #{image}?"
+
+      others = for {file, other} <- found, other != image, do: "#{file}: #{other}"
 
       assert others == [],
-             "the Dockerfile builds on #{image}, CI also on #{Enum.join(others, ", ")}"
-
-      [_, elixir, otp] = Regex.run(~r/^hexpm\/elixir:(.+)-erlang-(.+)-ubuntu-/, image)
-
-      for {key, version} <- [{"elixir-version", elixir}, {"otp-version", otp}] do
-        found =
-          ~r/^\s+#{key}: "?([^"\s]+)"?$/m
-          |> Regex.scan(ci, capture: :all_but_first)
-          |> List.flatten()
-
-        assert found != [] and Enum.uniq(found) == [version],
-               "setup-beam `#{key}` is #{inspect(found)}, the builder image has #{version}"
-      end
+             "the Dockerfile builds on #{image}, CI also on:\n" <> Enum.join(others, "\n")
     end
 
     test "it builds under the builder stage's MIX_ENV and boots the built release" do
-      assert job("release") =~ ~r/^      MIX_ENV: #{builder_mix_env()}$/m,
-             "the CI job `release` does not build under MIX_ENV=#{builder_mix_env()}"
+      assert step("release") =~ ~r/^      MIX_ENV: #{builder_mix_env()}$/m,
+             "the CI step `release` does not build under MIX_ENV=#{builder_mix_env()}"
 
-      commands = job_commands("release")
+      commands = step_commands("release")
       assert "./scripts/release-config-check.sh" in commands
       assert "./scripts/release-dist-check.sh" in commands
     end
@@ -228,20 +218,24 @@ defmodule ExoUI.Storybook.Web.ReleaseDistributionTest do
     |> Enum.flat_map(&split_and/1)
   end
 
-  # Everything under `  <name>:` in `jobs:` up to the next line at that indent.
-  defp job(name) do
-    [_, rest] = String.split(File.read!(@ci), ~r/^  #{name}:$/m, parts: 2)
-    [body | _] = String.split(rest, ~r/^  \S/m, parts: 2)
+  # One step of `.woodpecker/ci.yaml`, from its `- name:` line to the next step.
+  defp step(name) do
+    [_, rest] = String.split(File.read!(@ci), ~r/^  - name: #{name}$/m, parts: 2)
+    [body | _] = String.split(rest, ~r/^  - name: |^\S/m, parts: 2)
     body
   end
 
-  # The job's one-line `run:` values, split on `&&`. A block scalar (`run: |`)
-  # comes out as `|` and matches no command, so it fails the check above instead
-  # of hiding commands from it.
-  defp job_commands(name) do
-    ~r/^\s+run: (.+)$/m
-    |> Regex.scan(job(name), capture: :all_but_first)
+  # The step's one-line `commands:` items, without the `(cd storybook && …)` wrapper
+  # and split on `&&` (KRF-336, as the fleet's parity tests read them). A block scalar
+  # (`- |`) comes out as `|` and matches no command, so it fails the checks above
+  # instead of hiding commands from them.
+  defp step_commands(name) do
+    [_, commands] = String.split(step(name), ~r/^    commands:$/m, parts: 2)
+
+    ~r/^      - (.+)$/m
+    |> Regex.scan(commands, capture: :all_but_first)
     |> List.flatten()
+    |> Enum.map(&String.replace(&1, ~r/^\(cd storybook && (.*)\)$/, "\\1"))
     |> Enum.flat_map(&split_and/1)
   end
 end
