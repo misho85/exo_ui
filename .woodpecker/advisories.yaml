@@ -1,0 +1,82 @@
+# .woodpecker/advisories.yaml — the dependency advisory check ON A SCHEDULE (KRF-722).
+# The fleet's shape from spojka (SPO-166, KRF-521) and krafter_ui (KRF-619); canonical
+# runbook: spojka/docs/runbooks/ci-woodpecker-standard.md, rule 7, and Pogon › Tehnički
+# standardi › Zavisnosti i advisory kapija › Advisory kapija i po rasporedu.
+#
+# Why a schedule at all: `mix hex.audit` is the only check here whose result changes
+# without the code changing. An advisory or a retirement published today makes
+# yesterday's green `main` wrong, and `ci.yaml` only says so on the next push or PR —
+# which then goes red for a reason it did not cause. trg24 snapshots this library
+# (scripts/exo-ui-vendor.sh) and the storybook is deployed, so the lapse travels.
+#
+# Why its own workflow and not `event: cron` in `ci.yaml`: that would run ExUnit, the
+# browser suite and the release every night for a verdict only the audit can change.
+# This file runs `ci.yaml`'s two `mix hex.audit` calls (the library's `mix.lock` and the
+# storybook's), on the same image, and nothing else.
+#
+# How a lapse is noticed: a Kuma PUSH monitor, `exo_ui-advisories` (krafter-infra
+# `uptimekuma/monitors.json`), i.e. a dead-man switch. `heartbeat` checks in after every
+# run — `up` when both audits are clean, `down` with the verdict per lock otherwise — and
+# Kuma alarms on a `down` at once and on silence after 49 h. A deleted cron, a `when`
+# that filters the workflow out (no pipeline at all), a missing secret and a dead agent
+# all look like silence; a run that alarms when it fails could not report any of those.
+#
+# The schedule lives in Woodpecker (cron `advisories`, branch `main`, 09–11 UTC), the push
+# URL in the repo secret `advisories_heartbeat_url` (event `cron` only, so no PR ever sees
+# it). `test/advisories_schedule_test.sh` holds this shape.
+when:
+  - event: cron
+    cron: advisories
+
+steps:
+  # `ci.yaml`'s image and its `mix hex.audit` (Hex's feed: advisories AND retired
+  # packages). No compile: hex.audit reads the lock and the fetched deps. No shared
+  # `/root/.hex` volume: pull request pipelines write that one, and the verdict that
+  # watches `main` should not read a Hex home a PR could have left behind.
+  - name: hex
+    image: hexpm/elixir:1.19.5-erlang-28.4.1-ubuntu-noble-20260217
+    commands:
+      - apt-get update && apt-get install -y --no-install-recommends ca-certificates
+      - mix local.hex --force && mix local.rebar --force
+      # The verdict goes to a file per lock that `heartbeat` reads; a step that never gets
+      # there leaves none, and that reads as "did not finish", not as clean. Both audits
+      # run even when the first is red, so one lapse never hides the other.
+      - mkdir -p .advisories
+      - |
+        mix deps.get
+        if mix hex.audit; then
+          echo clean > .advisories/library
+        else
+          echo FAIL > .advisories/library
+        fi
+      - |
+        cd storybook
+        mix deps.get
+        if mix hex.audit; then
+          echo clean > ../.advisories/storybook
+        else
+          echo FAIL > ../.advisories/storybook
+        fi
+        cd ..
+      - grep -qx clean .advisories/library && grep -qx clean .advisories/storybook
+
+  # Kuma check-in (see "How a lapse is noticed" above). The status comes from the verdict
+  # files, not from the pipeline status: a step killed before its verdict is a `down`,
+  # never an `up`.
+  - name: heartbeat
+    image: curlimages/curl:8.11.1
+    when:
+      - status: [success, failure]
+    environment:
+      HEARTBEAT_URL:
+        from_secret: advisories_heartbeat_url
+    commands:
+      - |
+        LIB=$$(cat .advisories/library 2>/dev/null || echo "did not finish")
+        SB=$$(cat .advisories/storybook 2>/dev/null || echo "did not finish")
+        if [ "$$LIB" = clean ] && [ "$$SB" = clean ]; then STATUS=up; else STATUS=down; fi
+        SHA=$$(echo "$${CI_COMMIT_SHA}" | cut -c1-8)
+        MSG="library: $$LIB, storybook: $$SB ($$SHA) $${CI_PIPELINE_URL}"
+        echo "heartbeat: status=$$STATUS msg=$$MSG"
+        curl -fsS -o /dev/null -m 20 -G "$${HEARTBEAT_URL}" \
+          --data-urlencode "status=$$STATUS" --data-urlencode "msg=$$MSG"

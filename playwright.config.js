@@ -10,7 +10,9 @@ module.exports = defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: 1,
-  reporter: process.env.CI ? [["github"], ["html", { open: "never" }]] : "list",
+  // Woodpecker shows plain step logs: `list` names every test there, the `github`
+  // reporter only wrote GitHub Actions annotations (KRF-722).
+  reporter: process.env.CI ? [["list"], ["html", { open: "never" }]] : "list",
   timeout: TEST_TIMEOUT,
   expect: {
     timeout: EXPECT_TIMEOUT

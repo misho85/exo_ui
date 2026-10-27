@@ -1,0 +1,167 @@
+# .woodpecker/ci.yaml — report-only CI on the central Woodpecker (ci.krafter.dev), fleet
+# standard: spojka docs/runbooks/ci-woodpecker-standard.md and Pogon › Tehnički standardi ›
+# Isporuka. Until KRF-722 this ran on GitHub Actions (`.github/workflows/ci.yml`), the only
+# repo of the trg24 chain that did: its own queue (58 min for a CSS PR on TRG-747), its own
+# way to read logs and fetch artifacts, and no Telegram message. Nothing here deploys: the
+# storybook goes out by merge -> Dokploy auto-deploy, and trg24 takes the library as a
+# snapshot (scripts/exo-ui-vendor.sh there).
+#
+#   test       ExUnit (library and storybook), browser tests and the visual regression
+#   artifacts  the run's snapshots, diffs and Playwright report to Garage, with a link
+#   release    the builder stage of the Dockerfile, then boots the release it built
+#   notify     the push verdict to the Dev group on Telegram
+#
+# `mix hex.audit` also runs every day on its own, in advisories.yaml (Woodpecker cron
+# `advisories`): an advisory published after the last push changes the verdict without a
+# commit. That is why this file takes no `cron` event (test/advisories_schedule_test.sh).
+
+when:
+  # `push` only on `main`; a branch is checked through its pull request.
+  - event: push
+    branch: main
+  - event: pull_request
+  - event: manual
+
+steps:
+  - name: test
+    # The Dockerfile's builder image, so ExUnit compiles on the compiler production builds
+    # with (storybook/test/storybook_web/release_distribution_test.exs holds it).
+    image: hexpm/elixir:1.19.5-erlang-28.4.1-ubuntu-noble-20260217
+    environment:
+      # Playwright: `forbidOnly`, two retries, no server reuse (playwright.config.js).
+      CI: "true"
+    volumes:
+      # Hex checks every cached read against a checksum, so this one may be shared; never
+      # /root/.mix (KRF-382, test/exo_ui/ci_mix_home_test.exs).
+      - woodpecker_hex:/root/.hex
+      # Browsers are keyed by Playwright's revision directory, so the cache cannot hand a
+      # run the wrong build (re24 e2e.yaml).
+      - woodpecker_exo_ui_playwright:/root/.cache/ms-playwright
+    commands:
+      - apt-get update && apt-get install -y --no-install-recommends build-essential git ca-certificates curl ffmpeg
+      # Node for Playwright and the capture scripts (`node scripts/…`); bun only installs
+      # and runs package scripts. The version check sits in the SAME command: the NodeSource
+      # pipe runs under /bin/sh without pipefail, so a failed download exits 0 and apt
+      # quietly installs noble's Node 18 (KRF-409, KRF-440).
+      - curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && apt-get install -y nodejs && node --version | grep '^v24\.'
+      - npm install -g bun@1.3.11
+      - mix local.hex --force && mix local.rebar --force
+      - mix deps.get && mix hex.audit
+      - (cd storybook && mix deps.get && mix hex.audit && mix assets.setup)
+      - bun install --frozen-lockfile
+      - bunx playwright install --with-deps chromium
+      - bun run check:css
+      - mix format --check-formatted
+      - mix compile --warnings-as-errors
+      - mix test
+      - (cd storybook && mix assets.build && mix compile --warnings-as-errors && mix test)
+      - bash test/advisories_schedule_test.sh
+      - bun run test:browser
+      - |
+        (cd storybook && PLAYWRIGHT=1 mix phx.server) &
+        server_pid=$$!
+        trap 'kill "$$server_pid" >/dev/null 2>&1 || true' EXIT
+        for _ in $$(seq 1 120); do
+          curl -fsS http://127.0.0.1:4100/welcome >/dev/null && break
+          sleep 1
+        done
+        curl -fsS http://127.0.0.1:4100/welcome >/dev/null
+        bun run capture:components
+        bun run capture:validate
+        bun run visual:check
+
+  # What `actions/upload-artifact` kept: the captured snapshots (a new baseline is taken
+  # from them), the visual diffs, the Playwright report and the traces of failed tests.
+  # Woodpecker keeps no files, and ~15 MB of PNGs do not belong in a step log (KRF-499), so
+  # they go to the Garage bucket `ci-artifacts` on krafter-garage (s3.krafter.dev), under
+  # `exo_ui/<pipeline>/`, and the log prints a presigned link valid for 7 days. The bucket
+  # expires objects after 14 days; the key writes only that bucket.
+  #
+  # Refreshing the baseline from a PR's run:
+  #   curl -fsSL "<link from this step>" | tar -xz
+  #   node scripts/visual_regression.js update --run output/playwright/exo-ui-components/<run>
+  - name: artifacts
+    image: rclone/rclone:1.75.0
+    when:
+      - status: [success, failure]
+    environment:
+      RCLONE_CONFIG_GARAGE_TYPE: s3
+      RCLONE_CONFIG_GARAGE_PROVIDER: Other
+      RCLONE_CONFIG_GARAGE_ENDPOINT: https://s3.krafter.dev
+      RCLONE_CONFIG_GARAGE_REGION: garage
+      RCLONE_CONFIG_GARAGE_ACCESS_KEY_ID:
+        from_secret: ci_artifacts_access_key_id
+      RCLONE_CONFIG_GARAGE_SECRET_ACCESS_KEY:
+        from_secret: ci_artifacts_secret_access_key
+    # The image's entrypoint is `rclone`; a step with `commands` runs them through
+    # Woodpecker's own shell entrypoint (as with curlimages/curl in `notify`).
+    commands:
+      - |
+        set -- $$(ls -d output/playwright playwright-report test-results 2>/dev/null)
+        if [ $$# -eq 0 ]; then echo "artifacts: the test step left nothing to keep"; exit 0; fi
+        tar -czf /tmp/browser-artifacts.tar.gz "$$@"
+        object="garage:ci-artifacts/exo_ui/$${CI_PIPELINE_NUMBER}/browser-artifacts.tar.gz"
+        rclone copyto /tmp/browser-artifacts.tar.gz "$$object"
+        echo "artifacts: $$(du -h /tmp/browser-artifacts.tar.gz | cut -f1) ($$*), download for 7 days:"
+        rclone link --expire 7d "$$object"
+
+  # ---- Release: the artifact production runs (KRF-611, fleet pattern KRF-221) ----
+  # `test` builds under MIX_ENV=test and dev, so a prod-only compile error, the esbuild
+  # step of the image and a `config/runtime.exs` that raises would first run in the
+  # Dokploy build and in the new container on the box, AFTER the merge.
+  #
+  # This step is the builder stage of the root `Dockerfile`, command for command, on the
+  # SAME image (`storybook/test/storybook_web/release_distribution_test.exs` fails when
+  # they drift: mix commands, apt packages, image, MIX_ENV), plus what the Dockerfile
+  # cannot do: boot the built release through `runtime.exs`, with negatives
+  # (`scripts/release-config-check.sh`), and check that epmd and distribution listen on
+  # loopback only (`scripts/release-dist-check.sh`).
+  #
+  # It is not a deploy step: the way to production stays merge -> Dokploy auto-deploy
+  # (owner's decision, re24 RE-51). It runs after `test`, the last of the judging steps,
+  # so every cheaper failure arrives first. `_build/prod` is new in this workspace;
+  # `--overwrite` only keeps `mix release` from prompting if one is ever there.
+  - name: release
+    image: hexpm/elixir:1.19.5-erlang-28.4.1-ubuntu-noble-20260217
+    environment:
+      MIX_ENV: prod
+    volumes:
+      - woodpecker_hex:/root/.hex
+    commands:
+      - apt-get update && apt-get install -y --no-install-recommends build-essential git ca-certificates
+      - mix local.hex --force && mix local.rebar --force
+      - (cd storybook && mix deps.get --only prod)
+      - (cd storybook && mix deps.compile)
+      - (cd storybook && mix esbuild.install --if-missing && mkdir -p priv/static/assets && mix esbuild storybook)
+      - (cd storybook && mix compile)
+      - (cd storybook && mix release --overwrite)
+      - ./scripts/release-config-check.sh
+      # epmd, the node and the `rpc` client listen on loopback only (KRF-493).
+      - ./scripts/release-dist-check.sh
+
+  - name: notify
+    image: curlimages/curl:8.11.1
+    when:
+      - event: push
+        status: [success, failure]
+    environment:
+      BOT_TOKEN:
+        from_secret: telegram_ci_bot_token
+      CHAT_ID:
+        from_secret: telegram_ci_chat_id
+    commands:
+      # `$$` escapes the var so Woodpecker passes it to the shell. Only the commit subject
+      # goes out: Telegram refuses text over 4096 characters (RE-209).
+      - |
+        STATUS_ICON=$$( [ "$${CI_PIPELINE_STATUS}" = "success" ] && echo "✅" || echo "❌" )
+        SUBJECT=$$(printf '%s\n' "$${CI_COMMIT_MESSAGE}" | head -n 1 | cut -c1-1000)
+        TEXT="$${STATUS_ICON} $${CI_REPO_NAME} CI $${CI_PIPELINE_STATUS} — $${CI_COMMIT_BRANCH} $${CI_COMMIT_SHA}
+        $${SUBJECT}
+        $${CI_PIPELINE_URL}"
+        echo "$${CHAT_ID}" | tr ',' '\n' | while IFS= read -r cid; do
+          cid=$$(echo "$$cid" | tr -d '[:space:]')
+          [ -z "$$cid" ] && continue
+          curl -fsS -X POST "https://api.telegram.org/bot$${BOT_TOKEN}/sendMessage" \
+            -d chat_id="$$cid" \
+            --data-urlencode "text=$${TEXT}"
+        done

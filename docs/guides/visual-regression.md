@@ -31,8 +31,9 @@ bun run visual:check -- --run output/playwright/exo-ui-components/<run-id>
 
 ## The Baseline Is A CI Capture
 
-CI renders on Linux (`ubuntu-latest`, Playwright's Chromium). A capture made on macOS
-differs from it on every route, even when nothing changed, because fonts and
+CI renders on Linux (Woodpecker, the `hexpm/elixir` Ubuntu noble image the Dockerfile
+builds on, Playwright's Chromium; GitHub's `ubuntu-latest` until KRF-722). A capture
+made on macOS differs from it on every route, even when nothing changed, because fonts and
 anti-aliasing differ: the first baseline was a macOS capture, and CI failed on 114
 of 114 routes by 1.4–5% until it was replaced (KRF-284). So a local check can only
 tell you what changed *relative to a local capture*, and a local run never produces
@@ -42,13 +43,15 @@ the committed baseline.
 
 Only update the baseline after reviewing the capture and confirming the visual change is intentional.
 
-1. Push the change. CI's **Visual regression** step fails and uploads the capture it
-   compared as the `browser-artifacts` artifact.
+1. Push the change. The pipeline's `test` step fails on the visual check, and its
+   `artifacts` step uploads what the run captured (`output/playwright`,
+   `playwright-report`, `test-results`) to the Garage bucket `ci-artifacts` and prints a
+   download link, valid for 7 days, as the last line of its log.
 2. Download it into the ignored `output/` tree, so the manifest records a repo-relative
    `sourceRun`:
 
    ```sh
-   gh run download <run-id> -n browser-artifacts -D /tmp/exo-ci
+   mkdir -p /tmp/exo-ci && curl -fsSL "<link from the artifacts step>" | tar -xz -C /tmp/exo-ci
    cp -R /tmp/exo-ci/output/playwright/exo-ui-components/<capture-id> output/playwright/exo-ui-components/
    ```
 
@@ -56,8 +59,8 @@ Only update the baseline after reviewing the capture and confirming the visual c
    `dataExoCount` of each route in its `manifest.json` must match a local capture of
    the same commit — equal counts mean the same content, rendered by another platform.
    When the change is the Storybook shell itself (a phoenix_storybook upgrade), compare
-   against `main`'s last CI capture instead (`gh run download <main-run-id> -n
-   browser-artifacts`): equal counts on every route mean the components did not move,
+   against `main`'s last CI capture instead (the `artifacts` link of `main`'s last
+   push pipeline): equal counts on every route mean the components did not move,
    and no local capture is needed. Compare with that capture, not with the committed
    baseline: a component change that stayed under the 0.5% gate lands on `main`
    without a new baseline, so the baseline's counts can be behind (KRF-290 found two
