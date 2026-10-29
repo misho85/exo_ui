@@ -45,7 +45,7 @@ Only update the baseline after reviewing the capture and confirming the visual c
 
 1. Push the change. The pipeline's `test` step fails on the visual check, and its
    `artifacts` step uploads what the run captured (`output/playwright`,
-   `playwright-report`, `test-results`) to the Garage bucket `ci-artifacts` and prints a
+   `playwright-report`, `test-results`) to Hetzner Object Storage (`krafter-exo-ui/ci-artifacts/`) and prints a
    download link, valid for 7 days, as the last line of its log.
 2. Download it into the ignored `output/` tree, so the manifest records a repo-relative
    `sourceRun`:
