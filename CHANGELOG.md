@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- `alert/1`: a ghost, outline or dash button without a colour in the
+  `:action` slot takes the alert's text colour. daisyUI paints such a button
+  in base-content, the page's text colour, which on a solid alert in the dark
+  theme measured 1.6–2.7:1; it now matches the alert's message (5.1–6.3:1 with
+  ExoUI's theme). A WCAG departure from daisyUI, noted in `alert.css`
+  (TRG-816).
+
 - **daisyUI's defaults.** A button, badge, checkbox, radio, toggle, range,
   progress or radial progress without `variant` is daisyUI's plain one (a
   grey button and badge, the controls in the content colour), no longer

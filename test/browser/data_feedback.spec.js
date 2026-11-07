@@ -71,8 +71,45 @@ test.describe("data and feedback components", () => {
           alert.parentElement.style.background = "var(--exo-background)";
         }
 
+        // A button in the alert's action, without a colour of its own, is
+        // measured as outline and as ghost: daisyUI paints both in the page's
+        // text colour, which on the kind colour was 2.35:1 (TRG-816). The
+        // button eases its colour in, so each measurement finishes that first.
+        const settle = (element) => {
+          getComputedStyle(element).color;
+          document.getAnimations().forEach((animation) => animation.finish());
+        };
+
+        const buttons = alerts.flatMap((alert) => {
+          const surface = rgb(getComputedStyle(alert.parentElement).backgroundColor);
+          const background = rgb(getComputedStyle(alert).backgroundColor, surface);
+
+          return [...alert.querySelectorAll('[data-exo="alert-action"] [data-exo="btn"]')].flatMap(
+            (button) => {
+              const written = button.getAttribute("data-variant");
+
+              const measured = ["outline", "ghost"].map((variant) => {
+                button.setAttribute("data-variant", variant);
+                settle(button);
+
+                return {
+                  kind: alert.dataset.kind,
+                  variant,
+                  ratio: ratio(rgb(getComputedStyle(button).color), background)
+                };
+              });
+
+              if (written === null) button.removeAttribute("data-variant");
+              else button.setAttribute("data-variant", written);
+
+              return measured;
+            }
+          );
+        });
+
         return {
           foreground: getComputedStyle(alerts[0]).getPropertyValue("--exo-foreground").trim(),
+          buttons,
           alerts: alerts.map((alert) => {
             const surface = rgb(getComputedStyle(alert.parentElement).backgroundColor);
             const background = rgb(getComputedStyle(alert).backgroundColor, surface);
@@ -94,6 +131,12 @@ test.describe("data and feedback components", () => {
       for (const alert of result.alerts) {
         expect(alert.opacity, `${theme} ${alert.kind} message opacity`).toBe(1);
         expect(alert.ratio, `${theme} ${alert.kind} text contrast`).toBeGreaterThanOrEqual(4.5);
+      }
+
+      expect(result.buttons.length, `${theme} buttons in an alert action`).toBeGreaterThanOrEqual(2);
+
+      for (const button of result.buttons) {
+        expect(button.ratio, `${theme} ${button.kind} ${button.variant} action button contrast`).toBeGreaterThanOrEqual(4.5);
       }
     }
 
