@@ -70,6 +70,40 @@
   gap: 0.5rem;
 }
 
+/*
+ * WCAG departure from daisyUI. daisyUI 5.7 paints a ghost, outline or dash
+ * button without a colour in base-content, the page's text colour, wherever
+ * it stands. On a solid alert that is the page's text on the kind colour:
+ * a ghost "View" on trg24's info alert measured 3.49:1 in the light theme and
+ * 2.35:1 in the dark one, under the 4.5:1 body text needs (TRG-816). In an
+ * alert's action such a button takes the alert's own text colour, which
+ * data_feedback.spec.js holds above 4.5:1 for every kind and appearance.
+ * Only the resting text changes: hover, focus and disabled keep daisyUI's
+ * colours, and soft or coloured buttons keep their own.
+ */
+:where([data-exo="alert-action"])
+  :where(
+    [data-exo="btn"]:is(
+      [data-variant="ghost"],
+      [data-variant="outline"],
+      [data-appearance="ghost"],
+      [data-appearance="outline"],
+      [data-appearance="dash"]
+    ):not(
+      [data-variant="neutral"],
+      [data-variant="primary"],
+      [data-variant="secondary"],
+      [data-variant="accent"],
+      [data-variant="info"],
+      [data-variant="success"],
+      [data-variant="warning"],
+      [data-variant="error"],
+      [data-variant="danger"]
+    )
+  ) {
+  --btn-rest-fg: currentColor;
+}
+
 :where([data-exo="alert-title"]) {
   font-weight: 600;
   margin: 0 0 0.25rem 0;
