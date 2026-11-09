@@ -1,617 +1,446 @@
 # ExoUI — Deep Project And Component Audit (Prompt)
 
-> Run this prompt in a fresh Claude Code session (Opus 4.7) inside the
-> `/Users/miso/Developer/exo_ui` repo. Self-contained — everything the agent
-> needs is in this file.
+> **Version:** v2 (2026-11-09: the round's procedure moved to the fleet standard and a
+> round now ends as a Pogon project — EXO-1; v1 2026-04-28, output in
+> `docs/audits/2026-04-28/`) — run against the HEAD you start on.
+>
+> **This prompt says WHAT is audited in exo_ui.** HOW a round runs and what it MUST leave
+> behind (Pogon project, mirrored documents in `docs/audit/<krug>/`, LEDGER plan,
+> remediation tasks, adversarial verdict on every finding, finding format, severity and
+> verdict, the `audit-ledger.py` gate, working rules, final answer) is the fleet standard
+> **Tehnički standardi › [Deep audit — krug na platformi](https://app.pogon.me/krafter/docs/9a313aa6-e2c8-41a8-a62a-c5e73f7d0fa3)**
+> (mirror `krafter-infra/standards/tehnicki-standardi/deep-audit.md`; written in Serbian,
+> the procedure applies regardless of this prompt's language). Read it IN FULL before
+> phase 0 (`get_document`); where the two differ on procedure, the standard wins.
+>
+> **Code is read-only** — a round writes only to the platform and one entry at the top of
+> `docs/STATUS.md`.
+>
+> **Before you start:** a clean copy of the audited commit (standard, phase 0), then
+> **MEASURE the surface** with the commands below, from the repo root. The prompt carries
+> no counts on purpose: v1 named counts of CSS files, test files, tests and browser specs
+> and a fixed list of hooks, and by 2026-11-09 every one of them was short of the
+> tree. A number in a prompt becomes the auditor's expectation. Command, never a number.
+>
+> ```bash
+> ls lib/exo_ui lib/exo_ui/components lib/exo_ui/charts assets/js/hooks assets/css/src/components storybook/stories/components  # structure
+> rg -o '^\s+def [a-z_]+\(assigns\)' lib/exo_ui/components lib/exo_ui/charts lib/exo_ui/layouts.ex | wc -l  # function components
+> rg -c 'defdelegate' lib/exo_ui/components.ex                                  # ExoUI.Components delegates
+> ls assets/js/hooks/*.js | wc -l                                               # hook files
+> rg -c '^\s+Exo[A-Za-z]+,?$' assets/js/index.js                                # hooks registered in the index
+> ls assets/css/src/components/*.css | wc -l                                    # component CSS sources
+> rg -o 'data-exo="[a-z0-9-]+"' -N --no-filename lib | sort -u | wc -l          # data-exo values emitted
+> ls test/exo_ui/components/*_test.exs | wc -l                                  # component test files
+> rg -c '^\s*test "' test --glob '*.exs' | awk -F: '{s+=$2} END {print s}'      # ExUnit tests (library)
+> ls test/browser/*.spec.js | wc -l                                             # browser spec files
+> find storybook/stories/components -name '*.story.exs' | wc -l                 # component stories
+> ls test/visual-baselines/exo-ui-components/screenshots | wc -l                # committed visual baselines
+> ```
 
 ---
 
-## Role and context
+## 0. Values for the standard
 
-You are a **senior Phoenix/LiveView library architect + accessibility/UX auditor**
-with 10+ years of experience building component libraries comparable to
-shadcn/ui, daisyUI, Radix, Headless UI. You are running a **maximum-depth audit**
-of ExoUI — a Phoenix LiveView UI component library that ships HEEx components,
-token-driven CSS, and small JS hooks. The goal is to honestly map where ExoUI
-stands relative to a "minimum shadcn/daisyUI" bar.
+| Value | exo_ui |
+| --- | --- |
+| workspace | `krafter` |
+| team | `EXO` |
+| repo | `misho85/exo_ui` |
+| round project | `ExoUI deep audit <YYYY-MM-DD>` |
+| `<krug>` | `<YYYY-MM-DD>-deep-audit` → `docs/audit/<krug>/` (the standard's path; `docs/audits/` is the history before the platform — it is neither moved nor written to) |
+| must-read | per dimension, the **Must read** line in §2 — whole files. For every dimension also `README.md`, `lib/exo_ui.ex`, `lib/exo_ui/components.ex` and `docs/specs/2026-03-21-exo-ui-design.md` (the `data-exo` / `:where()` CSS contract) |
+| targeted tests | `mix test test/exo_ui/components/<name>_test.exs` (or any one file under `test/exo_ui/`) · `cd storybook && mix test test/storybook_web/<name>_test.exs` · `bunx playwright test test/browser/<name>.spec.js` (`playwright.config.js` builds the Storybook assets and boots its Phoenix server first, so this is a heavy run) · `bun run check:css` · `bash test/advisories_schedule_test.sh`. Where `mix`/`bun` are not on PATH (non-interactive shell), prefix `mise x --` |
+| measures (dimension 00) | component × states × a11y role · `data-exo` × CSS × tokens · JS hook × registration × teardown · public API × docs × story × test (§2, dimension 00) |
+| gate | standard §7, from the repo root at `origin/main` after export: `python3 ~/Developer/pogon/scripts/lib/audit-ledger.py --check docs/audit/<krug>`. Not copied into this repo and not added to its CI (standard §7) |
+| fake emails | `@test.krafter.dev` (the project is served under `krafter.dev` — README: Storybook at `exo-ui.krafter.dev`). The repo's demo data uses `@example.com` — a candidate for dimension 12 |
 
-**Repo:** `/Users/miso/Developer/exo_ui`
-
-**Key paths:**
-
-- `lib/exo_ui/` — top-level public API (`ExoUI`, `ExoUI.Components`, `ExoUI.Layouts`, `ExoUI.Charts`, `ExoUI.Lucide`, `ExoUI.Utils`)
-- `lib/exo_ui/components/` — `core.ex`, `data_display.ex`, `feedback.ex`, `form.ex`, `overlay.ex`
-- `lib/exo_ui/components/charts/` — `cartesian.ex`, `radial.ex`, `primitives.ex`, `helpers.ex`, `shared.ex`
-- `assets/js/hooks/` — JS hooks (accordion, carousel, collapsible, combobox, command_palette, context_menu, dropdown_menu, hover_card, menubar, overlay, popover, rating, select, sidebar, theme_toggle, tooltip)
-- `assets/js/index.js` — hook registration entry
-- `assets/css/src/` — `tokens.css`, `themes/`, `layouts/`, `components/*.css` (~46 files)
-- `priv/static/exo.css` and `priv/static/exo.tokens.css` — built artifacts
-- `test/exo_ui/components/*_test.exs` — Elixir render/unit tests (~50 files, 431+ tests)
-- `test/browser/*.spec.js` — Playwright browser tests (12 files)
-- `storybook/` — separate Phoenix Storybook app (own `mix.exs`, own `stories/`)
-- `storybook/stories/components/*.story.exs` — Storybook stories
-- `scripts/capture_storybook_components.js` — artifact capture script
-- `mix.exs`, `package.json` — root build config
-- `playwright.config.js` — browser test config
-- `README.md`, `CHANGELOG.md`
-
-**Build & test commands:**
-
-- `mix test` — Elixir tests
-- `mix compile --warnings-as-errors` — strict compile
-- `bun run build:all` — rebuild `priv/static/exo.css` + `exo.tokens.css`
-- `bun run test:browser` — Playwright browser tests
-- `bun run capture:components` — Storybook artifact capture (screenshots + videos)
-- Storybook itself: `cd storybook && mix phx.server`
-
-**Reference baseline:** the previous audit at
-`docs/audits/2026-04-24-exo-ui-project-analysis.md` is your **starting reference
-only** — read it once for context, then verify everything against current code.
-Do not copy its conclusions; many components have been touched since
-(see git status: `command_palette`, `menubar`, `rating`, `context_menu`, hooks,
-overlay, form, etc.). Today is **2026-04-28**.
+The standard's three mandatory dimensions are, in this repo: **regressions** = dimension 13,
+**house rules without a guard** = dimension 12, **docs-truth** = dimension 11 (together with
+Storybook and visual coverage) — each with exo_ui-specific candidates below.
 
 ---
 
-## Operating rules (NON-NEGOTIABLE)
+## 1. Role and context
 
-1. **Never invent.** If something is not in the code, write "NOT FOUND".
-   Do not infer behavior from a module name.
-2. **Cite `file:line` for every claim.** Format: `lib/exo_ui/components/form.ex:142`.
-   No file:line reference → the claim does not count.
-3. **Read whole modules, not snippets.** Do not draw conclusions from the first
-   50 lines of an 800-line file. Re-read in two or three passes if needed.
-4. **Do not write code outside `docs/audits/2026-04-28/`.** Audit only.
-5. **Direct, brutal, no flattery.** If something is bad — say bad, with proof.
-   If something is solid — say solid, with the reason. No softening.
-6. **Output = one file per category** in `docs/audits/2026-04-28/<NN>-<slug>.md`,
-   plus master `docs/audits/2026-04-28/README.md`.
-7. **No `Co-Authored-By` lines anywhere.** No emojis in code or docs (except
-   `🟢🟡🔴` status indicators in tables, which are required).
-8. **Bash:** no `&&`, `2>&1`, `| tail`, `| head`. Plain commands, separate calls.
-9. **mix commands:** plain `mix <cmd>` is fine here (no `mise exec` required).
-10. **Verify with the build before claiming "broken".** If you say a hook is
-    missing, grep `assets/js/index.js` and `priv/static/`. If you say a test
-    fails, name the spec.
+You are a **senior Phoenix/LiveView library architect + accessibility/UX auditor** with deep
+experience building component libraries comparable to shadcn/ui, daisyUI, Radix and
+Headless UI. You are running a **maximum-depth audit** of ExoUI — a headless Phoenix
+LiveView component library with a default CSS theme (`mix.exs` description): HEEx function
+components, a token-driven CSS theme (daisyUI 5's tokens under `--exo-*`, README › Theme And
+CSS Modes) and small LiveView JS hooks. The goal is to honestly map where ExoUI stands
+relative to a "minimum shadcn/daisyUI" bar.
 
----
+ExoUI is a UI library: no multi-tenancy, no auth, no payments. Consumers take it as a git or
+path dependency (README › Installation) — trg24 as a vendored snapshot (`.woodpecker/ci.yaml`
+header) — so a defect in a component ships into every app that uses it. The audit
+dimensions are: public API quality, accessibility, composition/HTML correctness, form
+integration, browser/keyboard behavior, Storybook coverage, CSS architecture, JS hook
+quality, and comparison vs shadcn/daisyUI. The one deployed surface is the public
+Storybook (`storybook/`, https://exo-ui.krafter.dev).
 
-## Strategy: parallel subagents (superpowers:dispatching-parallel-agents)
+**Repo:** `misho85/exo_ui`, run in a clean copy of the audited commit (standard, phase 0).
 
-**MANDATORY.** Do not run the audit serially. Use parallel subagents.
+### Key paths (measure their contents with the commands in the header)
 
-### Phase 0 — Setup (serial, you the main agent)
+- `lib/exo_ui.ex` — `ExoUI` and the `use ExoUI` macro (`core_components: false` skips
+  `button/1`, `header/1`, `form/1`, `input/1`, `flash/1`, `flash_group/1`, `table/1`).
+- `lib/exo_ui/components.ex` — `ExoUI.Components`, `defdelegate` re-exports of the
+  component sub-modules (kept for backward compatibility, per its moduledoc).
+- `lib/exo_ui/components/` — `core.ex`, `form.ex`, `overlay.ex`, `feedback.ex`,
+  `data_display.ex`, `resource_list.ex` (`ExoUI.Components.*`).
+- `lib/exo_ui/charts.ex` — `ExoUI.Charts` public façade; `lib/exo_ui/charts/` —
+  `cartesian.ex`, `radial.ex`, `primitives.ex`, `helpers.ex`, `shared.ex`.
+- `lib/exo_ui/layouts.ex` (`ExoUI.Layouts`), `lib/exo_ui/utils.ex` (`ExoUI.Utils`),
+  `lib/exo_ui/lucide.ex` (`ExoUI.Lucide`, the icon set behind `<.icon>`).
+- `lib/mix/tasks/exo.install.ex` — `mix exo.install`, patches a consumer's `app.css`,
+  `app.js` and `html_helpers/0` (README › Installation); its test is
+  `test/mix/tasks/exo.install_test.exs`.
+- `assets/js/index.js` — the hook registry consumers import (README › Wire JS hooks);
+  `assets/js/hooks/` — one file per hook.
+- `assets/css/exo.css` — bundle entry; `assets/css/src/` — `tokens.css`, `themes/`
+  (`dark.css`, `daisy.css`), `layouts/`, `components/*.css`.
+- `priv/static/exo.css`, `priv/static/exo.tokens.css`, `priv/static/exo.themes.css` —
+  committed build artifacts (lightningcss, `package.json` scripts).
+- `test/exo_ui/` — ExUnit: `components/*_test.exs` plus repo guards (§2, dimension 12);
+  `test/support/component_case.ex`.
+- `test/browser/*.spec.js` — Playwright against the local Storybook;
+  `test/browser/helpers/` (`storybook.js`, `focus.js`, `hooks.js`).
+- `test/visual-baselines/exo-ui-components/` — committed screenshot baselines + `manifest.json`.
+- `storybook/` — a separate Phoenix app (own `mix.exs`, `mix.lock`, `config/`, `lib/`,
+  `test/`); stories under `storybook/stories/components/<group>/*.story.exs`, recipe and
+  workflow demos under `storybook/lib/storybook/components/`.
+- `scripts/` — `capture_storybook_components.js`, `visual_regression.js`, `check_css.js`,
+  `import_daisy_themes.js`, release checks.
+- `.woodpecker/ci.yaml`, `.woodpecker/advisories.yaml` — CI; `docs/release-checklist.md`.
+- `docs/guides/` (component usage, recipes, workflows, theme tokens, visual regression),
+  `docs/specs/`, `docs/plans/`, `README.md`, `CHANGELOG.md`.
 
-1. Read `README.md`, `CHANGELOG.md`, `mix.exs`, `package.json`, `playwright.config.js`,
-   `storybook/mix.exs`, and the previous audit at
-   `docs/audits/2026-04-24-exo-ui-project-analysis.md` (context only).
-2. `ls lib/exo_ui/components/` and `ls lib/exo_ui/components/charts/` — map current modules.
-3. `ls assets/js/hooks/` and read `assets/js/index.js` — map hook surface.
-4. `ls assets/css/src/components/` — map CSS surface.
-5. `ls test/exo_ui/components/` and `ls test/browser/` — map test surface.
-6. `ls storybook/stories/components/` — map Storybook surface.
-7. Run baseline: `mix test`, `mix compile --warnings-as-errors`, `bun run build:all`,
-   `bun run test:browser`. Record pass/fail counts in your scratch.
-8. Create `docs/audits/2026-04-28/` directory.
-9. Create a TodoWrite list with the 8 categories below as tasks.
+### Commands the repo defines
 
-### Phase 1 — Parallel deep audit (one subagent per category)
+From `package.json`, README and `.woodpecker/ci.yaml`: `mix test`,
+`mix compile --warnings-as-errors`, `mix format --check-formatted`, `mix hex.audit` (root and
+`storybook/`), `bun run build:all` (builds `exo.css`, `exo.tokens.css` and `exo.themes.css`),
+`bun run check:css`, `bun run test:browser`, `bun run capture:components`,
+`bun run capture:validate`, `bun run visual:check`, and the Storybook:
+`cd storybook && mix setup && mix phx.server`. The full suites run in CI
+(`.woodpecker/ci.yaml` › `test`); a round runs only the targeted ones in §0.
 
-Dispatch all 8 in batches of 4-6 parallel (one message, multiple Agent tool
-calls). Use `Explore` subagent_type for read-only categories;
-`general-purpose` only when the agent needs to run bash (e.g. tests,
-`mix xref`).
+### Read before the audit
 
-**Each subagent gets a STRICT brief with:**
+`README.md`, `CHANGELOG.md`, `mix.exs`, `package.json`, `playwright.config.js`,
+`storybook/mix.exs`, `.woodpecker/ci.yaml`, `docs/release-checklist.md`, and the earlier
+rounds — **context, not conclusions**; verify everything against the audited SHA:
 
-- Category name + scope
-- List of files and contexts the subagent MUST read in full (not just grep)
-- Per-category template (below) which it MUST fill in
-- Output path: `docs/audits/2026-04-28/<NN>-<slug>.md`
-- Rule: "file:line for every claim"
-- Limit: max 600 lines of markdown per category (quality > quantity)
-- Order: "do not write code, audit only"
-
-**Subagent brief template:**
-
-```text
-You are doing a deep audit of the "<CATEGORY>" surface of the ExoUI
-Phoenix LiveView UI component library.
-
-Repo: /Users/miso/Developer/exo_ui
-Output: docs/audits/2026-04-28/<NN>-<slug>.md (create new, do not append)
-
-Rules:
-- Read whole modules, not snippets
-- Every claim → file:line reference
-- Direct, no softening
-- Do not write code outside the output file
-- Max 600 lines of markdown
-- ExoUI is a UI library (no multi-tenancy, no auth, no payments) —
-  audit dimensions are: public API quality, accessibility,
-  composition/HTML correctness, form integration, browser/keyboard
-  behavior, Storybook coverage, CSS architecture, JS hook quality,
-  comparison vs shadcn/daisyUI
-
-Files you MUST read (in full):
-<category-specific list>
-
-Tests you MUST review:
-<category-specific list>
-
-Storybook stories you MUST review:
-<category-specific list>
-
-Fill the template (below) — every section is mandatory, "N/A" only if
-genuinely empty.
-
-Return: path to the written file + 5 hardest problems as a bullet list.
-```
-
-### Phase 2 — Cross-cutting analysis (4 parallel subagents)
-
-After per-category reports are written, dispatch 4 parallel agents:
-
-- **Accessibility cross-cutting** — sweep all categories for missing a11y:
-  focus trap, escape close, roving tabindex, `aria-*` wiring, `role` accuracy,
-  keyboard parity, screen-reader labels, reduced-motion, `inert` usage.
-- **JS hook & client architecture cross-cutting** — read every file under
-  `assets/js/hooks/` and `assets/js/index.js`. Check: hook lifecycle
-  (`mounted/destroyed/updated`), event listener leaks, `phx-update="ignore"`
-  consistency, server↔client state contracts, server events the hook depends on.
-- **CSS architecture & tokens cross-cutting** — `assets/css/src/tokens.css`,
-  `themes/`, `layouts/`, all `components/*.css`. Check: token coverage,
-  dark mode parity, `:where()` specificity discipline, dead CSS, RTL,
-  `prefers-reduced-motion`, `prefers-color-scheme`, override surface.
-- **Storybook & docs cross-cutting** — Storybook story quality (delegated vs
-  direct module references, missing states, dark mode, mobile width),
-  README/CHANGELOG drift vs current code, attribute introspection warnings,
-  capture script output.
-
-Output: `docs/audits/2026-04-28/cross-cutting-<area>.md` (max 400 lines each).
-
-### Phase 3 — Synthesis (you, the main agent)
-
-Read every file in `docs/audits/2026-04-28/` and write
-`docs/audits/2026-04-28/README.md` master report (template below). Max 300
-lines. Concrete, no generic advice.
+- `.claude/audit/` — health audit of 2026-03-26 (`summaries/project-health-2026-03-26.md`,
+  `reports/`).
+- `docs/audits/2026-04-28/` — the v1 round of this prompt: seven category reports, four
+  cross-cutting reports and `README.md` (scorecard, top 15 findings). No ledger.
+- `docs/audits/2026-05-04/component-library-status.md` — status after remediation (updated
+  2026-05-06): what it says improved is the input of dimension 13.
 
 ---
 
-## Categories (8 — each gets its own subagent)
+## 2. What you audit — by DIMENSION
 
-### Core platform
+Each dimension is one subagent and one document `NN-<area>.md` (NN = the number below).
+Bullets are **candidates and lenses**, not conclusions — confirm each against the audited
+SHA before reporting it.
 
-1. **Core components** — `button`, `badge`, `separator`, `icon`, `theme_toggle`,
-   `header`, `avatar`, `skeleton`, `empty_state`, `spinner`, `kbd`,
-   `scroll_area`, `navbar`, `footer`, `bottom_nav`, `indicator`, `swap`.
-   Source: `lib/exo_ui/components/core.ex` (and any imports it pulls).
-2. **Form components** — `form`, `input` (text/checkbox/textarea/select),
-   `toggle`, `select`, `combobox`, `radio_group`, `slider`, `date_picker`,
-   `rating`, `fieldset`, `file_input`. Source: `lib/exo_ui/components/form.ex`.
-   Verify field-struct integration, `aria-invalid`/`aria-describedby` wiring,
-   error and description ID stability, form submission values.
-3. **Overlay & menu** — `modal`, `confirm_modal`, `popover`, `dropdown_menu`,
-   `dropdown` (deprecated?), `tooltip`, `collapsible`, `drawer`, `sheet`,
-   `hover_card`, `context_menu`, `command_palette`, `menubar`. Source:
-   `lib/exo_ui/components/overlay.ex` plus `assets/js/hooks/{popover,dropdown_menu,hover_card,context_menu,command_palette,menubar,overlay,collapsible,tooltip}.js`.
-   Verify dialog contract: focus trap, escape close, required title, outside
-   inert, focus restore, `aria-modal`.
-4. **Data display & navigation** — `table`, `list`, `content_card`, `stat_card`,
-   `metric_card`, `wizard_sidebar`, `breadcrumb`, `tabs`, `pagination`,
-   `steps`, `timeline`, `carousel`, `accordion`, `hero`, `chat_bubble`. Source:
-   `lib/exo_ui/components/data_display.ex` plus `assets/js/hooks/{accordion,carousel,sidebar}.js`.
-5. **Feedback** — `flash`, `flash_group`, `toast_container`, `alert`,
-   `progress`, `radial_progress`. Source:
-   `lib/exo_ui/components/feedback.ex`.
-6. **Charts** — primitives (`trend_badge`, `sparkline`, `progress_bar`),
-   cartesian (`bar_chart*`, `line_chart*`, `area_chart*`, `horizontal_bar_chart`),
-   radial (`donut_chart*`, pie, radial). Source:
-   `lib/exo_ui/components/charts/{primitives,cartesian,radial,helpers,shared}.ex`
-   and the `ExoUI.Charts` public façade. Verify `aria-label`, empty/zero/negative
-   data, legends, screen-reader summaries.
-7. **Layouts & app shell** — `sidebar_layout`, `sidebar_item`, plus any layout
-   helpers in `ExoUI.Layouts`. Source: `lib/exo_ui/layouts.ex` and
-   `assets/css/src/layouts/`. Verify localStorage state contract, skip link,
-   mobile focus, `aria-expanded` sync.
+**00 Measures** (orchestrator, before the fan-out; document `00-mere.md`). Build these
+matrices and compare them with the earlier rounds (`docs/audits/2026-04-28/README.md`
+scorecard, the table in `docs/audits/2026-05-04/component-library-status.md`). The delta —
+what is new since and covered by nothing — is a source of findings for the other dimensions.
 
-### Cross-cutting (Phase 2 — separate subagents)
+- **Component × states × a11y role** — rows: every
+  `rg -o '^\s+def ([a-z_]+)\(assigns\)' -r '$1' lib/exo_ui/components lib/exo_ui/charts lib/exo_ui/layouts.ex`;
+  columns: `role` and `aria-*` it renders (`rg -n 'role="|aria-[a-z]+=' <module>`), states it
+  supports (disabled, invalid/error, loading, open/closed, empty), whether it attaches a hook
+  and so needs an `id`, its unit test, browser spec and story.
+- **`data-exo` × CSS × tokens** — emitted values
+  `rg -o 'data-exo="[a-z0-9-]+"' -N --no-filename lib | sort -u` vs styled values
+  `rg -o 'data-exo="?[a-z0-9-]+' -N --no-filename assets/css/src | sort -u` (emitted without a
+  selector = unstyled component; selector without an emitter = dead CSS); tokens used
+  `rg -o 'var\(--exo-[a-z0-9-]+' -N --no-filename assets/css/src | sort -u` vs defined
+  `rg -o '^\s+--exo-[a-z0-9-]+' -N --no-filename assets/css/src/tokens.css assets/css/src/themes | sort -u`;
+  literal colours outside the token files
+  `rg -n '#[0-9a-fA-F]{3,8}\b|\b(rgba?|hsla?|oklch)\(' assets/css/src/components assets/css/src/layouts`.
+- **JS hook × registration × teardown** — `ls assets/js/hooks/` vs the keys of `hooks` in
+  `assets/js/index.js` vs `rg -o 'phx-hook="Exo[A-Za-z]+"' -N --no-filename lib | sort -u`
+  (and dynamic `rg -n 'phx-hook=\{' lib`); per hook `rg -c 'addEventListener' assets/js/hooks`
+  vs `rg -c 'removeEventListener' assets/js/hooks`, and
+  `rg --files-without-match 'destroyed\(' assets/js/hooks`.
+- **Public API × docs × story × test** — delegates in `lib/exo_ui/components.ex` vs `def` in
+  the sub-modules; per component: `@doc` / `attr … doc:`, a section in
+  `docs/guides/component-usage.md` (`rg -n '^#+ ' docs/guides/component-usage.md`), a story
+  under `storybook/stories/components/`, a test under `test/exo_ui/components/`, a spec under
+  `test/browser/`, a route in `test/visual-baselines/exo-ui-components/manifest.json`.
 
-8. **Cross-cutting** is split into four parallel reports — see Phase 2 above
-   (accessibility, JS hooks, CSS, Storybook/docs).
+### Component dimensions (one subagent each)
 
-> Total expected output: 7 category reports + 4 cross-cutting reports + 1
-> master README = **12 files**.
+**01 Core components** — `button`, `badge`, `separator`, `icon`, `theme_toggle`, `header`,
+`avatar`, `skeleton`, `empty_state`, `spinner`, `kbd`, `scroll_area`, `navbar`, `footer`,
+`bottom_nav`, `indicator`, `swap`.
+*Must read:* `lib/exo_ui/components/core.ex`, `lib/exo_ui/lucide.ex` (the part `icon/1`
+uses), `assets/js/hooks/theme_toggle.js`, `assets/js/hooks/swap.js`,
+`assets/js/hooks/header.js`.
+
+**02 Form components** — `form`, `input` (text/checkbox/textarea/select), `toggle`, `select`,
+`combobox`, `radio_group`, `slider`, `date_picker`, `rating`, `fieldset`, `file_input`,
+`form_layout`, `optional_field`, `required_marker`, `save_bar`. Verify field-struct
+integration, `aria-invalid`/`aria-describedby` wiring, error and description ID stability,
+form submission values (including disabled and hidden submitted values).
+*Must read:* `lib/exo_ui/components/form.ex`,
+`assets/js/hooks/{select,combobox,date_picker,rating,slider,file_input}.js`,
+`docs/guides/combobox.md`, `docs/specs/2026-03-23-native-popover-components-design.md`.
+
+**03 Overlay & menu** — `modal`, `confirm_modal`, `popover`, `dropdown_menu`, `dropdown`
+(deprecated — `rg -n 'deprecated' lib`), `tooltip`, `collapsible`, `drawer`, `sheet`,
+`hover_card`, `context_menu`, `command_palette`, `menubar`, and the `show_*`/`hide_*` JS
+commands. Verify the dialog contract: focus trap, escape close, required title, outside
+`inert`, focus restore, `aria-modal`; the Popover API contract (README › Browser support).
+*Must read:* `lib/exo_ui/components/overlay.ex`,
+`assets/js/hooks/{popover,dropdown_menu,hover_card,context_menu,command_palette,menubar,overlay,collapsible,tooltip}.js`,
+`docs/specs/2026-03-23-native-popover-components-design.md`.
+
+**04 Data display & navigation** — `table`, `list`, `content_card`, `stat_card`,
+`metric_card`, `settings_list`, `wizard_sidebar`, `breadcrumb`, `tabs`, `pagination`, `steps`,
+`timeline`, `carousel`, `accordion`, `hero`, `chat_bubble`, `resource_list`. Verify
+`table` keeps `phx-update="stream"` support (`docs/specs/2026-03-21-exo-ui-design.md`).
+*Must read:* `lib/exo_ui/components/data_display.ex`,
+`lib/exo_ui/components/resource_list.ex`,
+`assets/js/hooks/{accordion,carousel,tabs,table,resource_list}.js`.
+
+**05 Feedback** — `flash`, `flash_group`, `toast_container`, `alert`, `progress`,
+`radial_progress`. Verify `toast_container` keeps `phx-update="stream"` support (design
+spec), live-region roles per severity, auto-dismiss and pause-on-hover.
+*Must read:* `lib/exo_ui/components/feedback.ex`, `assets/js/hooks/toast.js`.
+
+**06 Charts** — primitives (`trend_badge`, `sparkline`, `progress_bar`), cartesian
+(`bar_chart*`, `stacked_bar_chart`, `line_chart*`, `area_chart*`, `horizontal_bar_chart`),
+radial (`donut_chart*`, `pie_chart`, `radial_chart`, `radar_chart`). Verify `role="img"` +
+`aria-label`, empty/zero/negative data, legends, screen-reader summaries, `data-exo` names
+that collide with other components.
+*Must read:* `lib/exo_ui/charts.ex`, every file in `lib/exo_ui/charts/`,
+`assets/css/src/components/charts.css`.
+
+**07 Layouts & app shell** — `sidebar_layout`, `sidebar_item`, and any layout helper in
+`ExoUI.Layouts`. Verify the localStorage state contract, skip link, mobile focus,
+`aria-expanded` sync.
+*Must read:* `lib/exo_ui/layouts.ex`, `assets/js/hooks/sidebar.js`,
+`assets/css/src/layouts/sidebar.css`.
+
+### Cross-cutting dimensions
+
+**08 Accessibility** — sweep every component for: focus trap, escape close, roving
+tabindex, `aria-*` wiring, `role` accuracy, keyboard parity, screen-reader labels,
+reduced motion, `inert` usage.
+*Must read:* every module in `lib/exo_ui/components/`, `assets/js/hooks/overlay.js`,
+`test/browser/helpers/focus.js`.
+
+**09 JS hooks & client architecture** — every file under `assets/js/hooks/` and
+`assets/js/index.js`: hook lifecycle (`mounted`/`updated`/`destroyed`), event listener
+leaks, `phx-update="ignore"` consistency, server↔client state contracts, server events a
+hook depends on, idempotence on `updated()`.
+*Must read:* `assets/js/index.js`, all of `assets/js/hooks/`, `test/browser/helpers/hooks.js`.
+
+**10 CSS architecture & tokens** — `assets/css/src/tokens.css`, `themes/`, `layouts/`, all
+`components/*.css`: token coverage, dark-mode parity (`[data-theme="dark"]`, `.exo-dark` and
+the `prefers-color-scheme` block in `themes/dark.css`), `:where()` specificity discipline,
+dead CSS, RTL, `prefers-reduced-motion`, `color-scheme`, override surface; the committed
+bundles against their sources.
+*Must read:* `assets/css/exo.css`, `assets/css/src/tokens.css`, `assets/css/src/themes/dark.css`,
+`docs/guides/theme-tokens.md`, `scripts/check_css.js`, `test/exo_ui/built_css_test.exs`,
+`test/exo_ui/color_mix_test.exs`.
+
+**11 Storybook, visual coverage & docs-truth** — Storybook story quality (`function:`
+pointing at the defining module vs an `ExoUI.Components` delegate, missing states, dark mode,
+mobile width), recipe and workflow demos, capture and visual-regression pipeline, the
+public deployment of the Storybook (its `config/runtime.exs`, `Dockerfile`, the `release`
+step of `.woodpecker/ci.yaml`). **Docs-truth:** README, CHANGELOG, `docs/guides/`,
+`docs/release-checklist.md`, moduledocs and this prompt against the code — a doc that
+promises a contract the code does not keep, a dead path, a count that no longer holds.
+*Must read:* `storybook/mix.exs`, `storybook/config/`, `storybook/lib/storybook_web/storybook.ex`,
+`playwright.config.js`, `test/browser/helpers/storybook.js`, `docs/guides/visual-regression.md`,
+`scripts/capture_storybook_components.js`, `scripts/visual_regression.js`, `README.md`,
+`CHANGELOG.md`, `docs/release-checklist.md`, `.woodpecker/ci.yaml`.
+
+- README › Development says `build:all` "builds exo.css and exo.tokens.css" —
+  `package.json` also builds `exo.themes.css`; `rg -n "bundles|exo\." scripts/check_css.js`:
+  which bundles does `check:css` compare?
+- README › Highlights ("60+ components") and › Theme ("All 35 daisyUI themes") vs
+  `rg -c 'defdelegate' lib/exo_ui/components.ex` and
+  `rg -c '^\[data-theme=' assets/css/src/themes/daisy.css`.
+- `docs/release-checklist.md` › Verification vs the commands in `.woodpecker/ci.yaml` › `test`.
+- `ExoUI.Components` moduledoc (sub-module list) vs what `use ExoUI` imports in `lib/exo_ui.ex`.
+
+**12 House rules without a guard.** This repo has no `CLAUDE.md`, `AGENTS.md` or
+contributing doc. Its rules live in two places: the anti-pattern list below, and the
+contracts the docs state — `docs/specs/2026-03-21-exo-ui-design.md` (theme selectors use
+`:where([data-exo="…"])`; `data-variant`/`data-size` always scoped to `[data-exo]`; compiled
+CSS is committed; `table` and `toast_container` keep `phx-update="stream"`),
+`docs/specs/2026-03-23-native-popover-components-design.md` (popover triggers set
+`type="button"`; `role="combobox"` on the search input), `docs/guides/visual-regression.md`
+(the baseline is a CI capture). For each rule with a greppable shape: is there a guard (a
+test or script that `.woodpecker/ci.yaml` runs)? The guards that exist carry their reason in
+the moduledoc — `test/exo_ui/built_css_test.exs`, `test/exo_ui/color_mix_test.exs`,
+`test/exo_ui/regex_end_anchor_test.exs`, `test/exo_ui/tracked_ignored_files_test.exs`,
+`test/exo_ui/ci_mix_home_test.exs`, `test/exo_ui/components/icon_truth_test.exs`,
+`test/exo_ui/components/storybook_primitive_usage_test.exs`,
+`test/exo_ui/components/interactive_forwarding_test.exs`, `scripts/check_css.js`,
+`test/advisories_schedule_test.sh`,
+`storybook/test/storybook_web/release_distribution_test.exs`. A rule without a guard plus a
+violation found = a finding with a task for the guard; without a violation = a line in
+"checked", not a finding. Fake emails (§0) are one such rule:
+`rg -o '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-z]{2,}' -N --no-filename lib test storybook docs/guides | sort | uniq -c`.
+
+**13 Regressions of earlier rounds.** No earlier round has a `LEDGER.md` or findings in the
+standard's heading format, so `audit-ledger.py` has nothing to check there and the first
+round under the standard sets the ledger baseline. The regression pass still runs: for every
+row of the "Top 15 critical findings" table in `docs/audits/2026-04-28/README.md` and every
+fix `docs/audits/2026-05-04/component-library-status.md` › "What improved" claims, re-verify
+against the audited SHA (they cite `file:line`, not `Verify:` — derive the command from the
+cited code and record it). A finding that came back is titled `REGRESIJA 2026-04-28 <n>: …`
+(the standard's literal form) and its task carries a guard. From the next round on, this dimension re-runs the `Verify:` of every
+SECURITY and BUG finding a ledger in `docs/audit/` closed (standard, phase 1).
+
+### Lenses every component dimension (01–07) applies
+
+- **Accessibility:** roles and semantics; keyboard (Tab/Shift+Tab/Arrows/Enter/Escape parity
+  per component); focus management (trap, restore, initial focus, visible focus ring); ARIA
+  wiring (`aria-expanded`, `aria-controls`, `aria-describedby`, `aria-invalid`,
+  `aria-pressed`, `aria-current`, `aria-modal`); screen reader (label sources, live
+  regions, hidden text); reduced motion.
+- **Composition & HTML correctness:** does a trigger slot wrap user content in a hard-coded
+  `<button>` (nested-button bug)? Do slots accept rest attrs; is there an `as_child`-like
+  escape hatch? Does a form control submit the right value, accept a
+  `Phoenix.HTML.FormField` and surface its errors?
+- **Browser & visual coverage:** which interactive components have a Playwright spec; which
+  paths are untested (keyboard, disabled, error, empty, loading); is the route in the visual
+  baseline?
+- **CSS surface:** which `--exo-*` tokens it depends on; dark-mode parity verified per
+  component or only assumed; can a consumer override a variant without `!important`; dead
+  selectors and orphan keyframes.
+- **JS hook quality (if any):** lifecycle leaks; listeners added and removed; events the
+  hook emits and expects; `phx-update="ignore"` where needed.
+- **Storybook quality:** a story per public function; states covered (default, hover,
+  focus, disabled, error, loading, long content, dark mode, mobile width); attribute
+  introspection; Phoenix form examples.
+- **Test coverage:** happy path, edge and error cases covered; concrete gaps; flakiness
+  signals (`Process.sleep`, `setTimeout`, `waitForTimeout`, racy assertions).
+- **Tech debt:** `TODO`/`FIXME`, dead code, deprecated functions
+  (`rg -n 'deprecated' lib`), commented-out blocks, convention drift from the rest of the
+  library.
+- **Public API & build:** exposed through `use ExoUI`, `ExoUI.Components`, or only the
+  sub-module; contributes to `priv/static/exo.css`?
+- **Documentation:** moduledoc, `@doc` and `attr … doc:`, its section in
+  `docs/guides/component-usage.md`, README references; where docs and code disagree.
+- **Comparison vs shadcn/daisyUI:** where ExoUI matches; the 3–5 most impactful behaviors
+  shadcn/daisyUI provide that ExoUI does not. A gap is a finding only when it names a
+  concrete behavior a consumer gets wrong or cannot get.
+
+### Depth hints (do not skip)
+
+- **Read `lib/exo_ui.ex` and `lib/exo_ui/components.ex` in full.** The public API is what
+  `use ExoUI` imports — the component sub-modules, `ExoUI.Components.ResourceList`,
+  `ExoUI.Charts`, `ExoUI.Layouts`, `ExoUI.Utils.classes/1` and `maybe_add_class/2` — plus the
+  `ExoUI.Components` delegates and `mix exo.install`; README › Usage lists the sub-modules as
+  explicit imports, so they are public too.
+- **Read `assets/js/index.js` in full** — every hook ExoUI ships must be registered there.
+  A hook file missing from the index is dead code; a `phx-hook="Exo…"` in `lib/` with no
+  registered hook is a broken component.
+- **Read `assets/css/src/tokens.css`** — the single source of design tokens. Cross-check
+  that `components/*.css` only consumes `--exo-*` tokens (no hard-coded colors).
+- **Read `assets/css/src/themes/`** — dark-mode parity through `[data-theme="dark"]`,
+  `.exo-dark` and the `prefers-color-scheme` block; `daisy.css` is generated
+  (`scripts/import_daisy_themes.js`).
+- **Read `playwright.config.js`** — base URL, `webServer`, retries only under `CI`.
+- **Read `storybook/mix.exs` and `storybook/config/`** — the Storybook is its own Phoenix
+  app, not a sub-project of the root mix project.
+- **`priv/static/exo.css`** — verify the build output contains every component CSS source
+  (lightningcss bundles `assets/css/exo.css`). It is minified to one line: `wc -l` returns 0
+  (the 2026-04-28 round mistook that for an empty file).
+- **`mix xref graph --format stats`** — dependency view of `lib/exo_ui/`, cycles between
+  component modules. It compiles; run it only when the machine allows (standard §5).
+- **Grep `<button`, `<input` and `<select` in `lib/exo_ui/components/`** — trigger
+  composition issues and raw HTML where ExoUI primitives should be used.
+- **Grep `phx-click` and `phx-change` in `lib/exo_ui/components/`** — events bound on the
+  wrong element (e.g. a whole flash as the dismiss target).
+- **Grep `aria-` and `data-exo` in `lib/exo_ui/components/`** — ARIA inventory; every
+  component should emit a stable `data-exo` attribute (the CSS hook).
+- **Grep `Phoenix.HTML.FormField` in `lib/exo_ui/components/form.ex`** — which form controls
+  accept a field struct and which do not.
+- **Read `test/browser/helpers/storybook.js`** — the contract of Storybook-driven browser
+  tests.
+- **Visual capture** (`bun run capture:components`, then `capture:validate` and
+  `visual:check`) needs a running Storybook and writes to `output/playwright/` (ignored). The
+  committed baseline is a Linux CI capture: a macOS capture differs from it on every route
+  (`docs/guides/visual-regression.md`), so a local diff is not a finding.
+- **Read `CHANGELOG.md` and the earlier rounds** — a claim made there that the current code
+  contradicts is drift (dimension 11 or 13).
+
+### Anti-patterns to actively flag (each with its first Verify)
+
+- `<button>` inside another `<button>`, `<a href>` inside `<button>`, slots that wrap user
+  content in a hard-coded `<button>` or `<div role="button">` —
+  `rg -n '<button|role="button"' lib/exo_ui`.
+- `phx-click` on a whole flash/alert when a dedicated close button exists —
+  `rg -n 'phx-click' lib/exo_ui/components/feedback.ex`.
+- A component that owns interactive state (a hook) but does not require an `id` —
+  `rg -n 'phx-hook=' lib` against the `attr :id` of the same component.
+- Hooks that call `addEventListener` without a matching `removeEventListener` in
+  `destroyed()`, and global listeners with no cleanup —
+  `rg -n '(window|document)\.addEventListener' assets/js/hooks`.
+- `localStorage`/`sessionStorage` access that can throw (private mode) or that decides
+  anything security-relevant — `rg -n -C2 'localStorage|sessionStorage' assets/js/hooks`.
+- CSS that hard-codes colors instead of `--exo-*` tokens, or overrides with `!important` —
+  `rg -n '!important' assets/css/src`.
+- No `prefers-reduced-motion` handling where there is motion —
+  `rg -n 'prefers-reduced-motion' assets/css/src assets/js/hooks` against
+  `rg -n 'transition|animation|behavior: .smooth' assets/css/src assets/js/hooks`.
+- Form controls that do not surface `Phoenix.HTML.FormField` errors or lack a stable
+  description/error ID for `aria-describedby` —
+  `rg -n 'aria-describedby|aria-invalid' lib/exo_ui/components/form.ex`.
+- Modals, sheets, drawers, command palette without focus trap, escape handler, outside
+  `inert` or focus restore — `rg -n 'Escape|inert|focus' assets/js/hooks/overlay.js assets/js/hooks/command_palette.js`.
+- Menus without roving tabindex / `aria-activedescendant` and arrow keys —
+  `rg -n 'aria-activedescendant|tabindex|ArrowDown' assets/js/hooks/{dropdown_menu,menubar,context_menu,select,combobox,command_palette}.js`.
+- Charts without `role="img"` + `aria-label` and a screen-reader summary —
+  `rg -n 'role="img"|aria-label' lib/exo_ui/charts`.
+- Stories whose `function:` is an `ExoUI.Components` delegate (breaks attribute
+  introspection) instead of the defining module —
+  `rg -n 'function: &ExoUI\.Components\.[a-z_]+/1' storybook/stories`.
+- `IO.inspect`, `dbg(`, `console.log` in shipped code — `rg -n 'IO\.inspect|dbg\(|console\.log' lib assets/js`.
+- Hard-coded URLs, paths or asset references that should come from config —
+  `rg -n 'https?://' lib assets/js --glob '!lib/exo_ui/lucide.ex' | rg -v 'www\.w3\.org'`
+  (the icon set carries the SVG namespace on every icon).
+- Components that raise on unknown input (e.g. an unknown icon name) where a graceful
+  fallback is safer for consumers — `rg -n 'raise' lib/exo_ui`.
+- Missing `aria-pressed` / `aria-expanded` / `aria-current` where the component has a
+  controlled state — `rg -n 'aria-(pressed|expanded|current)' lib/exo_ui`.
 
 ---
 
-## Per-category template (subagent fills in)
-
-```markdown
-# Audit: <Category name>
-
-**Date:** 2026-04-28
-**Auditor:** Claude Opus 4.7 (subagent)
-**Score:** 🟢 solid / 🟡 has problems / 🔴 critical
-**Maturity:** ~X% (subjective vs shadcn/daisyUI)
-
-## TL;DR (max 5 lines)
-
-State of this category in one paragraph. Three biggest problems, one
-sentence each.
-
-## Surface map
-
-### Public functions
-
-- `ExoUI.Components.foo/1` — one line description
-- `ExoUI.Layouts.bar/1` — one line description
-
-### Source modules
-
-- `lib/exo_ui/components/foo.ex` — what it owns
-- `assets/js/hooks/foo.js` — what the hook does
-- `assets/css/src/components/foo.css` — visual surface
-
-### Tests
-
-- `test/exo_ui/components/foo_test.exs` — N tests, what they assert
-- `test/browser/foo.spec.js` — N specs, what they verify
-
-### Storybook
-
-- `storybook/stories/components/foo.story.exs` — variants covered
-
-## What works (with proofs)
-
-- Concrete things + file:line + why this is good
-- Do not write "robust error handling" — quote the relevant code
-
-## What is missing or half-done
-
-- Concrete gaps + why they are gaps
-- "Should be X" line in docs/baseline + line in code where X is NOT
-
-## Per-component table
-
-| Component | Status | Findings (file:line) | Recommended work |
-| --- | --- | --- | --- |
-| `foo` | 🔴 P0 | concrete issue + ref | concrete fix |
-| `bar` | 🟡 P1 | ... | ... |
-| `baz` | 🟢 OK | ... | minor polish |
-
-Status legend: P0 (incorrect/misleading public API), P1 (works but below
-shadcn/daisyUI bar), P2 (polish), OK (acceptable for current role).
-
-## Problems by severity
-
-### 🔴 Critical (broken public API, invalid HTML, accessibility blockers)
-
-#### 1. <Title>
-
-- **Where:** `lib/exo_ui/components/foo.ex:142-156`
-- **What happens:** concrete description with code snippet
-- **Why critical:** consequence (e.g. "renders `<button>` inside `<button>` —
-  invalid HTML, real browsers handle it differently")
-- **Reproduction:** steps or scenario (Storybook page, browser test)
-- **Suggested fix:** pseudocode/instructions only — do NOT write code in repo
-
-### 🟡 Medium (UX problems, missing variants, incomplete a11y)
-
-#### N. ...
-
-### 🟢 Minor (cleanup, naming, docs)
-
-#### N. ...
-
-## Accessibility analysis
-
-- **Roles & semantics:** what is correct, what is wrong (file:line)
-- **Keyboard:** Tab/Shift+Tab/Arrows/Enter/Escape parity per component
-- **Focus management:** trap, restore, initial focus, visible focus ring
-- **ARIA wiring:** `aria-expanded`, `aria-controls`, `aria-describedby`,
-  `aria-invalid`, `aria-pressed`, `aria-current`, `aria-modal` — gaps
-- **Screen reader:** label sources, live regions, hidden text
-- **Reduced motion:** `prefers-reduced-motion` respected?
-
-## Composition & HTML correctness
-
-- **Trigger composition:** does the trigger slot wrap user content in a
-  hardcoded `<button>` (creates nested-button bug)?
-- **Slot contracts:** do slots accept rest attrs? Is there an `as_child`-like
-  escape hatch?
-- **Form integration:** does the control submit the right value? Does it
-  accept a `Phoenix.HTML.FormField` struct and surface errors?
-
-## Browser & visual coverage
-
-- **Playwright spec coverage:** which interactive components have specs?
-- **Untested paths:** keyboard, disabled, error, empty, loading
-- **Visual regression:** is there a baseline? Capture script output?
-
-## CSS surface
-
-- **Tokens used:** which `--exo-*` custom properties this category depends on
-- **Dark mode parity:** verified per component or only "should work"?
-- **Override surface:** can a consumer override variants without `!important`?
-- **Dead CSS:** unused selectors, orphan keyframes
-
-## JS hook quality (if applicable)
-
-- **Lifecycle:** `mounted`, `updated`, `destroyed` — leaks?
-- **Event listeners:** added/removed correctly?
-- **Server↔client contract:** what events does the hook emit/expect?
-- **`phx-update="ignore"`:** used where needed?
-
-## Storybook quality
-
-- **Pages exist:** which functions have dedicated story routes?
-- **States covered:** default, hover, focus, disabled, error, loading,
-  long content, dark mode, mobile width
-- **Attribute introspection:** "cannot load attributes" warnings? (caused by
-  `function: &ExoUI.Components.x/1` delegated references — should be direct
-  module function)
-- **Phoenix form examples:** present?
-
-## Test coverage
-
-- **Existing test files:** list with one-line summary
-- **Scenarios covered:** happy path, edge cases, error cases
-- **NOT covered:** concrete gaps
-- **Flakiness signals:** `Process.sleep`, `setTimeout`, racy assertions
-
-## Tech debt
-
-- **TODO/FIXME in this surface:** list with file:line
-- **Dead code:** unused functions, deprecated modules, commented-out blocks
-- **Convention drift:** what differs from the rest of the library
-
-## Configuration & build
-
-- **Public API exposure:** is the function exposed via `ExoUI.Components`,
-  `ExoUI.Layouts`, or only via direct module?
-- **Build artifacts:** does this category contribute to `priv/static/exo.css`?
-  Is it tree-shakable?
-
-## Documentation
-
-- **Existing:** module docs, function docs, README references
-- **Missing:** what should be documented
-- **Out of date:** places where docs disagree with code
-
-## Comparison vs shadcn/daisyUI
-
-- **Where ExoUI matches:** concrete strengths
-- **Where ExoUI lags:** concrete behaviors shadcn/daisyUI provide that ExoUI
-  does not (do not list everything — pick the 3-5 most impactful)
-
-## Recommendations (priority-ordered)
-
-1. **[Critical]** Concrete action + estimated effort (S/M/L)
-2. **[High]** ...
-3. **[Medium]** ...
-4. **[Quick win]** ...
-
-## Open questions for the library owner
-
-- Things the audit cannot resolve without product/design intent
-```
-
----
-
-## Master README format
-
-```markdown
-# ExoUI Project Deep Audit — 2026-04-28
-
-**Auditor:** Claude Opus 4.7 (parallel subagents + synthesis)
-**Categories audited:** 7 + 4 cross-cutting
-**Audit duration:** ~X hours real-time
-**Repo SHA:** <output of `git rev-parse HEAD`>
-
-## Verification baseline
-
-| Check | Result | Notes |
-| --- | --- | --- |
-| `mix test` | Pass/Fail | N tests, M failures |
-| `mix compile --warnings-as-errors` | ... | ... |
-| `bun run build:all` | ... | ... |
-| `bun run test:browser` | ... | ... |
-| Storybook smoke | ... | ... |
-
-## Executive summary (max 15 lines)
-
-State of the library in three paragraphs: where ExoUI is solid, where it
-bleeds, top 3 strategic risks vs the "minimum shadcn/daisyUI" bar. No
-softening.
-
-## Category score table
-
-| #   | Category               | Score | 🔴  | 🟡  | 🟢  | Test cov     | Notes              |
-| --- | ---------------------- | ----- | --- | --- | --- | ------------ | ------------------ |
-| 1   | Core components        | 🟡    | 0   | 6   | 11  | unit ✓ / browser ✗ | icon/theme_toggle gaps |
-| 2   | Form components        | ...   | ... | ... | ... | ...          | ...                |
-| 3   | Overlay & menu         | ...   | ... | ... | ... | ...          | dialog contract    |
-| 4   | Data display & nav     | ...   | ... | ... | ... | ...          | ...                |
-| 5   | Feedback               | ...   | ... | ... | ... | ...          | ...                |
-| 6   | Charts                 | ...   | ... | ... | ... | ...          | ...                |
-| 7   | Layouts & app shell    | ...   | ... | ... | ... | ...          | ...                |
-
-**Totals:** X 🔴 critical, Y 🟡 medium, Z 🟢 minor.
-
-## Top 15 critical findings (whole library)
-
-1. **[Category]** Title — `file:line` — consequence in one sentence
-2. ...
-
-## Cross-cutting findings
-
-### Accessibility
-
-(summary from `cross-cutting-accessibility.md`)
-
-### JS hooks
-
-(summary from `cross-cutting-js-hooks.md`)
-
-### CSS architecture
-
-(summary from `cross-cutting-css.md`)
-
-### Storybook & docs
-
-(summary from `cross-cutting-storybook-docs.md`)
-
-## Quick wins (low effort, high impact)
-
-1. ... (concrete, with effort estimate)
-
-## Strategic recommendations (3-6 months)
-
-1. **Priority 1:** ...
-2. ...
-
-## What is solid (so we don't break it)
-
-- ...
-
-## Open questions for the library owner
-
-- ...
-
-## Index of all reports
-
-- [01-core-components.md](./01-core-components.md)
-- [02-form-components.md](./02-form-components.md)
-- [03-overlay-and-menu.md](./03-overlay-and-menu.md)
-- [04-data-display-and-navigation.md](./04-data-display-and-navigation.md)
-- [05-feedback.md](./05-feedback.md)
-- [06-charts.md](./06-charts.md)
-- [07-layouts-and-app-shell.md](./07-layouts-and-app-shell.md)
-- [cross-cutting-accessibility.md](./cross-cutting-accessibility.md)
-- [cross-cutting-js-hooks.md](./cross-cutting-js-hooks.md)
-- [cross-cutting-css.md](./cross-cutting-css.md)
-- [cross-cutting-storybook-docs.md](./cross-cutting-storybook-docs.md)
-```
-
----
-
-## Depth hints (do not skip)
-
-- **Read `lib/exo_ui.ex` and `lib/exo_ui/components.ex` in full** — these define
-  the public API and `use ExoUI` macro. Anything not exposed here is private.
-- **Read `assets/js/index.js` in full** — every hook ExoUI ships must be
-  registered here. Hooks present in `assets/js/hooks/` but missing from the
-  index are dead code.
-- **Read `assets/css/src/tokens.css`** — single source of truth for design
-  tokens. Cross-check that `components/*.css` only consumes `--exo-*` tokens
-  (no hardcoded colors).
-- **Read `assets/css/src/themes/`** — verify dark mode parity by inspecting
-  `[data-theme="dark"]` overrides.
-- **Read `playwright.config.js`** — base URL, projects, retries.
-- **Read `storybook/mix.exs` and `storybook/config/`** — Storybook is its own
-  Phoenix app, not a sub-project of root mix.
-- **Read `priv/static/exo.css`** — verify the build output actually contains
-  every component CSS source (lightningcss bundles `assets/css/exo.css`).
-- **`mix xref graph --format stats`** — high-level dependency view of
-  `lib/exo_ui/`. Useful for confirming there are no cycles between component
-  modules.
-- **`mix credo --strict`** — quick wins, but do not stop at credo.
-- **`mix dialyzer`** — only if PLT is already warm; otherwise skip.
-- **Grep `<button` and `<input` and `<select` in `lib/exo_ui/components/`** —
-  identify trigger composition issues and raw HTML where ExoUI primitives
-  should be used.
-- **Grep `phx-click` and `phx-change` in `lib/exo_ui/components/`** — identify
-  components that bind events on the wrong element (e.g. whole flash dismiss).
-- **Grep `aria-` in `lib/exo_ui/components/`** — inventory current ARIA usage.
-- **Grep `data-exo` in `lib/exo_ui/components/`** — every component should
-  emit a stable `data-exo` attribute (CSS hook).
-- **Grep `Phoenix.HTML.FormField` in `lib/exo_ui/components/form.ex`** —
-  identify which form controls accept a field struct and which do not.
-- **Read `test/browser/helpers/storybook.js`** — Playwright helper, defines
-  the contract for Storybook-driven browser tests.
-- **Run `bun run capture:components`** if time permits — produces visual
-  artifact set under `output/playwright/`. Inspect for visual regressions
-  vs the previous run referenced in the 2026-04-24 audit.
-- **Read `CHANGELOG.md` and the previous audit** — note any claim made there
-  that current code contradicts (drift = bug).
-
----
-
-## Anti-patterns to actively flag
-
-Subagents **must actively look for** these patterns and flag them:
-
-- `<button>` rendered inside another `<button>` (trigger composition bug)
-- `<a href>` rendered inside `<button>` (invalid HTML)
-- Interactive HEEx slots that wrap user content in a hardcoded `<button>` or
-  `<div role="button">` (breaks `as_child`-style usage)
-- `phx-click` on the whole flash/alert when a dedicated close button exists
-- LiveView component that owns interactive state but has no `id` (LiveView
-  cannot patch it correctly)
-- JS hooks that call `addEventListener` without a matching `removeEventListener`
-  in `destroyed()`
-- JS hooks that rely on global `window` listeners with no cleanup
-- CSS components that hardcode color values instead of consuming `--exo-*` tokens
-- CSS components that override third-party styles using `!important`
-- Form controls that do not surface `Phoenix.HTML.FormField` errors
-- Form controls that do not generate a stable description/error ID for
-  `aria-describedby`
-- Modals/sheets/drawers without a focus trap or escape-key handler
-- Menus without roving tabindex / `aria-activedescendant` and arrow-key support
-- Charts without `role="img"` + `aria-label` (and no screen-reader summary)
-- Storybook stories using `function: &ExoUI.Components.x/1` (delegated, breaks
-  attribute introspection) instead of the direct module function reference
-- `IO.inspect`, `dbg(`, `console.log` left in production code
-- Hardcoded URLs, paths, or asset references that should come from config
-- HEEx components that raise on unknown input (e.g. unknown icon names) when
-  graceful fallback would be safer for consumers
-- Missing `aria-pressed` / `aria-expanded` / `aria-current` where the
-  component has a controlled state
-- Components that consume client-side state for authorization decisions
-  (rare here, but flag any leak)
-
----
-
-## Output limits (ENFORCE)
-
-- **Per category:** max **600 lines** of markdown (concise, brutal, with proofs)
-- **Cross-cutting:** max **400 lines** per file
-- **Master README:** max **300 lines**
-- **No generic advice** ("write more tests", "consider caching") — every
-  recommendation must be concrete and grounded in code you read
-- **If a feature does not exist:** write "NOT IMPLEMENTED" + 5 lines on what
-  is missing and why it appears in scope (likely from previous audit / README)
-- **If you lack access to something** (e.g. real production usage data):
-  write "REQUIRES PRODUCT INPUT: ..." as an open question
-- **No `Co-Authored-By` lines.** No commit messages drafted unless asked.
-
----
-
-## Final deliverable
-
-When everything is done, print to the user:
-
-```text
-EXOUI DEEP AUDIT DONE.
-
-Total files: 12 (7 categories + 4 cross-cutting + 1 master)
-Location: docs/audits/2026-04-28/
-
-Verification baseline:
-- mix test: <result>
-- bun run build:all: <result>
-- bun run test:browser: <result>
-
-Top 5 critical findings:
-1. ...
-2. ...
-3. ...
-4. ...
-5. ...
-
-Suggested next step: start from the critical row of the master score table.
-```
-
-**Start now. Run Phase 0, then immediately Phase 1 with parallel subagents in
-batches of 4-6. Do not ask "should I begin" — begin.**
+## 3. Specific to exo_ui (alongside the standard's working rules)
+
+- `mix` and `bun` come from mise (`.tool-versions` pins Erlang and Elixir); in a
+  non-interactive shell where they are not on PATH, run `mise x -- mix …` /
+  `mise x -- bun …`. The Storybook has its own deps: `cd storybook && mix deps.get` before
+  anything there.
+- The full verdict (ExUnit for the library and the Storybook, browser suite, capture and
+  visual check, release boot) is the CI pipeline of the audited SHA on Woodpecker
+  (`ci.krafter.dev`, `.woodpecker/ci.yaml`; `docs/STATUS.md` records the last one). Read it,
+  do not re-run it.
+- A claim about CSS is checked against the committed bundle `priv/static/exo.css` as well as
+  the sources; a claim about a hook against `assets/js/index.js`, which is what consumers
+  import (README › Wire JS hooks) — `priv/static/` holds no JS.
+- Production is the public Storybook at https://exo-ui.krafter.dev: unauthenticated
+  read-only GET only (standard §5).
+- `docs/audits/` and `.claude/audit/` stay where they are as pre-platform history; a new
+  round lives only in `docs/audit/<krug>/`.
+
+> **Summary:** what is audited in exo_ui — the public component API, accessibility,
+> composition and form integration, JS hooks, CSS tokens and theme, Storybook and visual
+> coverage, docs-truth, house rules without a guard, and regressions of the 2026-04-28 and
+> 2026-05-04 rounds — following the fleet standard "Deep audit — krug na platformi": a project
+> `ExoUI deep audit <date>` with mirrored documents in `docs/audit/<krug>/` and remediation
+> tasks in team `EXO`. Update this prompt as the codebase grows (version + date).
