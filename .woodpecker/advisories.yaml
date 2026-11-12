@@ -37,6 +37,8 @@ steps:
     image: hexpm/elixir:1.19.5-erlang-28.4.1-ubuntu-noble-20260217
     commands:
       - apt-get update && apt-get install -y --no-install-recommends ca-certificates
+      # KRF-769: ci-linux01 package cache (misho85/homelab scripts/ci-pkg-cache); a no-op on any other agent.
+      - if [ -r /etc/ci-cache/env.sh ]; then . /etc/ci-cache/env.sh; fi
       - mix local.hex --force && mix local.rebar --force
       # The verdict goes to a file per lock that `heartbeat` reads; a step that never gets
       # there leaves none, and that reads as "did not finish", not as clean. Both audits
