@@ -45,6 +45,8 @@ steps:
       # quietly installs noble's Node 18 (KRF-409, KRF-440).
       - curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && apt-get install -y nodejs && node --version | grep '^v24\.'
       - npm install -g bun@1.3.11
+      # KRF-769: ci-linux01 package cache (misho85/homelab scripts/ci-pkg-cache); a no-op on any other agent.
+      - if [ -r /etc/ci-cache/env.sh ]; then . /etc/ci-cache/env.sh; fi
       - mix local.hex --force && mix local.rebar --force
       - mix deps.get && mix hex.audit
       - (cd storybook && mix deps.get && mix hex.audit && mix assets.setup)
@@ -132,6 +134,8 @@ steps:
       - woodpecker_hex:/root/.hex
     commands:
       - apt-get update && apt-get install -y --no-install-recommends build-essential git ca-certificates
+      # KRF-769: ci-linux01 package cache (misho85/homelab scripts/ci-pkg-cache); a no-op on any other agent.
+      - if [ -r /etc/ci-cache/env.sh ]; then . /etc/ci-cache/env.sh; fi
       - mix local.hex --force && mix local.rebar --force
       - (cd storybook && mix deps.get --only prod)
       - (cd storybook && mix deps.compile)
