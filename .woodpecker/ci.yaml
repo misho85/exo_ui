@@ -75,10 +75,10 @@ steps:
   # What `actions/upload-artifact` kept: the captured snapshots (a new baseline is taken
   # from them), the visual diffs, the Playwright report and the traces of failed tests.
   # Woodpecker keeps no files, and ~15 MB of PNGs do not belong in a step log (KRF-499), so
-  # they go to Hetzner Object Storage, bucket `krafter-exo-ui` under `ci-artifacts/<pipeline>/`
-  # (KRF-708; until 2026-10-29 the Garage bucket `ci-artifacts` on krafter-garage), and the
+  # they go to Hetzner Object Storage, the fleet's one CI bucket `krafter-ci` under
+  # `ci-artifacts/exo_ui/<pipeline>/` (KRF-780; before it `krafter-exo-ui`, KRF-708), and the
   # log prints a presigned link valid for 7 days. A lifecycle rule expires `ci-artifacts/`
-  # after 14 days; the key `krafter-exo-ui-ci` is the only one the bucket policy lets in.
+  # after 14 days; the bucket policy lets in only the CI key `krafter-ci` and the admin.
   #
   # Refreshing the baseline from a PR's run:
   #   curl -fsSL "<link from this step>" | tar -xz
@@ -94,10 +94,13 @@ steps:
       RCLONE_CONFIG_HZ_REGION: nbg1
       RCLONE_CONFIG_HZ_FORCE_PATH_STYLE: "true"
       RCLONE_CONFIG_HZ_NO_CHECK_BUCKET: "true"
-      RCLONE_CONFIG_HZ_ACCESS_KEY_ID:
-        from_secret: ci_artifacts_access_key_id
+      # The key ID is NOT a secret, and must not be one: it is in every presigned URL,
+      # and Woodpecker masks a secret's value wherever it appears in the log, so the
+      # printed link came out as `X-Amz-Credential=********` and answered 403
+      # (VRE-131). Only the secret key is a secret (a misho85 org secret, KRF-780).
+      RCLONE_CONFIG_HZ_ACCESS_KEY_ID: 0MBLIE6RV1DEJZK67TOM
       RCLONE_CONFIG_HZ_SECRET_ACCESS_KEY:
-        from_secret: ci_artifacts_secret_access_key
+        from_secret: krafter_ci_secret_access_key
     # The image's entrypoint is `rclone`; a step with `commands` runs them through
     # Woodpecker's own shell entrypoint (as with curlimages/curl in `notify`).
     commands:
@@ -105,7 +108,7 @@ steps:
         set -- $$(ls -d output/playwright playwright-report test-results 2>/dev/null)
         if [ $$# -eq 0 ]; then echo "artifacts: the test step left nothing to keep"; exit 0; fi
         tar -czf /tmp/browser-artifacts.tar.gz "$$@"
-        object="hz:krafter-exo-ui/ci-artifacts/$${CI_PIPELINE_NUMBER}/browser-artifacts.tar.gz"
+        object="hz:krafter-ci/ci-artifacts/exo_ui/$${CI_PIPELINE_NUMBER}/browser-artifacts.tar.gz"
         rclone copyto /tmp/browser-artifacts.tar.gz "$$object"
         echo "artifacts: $$(du -h /tmp/browser-artifacts.tar.gz | cut -f1) ($$*), download for 7 days:"
         rclone link --expire 7d "$$object"
