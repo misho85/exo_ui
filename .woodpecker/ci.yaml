@@ -83,8 +83,12 @@ steps:
   # Refreshing the baseline from a PR's run:
   #   curl -fsSL "<link from this step>" | tar -xz
   #   node scripts/visual_regression.js update --run output/playwright/exo-ui-components/<run>
+  # A slow uplink must not hold the release: pipeline #27 sat 1416 s in `rclone copyto`
+  # (82 MB from the NUC at < 35 KB/s, KRF-780) until it was canceled, and `release` and
+  # `notify` went down with it. So the upload has 5 minutes, and a failed upload is ignored.
   - name: artifacts
     image: rclone/rclone:1.75.0
+    failure: ignore
     when:
       - status: [success, failure]
     environment:
@@ -109,7 +113,7 @@ steps:
         if [ $$# -eq 0 ]; then echo "artifacts: the test step left nothing to keep"; exit 0; fi
         tar -czf /tmp/browser-artifacts.tar.gz "$$@"
         object="hz:krafter-ci/ci-artifacts/exo_ui/$${CI_PIPELINE_NUMBER}/browser-artifacts.tar.gz"
-        rclone copyto /tmp/browser-artifacts.tar.gz "$$object"
+        timeout 300 rclone copyto /tmp/browser-artifacts.tar.gz "$$object" || { echo "artifacts: upload did not finish in 5 minutes"; exit 1; }
         echo "artifacts: $$(du -h /tmp/browser-artifacts.tar.gz | cut -f1) ($$*), download for 7 days:"
         rclone link --expire 7d "$$object"
 
