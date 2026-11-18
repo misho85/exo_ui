@@ -3,6 +3,16 @@
 Newest first. Dated state of the repository: what was measured and where the evidence is.
 Rules live in the guides and in `.woodpecker/`, not here.
 
+## 2026-11-18 — plug 1.20.4 (EEF-CVE-2026-120287), telemetry 1.4.3 in both locks (EXO-2)
+
+- `mix.lock` and `storybook/mix.lock`: plug 1.20.3 → 1.20.4 (EEF-CVE-2026-120287, published
+  2026-11-17, plug < 1.20.4) and telemetry 1.4.2 → 1.4.3, the latest stable releases on hex.pm.
+  `mix deps.update plug telemetry` in each project; nothing else moved.
+- **Measured** on ci-linux01 (test-nuc, CI step `test`): `mix hex.audit` clean in both projects;
+  `mix format --check-formatted`, `mix compile --warnings-as-errors`; root `mix test` 673 tests,
+  1 failure — `TrackedIgnoredFilesTest`, which runs `git ls-files` and a `git archive` export has no
+  repository; storybook `mix compile --warnings-as-errors` + `mix test` 17 tests, 0 failures.
+
 ## 2026-11-09 — The deep audit prompt follows the fleet standard (EXO-1)
 
 - **`docs/prompts/exo-ui-project-audit.md` is v2.** It says WHAT is audited here; HOW a round
