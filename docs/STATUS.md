@@ -3,6 +3,35 @@
 Newest first. Dated state of the repository: what was measured and where the evidence is.
 Rules live in the guides and in `.woodpecker/`, not here.
 
+## 2026-11-18 — Every dependency on its latest release (EXO-3, KRF-821)
+
+- **Hex** (`mix deps.update --all` in both projects): phoenix_live_view 1.2.12 → 1.2.13,
+  websock_adapter 0.7.2, ex_doc 0.40.4, floki 0.38.5, makeup 1.2.3, makeup_erlang 1.1.0;
+  storybook: bandit 1.15.0, phoenix_live_reload 1.7.0, mdex 0.14.7, mdex_native 0.3.2,
+  esbuild 0.10.1, nimble_options 1.2.0, rustler_precompiled 0.10.1. The only row
+  `mix hex.outdated` still shows is **makeup_html 0.2.0 (1.0.0 exists)**: phoenix_storybook
+  1.5.0, its latest release, requires `~> 0.2.0`.
+- **esbuild binary** (storybook `config :esbuild`) 0.24.2 → 0.28.2.
+- **npm:** @playwright/test 1.59.1 → 1.65.1 (Chromium 159), lightningcss-cli 1.32.0 → 1.33.0,
+  pixelmatch 7.2.0 → 8.0.0 (color metric YIQ → OKLab HyAB, `threshold` 0.1 kept).
+- **Visual baselines stay as they were.** On ci-linux01 through test-nuc, two screenshots
+  (`data_display/resource_list`, `navigation/wizard_sidebar`) came out 1.0 % and 0.8 % off:
+  the component renders were identical, only the story's source sample listed the same
+  attributes in another order. The same commit with those two re-taken then failed Woodpecker
+  by exactly the same amounts the other way round. phoenix_storybook writes the sample from
+  the attribute map, and since OTP 26 a small map orders atom keys by atom index (creation
+  order), not by name, so the order follows the build, not the code. Woodpecker gets the
+  committed order; a fresh test-nuc build may not — compare those two pages by eye before
+  re-taking them. The diff was 0.96 % and 0.74 % under pixelmatch 7 on the same run, so the
+  new metric did not cause it.
+- **Measured** on ci-linux01 (test-nuc, CI step `test`): `mix hex.audit` clean in both
+  projects, `check:css`, format, `compile --warnings-as-errors`, root `mix test` 673 tests,
+  1 failure — `TrackedIgnoredFilesTest`, which needs a git repository the export lacks (as
+  in EXO-2); storybook `mix test` 17/0; `test:browser` 127 passed; capture 119/119 (two
+  flaky captures in the first run — context menu click timeout, live_reload socket — both
+  passed on the next two runs), `capture:validate` ok, `visual:check` red only on the two
+  source-sample pages above.
+
 ## 2026-11-18 — plug 1.20.4 (EEF-CVE-2026-120287), telemetry 1.4.3 in both locks (EXO-2)
 
 - `mix.lock` and `storybook/mix.lock`: plug 1.20.3 → 1.20.4 (EEF-CVE-2026-120287, published

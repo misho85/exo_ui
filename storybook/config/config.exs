@@ -8,7 +8,7 @@ config :exo_ui_storybook, ExoUI.Storybook.Web.Endpoint,
   live_view: [signing_salt: "exo_storybook"]
 
 config :esbuild,
-  version: "0.24.2",
+  version: "0.28.2",
   storybook: [
     args: ~w(js/storybook.js js/theme_generator.js --bundle --target=es2020 --outdir=../priv/static/assets),
     cd: Path.expand("../assets", __DIR__),
