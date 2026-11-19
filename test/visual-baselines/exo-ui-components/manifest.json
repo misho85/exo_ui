@@ -281,7 +281,7 @@
       "dataExoCount": 302,
       "width": 1280,
       "height": 900,
-      "sha256": "11d307ebd99b0c2f328164bfbefd713d67267075edf2815031bc1f05823b2eea"
+      "sha256": "d9eb1d7989f9fe2a876ea962a1f68c4ef6b3100e16cdf37a46254e5009f63b3c"
     },
     {
       "name": "data_display/stat_card",
@@ -776,7 +776,7 @@
       "dataExoCount": 39,
       "width": 1280,
       "height": 900,
-      "sha256": "cd798f8fa705e6783f598889b4773bd855cc6aa606266e8f865b8255a32158cd"
+      "sha256": "ff3b24e732249d5d72126479914f0c805eb541da8d6878052603be6d2c01a912"
     },
     {
       "name": "overlays/confirm_modal",

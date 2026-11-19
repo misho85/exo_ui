@@ -14,18 +14,23 @@ Rules live in the guides and in `.woodpecker/`, not here.
 - **esbuild binary** (storybook `config :esbuild`) 0.24.2 → 0.28.2.
 - **npm:** @playwright/test 1.59.1 → 1.65.1 (Chromium 159), lightningcss-cli 1.32.0 → 1.33.0,
   pixelmatch 7.2.0 → 8.0.0 (color metric YIQ → OKLab HyAB, `threshold` 0.1 kept).
-- **Visual baselines:** two screenshots re-taken, `data_display/resource_list` and
-  `navigation/wizard_sidebar`. The component renders are identical; the story's source
-  sample lists the same attributes in another order (`views`/`active_view` before
-  `addable`, `steps` id/label/status). The diff was 1.0 % and 0.8 % under pixelmatch 8 and
-  0.96 % and 0.74 % under pixelmatch 7 on the same run, so the metric did not cause it.
+- **Visual baselines stay as they were.** On ci-linux01 through test-nuc, two screenshots
+  (`data_display/resource_list`, `navigation/wizard_sidebar`) came out 1.0 % and 0.8 % off:
+  the component renders were identical, only the story's source sample listed the same
+  attributes in another order. The same commit with those two re-taken then failed Woodpecker
+  by exactly the same amounts the other way round. phoenix_storybook writes the sample from
+  the attribute map, and since OTP 26 a small map orders atom keys by atom index (creation
+  order), not by name, so the order follows the build, not the code. Woodpecker gets the
+  committed order; a fresh test-nuc build may not — compare those two pages by eye before
+  re-taking them. The diff was 0.96 % and 0.74 % under pixelmatch 7 on the same run, so the
+  new metric did not cause it.
 - **Measured** on ci-linux01 (test-nuc, CI step `test`): `mix hex.audit` clean in both
   projects, `check:css`, format, `compile --warnings-as-errors`, root `mix test` 673 tests,
   1 failure — `TrackedIgnoredFilesTest`, which needs a git repository the export lacks (as
   in EXO-2); storybook `mix test` 17/0; `test:browser` 127 passed; capture 119/119 (two
   flaky captures in the first run — context menu click timeout, live_reload socket — both
   passed on the next two runs), `capture:validate` ok, `visual:check` red only on the two
-  baselines above before they were re-taken.
+  source-sample pages above.
 
 ## 2026-11-18 — plug 1.20.4 (EEF-CVE-2026-120287), telemetry 1.4.3 in both locks (EXO-2)
 
