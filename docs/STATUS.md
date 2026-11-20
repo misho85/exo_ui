@@ -21,6 +21,13 @@ Rules live in the guides and in `.woodpecker/`, not here.
   stories. A diff that moves between stories from run to run is capture timing, not this
   change (the 1.2.14 changelog touches no transition or overlay code). main cannot be
   compared today: its own `mix hex.audit` now fails on EEF-CVE-2026-126334.
+- **Merged and deployed 2026-11-20** (merge `49ad6a2`). Storybook rollback image
+  `app-quantify-virtual-application-o7gkl9:pre-phx1817` = `55f4b2b20f97`, tagged before the
+  merge; new image `78e5bb332c47` live 21:39 UTC with `phoenix-1.8.17`,
+  `phoenix_live_view-1.2.14`. Probe: `exo-ui.krafter.dev` 302 to `/welcome` as before; the
+  `/live` socket answers a heartbeat; in Chrome the Drawer story
+  (`/components/overlays/drawer`) connects its LiveView with no console errors. The only
+  error line since boot is the usual `inotify-tools` notice of the dev live-reloader.
 
 ## 2026-11-18 — Every dependency on its latest release (EXO-3, KRF-821)
 
