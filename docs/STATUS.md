@@ -12,8 +12,15 @@ Rules live in the guides and in `.woodpecker/`, not here.
   `"url"` skips the `live_session` `on_mount` hooks).
 - Evidence (NUC, `test-nuc --korak test`): `mix hex.audit` clean in both projects; `mix
   test` 673 tests, 1 failure — `TrackedIgnoredFilesTest` (test-nuc exports are not git
-  checkouts, so the `git ls-files` tests fail there); storybook and browser tests: see
-  EXO-4.
+  checkouts, so the `git ls-files` tests fail there); storybook `mix test` 17/17 and `bun
+  run test:browser` green.
+- PR #66 pipeline 45: `mix test` 673/0, storybook 17/0, Playwright 127 passed; only
+  `visual:check` red — `overlays/drawer` 72 % over its baseline. The same commit on the NUC
+  passed the drawer and flagged `recipes/import_export_workflow` (10.4 %) and
+  `recipes/release_readiness_workflow` (1.5 %) instead; PR pipeline 39 failed it on two other
+  stories. A diff that moves between stories from run to run is capture timing, not this
+  change (the 1.2.14 changelog touches no transition or overlay code). main cannot be
+  compared today: its own `mix hex.audit` now fails on EEF-CVE-2026-126334.
 
 ## 2026-11-18 — Every dependency on its latest release (EXO-3, KRF-821)
 
