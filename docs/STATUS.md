@@ -3,6 +3,18 @@
 Newest first. Dated state of the repository: what was measured and where the evidence is.
 Rules live in the guides and in `.woodpecker/`, not here.
 
+## 2026-11-20 — phoenix 1.8.17, phoenix_live_view 1.2.14 in both locks (EXO-4, KRF-822)
+
+- `mix.lock` and `storybook/mix.lock`: `phoenix` 1.8.16 → 1.8.17 (CVE-2026-129344: an
+  unserialisable channel message takes down every client on a shared topic;
+  CVE-2026-128361: an unsanitised presence key crashes the Presence tracker);
+  `phoenix_live_view` 1.2.13 → 1.2.14 (EEF-CVE-2026-126334: a LiveView join without
+  `"url"` skips the `live_session` `on_mount` hooks).
+- Evidence (NUC, `test-nuc --korak test`): `mix hex.audit` clean in both projects; `mix
+  test` 673 tests, 1 failure — `TrackedIgnoredFilesTest` (test-nuc exports are not git
+  checkouts, so the `git ls-files` tests fail there); storybook and browser tests: see
+  EXO-4.
+
 ## 2026-11-18 — Every dependency on its latest release (EXO-3, KRF-821)
 
 - **Hex** (`mix deps.update --all` in both projects): phoenix_live_view 1.2.12 → 1.2.13,
